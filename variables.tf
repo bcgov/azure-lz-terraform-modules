@@ -48,6 +48,7 @@ variable "subscriptions" {
     network : object({
       enabled : bool
       address_space : list(string)
+      dns_servers : optional(list(string))
     })
   }))
 }
