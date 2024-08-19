@@ -53,8 +53,11 @@ module "lz_vending" {
       resource_group_name     = "${var.license_plate}-${each.value.name}-networking"
       vwan_connection_enabled = true
       vwan_hub_resource_id    = var.vwan_hub_resource_id
-      dns_servers             = try(each.value.network.dns_servers, null)
-      tags                    = var.common_tags
+      vwan_security_configuration = {
+        routing_intent_enabled = true
+      }
+      dns_servers = try(each.value.network.dns_servers, null)
+      tags        = var.common_tags
     }
   } : {}
 
