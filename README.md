@@ -11,15 +11,14 @@ For each environment, the module will create a subscription, a network resource 
 
 | Name | Version |
 |------|---------|
-| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | 1.8.3 |
-| <a name="requirement_azapi"></a> [azapi](#requirement\_azapi) | 1.13.1 |
-| <a name="requirement_azurerm"></a> [azurerm](#requirement\_azurerm) | 3.103.1 |
+| <a name="requirement_azapi"></a> [azapi](#requirement\_azapi) | >= 1.13.1 |
+| <a name="requirement_azurerm"></a> [azurerm](#requirement\_azurerm) | >= 3.109.0 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
-| <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) | 3.103.1 |
+| <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) | >= 3.109.0 |
 
 ## Modules
 
@@ -31,8 +30,8 @@ For each environment, the module will create a subscription, a network resource 
 
 | Name | Type |
 |------|------|
-| [azurerm_management_group.project_set](https://registry.terraform.io/providers/hashicorp/azurerm/3.103.1/docs/resources/management_group) | resource |
-| [azurerm_management_group.landing_zones](https://registry.terraform.io/providers/hashicorp/azurerm/3.103.1/docs/data-sources/management_group) | data source |
+| [azurerm_management_group.project_set](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/management_group) | resource |
+| [azurerm_management_group.landing_zones](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/data-sources/management_group) | data source |
 
 ## Inputs
 
