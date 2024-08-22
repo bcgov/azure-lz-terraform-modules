@@ -50,6 +50,7 @@ variable "subscriptions" {
       address_space : list(string)
       dns_servers : optional(list(string))
     })
+    tags : optional(map(string), {})
   }))
 }
 

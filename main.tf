@@ -24,7 +24,7 @@ resource "azurerm_management_group" "project_set" {
 
 module "lz_vending" {
   source  = "Azure/lz-vending/azurerm"
-  version = "4.1.0"
+  version = "4.1.3"
 
   for_each = var.subscriptions
 
@@ -37,6 +37,7 @@ module "lz_vending" {
   subscription_display_name  = "${var.license_plate}-${each.value.name}"
   subscription_alias_name    = "${var.license_plate}-${each.value.name}"
   subscription_workload      = "Production"
+  subscription_tags          = each.value.tags
 
   network_watcher_resource_group_enabled = true
 
@@ -61,30 +62,48 @@ module "lz_vending" {
     }
   } : {}
 
-  budget_enabled = each.value.budget_amount > 0
+  # budget_enabled = each.value.budget_amount > 0
 
-  # budgets = {
-  #   registry = {
-  #     amount            = each.value.budget_amount
-  #     time_grain        = "Monthly"
-  #     time_period_start = formatdate("YYYY-MM-01'T'00:00:00Z", timestamp())
-  #     time_period_end   = formatdate("YYYY-MM-01'T'00:00:00Z", timeadd(timestamp(), "87600h")) // 10 years from now
-  #     notifications = {
-  #       eightypercent = {
-  #         enabled        = true
-  #         operator       = "GreaterThan"
-  #         threshold      = 80
-  #         threshold_type = "Actual"
-  #         contact_groups = ["Owner"]
-  #       }
-  #       budgetexceeded = {
-  #         enabled        = true
-  #         operator       = "GreaterThan"
-  #         threshold      = 100
-  #         threshold_type = "Forecasted"
-  #         contact_groups = ["Owner"]
-  #       }
-  #     }
+  # "/subscriptions/60e89f81-a15c-4d7a-9be3-c3795a33a277/providers/Microsoft.Consumption/budgets/registry"
+  # / Api Version "2021-10-01"): PUT
+  # https://management.azure.com/subscriptions/60e89f81-a15c-4d7a-9be3-c3795a33a277/providers/Microsoft.Consumption/budgets/registry
+  # --------------------------------------------------------------------------------
+  # RESPONSE 401: 401 Unauthorized
+  # ERROR CODE: RBACAccessDenied
+  # --------------------------------------------------------------------------------
+  # {
+  #   "error": {
+  #     "code": "RBACAccessDenied",
+  #     "message": "The client does not have authorization to perform action. Request ID: d97e8d78-6829-42f3-b0a8-671f1eb4da7e"
   #   }
   # }
+  # --------------------------------------------------------------------------------
+
+  # Disable budgets for now due to RBAC access denied above
+  budget_enabled = false
+
+  budgets = each.value.budget_amount > 0 ? {
+    registry = {
+      amount            = each.value.budget_amount
+      time_grain        = "Monthly"
+      time_period_start = formatdate("YYYY-MM-01'T'00:00:00Z", timestamp())
+      time_period_end   = formatdate("YYYY-MM-01'T'00:00:00Z", timeadd(timestamp(), "87600h")) // 10 years from now
+      notifications = {
+        eightypercent = {
+          enabled        = true
+          operator       = "GreaterThan"
+          threshold      = 80
+          threshold_type = "Actual"
+          contact_groups = ["Owner"]
+        }
+        budgetexceeded = {
+          enabled        = true
+          operator       = "GreaterThan"
+          threshold      = 100
+          threshold_type = "Forecasted"
+          contact_groups = ["Owner"]
+        }
+      }
+    }
+  } : {}
 }
