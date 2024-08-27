@@ -31,6 +31,6 @@ provider "azapi" {
 }
 
 provider "azureipam" {
-  api_url = "https://ipam-forge.azurewebsites.net"
+  api_url = local.api_url
   token   = var.IPAM_TOKEN
 }
