@@ -89,10 +89,10 @@ resource "azurerm_service_plan" "ipam" {
   worker_count        = 1
 }
 resource "azurerm_linux_web_app" "ipam" {
-  name                = var.appServiceName
-  resource_group_name = var.resourceGroupName
-  location            = var.location
-  service_plan_id     = azurerm_service_plan.ipam.id
+  name                            = var.appServiceName
+  resource_group_name             = var.resourceGroupName
+  location                        = var.location
+  service_plan_id                 = azurerm_service_plan.ipam.id
   key_vault_reference_identity_id = var.managedIdentityId
   identity {
     type         = "UserAssigned"
@@ -105,7 +105,7 @@ resource "azurerm_linux_web_app" "ipam" {
     # scm_ip_restriction_default_action = "Allow"
     application_stack {
       docker_registry_url = local.acrUri
-      docker_image_name = local.runtime_image
+      docker_image_name   = local.runtime_image
     }
     use_32_bit_worker = false
   }
