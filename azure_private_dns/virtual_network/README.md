@@ -39,6 +39,7 @@ No modules.
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
 | <a name="input_IPAM_TOKEN"></a> [IPAM\_TOKEN](#input\_IPAM\_TOKEN) | (Required) The IPAM token to use for IP address management. | `string` | n/a | yes |
+| <a name="input_environment"></a> [environment](#input\_environment) | This is either LIVE or FORGE. | `string` | n/a | yes |
 | <a name="input_firewall_private_ip_address"></a> [firewall\_private\_ip\_address](#input\_firewall\_private\_ip\_address) | (Required) Private IP address of the Azure Firewall to connect to. | `list(string)` | n/a | yes |
 | <a name="input_location"></a> [location](#input\_location) | (Required) Azure region to deploy to. Changing this forces a new resource to be created. | `string` | n/a | yes |
 | <a name="input_private_dns_resolver_virtual_network_name"></a> [private\_dns\_resolver\_virtual\_network\_name](#input\_private\_dns\_resolver\_virtual\_network\_name) | (Required) Name of the Virtual Network to deploy the Private DNS Resolver into. | `string` | n/a | yes |
