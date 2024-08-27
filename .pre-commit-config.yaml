@@ -1,0 +1,21 @@
+repos:
+- repo: https://github.com/pre-commit/pre-commit-hooks
+  rev: v4.6.0
+  hooks:
+  -   id: trailing-whitespace
+  -   id: end-of-file-fixer
+  -   id: mixed-line-ending
+  -   id: check-yaml
+  -   id: check-json
+  -   id: check-added-large-files
+  -   id: check-shebang-scripts-are-executable
+- repo: https://github.com/antonbabenko/pre-commit-terraform
+  rev: v1.92.0 # Get the latest from: https://github.com/antonbabenko/pre-commit-terraform/releases
+  hooks:
+  - id: terraform_fmt
+    args:
+    - --args=-recursive
+  - id: terraform_docs
+    args:
+      - --hook-config=--add-to-existing-file=true     # Boolean. true or false
+      - --hook-config=--create-file-if-not-exist=true # Boolean. true or false
