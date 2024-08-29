@@ -62,7 +62,7 @@ module "lz_vending" {
     }
   } : {}
 
-  # budget_enabled = each.value.budget_amount > 0
+  budget_enabled = each.value.budget_amount > 0
 
   # "/subscriptions/60e89f81-a15c-4d7a-9be3-c3795a33a277/providers/Microsoft.Consumption/budgets/registry"
   # / Api Version "2021-10-01"): PUT
@@ -80,7 +80,7 @@ module "lz_vending" {
   # --------------------------------------------------------------------------------
 
   # Disable budgets for now due to RBAC access denied above
-  budget_enabled = false
+  # budget_enabled = false
 
   budgets = each.value.budget_amount > 0 ? {
     registry = {
@@ -94,14 +94,14 @@ module "lz_vending" {
           operator       = "GreaterThan"
           threshold      = 80
           threshold_type = "Actual"
-          contact_groups = ["Owner"]
+          contact_roles  = ["Owner"]
         }
         budgetexceeded = {
           enabled        = true
           operator       = "GreaterThan"
           threshold      = 100
           threshold_type = "Forecasted"
-          contact_groups = ["Owner"]
+          contact_roles  = ["Owner"]
         }
       }
     }
