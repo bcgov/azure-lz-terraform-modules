@@ -62,25 +62,8 @@ module "lz_vending" {
     }
   } : {}
 
-  # budget_enabled = each.value.budget_amount > 0
-
-  # "/subscriptions/60e89f81-a15c-4d7a-9be3-c3795a33a277/providers/Microsoft.Consumption/budgets/registry"
-  # / Api Version "2021-10-01"): PUT
-  # https://management.azure.com/subscriptions/60e89f81-a15c-4d7a-9be3-c3795a33a277/providers/Microsoft.Consumption/budgets/registry
-  # --------------------------------------------------------------------------------
-  # RESPONSE 401: 401 Unauthorized
-  # ERROR CODE: RBACAccessDenied
-  # --------------------------------------------------------------------------------
-  # {
-  #   "error": {
-  #     "code": "RBACAccessDenied",
-  #     "message": "The client does not have authorization to perform action. Request ID: d97e8d78-6829-42f3-b0a8-671f1eb4da7e"
-  #   }
-  # }
-  # --------------------------------------------------------------------------------
-
-  # Disable budgets for now due to RBAC access denied above
-  budget_enabled = false
+  # create budgets for each subscription
+  budget_enabled = each.value.budget_amount > 0
 
   budgets = each.value.budget_amount > 0 ? {
     registry = {
@@ -94,14 +77,14 @@ module "lz_vending" {
           operator       = "GreaterThan"
           threshold      = 80
           threshold_type = "Actual"
-          contact_groups = ["Owner"]
+          contact_roles  = ["Owner"]
         }
         budgetexceeded = {
           enabled        = true
           operator       = "GreaterThan"
           threshold      = 100
           threshold_type = "Forecasted"
-          contact_groups = ["Owner"]
+          contact_roles  = ["Owner"]
         }
       }
     }
