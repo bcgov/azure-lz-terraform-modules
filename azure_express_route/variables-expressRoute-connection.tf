@@ -1,10 +1,15 @@
-variable "express_route_connection_name" {
-  description = "(Required) The name which should be used for this Express Route Connection."
+variable "express_route_gateway_resource_group_name" {
+  description = "(Required) The name of the Resource Group where the Express Route Gateway is located."
   type        = string
 }
 
-variable "express_route_gateway_id" {
-  description = "(Required) The ID of the Express Route Gateway to connect to."
+variable "express_route_gateway_name" {
+  description = "(Required) The name of the Express Route Gateway that this Express Route Connection connects with."
+  type        = string
+}
+
+variable "express_route_connection_name" {
+  description = "(Required) The name which should be used for this Express Route Connection."
   type        = string
 }
 
@@ -33,8 +38,11 @@ variable "private_link_fast_path_enabled" {
 
   validation {
     condition = (
-      var.express_route_gateway_bypass_enabled == true &&
-    var.private_link_fast_path_enabled == true)
+      (var.express_route_gateway_bypass_enabled == true &&
+      var.private_link_fast_path_enabled == true) ||
+      (var.express_route_gateway_bypass_enabled == false &&
+      var.private_link_fast_path_enabled == false)
+    )
     error_message = "private_link_fast_path_enabled must be set to true when express_route_gateway_bypass_enabled is set to true."
   }
 }
@@ -54,7 +62,7 @@ variable "routing" {
 }
 
 variable "routing_weight" {
-  description = "(Optional) The weight added to routes learned from this connection."
+  description = "(Optional) The routing weight associated to the Express Route Connection."
   type        = number
   default     = 0
 
