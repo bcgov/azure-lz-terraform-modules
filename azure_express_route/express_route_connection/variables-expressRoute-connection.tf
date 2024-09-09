@@ -3,11 +3,6 @@ variable "express_route_gateway_resource_group_name" {
   type        = string
 }
 
-variable "express_route_gateway_name" {
-  description = "(Required) The name of the Express Route Gateway that this Express Route Connection connects with."
-  type        = string
-}
-
 variable "express_route_circuit_resource_group_name" {
   description = "(Required) The name of the Resource Group where the Express Route circuit is located."
   type        = string
@@ -18,13 +13,18 @@ variable "express_route_circuit_name" {
   type        = string
 }
 
-variable "express_route_connection_name" {
-  description = "(Required) The name which should be used for this Express Route Connection."
+variable "express_route_gateway_name" {
+  description = "(Required) The name of the Express Route Gateway that this Express Route Connection connects with."
   type        = string
 }
 
 variable "circuit_peering_type" {
   description = "(Required) The type of the Express Route Circuit Peering."
+  type        = string
+}
+
+variable "express_route_connection_name" {
+  description = "(Required) The name which should be used for this Express Route Connection."
   type        = string
 }
 

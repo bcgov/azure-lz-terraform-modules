@@ -10,20 +10,20 @@
 
 | Name | Version |
 |------|---------|
-| <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) | 3.116.0 |
+| <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) | >=3.112.0, < 4.0.0 |
 
 ## Modules
 
-No modules.
+| Name | Source | Version |
+|------|--------|---------|
+| <a name="module_express_route_circuit"></a> [express\_route\_circuit](#module\_express\_route\_circuit) | ./express_route_circuit | n/a |
+| <a name="module_express_route_connection"></a> [express\_route\_connection](#module\_express\_route\_connection) | ./express_route_connection | n/a |
+| <a name="module_express_route_peering"></a> [express\_route\_peering](#module\_express\_route\_peering) | ./express_route_circuit_peering | n/a |
 
 ## Resources
 
 | Name | Type |
 |------|------|
-| [azurerm_express_route_circuit.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/express_route_circuit) | resource |
-| [azurerm_express_route_circuit_peering.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/express_route_circuit_peering) | resource |
-| [azurerm_express_route_connection.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/express_route_connection) | resource |
-| [azurerm_resource_group.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/resource_group) | resource |
 | [azurerm_client_config.current](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/data-sources/client_config) | data source |
 
 ## Inputs
@@ -32,8 +32,11 @@ No modules.
 |------|-------------|------|---------|:--------:|
 | <a name="input_authorization_key"></a> [authorization\_key](#input\_authorization\_key) | (Optional) The authorization key to establish the Express Route Connection. | `string` | `null` | no |
 | <a name="input_circuit_peering"></a> [circuit\_peering](#input\_circuit\_peering) | Express Route circuit peering configuration | <pre>list(object({<br>    peering_type                  = string<br>    express_route_circuit_name    = string<br>    vlan_id                       = number<br>    primary_peer_address_prefix   = optional(string)<br>    secondary_peer_address_prefix = optional(string)<br>    ipv4_enabled                  = optional(bool, true)<br>    shared_key                    = optional(string, null)<br>    peer_asn                      = optional(number, null)<br>    microsoft_peering_config = optional(object({<br>      advertised_public_prefixes = list(string)<br>      customer_asn               = optional(number, 0)<br>      routing_registry_name      = optional(string, "NONE")<br>      advertised_communities     = optional(list(string))<br>    }), null)<br>    ipv6 = optional(object({<br>      primary_peer_address_prefix   = string<br>      secondary_peer_address_prefix = string<br>      enabled                       = optional(bool, true)<br>      microsoft_peering = optional(object({<br>        advertised_public_prefixes = list(string)<br>        customer_asn               = optional(number, 0)<br>        routing_registry_name      = optional(string, "NONE")<br>        advertised_communities     = optional(list(string))<br>      }), null)<br>      route_filter_id = optional(string, null)<br>    }), null)<br>    route_filter_id = optional(string, null)<br>  }))</pre> | `[]` | no |
+| <a name="input_circuit_peering_type"></a> [circuit\_peering\_type](#input\_circuit\_peering\_type) | (Required) The type of the Express Route Circuit Peering. | `string` | n/a | yes |
 | <a name="input_enable_internet_security"></a> [enable\_internet\_security](#input\_enable\_internet\_security) | (Optional) Is Internet security enabled for this Express Route Connection? | `bool` | `null` | no |
 | <a name="input_express_route_circuit"></a> [express\_route\_circuit](#input\_express\_route\_circuit) | Express Route circuit configuration | <pre>list(object({<br>    express_route_circuit_name = string<br>    location                   = string<br>    sku = object({<br>      tier   = string<br>      family = string<br>    })<br>    service_provider_name    = optional(string, null)<br>    peering_location         = optional(string, null)<br>    bandwidth_in_mbps        = optional(number, null)<br>    allow_classic_operations = optional(bool, false)<br>    express_route_port_id    = optional(string, null)<br>    bandwidth_in_gbps        = optional(number, null)<br>    authorization_key        = optional(string, null)<br>  }))</pre> | `[]` | no |
+| <a name="input_express_route_circuit_name"></a> [express\_route\_circuit\_name](#input\_express\_route\_circuit\_name) | (Required) The name of the Express Route Circuit that this Express Route Connection connects with. | `string` | n/a | yes |
+| <a name="input_express_route_circuit_resource_group_name"></a> [express\_route\_circuit\_resource\_group\_name](#input\_express\_route\_circuit\_resource\_group\_name) | (Required) The name of the Resource Group where the Express Route circuit is located. | `string` | n/a | yes |
 | <a name="input_express_route_connection_name"></a> [express\_route\_connection\_name](#input\_express\_route\_connection\_name) | (Required) The name which should be used for this Express Route Connection. | `string` | n/a | yes |
 | <a name="input_express_route_gateway_bypass_enabled"></a> [express\_route\_gateway\_bypass\_enabled](#input\_express\_route\_gateway\_bypass\_enabled) | (Optional) Specified whether Fast Path is enabled for Virtual Wan Firewall Hub. | `bool` | `false` | no |
 | <a name="input_express_route_gateway_name"></a> [express\_route\_gateway\_name](#input\_express\_route\_gateway\_name) | (Required) The name of the Express Route Gateway that this Express Route Connection connects with. | `string` | n/a | yes |
@@ -51,9 +54,9 @@ No modules.
 
 | Name | Description |
 |------|-------------|
+| <a name="output_circuit_peering_id"></a> [circuit\_peering\_id](#output\_circuit\_peering\_id) | The ID of the ExpressRoute Circuit Peering. |
+| <a name="output_connection_id"></a> [connection\_id](#output\_connection\_id) | The ID of the ExpressRoute Connection. |
 | <a name="output_express_route_circuit_id"></a> [express\_route\_circuit\_id](#output\_express\_route\_circuit\_id) | The ID of the ExpressRoute Circuit. |
-| <a name="output_express_route_circuit_peering_id"></a> [express\_route\_circuit\_peering\_id](#output\_express\_route\_circuit\_peering\_id) | The ID of the ExpressRoute Circuit Peering. |
-| <a name="output_express_route_connection_id"></a> [express\_route\_connection\_id](#output\_express\_route\_connection\_id) | The ID of the ExpressRoute Connection. |
 | <a name="output_service_key"></a> [service\_key](#output\_service\_key) | The service key of the ExpressRoute Circuit. |
 | <a name="output_service_provider_provisioning_state"></a> [service\_provider\_provisioning\_state](#output\_service\_provider\_provisioning\_state) | The provisioning state of the ExpressRoute Circuit Service Provider. |
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->

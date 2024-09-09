@@ -1,11 +1,6 @@
 
 # IMPORTANT: The provider status of the Express Route Circuit must be set as provisioned while creating the Express Route Connection.
 resource "azurerm_express_route_connection" "this" {
-  depends_on = [ # Depends_on not required durring real execution, since the Connection code will not be executed until the Circuit is provisioned.
-    azurerm_express_route_circuit.this,
-    azurerm_express_route_circuit_peering.this
-  ]
-
   name                                 = var.express_route_connection_name
   express_route_circuit_peering_id     = local.express_route_circuit_peering_id
   express_route_gateway_id             = local.express_route_gateway_id

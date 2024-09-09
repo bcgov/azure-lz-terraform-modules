@@ -1,11 +1,10 @@
+# IMPORTANT: The provider status of the Express Route Circuit must be set as provisioned while creating the Express Route circuit peering.
 resource "azurerm_express_route_circuit_peering" "this" {
-  depends_on = [azurerm_express_route_circuit.this]
-
   for_each = { for peering in var.circuit_peering : peering.peering_type => peering }
 
   peering_type               = each.value.peering_type
   express_route_circuit_name = each.value.express_route_circuit_name
-  resource_group_name        = azurerm_resource_group.this.name
+  resource_group_name        = var.resource_group_name
 
   vlan_id                       = each.value.vlan_id
   primary_peer_address_prefix   = each.value.primary_peer_address_prefix
