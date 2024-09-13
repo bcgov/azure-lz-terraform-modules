@@ -1,0 +1,19 @@
+{
+  "bcgov_lz_prod": {
+    "policy_assignments": [],
+    "policy_definitions": [],
+    "policy_set_definitions": [],
+    "role_definitions": [],
+    "archetype_config": {
+      "parameters": {
+        "Deny-Resource-Locations": {
+          "listOfAllowedLocations": []
+        },
+        "Deny-RSG-Locations": {
+          "listOfAllowedLocations": []
+        }
+      },
+      "access_control": {}
+    }
+  }
+}
