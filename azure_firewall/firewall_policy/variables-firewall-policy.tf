@@ -65,7 +65,7 @@ variable "intrusion_detection" {
     mode = string
     signature_overrides = optional(list(object({
       id = optional(number)
-      state = optional(string)
+      state = optional(string) # Can only be "Off", "Alert", or "Deny"
     })))
     traffic_bypass = optional(list(object({
       name = string
@@ -85,7 +85,7 @@ variable "intrusion_detection" {
 variable "private_ip_ranges" {
   description = "(Optional) A list of private IP ranges to which traffic will not be SNAT."
   type = list(string)
-  default = null  
+  default = []  
 }
 
 variable "auto_learn_private_ranges_enabled" {
@@ -108,7 +108,7 @@ variable "sku" {
 variable "threat_intelligence_allowlist" {
   description = "(Optional) A threat_intelligence_allowlist block as defined below."
   type = object({
-    fqdn = optional(list(string))
+    fqdns = optional(list(string))
     ip_addresses = optional(list(string))
   })
   default = null  
