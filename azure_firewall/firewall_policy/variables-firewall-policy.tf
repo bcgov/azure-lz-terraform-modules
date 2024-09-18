@@ -36,13 +36,13 @@ variable "identity" {
   })
   default = null
 
-  validation {
-    condition = (
-      var.identity != null &&
-      contains(["UserAssigned"], var.identity.type)
-    )
-    error_message = "Invalid Identity Type. Only valid opiton is UserAssigned."
-  }
+  # validation {
+  #   condition = (
+  #     var.identity != null &&
+  #     contains(["UserAssigned"], var.identity.type)
+  #   )
+  #   error_message = "Invalid Identity Type. Only valid opiton is UserAssigned."
+  # }
 }
 
 variable "insights" {
