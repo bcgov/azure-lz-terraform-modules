@@ -67,7 +67,7 @@ variable "intrusion_detection" {
       id = optional(number)
       state = optional(string)
     })))
-    traffic_bypass = optional(object({
+    traffic_bypass = optional(list(object({
       name = string
       protocol = string
       description = optional(string)
@@ -76,7 +76,7 @@ variable "intrusion_detection" {
       destination_ports = optional(list(string))
       source_addresses = optional(list(string))
       source_ip_groups = optional(list(string))
-    }))
+    })))
     private_ranges = optional(list(string))
   })
   default = null
