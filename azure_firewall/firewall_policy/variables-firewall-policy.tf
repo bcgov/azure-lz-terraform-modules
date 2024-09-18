@@ -31,10 +31,15 @@ variable "dns" {
 variable "identity" {
   description = "(Optional) An identity block as defined below."
   type = object({
-    type = try(string, "SystemAssigned") # Only possible value is UserAssigned.
+    type = string
     identity_ids = optional(list(string))
   })
   default = null
+
+  validation {
+    condition = contains(["UserAssigned"], var.identity.type)
+    error_message = "Invalid Identity Type. Only valid opiton is UserAssigned."
+  }
 }
 
 variable "insights" {
