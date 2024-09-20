@@ -6,5 +6,5 @@ variable "subscription_id_connectivity" {
 variable "tags" {
   description = "(Optional) A mapping of tags to assign to the resource."
   type        = map(string)
-  default     = null  
+  default     = null
 }

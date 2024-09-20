@@ -10,7 +10,7 @@ variable "key_vault_id" {
 
 variable "certificate" {
   description = "(Optional) A certificate block as defined below, used to Import an existing certificate."
-  type        = object({
+  type = object({
     contents = string
     password = optional(string)
   })

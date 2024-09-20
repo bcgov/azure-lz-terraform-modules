@@ -31,7 +31,7 @@ variable "sku_name" {
 
 # variable "tenant_id" {
 #   description = "(Required) The Azure Active Directory tenant ID that should be used for authenticating requests to the key vault."
-#   type = string  
+#   type = string
 # }
 
 variable "enabled_for_deployment" {
