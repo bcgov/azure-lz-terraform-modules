@@ -1,6 +1,6 @@
 output "key_vault_certificate_id" {
   description = "The ID of the Key Vault Certificate."
-  value       = azurerm_key_vault_certificate.this.id  
+  value       = azurerm_key_vault_certificate.this.id
 }
 
 output "key_vault_certificate_thumbprint" {
