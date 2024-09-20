@@ -1,6 +1,6 @@
 variable "firewall_policy_name" {
   description = "(Required) The name which should be used for this Firewall Policy."
-  type        = string  
+  type        = string
 }
 
 variable "location" {
@@ -10,7 +10,7 @@ variable "location" {
 
 variable "resource_group_name" {
   description = "(Required) The name of the Resource Group where the Firewall Policy should exist."
-  type        = string  
+  type        = string
 }
 
 variable "base_policy_id" {
@@ -21,9 +21,9 @@ variable "base_policy_id" {
 
 variable "dns" {
   description = "(Optional) A dns block as defined below."
-  type        = object({
+  type = object({
     proxy_enabled = optional(bool)
-    servers = optional(list(string))
+    servers       = optional(list(string))
   })
   default = null
 }
@@ -31,7 +31,7 @@ variable "dns" {
 variable "identity" {
   description = "(Optional) An identity block as defined below."
   type = object({
-    type = string
+    type         = string
     identity_ids = optional(list(string))
   })
   default = null
@@ -48,11 +48,11 @@ variable "identity" {
 variable "insights" {
   description = "(Optional) An insights block as defined below."
   type = object({
-    enabled = bool
+    enabled                            = bool
     default_log_analytics_workspace_id = string
-    retention_in_days = optional(number)
+    retention_in_days                  = optional(number)
     log_analytics_workspace = optional(list(object({
-      id = string
+      id                = string
       firewall_location = string
     })))
   })
@@ -64,18 +64,18 @@ variable "intrusion_detection" {
   type = object({
     mode = string
     signature_overrides = optional(list(object({
-      id = optional(number)
+      id    = optional(number)
       state = optional(string) # Can only be "Off", "Alert", or "Deny"
     })))
     traffic_bypass = optional(list(object({
-      name = string
-      protocol = string
-      description = optional(string)
+      name                  = string
+      protocol              = string
+      description           = optional(string)
       destination_addresses = optional(list(string))
       destination_ip_groups = optional(list(string))
-      destination_ports = optional(list(string))
-      source_addresses = optional(list(string))
-      source_ip_groups = optional(list(string))
+      destination_ports     = optional(list(string))
+      source_addresses      = optional(list(string))
+      source_ip_groups      = optional(list(string))
     })))
     private_ranges = optional(list(string))
   })
@@ -84,23 +84,23 @@ variable "intrusion_detection" {
 
 variable "private_ip_ranges" {
   description = "(Optional) A list of private IP ranges to which traffic will not be SNAT."
-  type = list(string)
-  default = []  
+  type        = list(string)
+  default     = []
 }
 
 variable "auto_learn_private_ranges_enabled" {
   description = "(Optional) Whether enable auto learn private IP range."
-  type = bool
-  default = null  
+  type        = bool
+  default     = null
 }
 
 variable "sku" {
   description = "(Optional) The SKU Tier of the Firewall Policy."
-  type = string
-  default = "Standard"
+  type        = string
+  default     = "Standard"
 
   validation {
-    condition = contains(["Basic", "Standard", "Premium"], var.sku)
+    condition     = contains(["Basic", "Standard", "Premium"], var.sku)
     error_message = "Invalid SKU Tier. Valid values are Basic, Standard and Premium."
   }
 }
@@ -108,19 +108,19 @@ variable "sku" {
 variable "threat_intelligence_allowlist" {
   description = "(Optional) A threat_intelligence_allowlist block as defined below."
   type = object({
-    fqdns = optional(list(string))
+    fqdns        = optional(list(string))
     ip_addresses = optional(list(string))
   })
-  default = null  
+  default = null
 }
 
 variable "threat_intelligence_mode" {
   description = "(Optional) The operation mode for Threat Intelligence."
-  type = string
-  default = "Alert"
+  type        = string
+  default     = "Alert"
 
   validation {
-    condition = contains(["Alert", "Deny", "Off"], var.threat_intelligence_mode)
+    condition     = contains(["Alert", "Deny", "Off"], var.threat_intelligence_mode)
     error_message = "Invalid Threat Intelligence Mode. Valid values are Alert, Deny and Off."
   }
 }
@@ -129,26 +129,26 @@ variable "tls_certificate" {
   description = "(Optional) A tls_certificate block as defined below."
   type = object({
     key_vault_secret_id = string
-    name = string
+    name                = string
   })
-  default = null  
+  default = null
 }
 
 variable "sql_redirect_allowed" {
   description = "(Optional) Whether SQL Redirect traffic filtering is allowed. Enabling this flag requires no rule using ports between 11000-11999."
-  type = bool
-  default = null
+  type        = bool
+  default     = null
 }
 
 variable "explicit_proxy" {
   description = "(Optional) An explicit_proxy block as defined below."
   type = object({
-    enabled = optional(bool)
-    http_port = optional(number)
-    https_port = optional(number)
+    enabled         = optional(bool)
+    http_port       = optional(number)
+    https_port      = optional(number)
     enable_pac_file = optional(bool)
-    pac_file_port = optional(number)
-    pac_file = optional(string)
+    pac_file_port   = optional(number)
+    pac_file        = optional(string)
   })
-  default = null  
+  default = null
 }
