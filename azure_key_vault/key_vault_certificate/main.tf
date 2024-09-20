@@ -6,11 +6,4 @@ resource "azurerm_key_vault_certificate" "this" {
     contents = filebase64(var.certificate.contents)
     password = var.certificate.password
   }
-
-  # dynamic "certificate" {
-  #   content {
-  #     contents = filebase64(var.certificate.contents)
-  #     password = certificate.value.password
-  #   }
-  # }
 }
