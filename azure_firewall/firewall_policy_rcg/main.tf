@@ -22,7 +22,7 @@ resource "azurerm_firewall_policy_rule_collection_group" "this" {
         for_each = application_rule_collection.value.rule
 
         content {
-          name        = each.value.name
+          name        = rule.value.name
           description = lookup(rule.value, "description", null)
 
           dynamic "protocols" {
