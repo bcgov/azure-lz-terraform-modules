@@ -62,32 +62,44 @@ module "lz_vending" {
       tags        = var.common_tags
     }
   } : {}
+}
 
-  # create budgets for each subscription
-  budget_enabled = each.value.budget_amount > 0
+# Create budgets directly using azurerm provider instead of the lz-vending module
+resource "azurerm_consumption_budget_subscription" "subscription_budget" {
+  for_each = {
+    for k, v in var.subscriptions : k => v
+    if v.budget_amount > 0
+  }
 
-  budgets = each.value.budget_amount > 0 ? {
-    registry = {
-      amount            = each.value.budget_amount
-      time_grain        = "Monthly"
-      time_period_start = formatdate("YYYY-MM-01'T'00:00:00Z", timestamp())
-      time_period_end   = formatdate("YYYY-MM-01'T'00:00:00Z", timeadd(timestamp(), "87600h")) // 10 years from now
-      notifications = {
-        eightypercent = {
-          enabled        = true
-          operator       = "GreaterThan"
-          threshold      = 80
-          threshold_type = "Actual"
-          contact_roles  = ["Owner"]
-        }
-        budgetexceeded = {
-          enabled        = true
-          operator       = "GreaterThan"
-          threshold      = 100
-          threshold_type = "Forecasted"
-          contact_roles  = ["Owner"]
-        }
-      }
-    }
-  } : {}
+  name            = "budget-${var.license_plate}-${each.value.name}"
+  subscription_id = module.lz_vending[each.key].subscription_id
+
+  amount     = each.value.budget_amount
+  time_grain = "Monthly"
+
+  time_period {
+    start_date = formatdate("YYYY-MM-01'T'00:00:00Z", timestamp())
+  }
+
+  notification {
+    enabled        = true
+    threshold      = 80.0
+    operator       = "GreaterThanOrEqualTo"
+    threshold_type = "Actual"
+
+    contact_roles = ["Owner"]
+  }
+
+  notification {
+    enabled        = true
+    threshold      = 100.0
+    operator       = "GreaterThan"
+    threshold_type = "Forecasted"
+
+    contact_roles = ["Owner"]
+  }
+
+  lifecycle {
+    ignore_changes = [time_period]
+  }
 }
