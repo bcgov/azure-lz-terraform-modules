@@ -55,7 +55,8 @@ module "lz_vending" {
       vwan_connection_enabled = true
       vwan_hub_resource_id    = var.vwan_hub_resource_id
       vwan_security_configuration = {
-        routing_intent_enabled = true
+        secure_internet_traffic = true
+        routing_intent_enabled  = true
       }
       dns_servers = try(each.value.network.dns_servers, null)
       tags        = var.common_tags
