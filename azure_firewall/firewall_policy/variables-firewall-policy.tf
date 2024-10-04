@@ -85,7 +85,7 @@ variable "intrusion_detection" {
 variable "private_ip_ranges" {
   description = "(Optional) A list of private IP ranges to which traffic will not be SNAT."
   type        = list(string)
-  default     = []
+  default     = null
 }
 
 variable "auto_learn_private_ranges_enabled" {
