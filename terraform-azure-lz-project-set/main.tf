@@ -68,13 +68,13 @@ module "lz_vending" {
 resource "azurerm_consumption_budget_subscription" "subscription_budget" {
   for_each = {
     for k, v in var.subscriptions : k => v
-    if v.budget_amount > 1.00
+    if v.budget > 1.00
   }
 
   name            = "budget-for-${var.license_plate}-${each.value.name}-from-product-registry"
   subscription_id = module.lz_vending[each.key].subscription_resource_id
 
-  amount     = each.value.budget_amount
+  amount     = each.value.budget
   time_grain = "Monthly"
 
   time_period {
@@ -82,7 +82,7 @@ resource "azurerm_consumption_budget_subscription" "subscription_budget" {
   }
 
   notification {
-    enabled        = each.value.budget_amount > 0
+    enabled        = each.value.budget > 0
     threshold      = 80.0
     operator       = "GreaterThanOrEqualTo"
     threshold_type = "Actual"
@@ -91,7 +91,7 @@ resource "azurerm_consumption_budget_subscription" "subscription_budget" {
   }
 
   notification {
-    enabled        = each.value.budget_amount > 0
+    enabled        = each.value.budget > 0
     threshold      = 100.0
     operator       = "GreaterThan"
     threshold_type = "Forecasted"
