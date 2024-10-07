@@ -66,7 +66,10 @@ module "lz_vending" {
 
 # Create budgets directly using azurerm provider instead of the lz-vending module
 resource "azurerm_consumption_budget_subscription" "subscription_budget" {
-  for_each = var.subscriptions
+  for_each = {
+    for k, v in var.subscriptions : k => v
+    if v.budget_amount > 0
+  }
 
   name            = "budget-for-${var.license_plate}-${each.value.name}-from-product-registry"
   subscription_id = module.lz_vending[each.key].subscription_resource_id
@@ -100,3 +103,4 @@ resource "azurerm_consumption_budget_subscription" "subscription_budget" {
     ignore_changes = [time_period]
   }
 }
+
