@@ -68,7 +68,7 @@ module "lz_vending" {
 resource "azurerm_consumption_budget_subscription" "subscription_budget" {
   for_each = {
     for k, v in var.subscriptions : k => v
-    if v.budget_amount > 0
+    if v.budget_amount > 1.00
   }
 
   name            = "budget-for-${var.license_plate}-${each.value.name}-from-product-registry"
