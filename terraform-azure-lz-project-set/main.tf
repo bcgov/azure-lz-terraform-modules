@@ -55,38 +55,52 @@ module "lz_vending" {
       vwan_connection_enabled = true
       vwan_hub_resource_id    = var.vwan_hub_resource_id
       vwan_security_configuration = {
-        routing_intent_enabled = true
+        secure_internet_traffic = true
+        routing_intent_enabled  = true
       }
       dns_servers = try(each.value.network.dns_servers, null)
       tags        = var.common_tags
     }
   } : {}
-
-  # create budgets for each subscription
-  budget_enabled = each.value.budget_amount > 0
-
-  budgets = each.value.budget_amount > 0 ? {
-    registry = {
-      amount            = each.value.budget_amount
-      time_grain        = "Monthly"
-      time_period_start = formatdate("YYYY-MM-01'T'00:00:00Z", timestamp())
-      time_period_end   = formatdate("YYYY-MM-01'T'00:00:00Z", timeadd(timestamp(), "87600h")) // 10 years from now
-      notifications = {
-        eightypercent = {
-          enabled        = true
-          operator       = "GreaterThan"
-          threshold      = 80
-          threshold_type = "Actual"
-          contact_roles  = ["Owner"]
-        }
-        budgetexceeded = {
-          enabled        = true
-          operator       = "GreaterThan"
-          threshold      = 100
-          threshold_type = "Forecasted"
-          contact_roles  = ["Owner"]
-        }
-      }
-    }
-  } : {}
 }
+
+# Create budgets directly using azurerm provider instead of the lz-vending module
+resource "azurerm_consumption_budget_subscription" "subscription_budget" {
+  for_each = {
+    for k, v in var.subscriptions : k => v
+    if v.budget > 1.00
+  }
+
+  name            = "budget-for-${var.license_plate}-${each.value.name}-from-product-registry"
+  subscription_id = module.lz_vending[each.key].subscription_resource_id
+
+  amount     = each.value.budget
+  time_grain = "Monthly"
+
+  time_period {
+    start_date = formatdate("YYYY-MM-01'T'00:00:00Z", timestamp())
+  }
+
+  notification {
+    enabled        = each.value.budget > 0
+    threshold      = 80.0
+    operator       = "GreaterThanOrEqualTo"
+    threshold_type = "Actual"
+
+    contact_roles = ["Owner"]
+  }
+
+  notification {
+    enabled        = each.value.budget > 0
+    threshold      = 100.0
+    operator       = "GreaterThan"
+    threshold_type = "Forecasted"
+
+    contact_roles = ["Owner"]
+  }
+
+  lifecycle {
+    ignore_changes = [time_period]
+  }
+}
+

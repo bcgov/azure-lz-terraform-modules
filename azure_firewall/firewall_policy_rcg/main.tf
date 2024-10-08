@@ -3,8 +3,9 @@ resource "azurerm_firewall_policy_rule_collection_group" "this" {
     for group in var.firewall_policy_rule_collection_group : group.name => group
   }
 
-  name               = each.value.name
-  firewall_policy_id = data.azurerm_firewall_policy.this.id
+  name = each.value.name
+  # firewall_policy_id = data.azurerm_firewall_policy.this.id
+  firewall_policy_id = var.firewall_policy_id
   priority           = each.value.priority
 
   dynamic "application_rule_collection" {
@@ -21,7 +22,7 @@ resource "azurerm_firewall_policy_rule_collection_group" "this" {
         for_each = application_rule_collection.value.rule
 
         content {
-          name        = each.value.name
+          name        = rule.value.name
           description = lookup(rule.value, "description", null)
 
           dynamic "protocols" {

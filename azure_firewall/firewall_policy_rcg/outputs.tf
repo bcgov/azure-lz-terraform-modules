@@ -1,6 +1,6 @@
-output "firewall_policy_id" {
-  value = data.azurerm_firewall_policy.this.id
-}
+# output "firewall_policy_id" {
+#   value = data.azurerm_firewall_policy.this.id
+# }
 
 output "firewall_policy_rule_collection_group" {
   value = {
