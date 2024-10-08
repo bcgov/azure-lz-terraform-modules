@@ -44,7 +44,7 @@ variable "subscriptions" {
   type = map(object({
     name : string
     display_name : string
-    budget_amount : optional(number, 0)
+    budget : optional(number, 0)
     network : object({
       enabled : bool
       address_space : list(string)
