@@ -41,5 +41,7 @@ No modules.
 | Name | Description |
 |------|-------------|
 | <a name="output_key_vault_certificate_id"></a> [key\_vault\_certificate\_id](#output\_key\_vault\_certificate\_id) | The ID of the Key Vault Certificate. |
+| <a name="output_key_vault_certificate_name"></a> [key\_vault\_certificate\_name](#output\_key\_vault\_certificate\_name) | The name of the Key Vault Certificate. |
 | <a name="output_key_vault_certificate_thumbprint"></a> [key\_vault\_certificate\_thumbprint](#output\_key\_vault\_certificate\_thumbprint) | The thumbprint of the Key Vault Certificate. |
+| <a name="output_key_vault_secret_id"></a> [key\_vault\_secret\_id](#output\_key\_vault\_secret\_id) | The ID of the Key Vault Secret. |
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
