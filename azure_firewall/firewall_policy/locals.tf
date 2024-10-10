@@ -6,19 +6,19 @@ locals {
   # ])
 
   ignore_changes = [
-      base_policy_id,
-      dns,
-      identity,
-      insights,
-      intrusion_detection,      
-      private_ip_ranges,
-      auto_learn_private_ranges_enabled,
-      sku,
-      tags,
-      threat_intelligence_mode,
-      threat_intelligence_allowlist,
-      tls_certificate,
-      sql_redirect_allowed,
-      explicit_proxy
+      "base_policy_id",
+      "dns",
+      "identity",
+      "insights",
+      "intrusion_detection",
+      "private_ip_ranges",
+      "auto_learn_private_ranges_enabled",
+      "sku",
+      "tags",
+      "threat_intelligence_mode",
+      "threat_intelligence_allowlist",
+      "tls_certificate",
+      "sql_redirect_allowed",
+      "explicit_proxy"
     ]
 }
