@@ -68,5 +68,5 @@ variable "firewall_policy_rule_collection_group" {
       })
     })))
   }))
-  default = []
+  default = null
 }
