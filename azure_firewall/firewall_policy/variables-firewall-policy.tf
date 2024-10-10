@@ -1,7 +1,7 @@
 variable "lifecycle_ignore_enabled" {
   description = "(Optional) Ignore changes to the lifecycle configuration of the Firewall Policy. This is useful when you want to manage the lifecycle outside of Terraform."
-  type        = bool
-  default     = false
+  type        = list(string)
+  default     = null
 }
 
 variable "firewall_policy_name" {
