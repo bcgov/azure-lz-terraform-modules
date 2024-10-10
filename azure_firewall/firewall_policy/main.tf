@@ -103,38 +103,4 @@ resource "azurerm_firewall_policy" "this" {
       pac_file        = explicit_proxy.value.pac_file
     }
   }
-
-  # dynamic "lifecycle" {
-  #   for_each = var.lifecycle_ignore_enabled != null ? [var.lifecycle_ignore_enabled] : []
-  #   content {
-  #     ignore_changes = lifecycle.value.ignore_changes
-  #   }
-  # }
-
-  # dynamic "lifecycle" {
-  #   for_each = var.lifecycle_ignore_enabled != null ? toset(var.lifecycle_ignore_enabled) : []
-  #   content {
-  #     ignore_changes = local.combined_ignore_changes
-  #   }
-  # }
-
-  lifecycle {
-    ignore_changes = local.ignore_changes
-    # ignore_changes = [
-    #   base_policy_id,
-    #   dns,
-    #   identity,
-    #   insights,
-    #   intrusion_detection,      
-    #   private_ip_ranges,
-    #   auto_learn_private_ranges_enabled,
-    #   sku,
-    #   tags,
-    #   threat_intelligence_mode,
-    #   threat_intelligence_allowlist,
-    #   tls_certificate,
-    #   sql_redirect_allowed,
-    #   explicit_proxy
-    # ]
-  }
 }
