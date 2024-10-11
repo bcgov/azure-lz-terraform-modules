@@ -29,11 +29,6 @@ variable "sku_name" {
   }
 }
 
-# variable "tenant_id" {
-#   description = "(Required) The Azure Active Directory tenant ID that should be used for authenticating requests to the key vault."
-#   type = string
-# }
-
 variable "enabled_for_deployment" {
   description = "(Optional) Boolean flag to specify whether Azure Virtual Machines are permitted to retrieve certificates stored as secrets from the key vault."
   type        = bool

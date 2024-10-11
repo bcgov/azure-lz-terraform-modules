@@ -103,4 +103,3 @@ resource "azurerm_consumption_budget_subscription" "subscription_budget" {
     ignore_changes = [time_period]
   }
 }
-
