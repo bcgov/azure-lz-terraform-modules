@@ -1,7 +1,3 @@
-# output "firewall_policy_id" {
-#   value = data.azurerm_firewall_policy.this.id
-# }
-
 output "firewall_policy_rule_collection_group" {
   value = {
     for idx, group in azurerm_firewall_policy_rule_collection_group.this : idx => {

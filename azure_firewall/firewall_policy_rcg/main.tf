@@ -1,10 +1,9 @@
 resource "azurerm_firewall_policy_rule_collection_group" "this" {
-  for_each = {
+  for_each = var.firewall_policy_rule_collection_group != null ? {
     for group in var.firewall_policy_rule_collection_group : group.name => group
-  }
+  } : {}
 
-  name = each.value.name
-  # firewall_policy_id = data.azurerm_firewall_policy.this.id
+  name               = each.value.name
   firewall_policy_id = var.firewall_policy_id
   priority           = each.value.priority
 
