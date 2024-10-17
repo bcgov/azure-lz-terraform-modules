@@ -1,0 +1,28 @@
+{
+  "extend_es_root": {
+    "policy_assignments": [
+      "CanadaFederalPBMM",
+      "Deny-Public-IP-On-NIC",
+      "Deploy-Private-DNS-Zones",
+      "MicrosoftCISv2",
+      "NIST-SP-800-53-Rev5"
+    ],
+    "policy_definitions": [],
+    "policy_set_definitions": [],
+    "role_definitions": [],
+    "archetype_config": {
+      "parameters": {
+        "CanadaFederalPBMM": {
+          "logAnalyticsWorkspaceIdforVMReporting": "SET using local.archetype_config_overrides",
+          "listOfMembersToExcludeFromWindowsVMAdministratorsGroup": "",
+          "listOfMembersToIncludeInWindowsVMAdministratorsGroup": ""
+        },
+        "Deploy-Resource-Diag": {
+          "APIMgmtLogAnalyticsDestinationType": "Dedicated",
+          "FirewallLogAnalyticsDestinationType": "Dedicated"
+        }
+      }
+    },
+    "access_control": {}
+  }
+}
