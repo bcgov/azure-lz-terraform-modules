@@ -1,0 +1,31 @@
+{
+  "extend_es_landing_zones": {
+    "policy_assignments": [
+      "Deny-Private-DNS-Zones",
+      "Deny-PublicPaaSEndpoints",
+      "Deny-Resource-Locations",
+      "Deny-RSG-Locations",
+      "FedRAMPModerate"
+    ],
+    "policy_definitions": [],
+    "policy_set_definitions": [],
+    "role_definitions": [],
+    "archetype_config": {
+      "parameters": {
+        "Deny-Resource-Locations": {
+          "listOfAllowedLocations": [
+            "canadacentral",
+            "canadaeast"
+          ]
+        },
+        "Deny-RSG-Locations": {
+          "listOfAllowedLocations": [
+            "canadacentral",
+            "canadaeast"
+          ]
+        }
+      },
+      "access_control": {}
+    }
+  }
+}

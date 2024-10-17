@@ -1,0 +1,85 @@
+{
+  "name": "Deny-PublicPaaSEndpoints",
+  "type": "Microsoft.Authorization/policyAssignments",
+  "apiVersion": "2019-09-01",
+  "properties": {
+    "description": "This policy initiative is a group of policies that prevents creation of Azure PaaS services with exposed public endpoints",
+    "displayName": "Public network access should be disabled for PaaS services",
+    "notScopes": [],
+    "parameters": {
+      "ACRPublicIpDenyEffect": {
+        "value": "Disabled"
+      },
+      "AFSPublicIpDenyEffect": {
+        "value": "Disabled"
+      },
+      "AKSPublicIpDenyEffect": {
+        "value": "Disabled"
+      },
+      "ApiManPublicIpDenyEffect": {
+        "value": "Disabled"
+      },
+      "AppConfigPublicIpDenyEffect": {
+        "value": "Disabled"
+      },
+      "AsPublicIpDenyEffect": {
+        "value": "Disabled"
+      },
+      "AsePublicIpDenyEffect": {
+        "value": "Disabled"
+      },
+      "AutomationPublicIpDenyEffect": {
+        "value": "Disabled"
+      },
+      "BatchPublicIpDenyEffect": {
+        "value": "Disabled"
+      },
+      "BotServicePublicIpDenyEffect": {
+        "value": "Disabled"
+      },
+      "CosmosPublicIpDenyEffect": {
+        "value": "Deny"
+      },
+      "FunctionPublicIpDenyEffect": {
+        "value": "Disabled"
+      },
+      "KeyVaultPublicIpDenyEffect": {
+        "value": "Deny"
+      },
+      "MariaDbPublicIpDenyEffect": {
+        "value": "Deny"
+      },
+      "MlPublicIpDenyEffect": {
+        "value": "Disabled"
+      },
+      "MySQLFlexPublicIpDenyEffect": {
+        "value": "Deny"
+      },
+      "PostgreSQLFlexPublicIpDenyEffect": {
+        "value": "Deny"
+      },
+      "RedisCachePublicIpDenyEffect": {
+        "value": "Deny"
+      },
+      "SqlServerPublicIpDenyEffect": {
+        "value": "Deny"
+      },
+      "StoragePublicIpDenyEffect": {
+        "value": "Disabled"
+      }
+    },
+    "policyDefinitionId": "${root_scope_resource_id}/providers/Microsoft.Authorization/policySetDefinitions/Deny-PublicPaaSEndpoints",
+    "nonComplianceMessages": [
+      {
+        "message": "A policy is in place to prevent public IP addresses on the target Azure PaaS service(s)."
+      }
+    ],
+    "scope": "${current_scope_resource_id}",
+    "enforcementMode": "Default",
+    "overrides": []
+  },
+  "location": "${default_location}",
+  "identity": {
+    "type": "SystemAssigned"
+  }
+}
