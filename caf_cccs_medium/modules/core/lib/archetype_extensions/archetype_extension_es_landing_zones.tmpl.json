@@ -5,8 +5,7 @@
       "Deny-PublicPaaSEndpoints",
       "Deny-Resource-Locations",
       "Deny-RSG-Locations",
-      "FedRAMPModerate",
-      "Inherit-Tags-From-Subscription"
+      "FedRAMPModerate"
     ],
     "policy_definitions": [],
     "policy_set_definitions": [
