@@ -9,7 +9,7 @@
     "description": "Adds or replaces the specified tag and value from the containing subscription when any resource is created or updated. Existing resources can be remediated by triggering a remediation task.",
     "metadata": {
       "version": "1.0.0",
-      "category": "General"
+      "category": "Tags"
     },
     "parameters": {
       "InheritTag-Account-Coding": {
@@ -37,7 +37,7 @@
     "policyDefinitions": [
       {
         "policyDefinitionReferenceId": "Inherit the Account Coding tag from the subscription",
-        "policyDefinitionId": "${root_scope_resource_id}/providers/microsoft.authorization/policydefinitions/b27a0cbd-a167-4dfa-ae64-4337be671140",
+        "policyDefinitionId": "${root_scope_resource_id}/providers/Microsoft.Authorization/policyDefinitions/b27a0cbd-a167-4dfa-ae64-4337be671140",
         "parameters": {
           "tagName": {
               "value": "[parameters('InheritTag-Account-Coding')]"
@@ -47,7 +47,7 @@
       },
       {
         "policyDefinitionReferenceId": "Inherit the Billing Group tag from the subscription",
-        "policyDefinitionId": "${root_scope_resource_id}/providers/Microsoft.Authorization/policyDefinitions/b27a0cbd-a167-4dfa-ae64-4337be671140",
+        "policyDefinitionId": "${root_scope_resource_id}/providers/Microsoft.Authorization/policyDefinitions/Inherit-Subscription-Tags",
         "parameters": {
           "tagName": {
               "value": "[parameters('InheritTag-Billing-Group')]"
