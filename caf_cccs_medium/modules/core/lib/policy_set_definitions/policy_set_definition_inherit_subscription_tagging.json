@@ -15,22 +15,25 @@
       "InheritTag-Account-Coding": {
           "type": "String",
           "metadata": {
-            "displayName": "Tag Name",
-            "description": "Name of the Account Coding tag"
+            "displayName": "Account Code Tag Name",
+            "description": "Name of the Account Coding tag",
+            "defaultValue": "account_coding"
           }
       },
       "InheritTag-Billing-Group": {
           "type": "String",
           "metadata": {
-            "displayName": "Tag Name",
-            "description": "Name of the Billing Group tag"
+            "displayName": "Billing Group Tag Name",
+            "description": "Name of the Billing Group tag",
+            "defaultValue": "billing_group"
           }
       },
       "InheritTag-Ministry-Name": {
           "type": "String",
           "metadata": {
-            "displayName": "Tag Name",
-            "description": "Name of the Ministry Name tag"
+            "displayName": "Ministry Name Tag Name",
+            "description": "Name of the Ministry Name tag",
+            "defaultValue": "ministry_name"
           }
       }
     },
