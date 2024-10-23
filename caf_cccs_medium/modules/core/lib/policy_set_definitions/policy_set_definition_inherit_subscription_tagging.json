@@ -39,6 +39,16 @@
     },
     "policyDefinitions": [
       {
+        "policyDefinitionReferenceId": "Inherit the Account Coding tag from the subscription",
+        "policyDefinitionId": "${root_scope_resource_id}/providers/Microsoft.Authorization/policyDefinitions/Inherit-Account-Code-Tag",
+        "parameters": {
+          "tagName": {
+              "value": "[parameters('InheritTag-Account-Coding')]"
+          }
+        },
+        "groupNames": []
+      },
+      {
         "policyDefinitionReferenceId": "Inherit the Billing Group tag from the subscription",
         "policyDefinitionId": "/providers/Microsoft.Authorization/policyDefinitions/b27a0cbd-a167-4dfa-ae64-4337be671140",
         "parameters": {
@@ -47,17 +57,7 @@
           }
         },
         "groupNames": []
-      },
-      {
-        "policyDefinitionReferenceId": "Inherit the Account Coding tag from the subscription",
-        "policyDefinitionId": "/providers/Microsoft.Authorization/policyDefinitions/b27a0cbd-a167-4dfa-ae64-4337be671140",
-        "parameters": {
-          "tagName": {
-              "value": "[parameters('InheritTag-Account-Coding')]"
-          }
-        },
-        "groupNames": []
-      },      
+      },            
       {
         "policyDefinitionReferenceId": "Inherit the Ministry Name tag from the subscription",
         "policyDefinitionId": "/providers/Microsoft.Authorization/policyDefinitions/b27a0cbd-a167-4dfa-ae64-4337be671140",
