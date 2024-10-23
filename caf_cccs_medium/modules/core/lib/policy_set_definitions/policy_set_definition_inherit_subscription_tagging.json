@@ -40,7 +40,7 @@
     "policyDefinitions": [
       {
         "policyDefinitionReferenceId": "Inherit the Account Coding tag from the subscription",
-        "policyDefinitionId": "${root_scope_resource_id}/providers/Microsoft.Authorization/policyDefinitions/Inherit-Account-Code-Tag",
+        "policyDefinitionId": "/providers/Microsoft.Authorization/policyDefinitions/Inherit-Account-Code-Tag",
         "parameters": {
           "tagName": {
               "value": "[parameters('InheritTag-Account-Coding')]"
