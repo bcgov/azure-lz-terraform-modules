@@ -17,7 +17,7 @@
         "Value": "ministry_name"
       }
     },
-    "policyDefinitionId": "/providers/Microsoft.Authorization/policySetDefinitions/Inherit-Tags-From-Subscription",
+    "policyDefinitionId": "${root_scope_resource_id}/providers/Microsoft.Authorization/policySetDefinitions/Inherit-Tags-From-Subscription",
     "nonComplianceMessages": [
       {
         "message": "Inherited tags {enforcementMode} be applied to Resources and Resource Groups."
