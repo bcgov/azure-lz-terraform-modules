@@ -16,11 +16,11 @@
         "if": {
           "allOf": [
             {
-              "field": "[concat('tags[', parameters('tagName'), ']')]",
-              "notEquals": "[subscription().tags[parameters('tagName')]]"
+              "field": "[concat('tags[', parameters('InheritTag-Account-Coding'), ']')]",
+              "notEquals": "[subscription().tags[parameters('InheritTag-Account-Coding')]]"
             },
             {
-              "value": "[subscription().tags[parameters('tagName')]]",
+              "value": "[subscription().tags[parameters('InheritTag-Account-Coding')]]",
               "notEquals": ""
             }
           ]
@@ -34,8 +34,8 @@
             "operations": [
               {
                 "operation": "addOrReplace",
-                "field": "[concat('tags[', parameters('tagName'), ']')]",
-                "value": "[subscription().tags[parameters('tagName')]]"
+                "field": "[concat('tags[', parameters('InheritTag-Account-Coding'), ']')]",
+                "value": "[subscription().tags[parameters('InheritTag-Account-Coding')]]"
               }
             ]
           }
