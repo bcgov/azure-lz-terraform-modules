@@ -7,6 +7,9 @@
     "description": "Adds or replaces the specified tag and value from the containing subscription when any resource is created or updated. Existing resources can be remediated by triggering a remediation task.",
     "notScopes": [],
     "parameters": {
+      "InheritTag-Account-Coding": {
+        "value": "account_coding"
+      }
     },
     "policyDefinitionId": "${root_scope_resource_id}/providers/Microsoft.Authorization/policyDefinitions/Inherit-Account-Code-Tag",
     "nonComplianceMessages": [
