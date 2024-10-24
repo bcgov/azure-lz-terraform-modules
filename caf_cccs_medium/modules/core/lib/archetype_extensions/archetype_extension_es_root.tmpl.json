@@ -8,7 +8,9 @@
       "NIST-SP-800-53-Rev5"
     ],
     "policy_definitions": [
-      "Inherit-Account-Code-Tag"
+      "Inherit-Account-Code-Tag",
+      "Inherit-Billing-Group-Tag",
+      "Inherit-Ministry-Name-Tag"
     ],
     "policy_set_definitions": [],
     "role_definitions": [],
