@@ -8,8 +8,12 @@
       "FedRAMPModerate",
       "Inherit-Tags-From-Subscription"
     ],
-    "policy_definitions": [],
-    "policy_set_definitions": [],
+    "policy_definitions": [
+      "Inherit-Account-Code-Tag"
+    ],
+    "policy_set_definitions": [
+      "Inherit-Tags-From-Subscription"
+    ],
     "role_definitions": [],
     "archetype_config": {
       "parameters": {
