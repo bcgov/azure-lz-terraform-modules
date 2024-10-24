@@ -6,7 +6,8 @@
       "Deny-Resource-Locations",
       "Deny-RSG-Locations",
       "FedRAMPModerate",
-      "Inherit-Tags-From-Subscription"
+      "Inherit-Tags-From-Subscription",
+      "Inherit-Account-Code-Tag"
     ],
     "policy_definitions": [
       "Inherit-Account-Code-Tag"
