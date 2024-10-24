@@ -7,17 +7,8 @@
     "description": "Adds or replaces the specified tag and value from the containing subscription when any resource is created or updated. Existing resources can be remediated by triggering a remediation task.",
     "notScopes": [],
     "parameters": {
-      "InheritTag-Account-Coding": {
-        "Value": "account_coding"
-      },
-      "InheritTag-Billing-Group": {
-        "Value": "billing_group"
-      },
-      "InheritTag-Ministry-Name": {
-        "Value": "ministry_name"
-      }
     },
-    "policyDefinitionId": "${root_scope_resource_id}/providers/Microsoft.Authorization/policySetDefinitions/Inherit-Tags-From-Subscription",
+    "policyDefinitionId": "${root_scope_resource_id}/providers/Microsoft.Authorization/policyDefinitions/Inherit-Account-Code-Tag",
     "nonComplianceMessages": [
       {
         "message": "Inherited tags {enforcementMode} be applied to Resources and Resource Groups."

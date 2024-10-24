@@ -42,11 +42,11 @@
         }
       },
       "parameters": {
-        "tagName": {
+        "InheritTag-Account-Coding": {
           "type": "String",
           "metadata": {
-            "displayName": "Tag Name",
-            "description": "Name of the tag, such as 'environment'"
+            "displayName": "Account Coding Tag Name",
+            "description": "Name of the Account Coding tag"
           }
         }
       }
