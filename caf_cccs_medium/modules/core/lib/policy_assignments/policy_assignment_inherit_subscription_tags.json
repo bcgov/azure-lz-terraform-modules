@@ -1,0 +1,54 @@
+{
+  "name": "Inherit-Subscription-Tags",
+  "type": "Microsoft.Authorization/policyAssignments",
+  "apiVersion": "2019-09-01",
+  "properties": {
+    "displayName": "Inherit Account Code Tags from the Subscription",
+    "description": "Adds or replaces the specified tag and value from the containing subscription when any resource is created or updated. Existing resources can be remediated by triggering a remediation task.",
+    "notScopes": [],
+    "parameters": {
+      "InheritTag-Account-Coding": {
+        "value": "account_coding"
+      },
+      "InheritTag-Billing-Group": {
+        "value": "billing_group"
+      },
+      "InheritTag-Ministry-Name": {
+        "value": "ministry_name"
+      }
+    },
+    "policyDefinitions": [
+      {
+        "policyDefinitionReferenceId": "Inherit Account Code Tags from the Subscription",
+        "policyDefinitionId": "${root_scope_resource_id}/providers/Microsoft.Authorization/policyDefinitions/Inherit-Account-Code-Tag",
+        "parameters": {
+          "InheritTag-Account-Coding": {
+            "value": "[parameters('InheritTag-Account-Coding')]"
+          }
+        },
+        "groupNames": []
+      },
+      {
+        "policyDefinitionReferenceId": "Inherit Billing Group Tags from the Subscription",
+        "policyDefinitionId": "${root_scope_resource_id}/providers/Microsoft.Authorization/policyDefinitions/Inherit-Billing-Group-Tag",
+        "parameters": {
+          "InheritTag-Account-Coding": {
+            "value": "[parameters('InheritTag-Billing-Group')]"
+          }
+        },
+        "groupNames": []
+      },
+      {
+        "policyDefinitionReferenceId": "Inherit Ministry Name Tags from the Subscription",
+        "policyDefinitionId": "${root_scope_resource_id}/providers/Microsoft.Authorization/policyDefinitions/Inherit-Ministry-Name-Tag",
+        "parameters": {
+          "InheritTag-Account-Coding": {
+            "value": "[parameters('InheritTag-Ministry-Name')]"
+          }
+        },
+        "groupNames": []
+      }
+    ],
+    "policyDefinitionGroups": null
+  }
+}

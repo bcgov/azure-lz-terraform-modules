@@ -13,7 +13,7 @@
       "Inherit-Ministry-Name-Tag"
     ],
     "policy_set_definitions": [
-      "Inherit-Tags-From-Subscription"
+      "Inherit-Sub-Tags"
     ],
     "role_definitions": [],
     "archetype_config": {

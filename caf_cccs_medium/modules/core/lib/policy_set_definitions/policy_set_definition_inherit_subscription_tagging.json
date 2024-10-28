@@ -1,5 +1,5 @@
 {
-  "name": "Inherit-Tags-From-Subscription",
+  "name": "Inherit-Sub-Tags",
   "type": "Microsoft.Authorization/policySetDefinitions",
   "apiVersion": "2021-06-01",
   "scope": null,
