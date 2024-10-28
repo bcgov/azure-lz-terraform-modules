@@ -47,6 +47,26 @@
           }
         },
         "groupNames": []
+      },
+      {
+        "policyDefinitionReferenceId": "Inherit the Billing Group tag from the subscription",
+        "policyDefinitionId": "${root_scope_resource_id}/providers/Microsoft.Authorization/policyDefinitions/Inherit-Billing-Group-Tag",
+        "parameters": {
+          "tagName": {
+              "value": "[parameters('InheritTag-Billing-Group')]"
+          }
+        },
+        "groupNames": []
+      },
+      {
+        "policyDefinitionReferenceId": "Inherit the Ministry Name tag from the subscription",
+        "policyDefinitionId": "${root_scope_resource_id}/providers/Microsoft.Authorization/policyDefinitions/Inherit-Ministry-Name-Tag",
+        "parameters": {
+          "tagName": {
+              "value": "[parameters('InheritTag-Ministry-Name')]"
+          }
+        },
+        "groupNames": []
       }
     ],
     "policyDefinitionGroups": null

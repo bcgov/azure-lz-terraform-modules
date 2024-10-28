@@ -12,7 +12,9 @@
       "Inherit-Billing-Group-Tag",
       "Inherit-Ministry-Name-Tag"
     ],
-    "policy_set_definitions": [],
+    "policy_set_definitions": [
+      "Inherit-Tags-From-Subscription"
+    ],
     "role_definitions": [],
     "archetype_config": {
       "parameters": {

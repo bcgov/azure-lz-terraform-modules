@@ -6,9 +6,7 @@
       "Deny-Resource-Locations",
       "Deny-RSG-Locations",
       "FedRAMPModerate",
-      "Inherit-AccountCode-Tag",
-      "Inherit-BillingGroup-Tag",
-      "Inherit-MinistryName-Tag"
+      "Inherit-Tags-From-Subscription"
     ],
     "policy_definitions": [],
     "policy_set_definitions": [],
