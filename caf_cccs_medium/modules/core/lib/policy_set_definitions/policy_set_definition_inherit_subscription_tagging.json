@@ -39,16 +39,6 @@
     },
     "policyDefinitions": [
       {
-        "policyDefinitionReferenceId": "Inherit the Account Coding tag from the subscription",
-        "policyDefinitionId": "${root_scope_resource_id}/providers/Microsoft.Authorization/policyDefinitions/Inherit-Account-Code-Tag",
-        "parameters": {
-          "tagName": {
-              "value": "[parameters('InheritTag-Account-Coding')]"
-          }
-        },
-        "groupNames": []
-      },
-      {
         "policyDefinitionReferenceId": "Inherit the Billing Group tag from the subscription",
         "policyDefinitionId": "${root_scope_resource_id}/providers/Microsoft.Authorization/policyDefinitions/Inherit-Billing-Group-Tag",
         "parameters": {
