@@ -5,10 +5,7 @@
       "Deny-PublicPaaSEndpoints",
       "Deny-Resource-Locations",
       "Deny-RSG-Locations",
-      "FedRAMPModerate",
-      "Inherit-Account-Code-Tag",
-      "Inherit-Billing-Group-Tag",
-      "Inherit-Ministry-Name-Tag"
+      "FedRAMPModerate"
     ],
     "policy_definitions": [
     ],
