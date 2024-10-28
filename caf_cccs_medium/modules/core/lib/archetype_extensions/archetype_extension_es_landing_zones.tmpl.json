@@ -33,7 +33,7 @@
         "InheritTag-Billing-Group": {
           "value": "billing_group"
         },
-        "Inherit-MinistryName-Tag": {
+        "InheritTag-Ministry-Name": {
           "value": "ministry_name"
         }
       },
