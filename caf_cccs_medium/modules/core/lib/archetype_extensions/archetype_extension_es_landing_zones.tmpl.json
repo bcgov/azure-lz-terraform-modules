@@ -5,13 +5,13 @@
       "Deny-PublicPaaSEndpoints",
       "Deny-Resource-Locations",
       "Deny-RSG-Locations",
-      "FedRAMPModerate"
+      "FedRAMPModerate",
+      "Inherit-AccountCode-Tag",
+      "Inherit-BillingGroup-Tag",
+      "Inherit-MinistryName-Tag"
     ],
-    "policy_definitions": [
-    ],
-    "policy_set_definitions": [
-
-    ],
+    "policy_definitions": [],
+    "policy_set_definitions": [],
     "role_definitions": [],
     "archetype_config": {
       "parameters": {
