@@ -6,7 +6,9 @@
       "Deny-Resource-Locations",
       "Deny-RSG-Locations",
       "FedRAMPModerate",
-      "Inherit-Tags-From-Sub"
+      "Inherit-Account-Code-Tag",
+      "Inherit-Billing-Group-Tag",
+      "Inherit-Ministry-Name-Tag"
     ],
     "policy_definitions": [
     ],
@@ -30,6 +32,12 @@
         },
         "InheritTag-Account-Coding": {
           "value": "account_coding"
+        },
+        "InheritTag-Billing-Group": {
+          "value": "billing_group"
+        },
+        "Inherit-MinistryName-Tag": {
+          "value": "ministry_name"
         }
       },
       "access_control": {}
