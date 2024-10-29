@@ -5,7 +5,8 @@
       "Deny-PublicPaaSEndpoints",
       "Deny-Resource-Locations",
       "Deny-RSG-Locations",
-      "FedRAMPModerate"
+      "FedRAMPModerate",
+      "Inherit-Sub-Tags"
     ],
     "policy_definitions": [],
     "policy_set_definitions": [],
@@ -23,6 +24,15 @@
             "canadacentral",
             "canadaeast"
           ]
+        },
+        "InheritTag-Account-Coding": {
+          "value": "account_coding"
+        },
+        "InheritTag-Billing-Group": {
+          "value": "billing_group"
+        },
+        "InheritTag-Ministry-Name": {
+          "value": "ministry_name"
         }
       },
       "access_control": {}

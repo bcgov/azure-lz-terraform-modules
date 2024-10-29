@@ -7,8 +7,14 @@
       "MicrosoftCISv2",
       "NIST-SP-800-53-Rev5"
     ],
-    "policy_definitions": [],
-    "policy_set_definitions": [],
+    "policy_definitions": [
+      "Inherit-Account-Code-Tag",
+      "Inherit-Billing-Group-Tag",
+      "Inherit-Ministry-Name-Tag"
+    ],
+    "policy_set_definitions": [
+      "Inherit-Sub-Tags"
+    ],
     "role_definitions": [],
     "archetype_config": {
       "parameters": {
