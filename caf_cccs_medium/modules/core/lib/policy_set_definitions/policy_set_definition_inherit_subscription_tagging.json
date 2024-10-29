@@ -39,10 +39,20 @@
     },
     "policyDefinitions": [
       {
+        "policyDefinitionReferenceId": "Inherit the Account Code tag from the subscription",
+        "policyDefinitionId": "${root_scope_resource_id}/providers/Microsoft.Authorization/policyDefinitions/Inherit-Account-Code-Tag",
+        "parameters": {
+          "InheritTag-Account-Coding": {
+              "value": "[parameters('InheritTag-Account-Coding')]"
+          }
+        },
+        "groupNames": []
+      },
+      {
         "policyDefinitionReferenceId": "Inherit the Billing Group tag from the subscription",
         "policyDefinitionId": "${root_scope_resource_id}/providers/Microsoft.Authorization/policyDefinitions/Inherit-Billing-Group-Tag",
         "parameters": {
-          "tagName": {
+          "InheritTag-Billing-Group": {
               "value": "[parameters('InheritTag-Billing-Group')]"
           }
         },
@@ -52,7 +62,7 @@
         "policyDefinitionReferenceId": "Inherit the Ministry Name tag from the subscription",
         "policyDefinitionId": "${root_scope_resource_id}/providers/Microsoft.Authorization/policyDefinitions/Inherit-Ministry-Name-Tag",
         "parameters": {
-          "tagName": {
+          "InheritTag-Ministry-Name": {
               "value": "[parameters('InheritTag-Ministry-Name')]"
           }
         },
