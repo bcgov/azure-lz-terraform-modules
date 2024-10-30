@@ -8,7 +8,7 @@
     "notScopes": [],
     "parameters": {
       "InheritTag-Account-Coding": {
-        "Value": "account_coding"
+        "value": "account_coding"
       },
       "InheritTag-Billing-Group": {
         "value": "billing_group"
