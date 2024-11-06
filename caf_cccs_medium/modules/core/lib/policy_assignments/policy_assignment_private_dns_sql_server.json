@@ -1,0 +1,30 @@
+{
+  "name": "Deploy-Private-DNS-Sql",
+  "type": "Microsoft.Authorization/policyAssignments",
+  "apiVersion": "2024-04-01",
+  "properties": {
+    "displayName": "Deploy Private DNS SqlServer",
+    "description": "Deploys private dns for sql server instances",
+    "policyDefinitionId": "${root_scope_resource_id}/providers/Microsoft.Authorization/policyDefinitions/Deploy-Private-DNS-Generic",
+    "metadata": {},
+    "scope": "${current_scope_resource_id}",
+    "notScopes": [],
+    "parameters": {
+      "privateDnsZoneId": {
+        "value": "privateDnsZoneId"
+      },
+      "resourceType": {
+        "value": "Microsoft.Sql/servers"
+      },
+      "groupId": {
+        "value": "sqlServer"
+      }
+    },
+    "enforcementMode": "Default",
+    "overrides": []
+  },
+  "location": "${default_location}",
+  "identity": {
+    "type": "SystemAssigned"
+  }
+}

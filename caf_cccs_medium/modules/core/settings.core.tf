@@ -7,6 +7,9 @@ locals {
           listOfMembersToExcludeFromWindowsVMAdministratorsGroup = "",
           listOfMembersToIncludeInWindowsVMAdministratorsGroup   = ""
         },
+        "Deploy-Private-DNS-Sql" = {
+          privateDnsZoneId : "/subscriptions/${var.subscription_id_connectivity}/resourceGroups/${var.root_id}-dns/providers/Microsoft.Network/privateDnsZones/privatelink.database.windows.net",
+        },
       }
       access_control = {}
     }

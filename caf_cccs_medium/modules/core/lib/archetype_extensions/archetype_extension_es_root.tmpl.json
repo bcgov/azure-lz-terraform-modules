@@ -4,6 +4,7 @@
       "CanadaFederalPBMM",
       "Deny-Public-IP-On-NIC",
       "Deploy-Private-DNS-Zones",
+      "Deploy-Private-DNS-Sql",
       "MicrosoftCISv2",
       "NIST-SP-800-53-Rev5"
     ],
@@ -12,9 +13,7 @@
       "Inherit-Billing-Group-Tag",
       "Inherit-Ministry-Name-Tag"
     ],
-    "policy_set_definitions": [
-      "Inherit-Sub-Tags"
-    ],
+    "policy_set_definitions": ["Inherit-Sub-Tags"],
     "role_definitions": [],
     "archetype_config": {
       "parameters": {
@@ -26,6 +25,9 @@
         "Deploy-Resource-Diag": {
           "APIMgmtLogAnalyticsDestinationType": "Dedicated",
           "FirewallLogAnalyticsDestinationType": "Dedicated"
+        },
+        "Deploy-Private-DNS-Sql": {
+          "privateDnsZoneId": "SET using local.archetype_config_overrides"
         }
       }
     },
