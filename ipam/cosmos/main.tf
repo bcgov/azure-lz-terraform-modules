@@ -52,6 +52,7 @@ resource "azurerm_cosmosdb_account" "ipam" {
   offer_type          = "Standard"
   kind                = "GlobalDocumentDB"
 
+  local_authentication_disabled      = true
   automatic_failover_enabled         = true
   access_key_metadata_writes_enabled = false
   consistency_policy {
@@ -95,11 +96,11 @@ resource "azurerm_cosmosdb_sql_container" "ipam" {
   }
 }
 
-resource "azurerm_key_vault_secret" "cosmos_key" {
-  name         = "COSMOS-KEY"
-  value        = azurerm_cosmosdb_account.ipam.primary_key
-  key_vault_id = var.keyVaultName
-}
+# resource "azurerm_key_vault_secret" "cosmos_key" {
+#   name         = "COSMOS-KEY"
+#   value        = azurerm_cosmosdb_account.ipam.primary_key
+#   key_vault_id = var.keyVaultName
+# }
 resource "azurerm_monitor_diagnostic_setting" "ipam" {
   name               = "diagSettings"
   target_resource_id = azurerm_cosmosdb_account.ipam.id
