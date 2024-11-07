@@ -77,7 +77,7 @@ variable "resourceGroupName" {
 
 locals {
   acrUri        = var.privateAcr ? var.privateAcrUri : "https://azureipam.azurecr.io"
-  runtime_image = "ipam:3.2.0"
+  runtime_image = "ipam:3.4.0"
 }
 
 resource "azurerm_service_plan" "ipam" {
