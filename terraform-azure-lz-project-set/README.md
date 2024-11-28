@@ -25,8 +25,8 @@ For each environment, the module will create a subscription, a network resource 
 | Name | Source | Version |
 |------|--------|---------|
 | <a name="module_lz_vending"></a> [lz\_vending](#module\_lz\_vending) | Azure/lz-vending/azurerm | 4.1.3 |
-| <a name="module_resourceproviders_alerts_management"></a> [resourceproviders\_alerts\_management](#module\_resourceproviders\_alerts\_management) | Azure/lz-vending/azurerm/modules/resourceprovider | 4.1.3 |
-| <a name="module_resourceproviders_insights"></a> [resourceproviders\_insights](#module\_resourceproviders\_insights) | Azure/lz-vending/azurerm/modules/resourceprovider | 4.1.3 |
+| <a name="module_resourceproviders_alerts_management"></a> [resourceproviders\_alerts\_management](#module\_resourceproviders\_alerts\_management) | Azure/lz-vending/azurerm//modules/resourceprovider | 4.1.3 |
+| <a name="module_resourceproviders_insights"></a> [resourceproviders\_insights](#module\_resourceproviders\_insights) | Azure/lz-vending/azurerm//modules/resourceprovider | 4.1.3 |
 
 ## Resources
 
