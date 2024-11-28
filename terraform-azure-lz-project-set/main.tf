@@ -106,7 +106,7 @@ resource "azurerm_consumption_budget_subscription" "subscription_budget" {
 
 # NOTE: This Resource Provider is required when using Azure Monitor Baseline Alerts (AMBA)
 module "resourceproviders_alerts_management" {
-  source  = "Azure/lz-vending/azurerm//modules/resourceprovider"
+  source  = "Azure/lz-vending/azurerm/modules/resourceprovider"
   version = "4.1.3" # Should match the lz_vending module version
 
   for_each = {
@@ -120,7 +120,7 @@ module "resourceproviders_alerts_management" {
 
 # NOTE: This Resource Provider is required when using Azure Monitor Baseline Alerts (AMBA)
 module "resourceproviders_insights" {
-  source  = "Azure/lz-vending/azurerm//modules/resourceprovider"
+  source  = "Azure/lz-vending/azurerm/modules/resourceprovider"
   version = "4.1.3" # Should match the lz_vending module version
 
   for_each = {
