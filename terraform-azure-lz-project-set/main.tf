@@ -113,7 +113,7 @@ module "resourceproviders_alerts_management" {
     for k, v in var.subscriptions : k => v
   }
 
-  subscription_id = module.lz_vending[each.key].subscription_resource_id
+  subscription_id = module.lz_vending[each.key].subscription_id
 
   resource_provider = "Microsoft.AlertsManagement"
 }
@@ -127,7 +127,7 @@ module "resourceproviders_insights" {
     for k, v in var.subscriptions : k => v
   }
 
-  subscription_id = module.lz_vending[each.key].subscription_resource_id
+  subscription_id = module.lz_vending[each.key].subscription_id
 
   resource_provider = "Microsoft.Insights"
 }
