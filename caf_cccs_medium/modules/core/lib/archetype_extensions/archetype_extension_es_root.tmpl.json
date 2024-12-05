@@ -13,7 +13,9 @@
       "Inherit-Billing-Group-Tag",
       "Inherit-Ministry-Name-Tag"
     ],
-    "policy_set_definitions": ["Inherit-Sub-Tags"],
+    "policy_set_definitions": [
+      "Inherit-Sub-Tags"
+    ],
     "role_definitions": [],
     "archetype_config": {
       "parameters": {
@@ -28,9 +30,12 @@
         },
         "Deploy-Private-DNS-Sql": {
           "privateDnsZoneId": "SET using local.archetype_config_overrides"
+        },
+        "Deploy-Private-DNS-OpenAI": {
+          "privateDnsZoneId": "SET using local.archetype_config_overrides"
         }
-      }
-    },
-    "access_control": {}
+      },
+      "access_control": {}
+    }
   }
 }
