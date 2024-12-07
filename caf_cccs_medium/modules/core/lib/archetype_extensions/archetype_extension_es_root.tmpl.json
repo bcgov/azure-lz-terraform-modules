@@ -5,7 +5,7 @@
       "Deny-Public-IP-On-NIC",
       "Deploy-Private-DNS-Zones",
       "Deploy-Private-DNS-Sql",
-      "Deploy-Private-DNS-OpenAI",
+      "Deploy-Privat-DNS-OpenAI",
       "MicrosoftCISv2",
       "NIST-SP-800-53-Rev5"
     ],
@@ -32,7 +32,7 @@
         "Deploy-Private-DNS-Sql": {
           "privateDnsZoneId": "SET using local.archetype_config_overrides"
         },
-        "Deploy-Private-DNS-OpenAI": {
+        "Deploy-Privat-DNS-OpenAI": {
           "privateDnsZoneId": "SET using local.archetype_config_overrides"
         }
       },
