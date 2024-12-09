@@ -32,7 +32,7 @@
         "Deploy-Private-DNS-Sql": {
           "privateDnsZoneId": "SET using local.archetype_config_overrides"
         },
-        "Deploy-Privat-DNS-OpenAI": {
+        "Deploy-Pvt-DNS-OpenAI": {
           "privateDnsZoneId": "SET using local.archetype_config_overrides"
         }
       },
