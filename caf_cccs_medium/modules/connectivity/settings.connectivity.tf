@@ -35,13 +35,13 @@ locals {
               }
             }
             expressroute_gateway = {
-              enabled = false
+              enabled = true
               config = {
                 scale_unit = 1
               }
             }
             vpn_gateway = {
-              enabled = false
+              enabled = true
               config = {
                 bgp_settings       = []
                 routing_preference = ""
