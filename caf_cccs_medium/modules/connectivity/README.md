@@ -37,6 +37,7 @@
 | <a name="input_root_parent_id"></a> [root\_parent\_id](#input\_root\_parent\_id) | Sets the value for the parent management group. | `string` | n/a | yes |
 | <a name="input_secondary_location"></a> [secondary\_location](#input\_secondary\_location) | Sets the location for "secondary" resources to be created in. | `string` | n/a | yes |
 | <a name="input_subscription_id_connectivity"></a> [subscription\_id\_connectivity](#input\_subscription\_id\_connectivity) | Subscription ID to use for "connectivity" resources. | `string` | n/a | yes |
+| <a name="input_vwan_hub_address_prefix"></a> [vwan\_hub\_address\_prefix](#input\_vwan\_hub\_address\_prefix) | Sets the address prefix for the vWAN hub. | `string` | n/a | yes |
 
 ## Outputs
 
