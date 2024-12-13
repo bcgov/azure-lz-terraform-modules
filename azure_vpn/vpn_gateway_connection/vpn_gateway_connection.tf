@@ -7,34 +7,34 @@ resource "azurerm_vpn_gateway_connection" "this" {
     for_each = var.vpn_link
 
     content {
-      name             = vpn_link.value.name
-      egress_nat_rule_ids = vpn_link.value.egress_nat_rule_ids
+      name                 = vpn_link.value.name
+      egress_nat_rule_ids  = vpn_link.value.egress_nat_rule_ids
       ingress_nat_rule_ids = vpn_link.value.ingress_nat_rule_ids
-      vpn_site_link_id = vpn_link.value.vpn_site_link_id
-      bandwidth_mbps   = vpn_link.value.bandwidth_mbps
-      bgp_enabled      = vpn_link.value.bgp_enabled
-      connection_mode  = vpn_link.value.connection_mode
+      vpn_site_link_id     = vpn_link.value.vpn_site_link_id
+      bandwidth_mbps       = vpn_link.value.bandwidth_mbps
+      bgp_enabled          = vpn_link.value.bgp_enabled
+      connection_mode      = vpn_link.value.connection_mode
 
       dynamic "ipsec_policy" {
         for_each = vpn_link.value.ipsec_policy != null ? vpn_link.value.ipsec_policy : []
 
         content {
-          dh_group               = ipsec_policy.value.dh_group
+          dh_group                 = ipsec_policy.value.dh_group
           ike_encryption_algorithm = ipsec_policy.value.ike_encryption_algorithm
           ike_integrity_algorithm  = ipsec_policy.value.ike_integrity_algorithm
           encryption_algorithm     = ipsec_policy.value.encryption_algorithm
           integrity_algorithm      = ipsec_policy.value.integrity_algorithm
           pfs_group                = ipsec_policy.value.pfs_group
           sa_data_size_kb          = ipsec_policy.value.sa_data_size_kb
-          sa_lifetime_sec      = ipsec_policy.value.sa_lifetime_sec
+          sa_lifetime_sec          = ipsec_policy.value.sa_lifetime_sec
         }
       }
 
-      protocol         = vpn_link.value.protocol
-      ratelimit_enabled = vpn_link.value.ratelimit_enabled
-      route_weight     = vpn_link.value.route_weight
-      shared_key       = vpn_link.value.shared_key
-      local_azure_ip_address_enabled = vpn_link.value.local_azure_ip_address_enabled
+      protocol                              = vpn_link.value.protocol
+      ratelimit_enabled                     = vpn_link.value.ratelimit_enabled
+      route_weight                          = vpn_link.value.route_weight
+      shared_key                            = vpn_link.value.shared_key
+      local_azure_ip_address_enabled        = vpn_link.value.local_azure_ip_address_enabled
       policy_based_traffic_selector_enabled = vpn_link.value.policy_based_traffic_selector_enabled
 
       dynamic "custom_bgp_address" {

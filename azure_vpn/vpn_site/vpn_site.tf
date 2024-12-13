@@ -8,11 +8,11 @@ resource "azurerm_vpn_site" "this" {
     for_each = var.link
 
     content {
-      name           = link.value.name
-      fqdn           = link.value.fqdn
-      ip_address     = link.value.ip_address
-      provider_name  = link.value.provider_name
-      speed_in_mbps  = link.value.speed_in_mbps
+      name          = link.value.name
+      fqdn          = link.value.fqdn
+      ip_address    = link.value.ip_address
+      provider_name = link.value.provider_name
+      speed_in_mbps = link.value.speed_in_mbps
 
       dynamic "bgp" {
         for_each = link.value.bgp != null ? [link.value.bgp] : []
@@ -21,7 +21,7 @@ resource "azurerm_vpn_site" "this" {
           asn             = bgp.value.asn
           peering_address = bgp.value.peering_address
         }
-      }    
+      }
     }
   }
 
