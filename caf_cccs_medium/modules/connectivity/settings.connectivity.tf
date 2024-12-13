@@ -222,6 +222,13 @@ locals {
               firewall_policy_id = var.firewall_child_policy_id
             }
           }
+        },
+        azurerm_virtual_hub = {
+          virtual_wan = {
+            "${lower(var.primary_location)}" = {
+              hub_routing_preference = "VpnGateway"
+            }
+          }
         }
       }
     }
