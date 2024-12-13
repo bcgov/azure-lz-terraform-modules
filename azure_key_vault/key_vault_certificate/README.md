@@ -29,7 +29,7 @@ No modules.
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| <a name="input_certificate"></a> [certificate](#input\_certificate) | (Optional) A certificate block as defined below, used to Import an existing certificate. | <pre>object({<br>    contents = string<br>    password = optional(string)<br>  })</pre> | n/a | yes |
+| <a name="input_certificate"></a> [certificate](#input\_certificate) | (Optional) A certificate block as defined below, used to Import an existing certificate. | <pre>object({<br/>    contents = string<br/>    password = optional(string)<br/>  })</pre> | n/a | yes |
 | <a name="input_certificate_name"></a> [certificate\_name](#input\_certificate\_name) | (Required) Specifies the name of the Key Vault Certificate. | `string` | n/a | yes |
 | <a name="input_key_vault_id"></a> [key\_vault\_id](#input\_key\_vault\_id) | (Required) The ID of the Key Vault where the Certificate should be created. | `string` | n/a | yes |
 | <a name="input_subscription_id_connectivity"></a> [subscription\_id\_connectivity](#input\_subscription\_id\_connectivity) | Subscription ID to use for "connectivity" resources. | `string` | n/a | yes |
