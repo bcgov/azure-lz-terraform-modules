@@ -39,5 +39,14 @@ No modules.
 
 ## Outputs
 
-No outputs.
+| Name | Description |
+|------|-------------|
+| <a name="output_vpn_gateway_connection_id"></a> [vpn\_gateway\_connection\_id](#output\_vpn\_gateway\_connection\_id) | The ID of the VPN Gateway Connection. |
+| <a name="output_vpn_gateway_connection_internet_security_enabled"></a> [vpn\_gateway\_connection\_internet\_security\_enabled](#output\_vpn\_gateway\_connection\_internet\_security\_enabled) | Is Internet Security enabled for the VPN Gateway Connection. |
+| <a name="output_vpn_gateway_connection_name"></a> [vpn\_gateway\_connection\_name](#output\_vpn\_gateway\_connection\_name) | The name of the VPN Gateway Connection. |
+| <a name="output_vpn_gateway_connection_remote_vpn_site_id"></a> [vpn\_gateway\_connection\_remote\_vpn\_site\_id](#output\_vpn\_gateway\_connection\_remote\_vpn\_site\_id) | The ID of the Remote VPN Site. |
+| <a name="output_vpn_gateway_connection_routing"></a> [vpn\_gateway\_connection\_routing](#output\_vpn\_gateway\_connection\_routing) | The Routing configuration. |
+| <a name="output_vpn_gateway_connection_traffic_selector_policy"></a> [vpn\_gateway\_connection\_traffic\_selector\_policy](#output\_vpn\_gateway\_connection\_traffic\_selector\_policy) | The Traffic Selector Policy configuration. |
+| <a name="output_vpn_gateway_connection_vpn_gateway_id"></a> [vpn\_gateway\_connection\_vpn\_gateway\_id](#output\_vpn\_gateway\_connection\_vpn\_gateway\_id) | The ID of the VPN Gateway. |
+| <a name="output_vpn_gateway_connection_vpn_link"></a> [vpn\_gateway\_connection\_vpn\_link](#output\_vpn\_gateway\_connection\_vpn\_link) | The VPN Link configuration. |
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
