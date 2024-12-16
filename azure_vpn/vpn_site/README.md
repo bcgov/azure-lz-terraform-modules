@@ -43,6 +43,12 @@ No modules.
 
 | Name | Description |
 |------|-------------|
+| <a name="output_vpn_site_address_cidrs"></a> [vpn\_site\_address\_cidrs](#output\_vpn\_site\_address\_cidrs) | The list of address CIDRs for the VPN Site. |
+| <a name="output_vpn_site_device_model"></a> [vpn\_site\_device\_model](#output\_vpn\_site\_device\_model) | The device model for the VPN Site. |
+| <a name="output_vpn_site_device_vendor"></a> [vpn\_site\_device\_vendor](#output\_vpn\_site\_device\_vendor) | The device vendor for the VPN Site. |
 | <a name="output_vpn_site_id"></a> [vpn\_site\_id](#output\_vpn\_site\_id) | The ID of the VPN Site. |
 | <a name="output_vpn_site_link"></a> [vpn\_site\_link](#output\_vpn\_site\_link) | The link block of the VPN Site. |
+| <a name="output_vpn_site_name"></a> [vpn\_site\_name](#output\_vpn\_site\_name) | The name of the VPN Site. |
+| <a name="output_vpn_site_o365_policy"></a> [vpn\_site\_o365\_policy](#output\_vpn\_site\_o365\_policy) | The O365 policy for the VPN Site. |
+| <a name="output_vpn_site_virtual_wan_id"></a> [vpn\_site\_virtual\_wan\_id](#output\_vpn\_site\_virtual\_wan\_id) | The ID of the Virtual WAN that the VPN Site is associated with. |
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
