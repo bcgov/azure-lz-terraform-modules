@@ -1,6 +1,6 @@
 # Azure Firewall IDPS Signature Rules Overrides
 
-This code is incompleted/work in progress. It is being kept for future reference.
+This code is incomplete/work in progress. It is being kept for future reference.
 
 ## Of Note
 
