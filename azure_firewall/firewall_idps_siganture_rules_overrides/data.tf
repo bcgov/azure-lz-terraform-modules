@@ -7,5 +7,5 @@ data "azurerm_firewall_policy" "this" {
 }
 
 data "azurerm_resource_group" "this" {
-  name = var.firewall_policy_resource_group_name  
+  name = var.firewall_policy_resource_group_name
 }

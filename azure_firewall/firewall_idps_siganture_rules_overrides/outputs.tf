@@ -4,7 +4,7 @@ output "firewall_policy_id" {
 
 output "object_names" {
   description = "List of object names"
-  value       = local.object_names  
+  value       = local.object_names
 }
 
 output "fqdn_names" {
@@ -16,5 +16,5 @@ output "ip_addresses" {
 }
 
 # output "azapi_update_resource_fwpolicy_idps" {
-#   value = azapi_update_resource.fwpolicy_idps  
+#   value = azapi_update_resource.fwpolicy_idps
 # }

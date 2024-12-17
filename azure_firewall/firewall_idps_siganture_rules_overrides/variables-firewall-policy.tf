@@ -11,5 +11,5 @@ variable "firewall_policy_resource_group_name" {
 variable "idps_private_ip_ranges" {
   description = "(Optional) A list of Private IP address ranges to identify traffic direction. By default, only ranges defined by IANA RFC 1918 are considered private IP addresses."
   type        = list(string)
-  default = []
+  default     = []
 }

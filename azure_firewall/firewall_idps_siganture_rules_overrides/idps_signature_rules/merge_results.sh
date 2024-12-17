@@ -41,7 +41,7 @@ for ((i=2; i<=file_count-1; i++)); do
     sed -i '$d' "$temp_directory/temp_copy_formatted.json" # Removes the last line
     sed -i '$d' "$temp_directory/temp_copy_formatted.json" # Removes the last line
     truncate -s -1 "$temp_directory/temp_copy_formatted.json" # Use the truncate command to remove the last byte (which is often a newline) from the file
-    
+
     echo "Preparing file for next merge"
     # Add a comma to the last line (except for the last file)
     printf "," >> "$temp_directory/temp_copy_formatted.json"
@@ -58,7 +58,7 @@ jq . "$temp_directory/temp_copy.json" > "$temp_directory/temp_copy_formatted.jso
 rm "$temp_directory/temp_copy.json"
 
 sed -i '1,3d' "$temp_directory/temp_copy_formatted.json"
-sed -i -e '$a\' "$temp_directory/merged_results_formatted.json" # Add a new line to the end of the merged file, because truncate places the cursor at the closing bracket    
+sed -i -e '$a\' "$temp_directory/merged_results_formatted.json" # Add a new line to the end of the merged file, because truncate places the cursor at the closing bracket
 cat "$temp_directory/temp_copy_formatted.json" >> "$temp_directory/merged_results_formatted.json"
 rm "$temp_directory/temp_copy_formatted.json"
 
