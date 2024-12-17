@@ -5,7 +5,7 @@
       "Deny-Public-IP-On-NIC",
       "Deploy-Private-DNS-Zones",
       "Deploy-Private-DNS-Sql",
-      "Deploy-Privat-DNS-OpenAI",
+      "Deploy-Pvt-DNS-OpenAI",
       "MicrosoftCISv2",
       "NIST-SP-800-53-Rev5"
     ],
