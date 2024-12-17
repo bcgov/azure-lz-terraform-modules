@@ -12,7 +12,16 @@ locals {
             address_prefix = var.vwan_hub_address_prefix
             location       = var.primary_location
             sku            = ""
-            routes         = []
+            routes         = [
+              {
+                address_prefixes = [
+                  "10.0.0.0/8", 
+                  "172.16.0.0/12", 
+                  "192.168.0.0/16",
+                  "142.34.128.0/20"
+                ]
+              }
+            ]
             routing_intent = {
               enabled = true
               config = {
