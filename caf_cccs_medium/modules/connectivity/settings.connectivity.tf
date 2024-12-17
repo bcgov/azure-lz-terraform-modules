@@ -20,6 +20,7 @@ locals {
                   "192.168.0.0/16",
                   "142.34.128.0/20"
                 ]
+                next_hop_ip_address = "10.41.253.4" # Firewall IP address
               }
             ]
             routing_intent = {
