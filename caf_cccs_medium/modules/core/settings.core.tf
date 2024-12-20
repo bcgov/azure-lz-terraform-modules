@@ -10,7 +10,7 @@ locals {
         Deploy-Private-DNS-Sql = {
           privateDnsZoneId : "/subscriptions/${var.subscription_id_connectivity}/resourceGroups/${var.root_id}-dns/providers/Microsoft.Network/privateDnsZones/privatelink.database.windows.net",
         }
-        "Deploy-Private-DNS-OpenAI" = {
+        Deploy-Prvt-DNS-OpenAI = {
           privateDnsZoneId : "/subscriptions/${var.subscription_id_connectivity}/resourceGroups/${var.root_id}-dns/providers/Microsoft.Network/privateDnsZones/privatelink.openai.azure.com",
         }
       }

@@ -5,10 +5,12 @@
       "Deny-Public-IP-On-NIC",
       "Deploy-Private-DNS-Zones",
       "Deploy-Private-DNS-Sql",
+      "Deploy-Prvt-DNS-OpenAI",
       "MicrosoftCISv2",
       "NIST-SP-800-53-Rev5"
     ],
     "policy_definitions": [
+      "Deploy-Prvt-DNS-OpenAI",
       "Inherit-Account-Code-Tag",
       "Inherit-Billing-Group-Tag",
       "Inherit-Ministry-Name-Tag"
@@ -31,7 +33,7 @@
         "Deploy-Private-DNS-Sql": {
           "privateDnsZoneId": "SET using local.archetype_config_overrides"
         },
-        "Deploy-Private-DNS-OpenAI": {
+        "Deploy-Prvt-DNS-OpenAI": {
           "privateDnsZoneId": "SET using local.archetype_config_overrides"
         }
       },
