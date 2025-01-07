@@ -13,6 +13,9 @@
       "privateDnsZoneId": {
         "value": "privateDnsZoneId"
       },
+      "location": {
+        "value": "location"
+      },
       "resourceType": {
         "value": "Microsoft.Sql/servers"
       },
