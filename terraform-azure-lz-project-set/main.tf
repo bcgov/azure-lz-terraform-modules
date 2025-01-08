@@ -52,7 +52,7 @@ module "lz_vending" {
       name                        = "${var.license_plate}-${each.value.name}-vwan-spoke"
       address_space               = each.value.network.address_space
       resource_group_name         = "${var.license_plate}-${each.value.name}-networking"
-      resource_group_lock_enabled = false
+      resource_group_lock_enabled = true
       vwan_connection_enabled     = true
       vwan_hub_resource_id        = var.vwan_hub_resource_id
       vwan_security_configuration = {
