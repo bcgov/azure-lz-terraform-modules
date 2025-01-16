@@ -1,10 +1,10 @@
 {
-  "name": "",
+  "name": "BCGOV-Custom-Role",
   "type": "Microsoft.Authorization/roleDefinitions",
   "apiVersion": "2025-01-01",
   "properties": {
-      "roleName": "",
-      "description": "",
+      "roleName": " BCGOV Custom Role",
+      "description": "Custom role",
       "type": "customRole",
       "permissions": [
           {

@@ -19,7 +19,9 @@
     "policy_set_definitions": [
       "Inherit-Sub-Tags"
     ],
-    "role_definitions": [],
+    "role_definitions": [
+      "BCGOV-Custom-Role"
+    ],
     "archetype_config": {
       "parameters": {
         "CanadaFederalPBMM": {
