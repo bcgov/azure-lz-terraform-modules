@@ -3,14 +3,13 @@
   "type": "Microsoft.Authorization/roleDefinitions",
   "apiVersion": "2022-05-01-preview",
   "properties": {
-      "roleName": "BCGOV Custom Role",
-      "description": "Custom role",
+      "roleName": "Project-Set-Owner",
+      "description": "Project-Set Owner",
       "type": "customRole",
       "permissions": [
           {
               "actions": [
-                "*",
-                "Microsoft.Network/virtualNetworks/subnets/*"
+                "*"
               ],
               "notActions": [
                 "Microsoft.Management/managementGroups/delete",
