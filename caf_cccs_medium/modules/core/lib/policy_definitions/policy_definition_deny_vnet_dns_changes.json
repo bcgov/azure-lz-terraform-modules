@@ -1,0 +1,62 @@
+{
+  "name": "Deny-VNET-DNS-Changes",
+  "type": "Microsoft.Authorization/policyDefinitions",
+  "apiVersion": "2024-05-01",
+  "properties": {
+    "displayName": "Deny changing VNet DNS settings from pre-defined value",
+    "description": "This Policy will prevent users from changing DNS settings on a VNet",
+    "policyType": "Custom",
+    "mode": "All",
+    "metadata": {
+      "version": "1.0.0",
+      "category": "Network"
+    },    
+    "parameters": {
+      "VNet-DNS-Settings": {
+        "type": "array",
+        "metadata": {
+          "displayname": "Enforced DNS Settings",
+          "description": "Users will be unable to change the DNS settings on a VNet from the values defined in this array."
+        }
+      },
+      "effect": {
+        "type": "String",
+        "metadata": {
+          "displayName": "Effect",
+          "description": "Deny, Audit or Disabled the execution of the Policy"
+        },
+        "allowedValues": [
+          "Deny",
+          "Audit",
+          "Disabled"
+        ],
+        "defaultValue": "Deny"
+      }
+    },
+    "policyRule": {
+      "if": {
+        "allOf": [
+          {
+            "field": "type",
+            "equals": "Microsoft.Network/virtualNetworks"
+          },
+          {
+            "anyOf": [
+              {
+                "value": "[if(empty(field('Microsoft.Network/virtualNetworks/dhcpOptions.dnsServers')), bool('false'), equals(length(intersection(parameters('VNet-DNS-Settings'), field('Microsoft.Network/virtualNetworks/dhcpOptions.dnsServers'))), length(parameters('VNet-DNS-Settings'))))]",
+                "equals": false
+              },
+              {
+                "value": "[if(empty(field('Microsoft.Network/virtualNetworks/dhcpOptions.dnsServers')), bool('false'), equals(length(field('Microsoft.Network/virtualNetworks/dhcpOptions.dnsServers')),length(parameters('VNet-DNS-Settings'))))]",
+                "equals": false
+              }
+            ]
+          }
+        ]
+      },
+      "then": {
+        "effect": "[parameters('effect')]"
+      }
+    }
+  }
+}

@@ -1,0 +1,41 @@
+{
+  "name": "",
+  "type": "Microsoft.Authorization/roleDefinitions",
+  "apiVersion": "2025-01-01",
+  "properties": {
+      "roleName": "",
+      "description": "",
+      "type": "customRole",
+      "permissions": [
+          {
+              "actions": [
+                "*",
+                "Microsoft.Network/virtualNetworks/subnets/*"
+              ],
+              "notActions": [
+                "Microsoft.Management/managementGroups/delete",
+                "Microsoft.Management/managementGroups/write",
+                "Microsoft.Management/managementGroups/subscriptions/delete",
+                "Microsoft.Subscription/cancel/action",
+                "Microsoft.Subscription/rename/action",
+                "Microsoft.Network/expressRouteCircuits/*",
+                "Microsoft.Network/vpnSites/*",
+                "Microsoft.Network/vpnGateways/*",
+                "Microsoft.Network/virtualNetworkGateways/*",
+                "Microsoft.Network/natGateways/*",
+                "Microsoft.Network/localnetworkgateways/*",
+                "Microsoft.Network/connections/*",
+                "Microsoft.Network/routeTables/write",
+                "Microsoft.Network/virtualNetworks/virtualNetworkPeerings/delete",
+                "Microsoft.Network/virtualNetworks/virtualNetworkPeerings/write",
+                "Microsoft.Network/virtualNetworks/write"
+              ],
+              "dataActions": [],
+              "notDataActions": []
+          }
+      ],
+      "assignableScopes": [
+          "${current_scope_resource_id}"
+      ]
+  }
+}
