@@ -6,7 +6,8 @@
       "Deny-Resource-Locations",
       "Deny-RSG-Locations",
       "FedRAMPModerate",
-      "Inherit-Sub-Tags"
+      "Inherit-Sub-Tags",
+      "Deny-VNET-DNS-Changes"
     ],
     "policy_definitions": [],
     "policy_set_definitions": [],
@@ -33,6 +34,9 @@
         },
         "InheritTag-Ministry-Name": {
           "value": "ministry_name"
+        },
+        "VNet-DNS-Settings": {
+          "value": "SET using local.archetype_config_overrides"
         }
       },
       "access_control": {}
