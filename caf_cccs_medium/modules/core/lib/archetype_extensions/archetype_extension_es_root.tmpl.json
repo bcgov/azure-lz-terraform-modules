@@ -14,14 +14,16 @@
       "Inherit-Billing-Group-Tag",
       "Inherit-Ministry-Name-Tag",
       "Deploy-Private-DNS-OAI",
-      "Deny-VNET-DNS-Changes"
+      "Deny-VNet-DNS-Changes",
+      "Deny-Protected-Network-Resources",
+      "Deny-VNet-Creation",
+      "Deny-New-VNet-Peerings",
+      "Deny-Delete-Diagnostics"
     ],
     "policy_set_definitions": [
       "Inherit-Sub-Tags"
     ],
-    "role_definitions": [
-      "BCGOV-Custom-Role"
-    ],
+    "role_definitions": [],
     "archetype_config": {
       "parameters": {
         "CanadaFederalPBMM": {

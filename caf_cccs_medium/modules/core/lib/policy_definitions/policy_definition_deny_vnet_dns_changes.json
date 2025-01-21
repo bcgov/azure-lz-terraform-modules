@@ -1,7 +1,8 @@
 {
-  "name": "Deny-VNET-DNS-Changes",
+  "name": "Deny-VNet-DNS-Changes",
   "type": "Microsoft.Authorization/policyDefinitions",
   "apiVersion": "2024-05-01",
+  "scope": null,
   "properties": {
     "displayName": "Deny changing VNet DNS settings from pre-defined value",
     "description": "This Policy will prevent users from changing DNS settings on a VNet",
@@ -9,8 +10,8 @@
     "mode": "All",
     "metadata": {
       "version": "1.0.0",
-      "category": "Network"
-    },    
+      "category": "Networking"
+    },
     "parameters": {
       "VNet-DNS-Settings": {
         "type": "array",

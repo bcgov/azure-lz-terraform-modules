@@ -7,7 +7,11 @@
       "Deny-RSG-Locations",
       "FedRAMPModerate",
       "Inherit-Sub-Tags",
-      "Deny-VNET-DNS-Changes"
+      "Deny-VNet-DNS-Changes",
+      "Deny-Protected-Network",
+      "Deny-VNet-Creation",
+      "Deny-New-VNet-Peerings",
+      "Deny-Delete-Diagnostics"
     ],
     "policy_definitions": [],
     "policy_set_definitions": [],

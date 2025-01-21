@@ -1,0 +1,27 @@
+{
+  "name": "Deny-New-VNet-Peerings",
+  "type": "Microsoft.Authorization/policyAssignments",
+  "apiVersion": "2019-09-01",
+  "properties": {
+    "displayName": "Deny VNet Peering",
+    "description": "This policy denies the creation of VNet Peerings under the assigned scope.",
+    "notScopes": [],
+    "parameters": {
+      "effect": {
+        "value": "Deny"
+      }
+    },
+    "policyDefinitionId": "${root_scope_resource_id}/providers/Microsoft.Authorization/policyDefinitions/Deny-New-VNet-Peerings",
+    "nonComplianceMessages": [
+      {
+        "message": "Creation of VNet Peering in the Landing Zones is not allowed."
+      }
+    ],
+    "scope": "${current_scope_resource_id}",
+    "enforcementMode": "Default"
+  },
+  "location": "${default_location}",
+  "identity": {
+    "type": "SystemAssigned"
+  }
+}
