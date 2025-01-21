@@ -29,8 +29,8 @@ locals {
         Deploy-VMSS-Monitoring = {
           scopeToSupportedImages = true
         },
-        VNet-DNS-Settings = {
-          value = "${var.root_id} == 'bcgov-managed-lz-forge' ? '[\"10.41.253.4\", \"10.41.253.5\"]' : '[\"10.53.244.4\"]'"
+        Deny-VNet-DNS-Changes = {
+          VNet-DNS-Settings = var.root_id == "bcgov-managed-lz-forge" ? ["10.41.253.4", "10.41.253.5"] : ["10.53.244.4"]
         }
       }
       access_control = {}
