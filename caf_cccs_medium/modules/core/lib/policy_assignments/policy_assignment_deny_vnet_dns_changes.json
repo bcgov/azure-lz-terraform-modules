@@ -8,7 +8,7 @@
     "notScopes": [],
     "parameters": {
       "VNet-DNS-Settings": {
-        "value": "[]"
+        "value": [""]
       },
       "effect": {
         "value": "Deny"
