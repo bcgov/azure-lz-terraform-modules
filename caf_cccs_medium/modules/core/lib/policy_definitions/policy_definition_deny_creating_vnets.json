@@ -29,8 +29,16 @@
     },
     "policyRule": {
       "if": {
-        "field": "type",
-        "equals": "Microsoft.Network/virtualNetworks"
+        "allOf": [
+          {
+            "field": "type",
+            "equals": "Microsoft.Network/virtualNetworks"
+          },
+          {
+            "field": "name",
+            "notLike": "*-vwan-spoke"
+          }
+        ]
       },
       "then": {
         "effect": "[parameters('effect')]"

@@ -3,7 +3,7 @@
   "type": "Microsoft.Authorization/policyAssignments",
   "apiVersion": "2019-09-01",
   "properties": {
-    "displayName": "Deny VNet Peering",
+    "displayName": "Deny New VNet Peering",
     "description": "This policy denies the creation of VNet Peerings under the assigned scope.",
     "notScopes": [],
     "parameters": {
