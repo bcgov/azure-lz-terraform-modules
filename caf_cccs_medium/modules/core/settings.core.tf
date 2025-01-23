@@ -42,9 +42,6 @@ locals {
         },
         Deny-New-VNet-Peerings = {
           effect = var.policy_effect
-        },
-        Deny-Delete-Diagnostics = {
-          effect = var.policy_effect
         }
       }
       access_control = {}

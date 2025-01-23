@@ -51,9 +51,6 @@
         },
         "Deny-New-VNet-Peerings": {
           "effect": "SET using local.archetype_config_overrides"
-        },
-        "Deny-Delete-Diagnostics": {
-          "effect": "SET using local.archetype_config_overrides"
         }
       },
       "access_control": {}
