@@ -22,12 +22,29 @@ locals {
       parameters = {
         Deny-Resource-Locations = {
           listOfAllowedLocations = [var.primary_location, var.secondary_location]
-        }
+        },
         Deny-RSG-Locations = {
           listOfAllowedLocations = [var.primary_location, var.secondary_location]
-        }
+        },
         Deploy-VMSS-Monitoring = {
           scopeToSupportedImages = true
+        },
+        Deny-VNet-DNS-Changes = {
+          # VNet-DNS-Settings = var.root_id == "bcgov-managed-lz-forge" ? ["10.41.253.4"] : ["10.53.244.4"]
+          VNet-DNS-Settings = var.VNet-DNS-Settings
+          effect            = var.policy_effect
+        },
+        Deny-Protected-Network = {
+          effect = var.policy_effect
+        },
+        Deny-VNet-Creation = {
+          effect = var.policy_effect
+        },
+        Deny-New-VNet-Peerings = {
+          effect = var.policy_effect
+        },
+        Deny-Delete-Diagnostics = {
+          effect = var.policy_effect
         }
       }
       access_control = {}
