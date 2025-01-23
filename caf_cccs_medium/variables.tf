@@ -88,3 +88,18 @@ variable "vwan_hub_address_prefix" {
   type        = string
   description = "Sets the address prefix for the vWAN hub."
 }
+
+# NOTE: This variable was created to allow for setting Policies to "audit" in LIVE, when the default effect is "deny"
+# to allow for testing and validation of the policies before enforcing them.
+variable "policy_effect" {
+  type        = string
+  description = "Sets the effect for the policy assignment."  
+  default = null
+}
+
+# NOTE: This variable was created to allow for setting the VNet DNS settings to the respective Firewall private IP address
+# This is unique per environment (ie. FORGE, LIVE)
+variable "VNet-DNS-Settings" {
+  type        = list
+  description = "Sets the VNet DNS settings for the policy assignment."  
+}
