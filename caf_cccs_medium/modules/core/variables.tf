@@ -55,10 +55,10 @@ variable "configure_management_resources" {
 variable "policy_effect" {
   type        = string
   description = "Sets the effect for the policy assignment."
-  default = null
+  default     = null
 }
 
 variable "VNet-DNS-Settings" {
-  type        = list
-  description = "Sets the VNet DNS settings for the policy assignment."  
+  type        = list(any)
+  description = "Sets the VNet DNS settings for the policy assignment."
 }

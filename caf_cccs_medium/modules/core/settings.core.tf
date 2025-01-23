@@ -32,7 +32,7 @@ locals {
         Deny-VNet-DNS-Changes = {
           # VNet-DNS-Settings = var.root_id == "bcgov-managed-lz-forge" ? ["10.41.253.4"] : ["10.53.244.4"]
           VNet-DNS-Settings = var.VNet-DNS-Settings
-          effect = var.policy_effect
+          effect            = var.policy_effect
         },
         Deny-Protected-Network = {
           effect = var.policy_effect
