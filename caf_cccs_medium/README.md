@@ -161,7 +161,7 @@ Policies are applied in the "Default" mode. It should be possible to provide [ov
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| <a name="input_VNet-DNS-Settings"></a> [VNet-DNS-Settings](#input\_VNet-DNS-Settings) | Sets the VNet DNS settings for the policy assignment. | `list` | n/a | yes |
+| <a name="input_VNet-DNS-Settings"></a> [VNet-DNS-Settings](#input\_VNet-DNS-Settings) | Sets the VNet DNS settings for the policy assignment. | `list(any)` | n/a | yes |
 | <a name="input_application_id"></a> [application\_id](#input\_application\_id) | (Optional) The object ID of an Application in Azure Active Directory. | `string` | `null` | no |
 | <a name="input_auto_learn_private_ranges_enabled"></a> [auto\_learn\_private\_ranges\_enabled](#input\_auto\_learn\_private\_ranges\_enabled) | (Optional) Whether enable auto learn private IP range. | `bool` | `null` | no |
 | <a name="input_base_firewall_policy_name"></a> [base\_firewall\_policy\_name](#input\_base\_firewall\_policy\_name) | (Required) The name which should be used for the parent Firewall Policy. | `string` | n/a | yes |
