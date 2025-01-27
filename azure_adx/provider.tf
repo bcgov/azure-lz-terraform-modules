@@ -4,10 +4,18 @@ terraform {
       source  = "hashicorp/azurerm"
       version = "4.14.0"
     }
+    azapi = {
+      source  = "azure/azapi"
+      version = "~> 1.12.0"
+    }
   }
 }
 
 provider "azurerm" {
   features {}
-  subscription_id = "60e89f81-a15c-4d7a-9be3-c3795a33a277"
+  subscription_id = "69946426-ca72-4a14-a79f-1cf558067722"
+}
+
+provider "azapi" {
+  subscription_id = data.azurerm_subscription.current.subscription_id
 }

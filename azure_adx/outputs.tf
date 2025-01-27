@@ -25,3 +25,13 @@ output "eventhub_id" {
   description = "Event Hub resource ID"
   value       = azurerm_eventhub.adx.id
 }
+
+output "advanced_hunting_endpoint" {
+  description = "Endpoint for Advanced Hunting queries"
+  value       = "${azurerm_kusto_cluster.adx.uri}/v1/rest/query"
+}
+
+output "data_retention_period" {
+  description = "Configured data retention period in days"
+  value       = var.mde_data_retention_days
+}

@@ -2,11 +2,13 @@
 variable "resource_group_name" {
   description = "Resource group name to deploy adx resources"
   type        = string
+  default     = "adx-rg"
 }
 
 variable "location" {
   description = "Location for the ADX resources"
   type        = string
+  default     = "CanadaCentral"
 }
 
 variable "tags" {
@@ -19,6 +21,7 @@ variable "tags" {
 variable "adx_cluster_name" {
   description = "Name of the ADX cluster"
   type        = string
+  default     = "adx-cluster"
 }
 
 variable "adx_sku" {
@@ -61,6 +64,7 @@ variable "adx_double_encryption_enabled" {
 variable "adx_database_name" {
   description = "Name of the ADX database"
   type        = string
+  default     = "adx-database"
 }
 
 variable "adx_hot_cache_period" {
@@ -79,6 +83,7 @@ variable "adx_soft_delete_period" {
 variable "eventhub_namespace_name" {
   description = "Name of the Event Hub namespace"
   type        = string
+  default     = "adx-eventhub-namespace"
 }
 
 variable "eventhub_sku" {
@@ -109,6 +114,7 @@ variable "eventhub_maximum_throughput_units" {
 variable "eventhub_name" {
   description = "Name of the Event Hub"
   type        = string
+  default     = "adx-eventhub"
 }
 
 variable "eventhub_partition_count" {
@@ -204,25 +210,32 @@ variable "eventhub_capture_storage_account_id" {
 variable "adx_data_connection_name" {
   description = "Name of the data connection"
   type        = string
+  default     = "adx-data-connection"
 }
 
 variable "adx_table_settings" {
   description = "Table settings for data connection"
   type = object({
-    table_name            = optional(string)
-    mapping_rule_name     = optional(string)
-    data_format           = optional(string)
-    compression           = optional(string)
-    database_routing_type = optional(string)
+    table_name            = optional(string, "DefenderAdvancedHunting")
+    mapping_rule_name     = optional(string, "DefenderAdvancedHuntingMapping")
+    data_format           = optional(string, "MULTIJSON")
+    compression           = optional(string, "None")
+    database_routing_type = optional(string, "Multi")
   })
-  default = null
+  default = {
+    table_name            = "DefenderAdvancedHunting"
+    mapping_rule_name     = "DefenderAdvancedHuntingMapping"
+    data_format           = "MULTIJSON"
+    compression           = "None"
+    database_routing_type = "Multi"
+  }
 
   validation {
     condition = var.adx_table_settings == null ? true : (
       var.adx_table_settings.data_format == null ? true :
       contains([
-        "avro", "csv", "json", "multiline", "psv", "raw", "scsv", "sohsv", "tsv", "txt",
-        "AVRO", "CSV", "JSON", "MULTILINE", "PSV", "RAW", "SCSV", "SOHSV", "TSV", "TXT"
+        "APACHEAVRO", "AVRO", "CSV", "JSON", "MULTIJSON", "ORC", "PARQUET", "PSV",
+        "RAW", "SCSV", "SINGLEJSON", "SOHSV", "TSV", "TSVE", "TXT", "W3CLOGFILE"
       ], var.adx_table_settings.data_format)
     )
     error_message = "Invalid data format. Must be one of: AVRO/avro, CSV/csv, JSON/json, MULTILINE/multiline, PSV/psv, RAW/raw, SCSV/scsv, SOHSV/sohsv, TSV/tsv, TXT/txt."
@@ -243,5 +256,23 @@ variable "adx_table_settings" {
     )
     error_message = "Database routing type must be either Single/single or Multi/multi."
   }
+}
+
+# Microsoft Defender for Endpoint variables
+variable "mde_tenant_id" {
+  description = "Azure Active Directory tenant ID for Microsoft Defender for Endpoint integration"
+  type        = string
+}
+
+variable "mde_data_retention_days" {
+  description = "Number of days to retain Advanced Hunting data in ADX"
+  type        = number
+  default     = 403
+}
+
+variable "mde_authorized_users" {
+  description = "List of user principal names authorized to access Advanced Hunting data"
+  type        = list(string)
+  default     = []
 }
 
