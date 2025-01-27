@@ -87,4 +87,7 @@ module "core" {
   subscription_id_connectivity     = var.subscription_id_connectivity
   subscription_id_identity         = var.subscription_id_identity
   subscription_id_management       = var.subscription_id_management
+
+  policy_effect     = var.policy_effect
+  VNet-DNS-Settings = var.VNet-DNS-Settings
 }

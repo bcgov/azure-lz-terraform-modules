@@ -1,0 +1,72 @@
+{
+  "name": "Deny-Protected-Network-Resources",
+  "type": "Microsoft.Authorization/policyDefinitions",
+  "apiVersion": "2024-05-01",
+  "scope": null,
+  "properties": {
+    "displayName": "Deny Creating Protected Networking Resource",
+    "description": "This Policy will prevent users from creating Express Route circuits, VPN Sites, VPN/NAT/Local Gateways, or Route Tables.",
+    "policyType": "Custom",
+    "mode": "All",
+    "metadata": {
+      "version": "1.0.0",
+      "category": "Networking"
+    },
+    "parameters": {
+      "effect": {
+        "type": "String",
+        "metadata": {
+          "displayName": "Effect",
+          "description": "Deny, Audit or Disabled the execution of the Policy"
+        },
+        "allowedValues": [
+          "Deny",
+          "Audit",
+          "Disabled"
+        ],
+        "defaultValue": "Deny"
+      }
+    },
+    "policyRule": {
+      "if": {
+        "anyOf": [
+          {
+            "field": "type",
+            "equals": "Microsoft.Network/expressRouteCircuits"
+          },
+          {
+            "field": "type",
+            "equals": "Microsoft.Network/vpnSites"
+          },
+          {
+            "field": "type",
+            "equals": "Microsoft.Network/vpnGateways"
+          },
+          {
+            "field": "type",
+            "equals": "Microsoft.Network/virtualNetworkGateways"
+          },
+          {
+            "field": "type",
+            "equals": "Microsoft.Network/natGateways"
+          },
+          {
+            "field": "type",
+            "equals": "Microsoft.Network/localnetworkgateways"
+          },
+          {
+            "field": "type",
+            "equals": "Microsoft.Network/connections"
+          },
+          {
+            "field": "type",
+            "equals": "Microsoft.Network/routeTables"
+          }
+        ]
+      },
+      "then": {
+        "effect": "[parameters('effect')]"
+      }
+    }
+  }
+}

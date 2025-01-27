@@ -49,3 +49,16 @@ variable "configure_management_resources" {
   type        = any
   description = "Configuration settings for \"management\" resources."
 }
+
+# NOTE: This variable was created to allow for setting Policies to "audit" in LIVE, when the default effect is "deny"
+# to allow for testing and validation of the policies before enforcing them.
+variable "policy_effect" {
+  type        = string
+  description = "Sets the effect for the policy assignment."
+  default     = null
+}
+
+variable "VNet-DNS-Settings" {
+  type        = list(any)
+  description = "Sets the VNet DNS settings for the policy assignment."
+}

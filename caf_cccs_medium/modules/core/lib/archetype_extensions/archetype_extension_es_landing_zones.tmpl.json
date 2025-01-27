@@ -6,7 +6,12 @@
       "Deny-Resource-Locations",
       "Deny-RSG-Locations",
       "FedRAMPModerate",
-      "Inherit-Sub-Tags"
+      "Inherit-Sub-Tags",
+      "Deny-VNet-DNS-Changes",
+      "Deny-Protected-Network",
+      "Deny-VNet-Creation",
+      "Deny-New-VNet-Peerings",
+      "Deny-Delete-Diagnostics"
     ],
     "policy_definitions": [],
     "policy_set_definitions": [],
@@ -33,6 +38,19 @@
         },
         "InheritTag-Ministry-Name": {
           "value": "ministry_name"
+        },
+        "Deny-VNet-DNS-Changes": {
+          "VNet-DNS-Settings": "SET using local.archetype_config_overrides",
+          "effect": "SET using local.archetype_config_overrides"
+        },
+        "Deny-Protected-Network": {
+          "effect": "SET using local.archetype_config_overrides"
+        },
+        "Deny-VNet-Creation": {
+          "effect": "SET using local.archetype_config_overrides"
+        },
+        "Deny-New-VNet-Peerings": {
+          "effect": "SET using local.archetype_config_overrides"
         }
       },
       "access_control": {}

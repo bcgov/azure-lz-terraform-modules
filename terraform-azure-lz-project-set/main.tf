@@ -24,7 +24,7 @@ resource "azurerm_management_group" "project_set" {
 
 module "lz_vending" {
   source  = "Azure/lz-vending/azurerm"
-  version = "4.1.3" # NOTE: When updating this version, please update the respective `resourceproviders_*` modules below
+  version = "4.1.5" # NOTE: When updating this version, please update the respective `resourceproviders_*` modules below
 
   for_each = var.subscriptions
 
@@ -49,11 +49,12 @@ module "lz_vending" {
   virtual_network_enabled = each.value.network.enabled
   virtual_networks = each.value.network.enabled ? {
     vwan_spoke = {
-      name                    = "${var.license_plate}-${each.value.name}-vwan-spoke"
-      address_space           = each.value.network.address_space
-      resource_group_name     = "${var.license_plate}-${each.value.name}-networking"
-      vwan_connection_enabled = true
-      vwan_hub_resource_id    = var.vwan_hub_resource_id
+      name                        = "${var.license_plate}-${each.value.name}-vwan-spoke"
+      address_space               = each.value.network.address_space
+      resource_group_name         = "${var.license_plate}-${each.value.name}-networking"
+      resource_group_lock_enabled = false
+      vwan_connection_enabled     = true
+      vwan_hub_resource_id        = var.vwan_hub_resource_id
       vwan_security_configuration = {
         secure_internet_traffic = true
         routing_intent_enabled  = true
@@ -107,7 +108,7 @@ resource "azurerm_consumption_budget_subscription" "subscription_budget" {
 # NOTE: This Resource Provider is required when using Azure Monitor Baseline Alerts (AMBA)
 module "resourceproviders_alerts_management" {
   source  = "Azure/lz-vending/azurerm//modules/resourceprovider"
-  version = "4.1.3" # Should match the lz_vending module version
+  version = "4.1.5" # Should match the lz_vending module version
 
   for_each = {
     for k, v in var.subscriptions : k => v
@@ -121,7 +122,7 @@ module "resourceproviders_alerts_management" {
 # NOTE: This Resource Provider is required when using Azure Monitor Baseline Alerts (AMBA)
 module "resourceproviders_insights" {
   source  = "Azure/lz-vending/azurerm//modules/resourceprovider"
-  version = "4.1.3" # Should match the lz_vending module version
+  version = "4.1.5" # Should match the lz_vending module version
 
   for_each = {
     for k, v in var.subscriptions : k => v
