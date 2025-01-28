@@ -1,3 +1,6 @@
+# This is a temporary provider to allow the creation of the ADX cluster
+# This should be removed from the module and the cluster should be deployed via the module
+# in the azure-lz-core-{forge,live} repos
 terraform {
   required_providers {
     azurerm = {
@@ -13,7 +16,7 @@ terraform {
 
 provider "azurerm" {
   features {}
-  subscription_id = "69946426-ca72-4a14-a79f-1cf558067722"
+  subscription_id = "40e13180-2fb8-4399-8931-f0c3eefb3e14"
 }
 
 provider "azapi" {
