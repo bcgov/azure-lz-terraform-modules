@@ -68,7 +68,7 @@ resource "azapi_resource" "create_table_script" {
 
   body = jsonencode({
     properties = {
-      scriptContent = ".create table ${var.adx_table_settings.table_name} (Timestamp: datetime, DeviceId: string, ActionType: string, FileName: string, InitiatingProcessSHA256: string, InitiatingProcessAccountName: string)"
+      scriptContent = ".create table ${var.adx_table_settings.table_name} (Raw: dynamic)"
     }
   })
 }
@@ -81,7 +81,7 @@ resource "azapi_resource" "create_mapping_script" {
 
   body = jsonencode({
     properties = {
-      scriptContent = ".create table ${var.adx_table_settings.table_name} ingestion json mapping '${var.adx_table_settings.mapping_rule_name}' '[{\"column\":\"Timestamp\",\"path\":\"$.Timestamp\",\"datatype\":\"datetime\"},{\"column\":\"DeviceId\",\"path\":\"$.DeviceId\"},{\"column\":\"ActionType\",\"path\":\"$.ActionType\"},{\"column\":\"FileName\",\"path\":\"$.FileName\"},{\"column\":\"InitiatingProcessSHA256\",\"path\":\"$.InitiatingProcessSHA256\"},{\"column\":\"InitiatingProcessAccountName\",\"path\":\"$.InitiatingProcessAccountName\"}]'"
+      scriptContent = ".create table ${var.adx_table_settings.table_name} ingestion json mapping '${var.adx_table_settings.mapping_rule_name}' '[{\"column\":\"Raw\",\"path\":\"$\",\"datatype\":\"dynamic\",\"transform\":null}]'"
     }
   })
 
