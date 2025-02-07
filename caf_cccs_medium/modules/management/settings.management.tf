@@ -5,7 +5,9 @@ locals {
       log_analytics = {
         config = {
           # Set a custom number of days to retain logs
-          retention_in_days = var.log_retention_in_days
+          # retention_in_days = var.log_retention_in_days
+          reservation_capacity_in_gb_per_day = 200
+          sku = "CapacityReservation"
         }
       }
       security_center = {
