@@ -6,6 +6,7 @@ locals {
         config = {
           # Set a custom number of days to retain logs
           # retention_in_days = var.log_retention_in_days
+          reservation_capacity_in_gb_per_day = 200
         }
       }
       security_center = {
@@ -24,7 +25,6 @@ locals {
       custom_settings_by_resource_type = {
         azurerm_log_analytics_workspace = {
           "management" = {
-            reservation_capacity_in_gb_per_day = 200
             sku = "CapacityReservation"
           }
         }
