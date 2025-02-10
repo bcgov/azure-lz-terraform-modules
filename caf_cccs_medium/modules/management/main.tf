@@ -40,5 +40,4 @@ module "alz" {
   deploy_management_resources    = true
   configure_management_resources = local.configure_management_resources
   subscription_id_management     = var.subscription_id_management
-
 }

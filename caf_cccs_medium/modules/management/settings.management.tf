@@ -2,12 +2,12 @@
 locals {
   configure_management_resources = {
     settings = {
-      log_analytics = {
-        config = {
-          # Set a custom number of days to retain logs
-          retention_in_days = var.log_retention_in_days
-        }
-      }
+      # log_analytics = {
+      #   config = {
+      #     # Set a custom number of days to retain logs
+      #     retention_in_days = var.log_retention_in_days
+      #   }
+      # }
       security_center = {
         config = {
           # Configure a valid security contact email address
@@ -19,5 +19,10 @@ locals {
     location = var.primary_location
     # Create a custom tags input
     tags = var.management_resources_tags
+
+    advanced = {
+
+      existing_log_analytics_workspace_resource_id = var.existing_log_analytics_workspace_resource_id
+    }
   }
 }

@@ -68,6 +68,9 @@ module "management" {
   root_parent_id             = var.root_parent_id
   root_id                    = var.root_id
   subscription_id_management = var.subscription_id_management
+
+  # existing_log_analytics_workspace_resource_id = module.law.log_analytics_workspace_id
+  existing_log_analytics_workspace_resource_id = "/subscriptions/69946426-ca72-4a14-a79f-1cf558067722/resourcegroups/bcgov-managed-lz-forge-mgmt/providers/microsoft.operationalinsights/workspaces/bcgov-managed-lz-forge-la"
 }
 
 module "core" {

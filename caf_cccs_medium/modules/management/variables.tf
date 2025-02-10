@@ -34,3 +34,9 @@ variable "management_resources_tags" {
   type        = map(string)
   description = "Specify tags to add to \"management\" resources."
 }
+
+variable "existing_log_analytics_workspace_resource_id" {
+  type        = string
+  description = "The ID of an existing Log Analytics workspace to use for management resources." 
+  default = ""
+}
