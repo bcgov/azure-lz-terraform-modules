@@ -40,17 +40,7 @@
           "value": "ministry_name"
         },
         "Deny-VNet-DNS-Changes": {
-          "VNet-DNS-Settings": "SET using local.archetype_config_overrides",
-          "effect": "SET using local.archetype_config_overrides"
-        },
-        "Deny-Protected-Network": {
-          "effect": "SET using local.archetype_config_overrides"
-        },
-        "Deny-VNet-Creation": {
-          "effect": "SET using local.archetype_config_overrides"
-        },
-        "Deny-New-VNet-Peerings": {
-          "effect": "SET using local.archetype_config_overrides"
+          "VNet-DNS-Settings": "SET using local.archetype_config_overrides"
         }
       },
       "access_control": {}
