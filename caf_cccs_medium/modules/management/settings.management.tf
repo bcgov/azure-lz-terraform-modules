@@ -24,13 +24,9 @@ locals {
 
     advanced = {
       custom_settings_by_resource_type = {
-        azurerm_log_analytics_workspace = {
-          "management" = {
-            sku = "CapacityReservation"
-            reservation_capacity_in_gb_per_day = 200
-            retention_in_days = 90
-          }
-        }
+        azurerm_log_analytics_workspace = var.log_analytics_workspace_settings != null ? {
+          "management" = var.log_analytics_workspace_settings
+        } : {}
       }
     }
   }

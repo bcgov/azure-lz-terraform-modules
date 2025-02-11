@@ -34,3 +34,13 @@ variable "management_resources_tags" {
   type        = map(string)
   description = "Specify tags to add to \"management\" resources."
 }
+
+variable "log_analytics_workspace_settings" {
+  type = object({
+    sku                                = optional(string, null)
+    reservation_capacity_in_gb_per_day = optional(number, null)
+    retention_in_days                  = optional(number, null)
+  })
+  description = "Specify settings for the Log Analytics workspace."
+  default     = null
+}
