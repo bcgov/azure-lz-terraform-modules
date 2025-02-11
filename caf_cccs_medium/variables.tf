@@ -103,3 +103,13 @@ variable "VNet-DNS-Settings" {
   type        = list(any)
   description = "Sets the VNet DNS settings for the policy assignment."
 }
+
+variable "log_analytics_workspace_settings" {
+  type = object({
+    sku                                = optional(string, null)
+    reservation_capacity_in_gb_per_day = optional(number, null)
+    retention_in_days                  = optional(number, null)
+  })
+  description = "Specify settings for the Log Analytics workspace."
+  default     = null
+}

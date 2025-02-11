@@ -61,13 +61,14 @@ module "management" {
     azurerm = azurerm.management
   }
 
-  email_security_contact     = var.email_security_contact
-  log_retention_in_days      = var.log_retention_in_days
-  management_resources_tags  = var.management_resources_tags
-  primary_location           = var.primary_location
-  root_parent_id             = var.root_parent_id
-  root_id                    = var.root_id
-  subscription_id_management = var.subscription_id_management
+  email_security_contact           = var.email_security_contact
+  log_retention_in_days            = var.log_retention_in_days
+  management_resources_tags        = var.management_resources_tags
+  primary_location                 = var.primary_location
+  root_parent_id                   = var.root_parent_id
+  root_id                          = var.root_id
+  subscription_id_management       = var.subscription_id_management
+  log_analytics_workspace_settings = var.log_analytics_workspace_settings
 }
 
 module "core" {
