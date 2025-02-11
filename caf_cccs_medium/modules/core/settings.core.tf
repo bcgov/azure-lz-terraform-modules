@@ -18,6 +18,14 @@ locals {
       }
       access_control = {}
     }
+    management = {
+      parameters = {
+        Deploy-Log-Analytics = {
+          # This is to seperate out the log analytics policy sku from the log analytics workspace resource sku
+          sku = "pergb2018"
+        }
+      }
+    }
     landing-zones = {
       parameters = {
         Deny-Resource-Locations = {
