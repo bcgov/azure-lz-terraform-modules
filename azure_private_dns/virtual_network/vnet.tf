@@ -61,6 +61,7 @@ resource "azurerm_virtual_network" "this" {
   dns_servers = var.firewall_private_ip_address
 
   # NOTE: We are using the cidrsubnet() function, and offsetting the bit position by 1, since the parent CIDR is /23 (and we need to split it into two /24s)
+  # IMPORTANT: The subnet property changed in azurerm 4.1.0 from `address_prefix` to `address_prefixes`
   subnet {
     name             = "inbound_endpoint"
     address_prefixes = [cidrsubnet(azureipam_reservation.private_dns_resolver.cidr, 1, 0)]
