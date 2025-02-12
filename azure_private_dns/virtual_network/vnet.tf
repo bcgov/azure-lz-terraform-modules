@@ -62,14 +62,14 @@ resource "azurerm_virtual_network" "this" {
 
   # NOTE: We are using the cidrsubnet() function, and offsetting the bit position by 1, since the parent CIDR is /23 (and we need to split it into two /24s)
   subnet {
-    name           = "inbound_endpoint"
-    address_prefix = cidrsubnet(azureipam_reservation.private_dns_resolver.cidr, 1, 0)
-    security_group = azurerm_network_security_group.inbound_endpoint.id
+    name             = "inbound_endpoint"
+    address_prefixes = [cidrsubnet(azureipam_reservation.private_dns_resolver.cidr, 1, 0)]
+    security_group   = azurerm_network_security_group.inbound_endpoint.id
   }
 
   subnet {
-    name           = "outbound_endpoint"
-    address_prefix = cidrsubnet(azureipam_reservation.private_dns_resolver.cidr, 1, 1)
-    security_group = azurerm_network_security_group.outbound_endpoint.id
+    name             = "outbound_endpoint"
+    address_prefixes = [cidrsubnet(azureipam_reservation.private_dns_resolver.cidr, 1, 1)]
+    security_group   = azurerm_network_security_group.outbound_endpoint.id
   }
 }
