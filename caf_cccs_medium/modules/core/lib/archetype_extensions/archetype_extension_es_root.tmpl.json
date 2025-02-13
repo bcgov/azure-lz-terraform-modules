@@ -6,6 +6,7 @@
       "Deploy-Private-DNS-Zones",
       "Deploy-Private-DNS-Sql",
       "Deploy-Private-DNS-OAI",
+      "Deploy-Private-DNS-PSQL",
       "MicrosoftCISv2",
       "NIST-SP-800-53-Rev5"
     ],
@@ -36,6 +37,9 @@
           "FirewallLogAnalyticsDestinationType": "Dedicated"
         },
         "Deploy-Private-DNS-Sql": {
+          "privateDnsZoneId": "SET using local.archetype_config_overrides"
+        },
+        "Deploy-Private-DNS-PSQL": {
           "privateDnsZoneId": "SET using local.archetype_config_overrides"
         },
         "Deploy-Private-DNS-OAI": {

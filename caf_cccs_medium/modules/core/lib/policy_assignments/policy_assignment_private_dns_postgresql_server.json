@@ -1,0 +1,34 @@
+{
+    "name": "Deploy-Private-DNS-PSQL",
+    "type": "Microsoft.Authorization/policyAssignments",
+    "apiVersion": "2024-04-01",
+    "properties": {
+      "displayName": "Deploy Private DNS PostgreSQL-Flexible Server",
+      "description": "Deploys private dns for postgresql flexible server instances",
+      "policyDefinitionId": "${root_scope_resource_id}/providers/Microsoft.Authorization/policyDefinitions/Deploy-Private-DNS-Generic",
+      "metadata": {},
+      "scope": "${current_scope_resource_id}",
+      "notScopes": [],
+      "parameters": {
+        "privateDnsZoneId": {
+          "value": "privateDnsZoneId"
+        },
+        "location": {
+          "value": "location"
+        },
+        "resourceType": {
+          "value": "Microsoft.DBforPostgreSQL/flexibleServers"
+        },
+        "groupId": {
+          "value": "postgresqlServer"
+        }
+      },
+      "enforcementMode": "Default",
+      "overrides": []
+    },
+    "location": "${default_location}",
+    "identity": {
+      "type": "SystemAssigned"
+    }
+  }
+  
