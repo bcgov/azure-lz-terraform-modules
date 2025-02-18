@@ -18,7 +18,10 @@ locals {
         Deploy-Private-DNS-PSQL = {
           privateDnsZoneId : "/subscriptions/${var.subscription_id_connectivity}/resourceGroups/${var.root_id}-dns/providers/Microsoft.Network/privateDnsZones/privatelink.postgres.database.azure.com",
           location : var.primary_location,
-        }
+        },
+        Audit-ZoneResiliency = {
+          effect = "Disabled",
+        },
       }
       access_control = {}
     }
