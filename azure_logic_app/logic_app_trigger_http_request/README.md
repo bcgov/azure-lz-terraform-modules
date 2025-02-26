@@ -28,7 +28,9 @@ No modules.
 
 ## Inputs
 
-No inputs.
+| Name | Description | Type | Default | Required |
+|------|-------------|------|---------|:--------:|
+| <a name="input_logic_app_id"></a> [logic\_app\_id](#input\_logic\_app\_id) | The ID of the Logic App that the HTTP Request trigger is associated with. | `string` | n/a | yes |
 
 ## Outputs
 

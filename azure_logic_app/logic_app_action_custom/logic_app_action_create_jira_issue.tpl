@@ -9,7 +9,7 @@
     "inputs": {
         "host": {
             "connection": {
-                "name": "@parameters('$connections')['jira']['connectionId']"
+                "name": "@parameters('$connections')['${api_connection_name}']['connectionId']"
             }
         },
         "method": "post",
