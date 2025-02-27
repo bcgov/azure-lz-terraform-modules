@@ -37,5 +37,8 @@ No modules.
 
 ## Outputs
 
-No outputs.
+| Name | Description |
+|------|-------------|
+| <a name="output_action_custom_create_jira_issue"></a> [action\_custom\_create\_jira\_issue](#output\_action\_custom\_create\_jira\_issue) | The custom action to create a new Jira issue |
+| <a name="output_action_custom_init_affected_resource_var"></a> [action\_custom\_init\_affected\_resource\_var](#output\_action\_custom\_init\_affected\_resource\_var) | The custom action to initialize the affected resource variable |
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->

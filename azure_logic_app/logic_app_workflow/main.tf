@@ -58,13 +58,6 @@ resource "azurerm_logic_app_workflow" "alerts_logic_app_workflow" {
         connectionName = azapi_resource.jira.name
       }
     })
-    # "$connections" = jsonencode({
-    #   "${var.api_connection_name}" = { # IMPORTANT: This name must also be the same in the logic_app_action_create_jira_issue.json file under inputs.host.connection.name
-    #     id = data.azurerm_managed_api.jira.id
-    #     connectionId = azapi_resource.jira.id
-    #     connectionName = azapi_resource.jira.name
-    #   }
-    # })
   }
 
   lifecycle {
