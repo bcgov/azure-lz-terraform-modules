@@ -1,6 +1,6 @@
 # connectivity
 
-<!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
+<!-- BEGIN_TF_DOCS -->
 ## Requirements
 
 | Name | Version |
@@ -44,4 +44,4 @@
 | Name | Description |
 |------|-------------|
 | <a name="output_configuration"></a> [configuration](#output\_configuration) | Configuration settings for the "connectivity" resources. |
-<!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
+<!-- END_TF_DOCS -->

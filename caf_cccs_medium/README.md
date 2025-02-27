@@ -15,7 +15,7 @@ It is be possible to move some management activity outside the policy scope by m
 
 Policies are applied in the "Default" mode. It should be possible to provide [overrides](https://learn.microsoft.com/en-us/azure/templates/microsoft.authorization/2024-04-01/policyassignments?pivots=deployment-language-terraform) when needed.
 
-<!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
+<!-- BEGIN_TF_DOCS -->
 ## Requirements
 
 | Name | Version |
@@ -120,7 +120,7 @@ Policies are applied in the "Default" mode. It should be possible to provide [ov
 | <a name="output_key_vault_id"></a> [key\_vault\_id](#output\_key\_vault\_id) | The ID of the Key Vault. |
 | <a name="output_key_vault_uri"></a> [key\_vault\_uri](#output\_key\_vault\_uri) | The URI of the Key Vault. |
 | <a name="output_lz_firewall_policy"></a> [lz\_firewall\_policy](#output\_lz\_firewall\_policy) | The base Azure Firewall Policy object. |
-<!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
+<!-- END_TF_DOCS -->
 
 <!-- BEGIN_TF_DOCS -->
 ## Requirements

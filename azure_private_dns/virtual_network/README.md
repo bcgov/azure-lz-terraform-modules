@@ -1,6 +1,6 @@
 # virtual_network
 
-<!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
+<!-- BEGIN_TF_DOCS -->
 ## Requirements
 
 | Name | Version |
@@ -57,4 +57,4 @@ No modules.
 | <a name="output_virtual_hub_connection"></a> [virtual\_hub\_connection](#output\_virtual\_hub\_connection) | The Private DNS Resolver virtual hub connection object |
 | <a name="output_virtual_network"></a> [virtual\_network](#output\_virtual\_network) | The Private DNS Resolver virtual network object |
 | <a name="output_virtual_network_id"></a> [virtual\_network\_id](#output\_virtual\_network\_id) | The Private DNS Resolver virtual network ID |
-<!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
+<!-- END_TF_DOCS -->

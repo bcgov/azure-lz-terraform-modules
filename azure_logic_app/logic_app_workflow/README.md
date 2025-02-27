@@ -1,6 +1,6 @@
 # logic_app_workflow
 
-<!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
+<!-- BEGIN_TF_DOCS -->
 ## Requirements
 
 | Name | Version |
@@ -47,4 +47,4 @@ No modules.
 |------|-------------|
 | <a name="output_logic_app_id"></a> [logic\_app\_id](#output\_logic\_app\_id) | The ID of the Logic App. |
 | <a name="output_workflow"></a> [workflow](#output\_workflow) | The Logic App Workflow object. |
-<!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
+<!-- END_TF_DOCS -->

@@ -1,6 +1,6 @@
 # firewall_policy_rcg
 
-<!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
+<!-- BEGIN_TF_DOCS -->
 ## Requirements
 
 | Name | Version |
@@ -43,4 +43,4 @@ No modules.
 | <a name="output_principal_id"></a> [principal\_id](#output\_principal\_id) | The Principal ID of the Service Principal associated with this User Assigned Identity. |
 | <a name="output_tenant_id"></a> [tenant\_id](#output\_tenant\_id) | The Tenant ID of the Service Principal associated with this User Assigned Identity. |
 | <a name="output_user_assigned_identity_id"></a> [user\_assigned\_identity\_id](#output\_user\_assigned\_identity\_id) | The ID of the User Assigned Identity. |
-<!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
+<!-- END_TF_DOCS -->

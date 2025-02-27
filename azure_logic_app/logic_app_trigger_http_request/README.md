@@ -1,6 +1,6 @@
 # logic_app_trigger_http_request
 
-<!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
+<!-- BEGIN_TF_DOCS -->
 ## Requirements
 
 | Name | Version |
@@ -38,4 +38,4 @@ No modules.
 |------|-------------|
 | <a name="output_trigger_callback_url"></a> [trigger\_callback\_url](#output\_trigger\_callback\_url) | The Callback URL of the Logic App Trigger HTTP Request |
 | <a name="output_trigger_id"></a> [trigger\_id](#output\_trigger\_id) | The ID of the Logic App Trigger HTTP Request |
-<!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
+<!-- END_TF_DOCS -->

@@ -1,6 +1,6 @@
 # express_route_connection
 
-<!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
+<!-- BEGIN_TF_DOCS -->
 ## Requirements
 
 No requirements.
@@ -47,4 +47,4 @@ No modules.
 | Name | Description |
 |------|-------------|
 | <a name="output_express_route_connection_id"></a> [express\_route\_connection\_id](#output\_express\_route\_connection\_id) | The ID of the ExpressRoute Connection. |
-<!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
+<!-- END_TF_DOCS -->

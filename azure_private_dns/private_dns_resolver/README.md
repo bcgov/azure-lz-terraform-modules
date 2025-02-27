@@ -1,6 +1,6 @@
 # private_dns_resolver
 
-<!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
+<!-- BEGIN_TF_DOCS -->
 ## Requirements
 
 | Name | Version |
@@ -48,4 +48,4 @@ No modules.
 | <a name="output_private_dns_resolver_forwarding_rule"></a> [private\_dns\_resolver\_forwarding\_rule](#output\_private\_dns\_resolver\_forwarding\_rule) | The ID of the Private DNS Resolver Forwarding Rule. |
 | <a name="output_private_dns_resolver_inbound_endpoint"></a> [private\_dns\_resolver\_inbound\_endpoint](#output\_private\_dns\_resolver\_inbound\_endpoint) | The ID of the Private DNS Resolver Inbound Endpoint. |
 | <a name="output_private_dns_resolver_outbound_endpoint"></a> [private\_dns\_resolver\_outbound\_endpoint](#output\_private\_dns\_resolver\_outbound\_endpoint) | The ID of the Private DNS Resolver Outbound Endpoint. |
-<!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
+<!-- END_TF_DOCS -->

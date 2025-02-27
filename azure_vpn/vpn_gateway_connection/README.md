@@ -1,6 +1,6 @@
 # vpn_gateway_connection
 
-<!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
+<!-- BEGIN_TF_DOCS -->
 ## Requirements
 
 No requirements.
@@ -49,4 +49,4 @@ No modules.
 | <a name="output_vpn_gateway_connection_traffic_selector_policy"></a> [vpn\_gateway\_connection\_traffic\_selector\_policy](#output\_vpn\_gateway\_connection\_traffic\_selector\_policy) | The Traffic Selector Policy configuration. |
 | <a name="output_vpn_gateway_connection_vpn_gateway_id"></a> [vpn\_gateway\_connection\_vpn\_gateway\_id](#output\_vpn\_gateway\_connection\_vpn\_gateway\_id) | The ID of the VPN Gateway. |
 | <a name="output_vpn_gateway_connection_vpn_link"></a> [vpn\_gateway\_connection\_vpn\_link](#output\_vpn\_gateway\_connection\_vpn\_link) | The VPN Link configuration. |
-<!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
+<!-- END_TF_DOCS -->

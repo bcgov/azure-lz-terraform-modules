@@ -43,7 +43,7 @@ No modules.
 |------|-------------|
 | <a name="output_groups"></a> [groups](#output\_groups) | Map of created Azure AD groups |
 <!-- END_TF_DOCS -->
-<!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
+<!-- BEGIN_TF_DOCS -->
 ## Requirements
 
 No requirements.
@@ -87,4 +87,4 @@ No modules.
 | Name | Description |
 |------|-------------|
 | <a name="output_groups"></a> [groups](#output\_groups) | Map of created Azure AD groups |
-<!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
+<!-- END_TF_DOCS -->

@@ -1,6 +1,6 @@
 # log-analytics-workspace
 
-<!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
+<!-- BEGIN_TF_DOCS -->
 ## Requirements
 
 No requirements.
@@ -34,4 +34,4 @@ No modules.
 | Name | Description |
 |------|-------------|
 | <a name="output_workspaceId"></a> [workspaceId](#output\_workspaceId) | n/a |
-<!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
+<!-- END_TF_DOCS -->
