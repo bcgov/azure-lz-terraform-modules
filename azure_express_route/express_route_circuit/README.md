@@ -1,6 +1,6 @@
 # express_route_circuit
 
-<!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
+<!-- BEGIN_TF_DOCS -->
 ## Requirements
 
 No requirements.
@@ -42,4 +42,4 @@ No modules.
 | <a name="output_resource_group_name"></a> [resource\_group\_name](#output\_resource\_group\_name) | The name of the Resource Group. |
 | <a name="output_service_key"></a> [service\_key](#output\_service\_key) | The service key of the ExpressRoute Circuit. |
 | <a name="output_service_provider_provisioning_state"></a> [service\_provider\_provisioning\_state](#output\_service\_provider\_provisioning\_state) | The provisioning state of the ExpressRoute Circuit Service Provider. |
-<!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
+<!-- END_TF_DOCS -->

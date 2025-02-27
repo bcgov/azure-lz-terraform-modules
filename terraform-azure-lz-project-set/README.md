@@ -57,7 +57,7 @@ For each environment, the module will create a subscription, a network resource 
 | <a name="output_management_group_id"></a> [management\_group\_id](#output\_management\_group\_id) | The management group ID for the project set. |
 | <a name="output_subscription_ids"></a> [subscription\_ids](#output\_subscription\_ids) | The subscription IDs of each landing zone created. |
 <!-- END_TF_DOCS -->
-<!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
+<!-- BEGIN_TF_DOCS -->
 ## Requirements
 
 | Name | Version |
@@ -107,4 +107,4 @@ For each environment, the module will create a subscription, a network resource 
 |------|-------------|
 | <a name="output_management_group_id"></a> [management\_group\_id](#output\_management\_group\_id) | The management group ID for the project set. |
 | <a name="output_subscription_ids"></a> [subscription\_ids](#output\_subscription\_ids) | The subscription IDs of each landing zone created. |
-<!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
+<!-- END_TF_DOCS -->

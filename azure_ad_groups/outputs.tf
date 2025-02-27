@@ -7,4 +7,4 @@ output "groups" {
       display_name = v.display_name
     }
   }
-} 
+}

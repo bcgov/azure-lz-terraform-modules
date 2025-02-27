@@ -1,6 +1,6 @@
 # firewall_policy_rcg
 
-<!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
+<!-- BEGIN_TF_DOCS -->
 ## Requirements
 
 | Name | Version |
@@ -45,4 +45,4 @@ No modules.
 | Name | Description |
 |------|-------------|
 | <a name="output_key_vault_policy_id"></a> [key\_vault\_policy\_id](#output\_key\_vault\_policy\_id) | The ID of the Key Vault Access Policy. |
-<!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
+<!-- END_TF_DOCS -->

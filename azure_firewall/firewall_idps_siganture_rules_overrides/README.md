@@ -14,7 +14,7 @@ The primary process for using this code is as follows:
 
 Additionally, there is some other (incomplete) code that reads the `SampleThreatExport.json` file, extracts the object names, and creates a list of `fqdn_names` and `ip_addresses`. This code would then be used to set the **Threat Intelligence Allow List** (ie. `threatIntelWhitelist`).
 
-<!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
+<!-- BEGIN_TF_DOCS -->
 ## Requirements
 
 | Name | Version |
@@ -60,4 +60,4 @@ No modules.
 | <a name="output_fqdn_names"></a> [fqdn\_names](#output\_fqdn\_names) | n/a |
 | <a name="output_ip_addresses"></a> [ip\_addresses](#output\_ip\_addresses) | n/a |
 | <a name="output_object_names"></a> [object\_names](#output\_object\_names) | List of object names |
-<!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
+<!-- END_TF_DOCS -->

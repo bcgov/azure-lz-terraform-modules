@@ -38,4 +38,4 @@ variable "readers" {
   type        = list(string)
   default     = []
   description = "List of email addresses for users who should be in the Readers group"
-} 
+}

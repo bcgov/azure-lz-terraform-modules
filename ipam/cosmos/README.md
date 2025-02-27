@@ -1,6 +1,6 @@
 # cosmos
 
-<!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
+<!-- BEGIN_TF_DOCS -->
 ## Requirements
 
 No requirements.
@@ -44,4 +44,4 @@ No modules.
 | Name | Description |
 |------|-------------|
 | <a name="output_cosmosDocumentEndpoint"></a> [cosmosDocumentEndpoint](#output\_cosmosDocumentEndpoint) | n/a |
-<!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
+<!-- END_TF_DOCS -->
