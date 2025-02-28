@@ -21,5 +21,5 @@ variable "location" {
 variable "tags" {
   description = "(Optional) A mapping of tags which should be assigned to the Network Function Azure Traffic Collector."
   type        = map(string)
-  default     = null  
+  default     = null
 }

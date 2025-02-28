@@ -15,6 +15,6 @@ variable "location" {
 
 variable "tags" {
   description = "(Optional) A mapping of tags to assign to the resource."
-  type        = map(string)  
-  default = null
+  type        = map(string)
+  default     = null
 }
