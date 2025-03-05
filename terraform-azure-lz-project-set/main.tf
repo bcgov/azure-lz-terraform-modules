@@ -34,7 +34,7 @@ module "lz_vending" {
   # subscription variables
   subscription_alias_enabled = true
   subscription_billing_scope = var.subscription_billing_scope
-  subscription_display_name  = "${var.license_plate}-${each.value.name}"
+  subscription_display_name  = substr("${var.license_plate}-${each.value.name}: ${var.project_set_name}", 0, 63)
   subscription_alias_name    = "${var.license_plate}-${each.value.name}"
   subscription_workload      = "Production"
   subscription_tags          = each.value.tags
