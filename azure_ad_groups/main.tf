@@ -47,7 +47,7 @@ resource "azuread_group_member" "group_members" {
   for_each = {
     for item in flatten([
       for group_key, group in local.groups : [
-        for member in group.members : {
+        for member in toset(group.members) : {
           group_key = group_key
           member    = member
         }
