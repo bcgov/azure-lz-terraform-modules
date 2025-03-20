@@ -1,3 +1,48 @@
+# ADX Cluster for MDE Security Data
+
+## Overview
+
+The ADX Cluster is a specialized infrastructure component that enables limitless advanced hunting capabilities for MDE security data. It provides a powerful platform for security analysts to perform complex queries and analysis on large volumes of security telemetry data.
+
+## Key Features
+
+- **Unlimited Data Retention**: Store and analyze historical security data without time constraints
+- **Advanced Querying**: Leverage Kusto Query Language (KQL) for sophisticated security analysis
+- **Cost-Effective**: Optimized for security data ingestion and querying patterns
+- **Scalable Architecture**: Built to handle growing security data volumes
+- **Integration with MDE**: Seamless connection with Microsoft Defender for Endpoint
+
+## Architecture
+
+[Blog Series: Limitless Advanced Hunting with Azure Data Explorer (ADX)](https://techcommunity.microsoft.com/blog/microsoftthreatprotectionblog/blog-series-limitless-advanced-hunting-with-azure-data-explorer-adx/2328705)
+
+The ADX cluster is designed with the following components:
+
+1. **Data Ingestion Layer**
+
+   - Handles streaming data from MDE
+   - Optimized for high-throughput ingestion
+
+2. **Storage Layer**
+
+   - Hot cache for recent data
+   - Cold storage for historical data
+   - Optimized for security data patterns
+
+3. **Query Layer**
+   - High-performance query engine
+   - Support for complex KQL queries
+   - Built-in security analytics functions
+
+## Benefits
+
+- **Enhanced Security Analysis**: Perform deep historical analysis of security incidents
+- **Cost Optimization**: Efficient storage and querying patterns
+- **Improved Incident Response**: Quick access to historical security data
+- **Advanced Hunting**: Support for complex security queries and patterns
+- **Integration**: Seamless connection with Microsoft security stack
+
+<!-- BEGIN_TF_DOCS -->
 ## Requirements
 
 | Name | Version |
