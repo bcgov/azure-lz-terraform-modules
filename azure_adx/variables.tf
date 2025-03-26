@@ -275,4 +275,3 @@ variable "mde_authorized_users" {
   type        = list(string)
   default     = []
 }
-
