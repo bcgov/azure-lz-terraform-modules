@@ -61,3 +61,9 @@ variable "common_tags" {
     deployedBy = "Terraform"
   }
 }
+
+variable "deny_vnet_address_change_policy_definition_id" {
+  description = "The ID of the policy definition to deny changes to virtual network address spaces"
+  type        = string
+  default     = null
+}
