@@ -135,8 +135,6 @@ module "resourceproviders_insights" {
 
 # Used to assign the policy definition to the Project Set subscription to prevent end-users from changing the VNet address space
 resource "azurerm_subscription_policy_assignment" "this" {
-  # count    = length(var.deny_vnet_address_change_policy_definition_id)
-  # for_each = var.subscriptions
   for_each = var.deny_vnet_address_change_policy_definition_id != null ? var.subscriptions : {}
 
   name        = "Deny changing Address Space of a Virtual Network (${var.license_plate}-${each.key})"
