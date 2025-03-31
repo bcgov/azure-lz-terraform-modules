@@ -6,6 +6,8 @@ resource "azurerm_private_dns_resolver_dns_forwarding_ruleset" "this" {
     azurerm_private_dns_resolver_outbound_endpoint.this.id
   ]
 
+  tags = {}
+
   lifecycle {
     ignore_changes = [
       tags
