@@ -5,8 +5,6 @@ resource "azurerm_private_dns_resolver_outbound_endpoint" "this" {
 
   subnet_id = local.subnets["outbound_endpoint"].id
 
-  tags = {}
-
   lifecycle {
     ignore_changes = [
       tags

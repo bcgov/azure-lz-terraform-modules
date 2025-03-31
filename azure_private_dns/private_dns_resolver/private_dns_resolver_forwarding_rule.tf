@@ -14,7 +14,6 @@ resource "azurerm_private_dns_resolver_forwarding_rule" "this" {
     port       = 53
   }
 
-  metadata = {}
   lifecycle {
     ignore_changes = [
       metadata
