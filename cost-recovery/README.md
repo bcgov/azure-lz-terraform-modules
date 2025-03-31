@@ -22,7 +22,7 @@ This script queries Azure Cost Management API to generate detailed cost recovery
 Basic usage:
 
 ```bash
-python generate_cost_report.py
+python generate_cost_report.py -m 3
 ```
 
 ### Options
@@ -39,6 +39,7 @@ python generate_cost_report.py
   - Brokerage fee: 6%
 
 <!-- BEGIN_TF_DOCS -->
+
 ## Requirements
 
 No requirements.
@@ -62,4 +63,5 @@ No inputs.
 ## Outputs
 
 No outputs.
+
 <!-- END_TF_DOCS -->
