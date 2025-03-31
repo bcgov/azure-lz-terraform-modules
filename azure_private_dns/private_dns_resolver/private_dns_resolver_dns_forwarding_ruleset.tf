@@ -5,4 +5,10 @@ resource "azurerm_private_dns_resolver_dns_forwarding_ruleset" "this" {
   private_dns_resolver_outbound_endpoint_ids = [
     azurerm_private_dns_resolver_outbound_endpoint.this.id
   ]
+
+  lifecycle {
+    ignore_changes = [
+      tags
+    ]
+  }
 }

@@ -4,4 +4,10 @@ resource "azurerm_private_dns_resolver_outbound_endpoint" "this" {
   location                = azurerm_private_dns_resolver.this.location
 
   subnet_id = local.subnets["outbound_endpoint"].id
+
+  lifecycle {
+    ignore_changes = [
+      tags
+    ]
+  }
 }
