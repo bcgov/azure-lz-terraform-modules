@@ -5,7 +5,9 @@ resource "azurerm_virtual_hub_connection" "this" {
 
   internet_security_enabled = true #TODO: Update this to be a variable, which will require updating the consuming modules
 
-  routing {
-    static_vnet_propagate_static_routes_enabled = true
+  lifecycle {
+    ignore_changes = [
+      routing
+    ]
   }
 }
