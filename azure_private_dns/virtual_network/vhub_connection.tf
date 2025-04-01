@@ -4,4 +4,10 @@ resource "azurerm_virtual_hub_connection" "this" {
   remote_virtual_network_id = azurerm_virtual_network.this.id
 
   internet_security_enabled = true #TODO: Update this to be a variable, which will require updating the consuming modules
+
+  lifecycle {
+    ignore_changes = [
+      routing
+    ]
+  }
 }

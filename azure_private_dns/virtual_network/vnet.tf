@@ -58,18 +58,58 @@ resource "azurerm_virtual_network" "this" {
   address_space = [
     azureipam_reservation.private_dns_resolver.cidr
   ]
-  dns_servers = var.firewall_private_ip_address
+  dns_servers                    = var.firewall_private_ip_address
+  private_endpoint_vnet_policies = "Disabled"
 
   # NOTE: We are using the cidrsubnet() function, and offsetting the bit position by 1, since the parent CIDR is /23 (and we need to split it into two /24s)
+  # IMPORTANT: The subnet property changed in azurerm 4.1.0 from `address_prefix` to `address_prefixes`
   subnet {
-    name           = "inbound_endpoint"
-    address_prefix = cidrsubnet(azureipam_reservation.private_dns_resolver.cidr, 1, 0)
-    security_group = azurerm_network_security_group.inbound_endpoint.id
+    name             = "inbound_endpoint"
+    address_prefixes = [cidrsubnet(azureipam_reservation.private_dns_resolver.cidr, 1, 0)]
+    security_group   = azurerm_network_security_group.inbound_endpoint.id
+
+    default_outbound_access_enabled = false
+
+    delegation = [
+      {
+        name = "Microsoft.Network.dnsResolvers"
+        service_delegation = [
+          {
+            name = "Microsoft.Network/dnsResolvers"
+            actions = [
+              "Microsoft.Network/virtualNetworks/subnets/join/action"
+            ]
+          }
+        ]
+      }
+    ]
+
+    private_endpoint_network_policies             = "Disabled"
+    private_link_service_network_policies_enabled = true
   }
 
   subnet {
-    name           = "outbound_endpoint"
-    address_prefix = cidrsubnet(azureipam_reservation.private_dns_resolver.cidr, 1, 1)
-    security_group = azurerm_network_security_group.outbound_endpoint.id
+    name             = "outbound_endpoint"
+    address_prefixes = [cidrsubnet(azureipam_reservation.private_dns_resolver.cidr, 1, 1)]
+    security_group   = azurerm_network_security_group.outbound_endpoint.id
+
+    default_outbound_access_enabled = false
+
+    delegation = [
+      {
+        name = "Microsoft.Network.dnsResolvers"
+        service_delegation = [
+          {
+            name = "Microsoft.Network/dnsResolvers"
+            actions = [
+              "Microsoft.Network/virtualNetworks/subnets/join/action"
+            ]
+          }
+        ]
+      }
+    ]
+
+    private_endpoint_network_policies             = "Disabled"
+    private_link_service_network_policies_enabled = true
   }
 }
