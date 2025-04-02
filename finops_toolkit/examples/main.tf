@@ -6,5 +6,11 @@ module "ftk_supporting_resources" {
   IPAM_TOKEN  = var.IPAM_TOKEN # This is used to obtain a CIDR block from an IPAM service
   environment = var.environment
 
-  subscription_id_management              = local.subscription_id_management
+  subscription_id_management = local.subscription_id_management
+
+  location                     = var.location
+  fabric_capacity_name         = var.fabric_capacity_name
+  existing_resource_group_name = var.existing_resource_group_name
+  sku                          = var.sku
+  tags                         = var.tags
 }

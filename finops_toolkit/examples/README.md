@@ -1,10 +1,4 @@
-This directory is for supporting resources related to the FinOps Toolkit.
-
-This includes:
-- The IPAM CIDR reservation for the VNet
-  - NOTE: The VNet is created as part for the FinOps Toolkit deployment itself
-- Microsoft Fabric capacity
-  - NOTE: This is used in connection with deploying the PowerBI Data Gateway and connecting it to the FinOps Hub
+# examples
 
 <!-- BEGIN_TF_DOCS -->
 ## Requirements
@@ -14,29 +8,25 @@ This includes:
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >=1.9.0, < 2.0.0 |
 | <a name="requirement_azapi"></a> [azapi](#requirement\_azapi) | ~> 2.0 |
 | <a name="requirement_azureipam"></a> [azureipam](#requirement\_azureipam) | ~> 1.0 |
-| <a name="requirement_azurerm"></a> [azurerm](#requirement\_azurerm) | ~> 4.0 |
-| <a name="requirement_fabric"></a> [fabric](#requirement\_fabric) | ~> 1.0 |
+| <a name="requirement_azurerm"></a> [azurerm](#requirement\_azurerm) | ~>4.0 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
-| <a name="provider_azureipam"></a> [azureipam](#provider\_azureipam) | ~> 1.0 |
-| <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) | ~> 4.0 |
-| <a name="provider_fabric"></a> [fabric](#provider\_fabric) | ~> 1.0 |
+| <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) | 4.25.0 |
 
 ## Modules
 
-No modules.
+| Name | Source | Version |
+|------|--------|---------|
+| <a name="module_ftk_supporting_resources"></a> [ftk\_supporting\_resources](#module\_ftk\_supporting\_resources) | ../supporting_resources | n/a |
 
 ## Resources
 
 | Name | Type |
 |------|------|
-| [azureipam_reservation.finops_toolkit](https://registry.terraform.io/providers/XtratusCloud/azureipam/latest/docs/resources/reservation) | resource |
-| [azurerm_fabric_capacity.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/fabric_capacity) | resource |
 | [azurerm_client_config.current](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/data-sources/client_config) | data source |
-| [fabric_capacity.example](https://registry.terraform.io/providers/microsoft/fabric/latest/docs/data-sources/capacity) | data source |
 
 ## Inputs
 
@@ -56,7 +46,5 @@ No modules.
 
 | Name | Description |
 |------|-------------|
-| <a name="output_azureipam_reservation"></a> [azureipam\_reservation](#output\_azureipam\_reservation) | The IPAM reservation object |
-| <a name="output_fabric_id"></a> [fabric\_id](#output\_fabric\_id) | The ID of the Fabric Capacity. |
-| <a name="output_fabric_name"></a> [fabric\_name](#output\_fabric\_name) | The name of the Fabric Capacity. |
+| <a name="output_ftk_supporting_resources"></a> [ftk\_supporting\_resources](#output\_ftk\_supporting\_resources) | n/a |
 <!-- END_TF_DOCS -->
