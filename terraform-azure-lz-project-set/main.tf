@@ -88,7 +88,7 @@ resource "azurerm_consumption_budget_subscription" "subscription_budget" {
     operator       = "GreaterThanOrEqualTo"
     threshold_type = "Actual"
 
-    contact_roles = ["Owner"]
+    contact_emails = concat([each.value.tags["admin_contact_email"]], split(",", try(each.value.tags["additional_contacts"], "")))
   }
 
   notification {
@@ -97,7 +97,7 @@ resource "azurerm_consumption_budget_subscription" "subscription_budget" {
     operator       = "GreaterThan"
     threshold_type = "Forecasted"
 
-    contact_roles = ["Owner"]
+    contact_emails = concat([each.value.tags["admin_contact_email"]], split(",", try(each.value.tags["additional_contacts"], "")))
   }
 
   lifecycle {
