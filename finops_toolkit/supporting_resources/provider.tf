@@ -14,13 +14,13 @@ terraform {
 
     azureipam = {
       source  = "XtratusCloud/azureipam"
-      version = "~> 1.0"
+      version = "~> 2.0"
     }
 
-    fabric = {
-      source  = "microsoft/fabric"
-      version = "~> 1.0"
-    }
+    # fabric = {
+    #   source  = "microsoft/fabric"
+    #   version = "~> 1.0"
+    # }
   }
 }
 
@@ -40,6 +40,6 @@ provider "azureipam" {
   token   = var.IPAM_TOKEN
 }
 
-provider "fabric" {
-  # Configuration options
-}
+# provider "fabric" {
+#   # Configuration options
+# }
