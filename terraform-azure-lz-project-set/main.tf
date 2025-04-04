@@ -94,6 +94,15 @@ resource "azurerm_consumption_budget_subscription" "subscription_budget" {
   notification {
     enabled        = each.value.budget > 0
     threshold      = 100.0
+    operator       = "GreaterThanOrEqualTo"
+    threshold_type = "Actual"
+
+    contact_emails = concat([each.value.tags["admin_contact_email"]], split(",", try(each.value.tags["additional_contacts"], "")))
+  }
+
+  notification {
+    enabled        = each.value.budget > 0
+    threshold      = 100.0
     operator       = "GreaterThan"
     threshold_type = "Forecasted"
 
