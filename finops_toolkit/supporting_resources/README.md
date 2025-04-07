@@ -48,7 +48,7 @@ No modules.
 | <a name="input_existing_resource_group_name"></a> [existing\_resource\_group\_name](#input\_existing\_resource\_group\_name) | (Required) The name of the existing resource group in which to create the Fabric Capacity. | `string` | n/a | yes |
 | <a name="input_fabric_capacity_name"></a> [fabric\_capacity\_name](#input\_fabric\_capacity\_name) | (Required) The name which should be used for the Fabric Capacity. | `string` | n/a | yes |
 | <a name="input_location"></a> [location](#input\_location) | (Required) Azure region to deploy to. Changing this forces a new resource to be created. | `string` | n/a | yes |
-| <a name="input_sku"></a> [sku](#input\_sku) | (Required) The SKU of the Fabric Capacity. Possible values are F2, F4, F8, F16, F32, F64, F128, F256, F512, F1024, F2048. | <pre>object({<br/>    name = string<br/>    tier = string<br/>  })</pre> | <pre>{<br/>  "name": "F2",<br/>  "tier": "Fabric"<br/>}</pre> | no |
+| <a name="input_sku"></a> [sku](#input\_sku) | (Required) The SKU of the Fabric Capacity. Possible values are F2, F4, F8, F16, F32, F64, F128, F256, F512, F1024, F2048. | `string` | `"F2"` | no |
 | <a name="input_subscription_id_management"></a> [subscription\_id\_management](#input\_subscription\_id\_management) | (Required) Subscription ID to use for "management" resources. | `string` | n/a | yes |
 | <a name="input_tags"></a> [tags](#input\_tags) | (Optional) A map of tags to assign to the resource. Tags are a set of key/value pairs. | `map(string)` | `null` | no |
 
