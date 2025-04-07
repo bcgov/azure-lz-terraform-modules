@@ -36,7 +36,7 @@ No modules.
 | [azureipam_reservation.finops_toolkit](https://registry.terraform.io/providers/XtratusCloud/azureipam/latest/docs/resources/reservation) | resource |
 | [azurerm_fabric_capacity.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/fabric_capacity) | resource |
 | [azurerm_client_config.current](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/data-sources/client_config) | data source |
-| [fabric_capacity.example](https://registry.terraform.io/providers/microsoft/fabric/latest/docs/data-sources/capacity) | data source |
+| [fabric_capacity.this](https://registry.terraform.io/providers/microsoft/fabric/latest/docs/data-sources/capacity) | data source |
 
 ## Inputs
 

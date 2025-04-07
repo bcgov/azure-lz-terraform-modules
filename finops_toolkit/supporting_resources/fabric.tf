@@ -14,8 +14,8 @@ resource "azurerm_fabric_capacity" "this" {
 }
 
 # It's recommended to use `lifecycle` with `postcondition` block to handle the state of the capacity.
-data "fabric_capacity" "example" {
-  display_name = "example"
+data "fabric_capacity" "this" {
+  display_name = lower(var.fabric_capacity_name)
 
   lifecycle {
     postcondition {
