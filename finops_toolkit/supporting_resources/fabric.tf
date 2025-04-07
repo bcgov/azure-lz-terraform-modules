@@ -1,26 +1,26 @@
-# resource "azurerm_fabric_capacity" "this" {
-#   name                = lower(var.fabric_capacity_name)
-#   resource_group_name = var.existing_resource_group_name
-#   location            = var.location
+resource "azurerm_fabric_capacity" "this" {
+  name                = lower(var.fabric_capacity_name)
+  resource_group_name = var.existing_resource_group_name
+  location            = var.location
 
-#   administration_members = var.administration_members
+  administration_members = var.administration_members
 
-#   sku {
-#     name = var.sku.name
-#     tier = "Fabric"
-#   }
+  sku {
+    name = var.sku.name
+    tier = "Fabric"
+  }
 
-#   tags = var.tags
-# }
+  tags = var.tags
+}
 
-# # It's recommended to use `lifecycle` with `postcondition` block to handle the state of the capacity.
-# data "fabric_capacity" "example" {
-#   display_name = "example"
+# It's recommended to use `lifecycle` with `postcondition` block to handle the state of the capacity.
+data "fabric_capacity" "example" {
+  display_name = "example"
 
-#   lifecycle {
-#     postcondition {
-#       condition     = self.state == "Active"
-#       error_message = "Fabric Capacity is not in Active state. Please check the Fabric Capacity status."
-#     }
-#   }
-# }
+  lifecycle {
+    postcondition {
+      condition     = self.state == "Active"
+      error_message = "Fabric Capacity is not in Active state. Please check the Fabric Capacity status."
+    }
+  }
+}
