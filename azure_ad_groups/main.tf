@@ -19,6 +19,13 @@ locals {
       members     = var.readers
     }
   }
+
+  # Privileged Role IDs:
+  # 8e3af657a8ff443ca75c2fe8c4bcb635 = Owner
+  # b24988ac6180420aab8820f7382dd24c = Contributor
+  # 18d7d88dd35e4fb5a5c37773c20a72d9 = User Access Administrator
+  # f58310d9a9f6439a9e8df62e7b41a168 = Role Based Access Control Administrator
+  privileged_role_ids = "{8e3af657a8ff443ca75c2fe8c4bcb635, b24988ac6180420aab8820f7382dd24c, 18d7d88dd35e4fb5a5c37773c20a72d9, f58310d9a9f6439a9e8df62e7b41a168}"
 }
 
 # Get the current client configuration
@@ -75,7 +82,7 @@ resource "azurerm_role_assignment" "group_roles" {
  )
  OR
  (
-  @Request[Microsoft.Authorization/roleAssignments:PrincipalType] StringEquals 'ServicePrincipal'
+  @Request[Microsoft.Authorization/roleAssignments:RoleDefinitionId] ForAnyOfAllValues:GuidNotEquals ${local.privileged_role_ids}
  )
 )
 AND
@@ -85,7 +92,7 @@ AND
  )
  OR
  (
-  @Resource[Microsoft.Authorization/roleAssignments:PrincipalType] StringEquals 'ServicePrincipal'
+  @Resource[Microsoft.Authorization/roleAssignments:RoleDefinitionId] ForAnyOfAllValues:GuidNotEquals ${local.privileged_role_ids}
  )
 )
 EOT
