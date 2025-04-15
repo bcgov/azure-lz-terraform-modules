@@ -63,6 +63,8 @@ module "lz_vending" {
       tags        = var.common_tags
     }
   } : {}
+
+  depends_on = [azurerm_management_group.project_set]
 }
 
 # Create budgets directly using azurerm provider instead of the lz-vending module
