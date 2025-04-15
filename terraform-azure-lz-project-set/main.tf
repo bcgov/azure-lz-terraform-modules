@@ -43,7 +43,7 @@ module "lz_vending" {
 
   # management group association variables
   subscription_management_group_association_enabled = true
-  subscription_management_group_id                  = var.license_plate
+  subscription_management_group_id                  = azurerm_management_group.project_set.id
 
   # virtual network variables
   virtual_network_enabled = each.value.network.enabled
