@@ -1,0 +1,13 @@
+# Ignore typical python project files
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.pyw
+*.pyz
+.venv/
+venv/
+
+# Ignore all CSV files
+*.csv
+
