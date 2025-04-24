@@ -39,3 +39,9 @@ variable "readers" {
   default     = []
   description = "List of email addresses for users who should be in the Readers group"
 }
+
+variable "additional_restricted_role_ids" {
+  type        = list(string)
+  default     = []
+  description = "List of additional role IDs that should be restricted using conditional access policies on the owners group"
+}
