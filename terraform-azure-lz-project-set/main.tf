@@ -39,6 +39,9 @@ module "lz_vending" {
   subscription_workload      = "Production"
   subscription_tags          = each.value.tags
 
+  subscription_register_resource_providers_enabled      = true
+  subscription_register_resource_providers_and_features = local.default_resource_providers_and_features
+
   network_watcher_resource_group_enabled = true
 
   # management group association variables
