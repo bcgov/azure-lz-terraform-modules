@@ -43,7 +43,7 @@ module "lz_vending" {
 
   # management group association variables
   subscription_management_group_association_enabled = true
-  subscription_management_group_id                  = var.license_plate
+  subscription_management_group_id                  = trimprefix(azurerm_management_group.project_set.id, "/providers/Microsoft.Management/managementGroups/")
 
   # virtual network variables
   virtual_network_enabled = each.value.network.enabled
@@ -63,6 +63,8 @@ module "lz_vending" {
       tags        = var.common_tags
     }
   } : {}
+
+  depends_on = [azurerm_management_group.project_set]
 }
 
 # Create budgets directly using azurerm provider instead of the lz-vending module
