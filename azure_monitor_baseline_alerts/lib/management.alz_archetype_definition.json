@@ -1,0 +1,21 @@
+{
+  "$schema": "https://raw.githubusercontent.com/Azure/Azure-Landing-Zones-Library/main/schemas/archetype_definition.json",
+  "name": "amba_management",
+  "policy_assignments": [
+    "Deploy-AMBA-Management"
+  ],
+  "policy_definitions": [
+    "Deploy_AA_TotalJob_Alert",
+    "Deploy_RecoveryVault_BackupHealthMonitor_Alert",
+    "Deploy_RecoveryVault_ASRHealthMonitor_Alert",
+    "Deploy_StorageAccount_Availability_Alert",
+    "Deploy_activitylog_StorageAccount_Delete",
+    "Deploy_LAWorkspace_DailyCapLimitReached_Alert",
+    "Deploy_activitylog_LAWorkspace_Delete",
+    "Deploy_activitylog_LAWorkspace_KeyRegen"
+  ],
+  "policy_set_definitions": [
+    "Alerting-Management"
+  ],
+  "role_definitions": []
+}

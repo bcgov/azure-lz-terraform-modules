@@ -1,0 +1,23 @@
+{
+  "$schema": "https://raw.githubusercontent.com/Azure/Azure-Landing-Zones-Library/main/schemas/archetype_definition.json",
+  "name": "amba_root",
+  "policy_assignments": [
+    "Deploy-AMBA-SvcHealth",
+    "Deploy-AMBA-Notification"
+  ],
+  "policy_definitions": [
+    "Deploy_activitylog_ResourceHealth_Unhealthy_Alert",
+    "Deploy_activitylog_ServiceHealth_HealthAdvisory",
+    "Deploy_activitylog_ServiceHealth_Incident",
+    "Deploy_activitylog_ServiceHealth_Maintenance",
+    "Deploy_activitylog_ServiceHealth_SecurityAdvisory",
+    "Deploy_ServiceHealth_ActionGroups",
+    "Deploy_AlertProcessing_Rule",
+    "Deploy_Suppression_AlertProcessing_Rule"
+  ],
+  "policy_set_definitions": [
+    "Alerting-ServiceHealth",
+    "Notification-Assets"
+  ],
+  "role_definitions": []
+}

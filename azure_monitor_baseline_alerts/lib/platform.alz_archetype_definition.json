@@ -1,0 +1,38 @@
+{
+  "$schema": "https://raw.githubusercontent.com/Azure/Azure-Landing-Zones-Library/main/schemas/archetype_definition.json",
+  "name": "amba_platform",
+  "policy_assignments": [
+    "Deploy-AMBA-VM",
+    "Deploy-AMBA-HybridVM"
+  ],
+  "policy_definitions": [
+    "Deploy_VM_HeartBeat_Alert",
+    "Deploy_VM_NetworkIn_Alert",
+    "Deploy_VM_NetworkOut_Alert",
+    "Deploy_VM_OSDiskreadLatency_Alert",
+    "Deploy_VM_OSDiskwriteLatency_Alert",
+    "Deploy_VM_OSDiskSpace_Alert",
+    "Deploy_VM_CPU_Alert",
+    "Deploy_VM_Memory_Alert",
+    "Deploy_VM_dataDiskSpace_Alert",
+    "Deploy_VM_dataDiskReadLatency_Alert",
+    "Deploy_VM_dataDiskWriteLatency_Alert",
+    "Deploy_Hybrid_VM_CPU_Alert",
+    "Deploy_Hybrid_VM_dataDiskReadLatency_Alert",
+    "Deploy_Hybrid_VM_dataDiskSpace_Alert",
+    "Deploy_Hybrid_VM_dataDiskWriteLatency_Alert",
+    "Deploy_Hybrid_VM_Disconnected_Alert",
+    "Deploy_Hybrid_VM_HeartBeat_Alert",
+    "Deploy_Hybrid_VM_Memory_Alert",
+    "Deploy_Hybrid_VM_NetworkIn_Alert",
+    "Deploy_Hybrid_VM_NetworkOut_Alert",
+    "Deploy_Hybrid_VM_OSDiskreadLatency_Alert",
+    "Deploy_Hybrid_VM_OSDiskSpace_Alert",
+    "Deploy_Hybrid_VM_OSDiskwriteLatency_Alert"
+  ],
+  "policy_set_definitions": [
+    "Alerting-VM",
+    "Alerting-HybridVM"
+  ],
+  "role_definitions": []
+}
