@@ -8,16 +8,19 @@ module "amba_alz" {
   root_management_group_name          = local.root_management_group_name
   resource_group_name                 = var.resource_group_name
   user_assigned_managed_identity_name = var.user_assigned_managed_identity_name
+  tags                                = var.tags
 
   count = var.bring_your_own_user_assigned_managed_identity ? 0 : 1
 }
 
 module "amba_policy" {
-  source             = "Azure/avm-ptn-alz/azurerm"
-  version            = "0.12.0"
-  architecture_name  = "custom"
-  location           = var.location
-  parent_resource_id = data.azapi_client_config.current.tenant_id
+  source  = "Azure/avm-ptn-alz/azurerm"
+  version = "0.12.0"
+  # architecture_name  = "custom"
+  architecture_name = var.architecture_name
+  location          = var.location
+  # parent_resource_id = data.azapi_client_config.current.tenant_id
+  parent_resource_id = var.parent_resource_id
   policy_default_values = {
     amba_alz_management_subscription_id            = jsonencode({ value = var.management_subscription_id != "" ? var.management_subscription_id : data.azapi_client_config.current.subscription_id })
     amba_alz_resource_group_location               = jsonencode({ value = var.location })

@@ -24,20 +24,3 @@ provider "azurerm" {
   subscription_id = var.management_subscription_id != "" ? var.management_subscription_id : data.azapi_client_config.current.subscription_id
   features {}
 }
-
-provider "azapi" {
-  skip_provider_registration = false
-}
-
-provider "alz" {
-  library_overwrite_enabled = true
-  library_references = [
-    {
-      path = "platform/amba"
-      ref  = "2025.04.0"
-    },
-    {
-      custom_url = "${path.root}/lib"
-    }
-  ]
-}
