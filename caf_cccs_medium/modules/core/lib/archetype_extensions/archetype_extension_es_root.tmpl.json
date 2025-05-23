@@ -42,10 +42,6 @@
         "Deploy-Private-DNS-PSQL": {
           "privateDnsZoneId": "SET using local.archetype_config_overrides"
         },
-        "Deploy-Private-DNS-OAI": {
-          "defaultPrivateDnsZoneId": "SET using local.archetype_config_overrides",
-          "openaiPrivateDnsZoneId": "SET using local.archetype_config_overrides"
-        },
         "Deploy-Private-DNS-CgSrv": {
           "cognitiveServicesPrivateDnsZoneId": "SET using local.archetype_config_overrides",
           "openAIPrivateDnsZoneId": "SET using local.archetype_config_overrides",
