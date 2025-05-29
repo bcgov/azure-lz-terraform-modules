@@ -14,10 +14,10 @@ module "amba_alz" {
 }
 
 module "amba_policy" {
-  source  = "Azure/avm-ptn-alz/azurerm"
-  version = "0.12.0"
-  architecture_name = var.architecture_name
-  location          = var.location
+  source             = "Azure/avm-ptn-alz/azurerm"
+  version            = "0.12.0"
+  architecture_name  = var.architecture_name
+  location           = var.location
   parent_resource_id = var.parent_resource_id
   policy_default_values = {
     amba_alz_management_subscription_id            = jsonencode({ value = var.management_subscription_id != "" ? var.management_subscription_id : data.azapi_client_config.current.subscription_id })
