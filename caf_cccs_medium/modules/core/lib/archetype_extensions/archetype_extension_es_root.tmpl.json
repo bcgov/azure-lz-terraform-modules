@@ -6,6 +6,7 @@
       "Deploy-Private-DNS-Zones",
       "Deploy-Private-DNS-Sql",
       "Deploy-Private-DNS-OAI",
+      "Deny-AppGw-Without-Tls",
       "Deploy-Private-DNS-PSQL",
       "MicrosoftCISv2",
       "NIST-SP-800-53-Rev5"
