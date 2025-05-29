@@ -1,7 +1,7 @@
 {
   "name": "Deny-AppGw-Without-Tls",
   "type": "Microsoft.Authorization/policyAssignments",
-  "apiVersion": "2024-04-01",
+  "apiVersion": "2025-03-01",
   "properties": {
     "displayName": "Deny App Gateway Without TLS",
     "description": "This policy denies the creation of Application Gateways that do not have TLS enabled.",
@@ -18,7 +18,12 @@
       }
     },
     "enforcementMode": "Default",
-    "overrides": []
+    "overrides": [],
+    "nonComplianceMessages": [
+      {
+        "message": "This resource must use AppGwSslPolicy20220101 or AppGwSslPolicy20220101S as the TLS policy"
+      }
+    ]
   },
   "location": "${default_location}",
   "identity": {
