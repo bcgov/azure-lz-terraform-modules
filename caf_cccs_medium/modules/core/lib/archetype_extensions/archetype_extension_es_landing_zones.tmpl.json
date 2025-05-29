@@ -13,7 +13,9 @@
       "Deny-New-VNet-Peerings",
       "Deny-Delete-Diagnostics"
     ],
-    "policy_definitions": [],
+    "policy_definitions": [
+      "Deny-VNet-Address-Changes"
+    ],
     "policy_set_definitions": [],
     "role_definitions": [],
     "archetype_config": {

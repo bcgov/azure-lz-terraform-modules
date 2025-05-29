@@ -28,6 +28,7 @@ No modules.
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
+| <a name="input_additional_restricted_role_ids"></a> [additional\_restricted\_role\_ids](#input\_additional\_restricted\_role\_ids) | List of additional role IDs that should be restricted using conditional access policies on the owners group | `list(string)` | `[]` | no |
 | <a name="input_admin_email"></a> [admin\_email](#input\_admin\_email) | Email of the admin user who will be an owner of all groups | `string` | n/a | yes |
 | <a name="input_contributors"></a> [contributors](#input\_contributors) | List of email addresses for users who should be in the Contributors group | `list(string)` | `[]` | no |
 | <a name="input_environment"></a> [environment](#input\_environment) | Environment name (e.g., Forge, Prod) | `string` | n/a | yes |

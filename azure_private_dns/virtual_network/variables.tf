@@ -7,7 +7,7 @@ variable "IPAM_TOKEN" {
 }
 
 variable "environment" {
-  description = "This is either LIVE or FORGE."
+  description = "(Required) This is either LIVE or FORGE."
   type        = string
 
   validation {

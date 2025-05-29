@@ -38,3 +38,6 @@ terraform.rc
 
 # Used for development
 providers.tf
+
+# ALZ Terraform Module
+.alzlib

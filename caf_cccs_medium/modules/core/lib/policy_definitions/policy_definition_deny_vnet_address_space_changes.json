@@ -1,0 +1,63 @@
+{
+  "name": "Deny-VNet-Address-Changes",
+  "type": "Microsoft.Authorization/policyDefinitions",
+  "apiVersion": "2024-05-01",
+  "scope": null,
+  "properties": {
+    "displayName": "Deny changing address space of a Virtual Network",
+    "description": "This Policy will prevent users from changing the Address Space on a VNet",
+    "policyType": "Custom",
+    "mode": "All",
+    "metadata": {
+      "version": "1.0.0",
+      "category": "Networking"
+    },
+    "parameters": {
+      "addressSpaceSettings": {
+        "type": "Array",
+        "metadata": {
+          "displayname": "Enforced Address Space Settings",
+          "description": "Users will be unable to change the address space on a VNet from the values defined in this array."
+        }
+      },
+      "effect": {
+        "type": "String",
+        "metadata": {
+          "displayName": "Effect",
+          "description": "Deny, Audit or Disabled the execution of the Policy"
+        },
+        "allowedValues": [
+          "Deny",
+          "Audit",
+          "Disabled"
+        ],
+        "defaultValue": "Deny"
+      }
+    },
+    "policyRule": {
+      "if": {
+        "allOf": [
+          {
+            "field": "type",
+            "equals": "Microsoft.Network/virtualNetworks"
+          },
+          {
+            "anyOf": [
+              {
+                "value": "[if(empty(field('Microsoft.Network/virtualNetworks/addressSpace.addressPrefixes')), bool('false'), equals(length(intersection(parameters('addressSpaceSettings'), field('Microsoft.Network/virtualNetworks/addressSpace.addressPrefixes'))), length(parameters('addressSpaceSettings'))))]",
+                "equals": false
+              },
+              {
+                "value": "[if(empty(field('Microsoft.Network/virtualNetworks/addressSpace.addressPrefixes')), bool('false'), equals(length(field('Microsoft.Network/virtualNetworks/addressSpace.addressPrefixes')),length(parameters('addressSpaceSettings'))))]",
+                "equals": false
+              }
+            ]
+          }
+        ]
+      },
+      "then": {
+        "effect": "[parameters('effect')]"
+      }
+    }
+  }
+}
