@@ -1,14 +1,14 @@
 {
-    "description": "Initialize the AffectedResource variable",
-    "type": "InitializeVariable",
-    "inputs": {
-        "variables": [
-            {
-                "name": "AffectedResource",
-                "type": "array",
-                "value": "@split(triggerBody()?['data']?['essentials']?['alertTargetIDs'][0], '/')"
-            }
-        ]
-    },
-    "runAfter": {}
+  "type": "InitializeVariable",
+  "description": "Initialize the AffectedResource variable",
+  "inputs": {
+    "variables": [
+      {
+        "name": "AffectedResource",
+        "type": "array",
+        "value": "@split(triggerBody()?['data']?['essentials']?['alertTargetIDs'][0], '/')"
+      }
+    ]
+  },
+  "runAfter": {}
 }
