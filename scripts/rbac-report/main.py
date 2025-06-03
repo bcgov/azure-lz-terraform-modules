@@ -64,20 +64,25 @@ def get_user_details(credential, principal_id):
     return asyncio.run(get_user_details_async(credential, principal_id))
 
 def get_subscriptions_under_mg(credential, management_group_id):
-    """Get all subscriptions under a management group"""
-    logger.info(f"Searching for subscriptions under management group: {management_group_id}")
+    """Recursively get all subscriptions under a management group (including nested MGs)"""
+    logger.info(f"Recursively searching for subscriptions under management group: {management_group_id}")
     mg_client = ManagementGroupsAPI(credential)
     subscriptions = []
 
-    # Get all subscriptions under the management group
     try:
-        for subscription in mg_client.management_group_subscriptions.get_subscriptions_under_management_group(management_group_id):
-            logger.info(f"Found subscription - Name: {subscription.display_name}, ID: {subscription.name}")
-            subscriptions.append(subscription.name)  # subscription.name is the subscription ID
+        # get_descendants returns all descendants (MGs and subscriptions)
+        descendants = mg_client.management_groups.get_descendants(management_group_id)
+        for item in descendants:
+            # The type for a subscription descendant is 'Microsoft.Management/managementGroups/subscriptions'
+            # But sometimes it's just 'subscription' or contains 'subscription' in type
+            if hasattr(item, 'type') and 'subscription' in item.type.lower():
+                # The subscription ID is in item.name
+                logger.info(f"Found subscription - ID: {item.name}")
+                subscriptions.append(item.name)
     except Exception as e:
-        logger.error(f"Error while getting subscriptions: {str(e)}", exc_info=True)
+        logger.error(f"Error while getting descendants: {str(e)}", exc_info=True)
 
-    logger.info(f"Total subscriptions found: {len(subscriptions)}")
+    logger.info(f"Total subscriptions found (recursive): {len(subscriptions)}")
     return subscriptions
 
 def get_subscription_resources(credential, subscription_id):
