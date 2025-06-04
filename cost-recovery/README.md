@@ -75,7 +75,6 @@ The Excel output includes bold headers, column width adjustments, money formatti
 - For more help, run: `python cost_recovery.py --help`
 
 <!-- BEGIN_TF_DOCS -->
-
 ## Requirements
 
 No requirements.
@@ -99,5 +98,4 @@ No inputs.
 ## Outputs
 
 No outputs.
-
 <!-- END_TF_DOCS -->
