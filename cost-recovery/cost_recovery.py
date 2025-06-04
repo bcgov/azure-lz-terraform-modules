@@ -203,7 +203,7 @@ if __name__ == "__main__":
     parser.add_argument(
         "--mgmt-group-decom",
         type=str,
-        default="bcgov-managed-lz-decommissioned",
+        default="bcgov-managed-lz-live-decommissioned",
         help="Name of the decommissioned management group (default: bcgov-managed-lz-decommissioned)",
     )
     parser.add_argument(
