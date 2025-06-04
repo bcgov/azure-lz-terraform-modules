@@ -3,7 +3,7 @@
     "policy_assignments": [
       "Deny-Private-DNS-Zones",
       "Deny-PublicPaaSEndpoints",
-      "Deny-Resource-Locations",
+      "Allowed-Locations",
       "Deny-RSG-Locations",
       "FedRAMPModerate",
       "Inherit-Sub-Tags",
@@ -20,10 +20,13 @@
     "role_definitions": [],
     "archetype_config": {
       "parameters": {
-        "Deny-Resource-Locations": {
+        "Allowed-Locations": {
           "listOfAllowedLocations": [
             "canadacentral",
             "canadaeast"
+          ],
+          "listOfAllowedServices": [
+            "Microsoft.PowerPlatform"
           ]
         },
         "Deny-RSG-Locations": {

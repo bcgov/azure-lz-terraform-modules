@@ -35,8 +35,9 @@ locals {
     }
     landing-zones = {
       parameters = {
-        Deny-Resource-Locations = {
+        Allowed-Locations = {
           listOfAllowedLocations = [var.primary_location, var.secondary_location]
+          listOfAllowedServices  = ["Microsoft.PowerPlatform"]
         },
         Deny-RSG-Locations = {
           listOfAllowedLocations = [var.primary_location, var.secondary_location]
