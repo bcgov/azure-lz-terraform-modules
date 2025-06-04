@@ -194,26 +194,135 @@ if __name__ == "__main__":
         default=1,
         help="Number of previous months to include (default: 1)",
     )
+    parser.add_argument(
+        "--mgmt-group-live",
+        type=str,
+        default="bcgov-managed-lz-live-landing-zones",
+        help="Name of the live landing zones management group (default: bcgov-managed-lz-live-landing-zones)",
+    )
+    parser.add_argument(
+        "--mgmt-group-decom",
+        type=str,
+        default="bcgov-managed-lz-live-decommissioned",
+        help="Name of the decommissioned management group (default: bcgov-managed-lz-decommissioned)",
+    )
+    parser.add_argument(
+        "--include-decom",
+        action="store_true",
+        help="Include the decommissioned management group in the cost recovery report",
+    )
+    parser.add_argument(
+        "--granularity",
+        type=str,
+        default="Monthly",
+        choices=["Daily", "Monthly", "None"],
+        help="Granularity of the cost report (default: Monthly)",
+    )
+    parser.add_argument(
+        "--output-prefix",
+        type=str,
+        default="azure_cost_recovery",
+        help="Prefix for output files (default: azure_cost_recovery)",
+    )
+    parser.add_argument(
+        "--start-date",
+        type=str,
+        default=None,
+        help="Custom start date for the report period (YYYY-MM-DD). Overrides --months if set.",
+    )
+    parser.add_argument(
+        "--end-date",
+        type=str,
+        default=None,
+        help="Custom end date for the report period (YYYY-MM-DD). Overrides --months if set.",
+    )
     args = parser.parse_args()
 
-    # Default to live landing zones
-    mgmt_group = "bcgov-managed-lz-live-landing-zones"
+    mgmt_group_live = args.mgmt_group_live
+    mgmt_group_decom = args.mgmt_group_decom
+    include_decom = args.include_decom
+    granularity = args.granularity
+    output_prefix = args.output_prefix
 
-    # Get date range based on number of months
-    today = datetime.now()
-    first_of_current = today.replace(day=1)
-
-    # Calculate start and end dates
-    last_of_previous = first_of_current - relativedelta(days=1)
-    first_of_range = first_of_current - relativedelta(months=args.months)
-
-    start = first_of_range.strftime("%Y-%m-%d")
-    end = last_of_previous.strftime("%Y-%m-%d")
+    # Get date range based on CLI args
+    if args.start_date and args.end_date:
+        start = args.start_date
+        end = args.end_date
+    else:
+        today = datetime.now()
+        first_of_current = today.replace(day=1)
+        last_of_previous = first_of_current - relativedelta(days=1)
+        first_of_range = first_of_current - relativedelta(months=args.months)
+        start = first_of_range.strftime("%Y-%m-%d")
+        end = last_of_previous.strftime("%Y-%m-%d")
 
     print(f"\nQuerying costs for period: {start} to {end}")
+    print(f"Live management group: {mgmt_group_live}")
+    if include_decom:
+        print(f"Decommissioned management group: {mgmt_group_decom}")
+    print(f"Granularity: {granularity}")
 
     try:
-        df, summary_df = get_subscription_costs(mgmt_group, start, end, "Monthly")
+        # Query live management group
+        df_live, _ = get_subscription_costs(mgmt_group_live, start, end, granularity)
+        dfs = [df_live]
+        if include_decom:
+            df_decom, _ = get_subscription_costs(mgmt_group_decom, start, end, granularity)
+            dfs.append(df_decom)
+        # Combine the results
+        df = pd.concat(dfs, ignore_index=True)
+
+        # Create summary by account coding with tax calculations (repeat logic from get_subscription_costs)
+        summary_df = (
+            df.groupby(["AccountCoding", "ExpenseAuthority"])
+            .agg(
+                {
+                    "Cost": lambda x: round(sum(x), 2),
+                    "SubscriptionName": lambda x: ", ".join(sorted(set(x))),
+                }
+            )
+            .reset_index()
+        )
+
+        summary_df.columns = [
+            "Account Coding",
+            "Expense Authority",
+            "Total Spend (CAD)",
+            "Subscriptions",
+        ]
+
+        summary_df["Total Spend (CAD)"] = summary_df["Total Spend (CAD)"].apply(
+            lambda x: Decimal(str(x)).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
+        )
+        summary_df["Vendor PST"] = summary_df["Total Spend (CAD)"] * Decimal("0.07")
+        summary_df["Vendor Sub-total"] = summary_df["Total Spend (CAD)"] + summary_df["Vendor PST"]
+        summary_df["Brokerage Fee (6%)"] = summary_df["Total Spend (CAD)"] * Decimal("0.06")
+        summary_df["Grand Total"] = summary_df["Vendor Sub-total"] + summary_df["Brokerage Fee (6%)"]
+
+        decimal_columns = [
+            "Total Spend (CAD)",
+            "Vendor PST",
+            "Vendor Sub-total",
+            "Brokerage Fee (6%)",
+            "Grand Total",
+        ]
+        for col in decimal_columns:
+            summary_df[col] = summary_df[col].apply(
+                lambda x: x.quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
+            )
+
+        summary_df = summary_df[
+            [
+                "Account Coding",
+                "Total Spend (CAD)",
+                "Vendor PST",
+                "Vendor Sub-total",
+                "Brokerage Fee (6%)",
+                "Grand Total",
+                "Expense Authority",
+            ]
+        ]
+
         if df.empty:
             print("\nNo data returned from the query")
         else:
@@ -223,9 +332,9 @@ if __name__ == "__main__":
             print(df.to_string(index=False))
 
             # Export to CSV and Excel
-            detail_csv = f"azure_subscription_costs_detail_{start}_to_{end}.csv"
-            summary_csv = f"azure_cost_recovery_report_{start}_to_{end}.csv"
-            summary_xlsx = f"azure_cost_recovery_report_{start}_to_{end}.xlsx"
+            detail_csv = f"{output_prefix}_detail_{start}_to_{end}.csv"
+            summary_csv = f"{output_prefix}_report_{start}_to_{end}.csv"
+            summary_xlsx = f"{output_prefix}_report_{start}_to_{end}.xlsx"
 
             df.to_csv(detail_csv, index=False)
             summary_df.to_csv(summary_csv, index=False)
