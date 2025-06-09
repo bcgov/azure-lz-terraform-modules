@@ -1,0 +1,63 @@
+{
+  "name": "Allowed-Locations",
+  "type": "Microsoft.Authorization/policyDefinitions",
+  "apiVersion": "2025-03-01",
+  "scope": null,
+  "properties": {
+    "displayName": "Allowed locations",
+    "policyType": "Custom",
+    "mode": "Indexed",
+    "description": "This policy enables you to restrict the locations your organization can specify when deploying resources. Use to enforce your geo-compliance requirements. Excludes resource groups, Microsoft.AzureActiveDirectory/b2cDirectories, and resources that use the 'global' region.",
+    "metadata": {
+      "version": "1.0.0",
+      "category": "General"
+    },
+    "version": "1.0.0",
+    "parameters": {
+      "listOfAllowedLocations": {
+        "type": "Array",
+        "metadata": {
+          "description": "The list of locations that can be specified when deploying resources.",
+          "strongType": "location",
+          "displayName": "Allowed locations"
+        }
+      },
+      "listOfAllowedServices": {
+        "type": "Array",
+        "metadata": {
+          "description": "The list of services that are exempt from the location restrictions. This is useful for services that are global in nature or do not support regional deployments.",
+          "strongType": "location",
+          "displayName": "Allowed services"
+        }
+      }
+    },
+    "policyRule": {
+      "if": {
+        "allOf": [
+          {
+            "field": "location",
+            "notIn": "[parameters('listOfAllowedLocations')]"
+          },
+          {
+            "field": "location",
+            "notEquals": "global"
+          },
+          {
+            "field": "type",
+            "notEquals": "Microsoft.AzureActiveDirectory/b2cDirectories"
+          },
+          {
+            "field": "type",
+            "notIn": "[parameters('listOfAllowedServices')]"
+          }
+        ]
+      },
+      "then": {
+        "effect": "deny"
+      }
+    },
+    "versions": [
+      "1.0.0"
+    ]
+  }
+}
