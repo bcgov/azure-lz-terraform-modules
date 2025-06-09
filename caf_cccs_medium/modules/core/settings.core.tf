@@ -37,7 +37,7 @@ locals {
       parameters = {
         Allowed-Locations = {
           listOfAllowedLocations = [var.primary_location, var.secondary_location]
-          listOfAllowedServices  = ["Microsoft.PowerPlatform"]
+          listOfAllowedServices  = ["Microsoft.PowerPlatform/accounts"]
         },
         Deny-RSG-Locations = {
           listOfAllowedLocations = [var.primary_location, var.secondary_location]

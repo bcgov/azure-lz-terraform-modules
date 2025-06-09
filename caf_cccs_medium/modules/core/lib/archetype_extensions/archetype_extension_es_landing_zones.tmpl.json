@@ -26,7 +26,7 @@
             "canadaeast"
           ],
           "listOfAllowedServices": [
-            "Microsoft.PowerPlatform"
+            "Microsoft.PowerPlatform/accounts"
           ]
         },
         "Deny-RSG-Locations": {
