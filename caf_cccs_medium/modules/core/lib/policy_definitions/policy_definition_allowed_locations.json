@@ -26,7 +26,6 @@
         "type": "Array",
         "metadata": {
           "description": "The list of services that are exempt from the location restrictions. This is useful for services that are global in nature or do not support regional deployments.",
-          "strongType": "location",
           "displayName": "Allowed services"
         }
       }
