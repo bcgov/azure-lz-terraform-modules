@@ -9,14 +9,14 @@ variable "api_connection_display_name" {
   default     = null
 }
 
-variable "jira_api_username" {
-  description = "(Required) The username for the Jira API."
-  type        = string
-}
+# variable "jira_api_username" {
+#   description = "(Required) The username for the Jira API."
+#   type        = string
+# }
 
-variable "jira_api_token" {
-  description = "(Required) The API token for the Jira API."
-  type        = string
-  sensitive   = true
-  # Use export TF_VAR_jira_api_token="your-jira-api"
-}
+# variable "jira_api_token" {
+#   description = "(Required) The API token for the Jira API."
+#   type        = string
+#   sensitive   = true
+#   # Use export TF_VAR_jira_api_token="your-jira-api"
+# }

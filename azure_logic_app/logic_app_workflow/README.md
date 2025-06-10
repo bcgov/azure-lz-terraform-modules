@@ -35,8 +35,6 @@ No modules.
 |------|-------------|------|---------|:--------:|
 | <a name="input_api_connection_display_name"></a> [api\_connection\_display\_name](#input\_api\_connection\_display\_name) | (Optional) A display name for this API Connection. | `string` | `null` | no |
 | <a name="input_api_connection_name"></a> [api\_connection\_name](#input\_api\_connection\_name) | (Required) The Name which should be used for this API Connection. | `string` | n/a | yes |
-| <a name="input_jira_api_token"></a> [jira\_api\_token](#input\_jira\_api\_token) | (Required) The API token for the Jira API. | `string` | n/a | yes |
-| <a name="input_jira_api_username"></a> [jira\_api\_username](#input\_jira\_api\_username) | (Required) The username for the Jira API. | `string` | n/a | yes |
 | <a name="input_location"></a> [location](#input\_location) | The location in which the Logic App will be created. | `string` | n/a | yes |
 | <a name="input_resource_group_name"></a> [resource\_group\_name](#input\_resource\_group\_name) | The name of the resource group in which the Logic App will be created. | `string` | n/a | yes |
 | <a name="input_workflow_name"></a> [workflow\_name](#input\_workflow\_name) | The name of the Logic App workflow. | `string` | n/a | yes |
