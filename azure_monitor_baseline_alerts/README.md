@@ -36,7 +36,7 @@
 | <a name="input_action_group_arm_role_id"></a> [action\_group\_arm\_role\_id](#input\_action\_group\_arm\_role\_id) | Action group ARM role ID | `list(string)` | `[]` | no |
 | <a name="input_action_group_email"></a> [action\_group\_email](#input\_action\_group\_email) | Action group email | `list(string)` | `[]` | no |
 | <a name="input_amba_disable_tag_name"></a> [amba\_disable\_tag\_name](#input\_amba\_disable\_tag\_name) | Tag name used to disable monitoring at the resource level. | `string` | `"MonitorDisable"` | no |
-| <a name="input_amba_disable_tag_values"></a> [amba\_disable\_tag\_values](#input\_amba\_disable\_tag\_values) | Tag value(s) used to disable monitoring at the resource level. | `list(string)` | <pre>[<br/>  "true",<br/>  "Test",<br/>  "Dev",<br/>  "Sandbox"<br/>]</pre> | no |
+| <a name="input_amba_disable_tag_values"></a> [amba\_disable\_tag\_values](#input\_amba\_disable\_tag\_values) | Tag value(s) used to disable monitoring at the resource level. | `list(string)` | <pre>[<br>  "true",<br>  "Test",<br>  "Dev",<br>  "Sandbox"<br>]</pre> | no |
 | <a name="input_architecture_name"></a> [architecture\_name](#input\_architecture\_name) | The name of the architecture. | `string` | n/a | yes |
 | <a name="input_bring_your_own_action_group_resource_id"></a> [bring\_your\_own\_action\_group\_resource\_id](#input\_bring\_your\_own\_action\_group\_resource\_id) | The resource id of the action group, required if you intend to use an existing action group for monitoring purposes. | `list(string)` | `[]` | no |
 | <a name="input_bring_your_own_alert_processing_rule_resource_id"></a> [bring\_your\_own\_alert\_processing\_rule\_resource\_id](#input\_bring\_your\_own\_alert\_processing\_rule\_resource\_id) | The resource id of the alert processing rule, required if you intend to use an existing alert processing rule for monitoring purposes. | `string` | `""` | no |
@@ -52,7 +52,7 @@
 | <a name="input_parent_resource_id"></a> [parent\_resource\_id](#input\_parent\_resource\_id) | The parent resource ID for the architecture. | `string` | n/a | yes |
 | <a name="input_resource_group_name"></a> [resource\_group\_name](#input\_resource\_group\_name) | The resource group where the resources will be deployed. | `string` | `"rg-amba-monitoring-001"` | no |
 | <a name="input_root_management_group_name"></a> [root\_management\_group\_name](#input\_root\_management\_group\_name) | The name of the root management group. | `string` | n/a | yes |
-| <a name="input_tags"></a> [tags](#input\_tags) | (Optional) Tags of the resource. | `map(string)` | <pre>{<br/>  "_deployed_by_amba": "True"<br/>}</pre> | no |
+| <a name="input_tags"></a> [tags](#input\_tags) | (Optional) Tags of the resource. | `map(string)` | <pre>{<br>  "_deployed_by_amba": "True"<br>}</pre> | no |
 | <a name="input_user_assigned_managed_identity_name"></a> [user\_assigned\_managed\_identity\_name](#input\_user\_assigned\_managed\_identity\_name) | The name of the user-assigned managed identity. | `string` | `"id-amba-prod-001"` | no |
 | <a name="input_webhook_service_uri"></a> [webhook\_service\_uri](#input\_webhook\_service\_uri) | The service URI of the webhook. | `list(string)` | `[]` | no |
 
