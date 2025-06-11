@@ -9,6 +9,7 @@ variable "api_connection_display_name" {
   default     = null
 }
 
+# NOTE: 'Username' and 'Token" are only required if using API authentication
 # variable "jira_api_username" {
 #   description = "(Required) The username for the Jira API."
 #   type        = string
