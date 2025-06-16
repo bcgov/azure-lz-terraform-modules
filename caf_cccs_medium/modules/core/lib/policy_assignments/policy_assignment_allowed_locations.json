@@ -1,5 +1,5 @@
 {
-  "name": "Allowed-Resource-Locations",
+  "name": "Resource-Locations",
   "type": "Microsoft.Authorization/policyAssignments",
   "apiVersion": "2025-03-01",
   "properties": {

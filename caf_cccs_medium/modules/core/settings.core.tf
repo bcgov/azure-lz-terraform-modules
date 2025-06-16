@@ -35,7 +35,7 @@ locals {
     }
     landing-zones = {
       parameters = {
-        Allowed-Resource-Locations = {
+        Resource-Locations = {
           listOfAllowedLocations = [var.primary_location, var.secondary_location]
           extraAllowedLocations  = [var.country_location]
         },
