@@ -25,7 +25,7 @@
             "canadacentral",
             "canadaeast"
           ],
-          "listOfAllowedServices": [
+          "extraAllowedLocations": [
             "canada"
           ]
         },
