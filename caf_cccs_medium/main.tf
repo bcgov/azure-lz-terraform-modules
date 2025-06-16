@@ -82,6 +82,7 @@ module "core" {
   configure_management_resources   = module.management.configuration
   primary_location                 = var.primary_location
   secondary_location               = var.secondary_location
+  country_location                 = var.country_location
   root_parent_id                   = var.root_parent_id
   root_id                          = var.root_id
   root_name                        = var.root_name
