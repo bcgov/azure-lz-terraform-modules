@@ -1,13 +1,13 @@
 {
-  "name": "Allowed-Locations",
+  "name": "Resource-Locations",
   "type": "Microsoft.Authorization/policyDefinitions",
   "apiVersion": "2025-03-01",
   "scope": null,
   "properties": {
-    "displayName": "Allowed locations",
+    "displayName": "Allowed Resource locations",
     "policyType": "Custom",
     "mode": "Indexed",
-    "description": "This policy enables you to restrict the locations your organization can specify when deploying resources. Use to enforce your geo-compliance requirements. Excludes resource groups, Microsoft.AzureActiveDirectory/b2cDirectories, and resources that use the 'global' region.",
+    "description": "This policy enables you to restrict the locations your organization can specify when deploying resources. Use to enforce your geo-compliance requirements. Excludes resource groups, Microsoft.AzureActiveDirectory/b2cDirectories, and resources that use the 'global' region or regions specified as extras.",
     "metadata": {
       "version": "1.0.0",
       "category": "General"
@@ -22,10 +22,10 @@
           "displayName": "Allowed locations"
         }
       },
-      "listOfAllowedServices": {
+      "extraAllowedLocations": {
         "type": "Array",
         "metadata": {
-          "description": "The list of services that are exempt from the location restrictions. This is useful for services that are global in nature or do not support regional deployments.",
+          "description": "The list of locations that are not strictly typed but used by some Azure Services. Typically, locations map to a country name, not a region.",
           "displayName": "Allowed services"
         }
       }
@@ -46,8 +46,8 @@
             "notEquals": "Microsoft.AzureActiveDirectory/b2cDirectories"
           },
           {
-            "field": "type",
-            "notIn": "[parameters('listOfAllowedServices')]"
+            "field": "location",
+            "notIn": "[parameters('extraAllowedLocations')]"
           }
         ]
       },

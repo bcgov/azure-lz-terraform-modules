@@ -21,7 +21,7 @@
       "Deny-VNet-Creation",
       "Deny-New-VNet-Peerings",
       "Deny-Delete-Diagnostics",
-      "Allowed-Locations"
+      "Resource-Locations"
     ],
     "policy_set_definitions": [
       "Inherit-Sub-Tags"

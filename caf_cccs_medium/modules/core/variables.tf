@@ -25,6 +25,11 @@ variable "secondary_location" {
   description = "Sets the location for \"secondary\" resources to be created in."
 }
 
+variable "country_location" {
+  type        = string
+  description = "Sets the country location. Used by some Azure resources taht are not tied to the regions."
+}
+
 variable "subscription_id_connectivity" {
   type        = string
   description = "Subscription ID to use for \"connectivity\" resources."
