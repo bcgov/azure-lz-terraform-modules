@@ -26,7 +26,7 @@
         "type": "Array",
         "metadata": {
           "description": "The list of locations that are not strictly typed but used by some Azure Services. Typically, locations map to a country name, not a region.",
-          "displayName": "Allowed services"
+          "displayName": "Extra locations"
         }
       }
     },
