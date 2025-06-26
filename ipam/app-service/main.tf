@@ -107,7 +107,8 @@ resource "azurerm_linux_web_app" "ipam" {
       docker_registry_url = local.acrUri
       docker_image_name   = local.runtime_image
     }
-    use_32_bit_worker = false
+    use_32_bit_worker   = false
+    minimum_tls_version = "1.3"
   }
   https_only              = true
   client_affinity_enabled = true
