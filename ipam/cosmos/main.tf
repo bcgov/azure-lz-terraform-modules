@@ -79,7 +79,7 @@ resource "azurerm_cosmosdb_sql_container" "ipam" {
     max_throughput = 1000
   }
 
-  partition_key_path = "/tenant_id"
+  partition_key_paths = ["/tenant_id"]
   # partition_key_version = 1
   indexing_policy {
     indexing_mode = "consistent"
