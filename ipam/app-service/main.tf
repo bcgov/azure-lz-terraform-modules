@@ -99,8 +99,9 @@ resource "azurerm_linux_web_app" "ipam" {
     identity_ids = [var.managedIdentityId]
   }
   site_config {
-    ftps_state        = "Disabled"
-    health_check_path = "/api/status"
+    ftps_state                        = "Disabled"
+    health_check_path                 = "/api/status"
+    health_check_eviction_time_in_min = 2
     # ip_restriction_default_action     = "Allow"
     # scm_ip_restriction_default_action = "Allow"
     application_stack {
