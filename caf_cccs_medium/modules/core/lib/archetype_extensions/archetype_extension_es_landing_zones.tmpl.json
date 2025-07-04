@@ -6,7 +6,6 @@
       "Resource-Locations",
       "Deny-RSG-Locations",
       "FedRAMPModerate",
-      "Inherit-Sub-Tags",
       "Deny-VNet-DNS-Changes",
       "Deny-Protected-Network",
       "Deny-VNet-Creation",
