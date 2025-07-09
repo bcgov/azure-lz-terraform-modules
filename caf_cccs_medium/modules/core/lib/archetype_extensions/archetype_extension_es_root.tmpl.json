@@ -20,7 +20,8 @@
       "Deny-Protected-Network-Resources",
       "Deny-VNet-Creation",
       "Deny-New-VNet-Peerings",
-      "Deny-Delete-Diagnostics"
+      "Deny-Delete-Diagnostics",
+      "Resource-Locations"
     ],
     "policy_set_definitions": [
       "Inherit-Sub-Tags"

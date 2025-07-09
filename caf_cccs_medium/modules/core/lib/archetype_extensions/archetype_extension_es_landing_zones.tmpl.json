@@ -3,10 +3,9 @@
     "policy_assignments": [
       "Deny-Private-DNS-Zones",
       "Deny-PublicPaaSEndpoints",
-      "Deny-Resource-Locations",
+      "Resource-Locations",
       "Deny-RSG-Locations",
       "FedRAMPModerate",
-      "Inherit-Sub-Tags",
       "Deny-VNet-DNS-Changes",
       "Deny-Protected-Network",
       "Deny-VNet-Creation",
@@ -20,10 +19,13 @@
     "role_definitions": [],
     "archetype_config": {
       "parameters": {
-        "Deny-Resource-Locations": {
+        "Resource-Locations": {
           "listOfAllowedLocations": [
             "canadacentral",
             "canadaeast"
+          ],
+          "extraAllowedLocations": [
+            "canada"
           ]
         },
         "Deny-RSG-Locations": {

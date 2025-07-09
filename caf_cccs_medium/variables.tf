@@ -30,6 +30,13 @@ variable "secondary_location" {
   default     = "CanadaEast"
 }
 
+variable "country_location" {
+  type        = string
+  description = "Sets the country location. Used by some Azure resources taht are not tied to the regions."
+  default     = "Canada"
+}
+
+
 variable "subscription_id_connectivity" {
   type        = string
   description = "Subscription ID to use for \"connectivity\" resources."

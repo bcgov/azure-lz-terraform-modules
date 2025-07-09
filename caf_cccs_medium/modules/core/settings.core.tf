@@ -36,8 +36,9 @@ locals {
     }
     landing-zones = {
       parameters = {
-        Deny-Resource-Locations = {
+        Resource-Locations = {
           listOfAllowedLocations = [var.primary_location, var.secondary_location]
+          extraAllowedLocations  = [var.country_location]
         },
         Deny-RSG-Locations = {
           listOfAllowedLocations = [var.primary_location, var.secondary_location]

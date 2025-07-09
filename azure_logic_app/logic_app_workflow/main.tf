@@ -20,15 +20,17 @@ resource "azapi_resource" "jira" {
     properties = {
       displayName = var.api_connection_display_name
       parameterValueSet = {
-        name = "APIToken"
-        values = {
-          username = {
-            value = var.jira_api_username
-          }
-          password = {
-            value = var.jira_api_token
-          }
-        }
+        # name = "APIToken"
+        # values = {
+        #   username = {
+        #     value = var.jira_api_username
+        #   }
+        #   password = {
+        #     value = var.jira_api_token
+        #   }
+        # }
+        name   = "oauth" # IMPORTANT: You will still need to complete the OAuth setup in the Azure Portal post deployment
+        values = {}
       }
       api = {
         id = data.azurerm_managed_api.jira.id
