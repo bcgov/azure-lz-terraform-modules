@@ -1,0 +1,14 @@
+{
+    "exclude_es_root": {
+        "policy_assignments": [
+            "Deploy-Private-DNS-Zones"
+        ],
+        "policy_definitions": [],
+        "policy_set_definitions": [],
+        "role_definitions": [],
+        "archetype_config": {
+            "parameters": {},
+            "access_control": {}
+        }
+    }
+}

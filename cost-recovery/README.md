@@ -43,10 +43,10 @@ python cost_recovery.py -m 3
 
 ### Example
 
-Query the last 2 months for both live and decommissioned management groups, with daily granularity:
+Query the last 3 months for both live and decommissioned management groups, with daily granularity:
 
 ```bash
-python cost_recovery.py -m 2 --include-decom --granularity Daily
+python cost_recovery.py -m 3 --include-decom --granularity Daily
 ```
 
 Query a custom date range and specify output file prefix:

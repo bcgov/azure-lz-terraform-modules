@@ -3,9 +3,9 @@
     "policy_assignments": [
       "CanadaFederalPBMM",
       "Deny-Public-IP-On-NIC",
-      "Deploy-Private-DNS-Zones",
+      "DINE-Private-DNS-Zones",
       "Deploy-Private-DNS-Sql",
-      "Deploy-Private-DNS-OAI",
+      "Deploy-Private-DNS-CgSrv",
       "Deny-AppGw-Without-Tls",
       "Deploy-Private-DNS-PSQL",
       "MicrosoftCISv2",
@@ -15,7 +15,7 @@
       "Inherit-Account-Code-Tag",
       "Inherit-Billing-Group-Tag",
       "Inherit-Ministry-Name-Tag",
-      "Deploy-Private-DNS-OAI",
+      "Deploy-Private-DNS-CgSrv",
       "Deny-VNet-DNS-Changes",
       "Deny-Protected-Network-Resources",
       "Deny-VNet-Creation",
@@ -24,6 +24,7 @@
       "Resource-Locations"
     ],
     "policy_set_definitions": [
+      "Deploy-Private-DNS-Zones-Custom",
       "Inherit-Sub-Tags"
     ],
     "role_definitions": [],
@@ -44,9 +45,10 @@
         "Deploy-Private-DNS-PSQL": {
           "privateDnsZoneId": "SET using local.archetype_config_overrides"
         },
-        "Deploy-Private-DNS-OAI": {
-          "defaultPrivateDnsZoneId": "SET using local.archetype_config_overrides",
-          "openaiPrivateDnsZoneId": "SET using local.archetype_config_overrides"
+        "Deploy-Private-DNS-CgSrv": {
+          "cognitiveServicesPrivateDnsZoneId": "SET using local.archetype_config_overrides",
+          "openAIPrivateDnsZoneId": "SET using local.archetype_config_overrides",
+          "aiServicesPrivateDnsZoneId": "SET using local.archetype_config_overrides"
         }
       },
       "access_control": {}
