@@ -13,7 +13,8 @@ locals {
       security_center = {
         config = {
           # Configure a valid security contact email address
-          email_security_contact = var.email_security_contact
+          email_security_contact         = var.email_security_contact
+          enable_defender_for_containers = false
         }
       }
     }
