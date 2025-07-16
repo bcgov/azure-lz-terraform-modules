@@ -3,7 +3,7 @@
     "policy_assignments": [
       "CanadaFederalPBMM",
       "Deny-Public-IP-On-NIC",
-      "Deploy-Private-DNS-Zones",
+      "DINE-Private-DNS-Zones",
       "Deploy-Private-DNS-Sql",
       "Deploy-Private-DNS-CgSrv",
       "Deny-AppGw-Without-Tls",
@@ -24,6 +24,7 @@
       "Resource-Locations"
     ],
     "policy_set_definitions": [
+      "Deploy-Private-DNS-Zones-Custom",
       "Inherit-Sub-Tags"
     ],
     "role_definitions": [],
