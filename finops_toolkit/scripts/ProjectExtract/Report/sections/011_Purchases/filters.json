@@ -1,0 +1,51 @@
+[
+  {
+    "name": "Filter419536217304ab765166",
+    "expression": {
+      "Column": {
+        "Expression": {
+          "SourceRef": {
+            "Entity": "Costs"
+          }
+        },
+        "Property": "ChargeCategory"
+      }
+    },
+    "filter": {
+      "Version": 2,
+      "From": [
+        {
+          "Name": "c",
+          "Entity": "Costs",
+          "Type": 0
+        }
+      ],
+      "Where": [
+        {
+          "Condition": {
+            "Comparison": {
+              "ComparisonKind": 0,
+              "Left": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Source": "c"
+                    }
+                  },
+                  "Property": "ChargeCategory"
+                }
+              },
+              "Right": {
+                "Literal": {
+                  "Value": "'Purchase'"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "type": "Advanced",
+    "howCreated": 1
+  }
+]

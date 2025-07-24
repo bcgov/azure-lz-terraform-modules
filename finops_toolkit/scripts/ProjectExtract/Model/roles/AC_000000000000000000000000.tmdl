@@ -1,0 +1,4 @@
+role 'AC_000000000000000000000000'
+    modelPermission: read
+
+    tablePermission Costs = [tag_account_coding] == "000000000000000000000000"

@@ -1,0 +1,58 @@
+[
+  {
+    "name": "Filter20ab716479a155a5401d",
+    "expression": {
+      "Column": {
+        "Expression": {
+          "SourceRef": {
+            "Entity": "Costs"
+          }
+        },
+        "Property": "ChargeCategory"
+      }
+    },
+    "filter": {
+      "Version": 2,
+      "From": [
+        {
+          "Name": "c",
+          "Entity": "Costs",
+          "Type": 0
+        }
+      ],
+      "Where": [
+        {
+          "Condition": {
+            "In": {
+              "Expressions": [
+                {
+                  "Column": {
+                    "Expression": {
+                      "SourceRef": {
+                        "Source": "c"
+                      }
+                    },
+                    "Property": "ChargeCategory"
+                  }
+                }
+              ],
+              "Values": [
+                [
+                  {
+                    "Literal": {
+                      "Value": "'Adjustment'"
+                    }
+                  }
+                ]
+              ]
+            }
+          }
+        }
+      ]
+    },
+    "type": "Categorical",
+    "howCreated": 0,
+    "objects": {},
+    "isHiddenInViewMode": false
+  }
+]

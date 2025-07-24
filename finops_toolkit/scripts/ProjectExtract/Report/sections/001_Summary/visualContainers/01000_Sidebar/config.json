@@ -1,0 +1,21 @@
+{
+  "name": "b6053aa4f341eea69c37",
+  "layouts": [
+    {
+      "id": 0,
+      "position": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "width": 200,
+        "height": 720.00000000000114,
+        "tabOrder": 1000
+      }
+    }
+  ],
+  "singleVisualGroup": {
+    "displayName": "Sidebar",
+    "groupMode": 0,
+    "isHidden": false
+  }
+}

@@ -1,0 +1,119 @@
+[
+  {
+    "expression": {
+      "Column": {
+        "Expression": {
+          "SourceRef": {
+            "Entity": "Costs"
+          }
+        },
+        "Property": "SubAccountName"
+      }
+    },
+    "filter": {
+      "Version": 2,
+      "From": [
+        {
+          "Name": "subquery",
+          "Expression": {
+            "Subquery": {
+              "Query": {
+                "Version": 2,
+                "From": [
+                  {
+                    "Name": "c",
+                    "Entity": "Costs",
+                    "Type": 0
+                  }
+                ],
+                "Select": [
+                  {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Source": "c"
+                        }
+                      },
+                      "Property": "SubAccountName"
+                    },
+                    "Name": "field"
+                  }
+                ],
+                "OrderBy": [
+                  {
+                    "Direction": 2,
+                    "Expression": {
+                      "Aggregation": {
+                        "Expression": {
+                          "Column": {
+                            "Expression": {
+                              "SourceRef": {
+                                "Source": "c"
+                              }
+                            },
+                            "Property": "EffectiveCost"
+                          }
+                        },
+                        "Function": 0
+                      }
+                    }
+                  }
+                ],
+                "Top": 10
+              }
+            }
+          },
+          "Type": 2
+        },
+        {
+          "Name": "c",
+          "Entity": "Costs",
+          "Type": 0
+        }
+      ],
+      "Where": [
+        {
+          "Condition": {
+            "In": {
+              "Expressions": [
+                {
+                  "Column": {
+                    "Expression": {
+                      "SourceRef": {
+                        "Source": "c"
+                      }
+                    },
+                    "Property": "SubAccountName"
+                  }
+                }
+              ],
+              "Table": {
+                "SourceRef": {
+                  "Source": "subquery"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "type": "TopN",
+    "howCreated": 0,
+    "isHiddenInViewMode": false
+  },
+  {
+    "name": "e81ec9975517be67e05d",
+    "expression": {
+      "Column": {
+        "Expression": {
+          "SourceRef": {
+            "Entity": "Costs"
+          }
+        },
+        "Property": "ChargePeriodStart"
+      }
+    },
+    "type": "RelativeDate",
+    "howCreated": 1
+  }
+]

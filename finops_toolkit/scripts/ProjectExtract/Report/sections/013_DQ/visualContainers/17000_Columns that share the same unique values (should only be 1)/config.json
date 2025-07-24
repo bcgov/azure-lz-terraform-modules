@@ -1,0 +1,238 @@
+{
+  "name": "e57d2ca488802e2d01cf",
+  "layouts": [
+    {
+      "id": 0,
+      "position": {
+        "x": 8,
+        "y": 2496,
+        "z": 17000,
+        "width": 1264,
+        "height": 216,
+        "tabOrder": 17000
+      }
+    }
+  ],
+  "singleVisual": {
+    "visualType": "tableEx",
+    "projections": {
+      "Values": [
+        {
+          "queryRef": "Costs.SkuPriceId"
+        },
+        {
+          "queryRef": "Costs.BillingCurrency"
+        },
+        {
+          "queryRef": "Costs.PricingCurrency"
+        },
+        {
+          "queryRef": "Costs.x_BillingExchangeRate"
+        },
+        {
+          "queryRef": "Sum(Costs.ListUnitPrice)"
+        },
+        {
+          "queryRef": "Sum(Costs.ContractedUnitPrice)"
+        },
+        {
+          "queryRef": "Costs.x_BilledUnitPrice"
+        },
+        {
+          "queryRef": "Costs.x_EffectiveUnitPrice"
+        },
+        {
+          "queryRef": "Sum(Costs.BilledCost)"
+        },
+        {
+          "queryRef": "Sum(Costs.EffectiveCost)"
+        }
+      ]
+    },
+    "prototypeQuery": {
+      "Version": 2,
+      "From": [
+        {
+          "Name": "c",
+          "Entity": "Costs",
+          "Type": 0
+        }
+      ],
+      "Select": [
+        {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Source": "c"
+              }
+            },
+            "Property": "EffectiveCost"
+          },
+          "Name": "Sum(Costs.EffectiveCost)",
+          "NativeReferenceName": "EffectiveCost1"
+        },
+        {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Source": "c"
+              }
+            },
+            "Property": "BillingCurrency"
+          },
+          "Name": "Costs.BillingCurrency",
+          "NativeReferenceName": "BillingCurrency"
+        },
+        {
+          "Aggregation": {
+            "Expression": {
+              "Column": {
+                "Expression": {
+                  "SourceRef": {
+                    "Source": "c"
+                  }
+                },
+                "Property": "BilledCost"
+              }
+            },
+            "Function": 0
+          },
+          "Name": "Sum(Costs.BilledCost)",
+          "NativeReferenceName": "BilledCost"
+        },
+        {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Source": "c"
+              }
+            },
+            "Property": "PricingCurrency"
+          },
+          "Name": "Costs.PricingCurrency",
+          "NativeReferenceName": "PricingCurrency"
+        },
+        {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Source": "c"
+              }
+            },
+            "Property": "SkuPriceId"
+          },
+          "Name": "Costs.SkuPriceId",
+          "NativeReferenceName": "SkuPriceId"
+        },
+        {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Source": "c"
+              }
+            },
+            "Property": "x_BilledUnitPrice"
+          },
+          "Name": "Costs.x_BilledUnitPrice",
+          "NativeReferenceName": "x_BilledUnitPrice"
+        },
+        {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Source": "c"
+              }
+            },
+            "Property": "x_EffectiveUnitPrice"
+          },
+          "Name": "Costs.x_EffectiveUnitPrice",
+          "NativeReferenceName": "x_EffectiveUnitPrice"
+        },
+        {
+          "Aggregation": {
+            "Expression": {
+              "Column": {
+                "Expression": {
+                  "SourceRef": {
+                    "Source": "c"
+                  }
+                },
+                "Property": "ContractedUnitPrice"
+              }
+            },
+            "Function": 0
+          },
+          "Name": "Sum(Costs.ContractedUnitPrice)",
+          "NativeReferenceName": "ContractedUnitPrice"
+        },
+        {
+          "Aggregation": {
+            "Expression": {
+              "Column": {
+                "Expression": {
+                  "SourceRef": {
+                    "Source": "c"
+                  }
+                },
+                "Property": "ListUnitPrice"
+              }
+            },
+            "Function": 0
+          },
+          "Name": "Sum(Costs.ListUnitPrice)",
+          "NativeReferenceName": "ListUnitPrice"
+        },
+        {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Source": "c"
+              }
+            },
+            "Property": "x_BillingExchangeRate"
+          },
+          "Name": "Costs.x_BillingExchangeRate",
+          "NativeReferenceName": "x_BillingExchangeRate"
+        }
+      ]
+    },
+    "drillFilterOtherVisuals": true,
+    "objects": {
+      "total": [
+        {
+          "properties": {
+            "totals": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "vcObjects": {
+      "title": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            },
+            "text": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Columns that share the same unique values (should only be 1)'"
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}

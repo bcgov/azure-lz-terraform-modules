@@ -1,0 +1,181 @@
+{
+  "name": "a7434de9bd67edefbbc9",
+  "layouts": [
+    {
+      "id": 0,
+      "position": {
+        "x": 792,
+        "y": 392,
+        "z": 3000,
+        "width": 472.00000000000006,
+        "height": 320,
+        "tabOrder": 7000
+      }
+    }
+  ],
+  "singleVisual": {
+    "visualType": "treemap",
+    "projections": {
+      "Group": [
+        {
+          "queryRef": "Costs.Service Hierarchy.ServiceCategory",
+          "active": true
+        },
+        {
+          "queryRef": "Costs.Service Hierarchy.ServiceName"
+        },
+        {
+          "queryRef": "Costs.Service Hierarchy.ResourceType"
+        }
+      ],
+      "Values": [
+        {
+          "queryRef": "Count(Costs.ResourceId)"
+        }
+      ]
+    },
+    "prototypeQuery": {
+      "Version": 2,
+      "From": [
+        {
+          "Name": "c",
+          "Entity": "Costs",
+          "Type": 0
+        }
+      ],
+      "Select": [
+        {
+          "HierarchyLevel": {
+            "Expression": {
+              "Hierarchy": {
+                "Expression": {
+                  "SourceRef": {
+                    "Source": "c"
+                  }
+                },
+                "Hierarchy": "Service Hierarchy"
+              }
+            },
+            "Level": "ServiceCategory"
+          },
+          "Name": "Costs.Service Hierarchy.ServiceCategory",
+          "NativeReferenceName": "Service Hierarchy ServiceCategory"
+        },
+        {
+          "HierarchyLevel": {
+            "Expression": {
+              "Hierarchy": {
+                "Expression": {
+                  "SourceRef": {
+                    "Source": "c"
+                  }
+                },
+                "Hierarchy": "Service Hierarchy"
+              }
+            },
+            "Level": "ServiceName"
+          },
+          "Name": "Costs.Service Hierarchy.ServiceName",
+          "NativeReferenceName": "Service Hierarchy ServiceName"
+        },
+        {
+          "HierarchyLevel": {
+            "Expression": {
+              "Hierarchy": {
+                "Expression": {
+                  "SourceRef": {
+                    "Source": "c"
+                  }
+                },
+                "Hierarchy": "Service Hierarchy"
+              }
+            },
+            "Level": "ResourceType"
+          },
+          "Name": "Costs.Service Hierarchy.ResourceType",
+          "NativeReferenceName": "Service Hierarchy ResourceType"
+        },
+        {
+          "Aggregation": {
+            "Expression": {
+              "Column": {
+                "Expression": {
+                  "SourceRef": {
+                    "Source": "c"
+                  }
+                },
+                "Property": "ResourceId"
+              }
+            },
+            "Function": 2
+          },
+          "Name": "Count(Costs.ResourceId)",
+          "NativeReferenceName": "Resources"
+        }
+      ]
+    },
+    "columnProperties": {
+      "Costs.ResourceId": {
+        "displayName": "Count"
+      },
+      "Count(Costs.ResourceId)": {
+        "displayName": "Resources"
+      }
+    },
+    "drillFilterOtherVisuals": true,
+    "objects": {},
+    "vcObjects": {
+      "border": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "color": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "ThemeDataColor": {
+                      "ColorId": 0,
+                      "Percent": -0.1
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      ],
+      "title": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "visualTooltip": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}

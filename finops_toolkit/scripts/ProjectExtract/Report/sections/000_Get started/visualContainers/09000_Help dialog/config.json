@@ -1,0 +1,21 @@
+{
+  "name": "db0699bd090645927783",
+  "layouts": [
+    {
+      "id": 0,
+      "position": {
+        "x": 214.86555878177339,
+        "y": 112.00000371107124,
+        "z": 12000,
+        "width": 852.32876712328778,
+        "height": 560.54794520547955,
+        "tabOrder": 9000
+      }
+    }
+  ],
+  "singleVisualGroup": {
+    "displayName": "Help dialog",
+    "groupMode": 0,
+    "isHidden": true
+  }
+}

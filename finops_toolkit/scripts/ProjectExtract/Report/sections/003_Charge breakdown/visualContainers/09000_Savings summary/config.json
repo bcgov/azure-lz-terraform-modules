@@ -1,0 +1,184 @@
+{
+  "name": "ac97ec5f9281ab906ee0",
+  "layouts": [
+    {
+      "id": 0,
+      "position": {
+        "x": 887.99999999999989,
+        "y": 8,
+        "z": 2000,
+        "width": 376,
+        "height": 184,
+        "tabOrder": 9000
+      }
+    }
+  ],
+  "singleVisual": {
+    "visualType": "funnel",
+    "projections": {
+      "Y": [
+        {
+          "queryRef": "Sum(Costs.x_TotalSavings)"
+        },
+        {
+          "queryRef": "Sum(Costs.x_NegotiatedDiscountSavings)"
+        },
+        {
+          "queryRef": "Sum(Costs.x_CommitmentDiscountSavings)"
+        }
+      ]
+    },
+    "prototypeQuery": {
+      "Version": 2,
+      "From": [
+        {
+          "Name": "c",
+          "Entity": "Costs",
+          "Type": 0
+        }
+      ],
+      "Select": [
+        {
+          "Aggregation": {
+            "Expression": {
+              "Column": {
+                "Expression": {
+                  "SourceRef": {
+                    "Source": "c"
+                  }
+                },
+                "Property": "x_TotalSavings"
+              }
+            },
+            "Function": 0
+          },
+          "Name": "Sum(Costs.x_TotalSavings)",
+          "NativeReferenceName": "Total savings"
+        },
+        {
+          "Aggregation": {
+            "Expression": {
+              "Column": {
+                "Expression": {
+                  "SourceRef": {
+                    "Source": "c"
+                  }
+                },
+                "Property": "x_NegotiatedDiscountSavings"
+              }
+            },
+            "Function": 0
+          },
+          "Name": "Sum(Costs.x_NegotiatedDiscountSavings)",
+          "NativeReferenceName": "Negotiated discount"
+        },
+        {
+          "Aggregation": {
+            "Expression": {
+              "Column": {
+                "Expression": {
+                  "SourceRef": {
+                    "Source": "c"
+                  }
+                },
+                "Property": "x_CommitmentDiscountSavings"
+              }
+            },
+            "Function": 0
+          },
+          "Name": "Sum(Costs.x_CommitmentDiscountSavings)",
+          "NativeReferenceName": "Commitment discount"
+        }
+      ],
+      "OrderBy": [
+        {
+          "Direction": 2,
+          "Expression": {
+            "Aggregation": {
+              "Expression": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Source": "c"
+                    }
+                  },
+                  "Property": "x_TotalSavings"
+                }
+              },
+              "Function": 0
+            }
+          }
+        }
+      ]
+    },
+    "columnProperties": {
+      "Sum(Costs.x_CommitmentDiscountSavings)": {
+        "displayName": "Commitment discount"
+      },
+      "Sum(Costs.x_NegotiatedDiscountSavings)": {
+        "displayName": "Negotiated discount"
+      },
+      "Sum(Costs.x_TotalSavings)": {
+        "displayName": "Total savings"
+      }
+    },
+    "drillFilterOtherVisuals": true,
+    "hasDefaultSort": true,
+    "objects": {
+      "labels": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "categoryAxis": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "percentBarLabel": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "vcObjects": {
+      "title": [
+        {
+          "properties": {
+            "text": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Savings summary'"
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,82 @@
+{
+  "name": "ed31b8c69c8859a6475a",
+  "layouts": [
+    {
+      "id": 0,
+      "position": {
+        "x": 213.33333333333334,
+        "y": 8.3333333333333339,
+        "z": 10000,
+        "width": 194.16666666666669,
+        "height": 46.666666666666671,
+        "tabOrder": 0
+      }
+    }
+  ],
+  "singleVisual": {
+    "visualType": "textbox",
+    "drillFilterOtherVisuals": true,
+    "objects": {
+      "general": [
+        {
+          "properties": {
+            "paragraphs": [
+              {
+                "textRuns": [
+                  {
+                    "value": "FinOps toolkit",
+                    "textStyle": {
+                      "fontSize": "20pt",
+                      "color": "#a6a6a6"
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "vcObjects": {
+      "background": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "visualHeader": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "title": [
+        {
+          "properties": {
+            "text": {
+              "expr": {
+                "Literal": {
+                  "Value": "'FTK label'"
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}

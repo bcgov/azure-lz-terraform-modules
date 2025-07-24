@@ -1,0 +1,312 @@
+{
+  "name": "b0aaebffd40d63a0460a",
+  "layouts": [
+    {
+      "id": 0,
+      "position": {
+        "x": 216,
+        "y": 104.00000000000001,
+        "z": 3000,
+        "width": 1048,
+        "height": 280,
+        "tabOrder": 6000
+      }
+    }
+  ],
+  "singleVisual": {
+    "visualType": "stackedAreaChart",
+    "projections": {
+      "Category": [
+        {
+          "queryRef": "Costs.ChargePeriodStart",
+          "active": true
+        }
+      ],
+      "Y": [
+        {
+          "queryRef": "Costs.EffectiveCostRunningTotal"
+        },
+        {
+          "queryRef": "Costs.x_NegotiatedDiscountSavingsRunningTotal"
+        },
+        {
+          "queryRef": "Costs.x_CommitmentDiscountSavingsRunningTotal"
+        }
+      ],
+      "Tooltips": [
+        {
+          "queryRef": "Costs.x_TotalSavingsRunningTotal"
+        }
+      ]
+    },
+    "prototypeQuery": {
+      "Version": 2,
+      "From": [
+        {
+          "Name": "c",
+          "Entity": "Costs",
+          "Type": 0
+        }
+      ],
+      "Select": [
+        {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Source": "c"
+              }
+            },
+            "Property": "ChargePeriodStart"
+          },
+          "Name": "Costs.ChargePeriodStart"
+        },
+        {
+          "Measure": {
+            "Expression": {
+              "SourceRef": {
+                "Source": "c"
+              }
+            },
+            "Property": "EffectiveCostRunningTotal"
+          },
+          "Name": "Costs.EffectiveCostRunningTotal"
+        },
+        {
+          "Measure": {
+            "Expression": {
+              "SourceRef": {
+                "Source": "c"
+              }
+            },
+            "Property": "x_TotalSavingsRunningTotal"
+          },
+          "Name": "Costs.x_TotalSavingsRunningTotal",
+          "NativeReferenceName": "Total savings"
+        },
+        {
+          "Measure": {
+            "Expression": {
+              "SourceRef": {
+                "Source": "c"
+              }
+            },
+            "Property": "x_NegotiatedDiscountSavingsRunningTotal"
+          },
+          "Name": "Costs.x_NegotiatedDiscountSavingsRunningTotal",
+          "NativeReferenceName": "Negotiated savings"
+        },
+        {
+          "Measure": {
+            "Expression": {
+              "SourceRef": {
+                "Source": "c"
+              }
+            },
+            "Property": "x_CommitmentDiscountSavingsRunningTotal"
+          },
+          "Name": "Costs.x_CommitmentDiscountSavingsRunningTotal",
+          "NativeReferenceName": "Commitment savings"
+        }
+      ],
+      "OrderBy": [
+        {
+          "Direction": 1,
+          "Expression": {
+            "Column": {
+              "Expression": {
+                "SourceRef": {
+                  "Source": "c"
+                }
+              },
+              "Property": "ChargePeriodStart"
+            }
+          }
+        }
+      ]
+    },
+    "columnProperties": {
+      "Costs.EffectiveCostRunningTotal": {
+        "displayName": "Cost"
+      },
+      "Costs.x_TotalSavingsRunningTotal": {
+        "displayName": "Total savings"
+      },
+      "Costs.x_NegotiatedDiscountSavingsRunningTotal": {
+        "displayName": "Negotiated savings"
+      },
+      "Costs.x_CommitmentDiscountSavingsRunningTotal": {
+        "displayName": "Commitment savings"
+      }
+    },
+    "drillFilterOtherVisuals": true,
+    "hasDefaultSort": true,
+    "objects": {
+      "labels": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "labelDisplayUnits": {
+              "expr": {
+                "Literal": {
+                  "Value": "0D"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "categoryAxis": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "showAxisTitle": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            },
+            "reverseStackOrder": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "valueAxis": [
+        {
+          "properties": {
+            "showAxisTitle": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "legend": [
+        {
+          "properties": {
+            "position": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Bottom'"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "dataPoint": [
+        {
+          "properties": {
+            "fill": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "'#7FBA00'"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "Costs.EffectiveCostRunningTotal"
+          }
+        }
+      ],
+      "layout": [
+        {
+          "properties": {
+            "seriesOrderReversed": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "vcObjects": {
+      "border": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "color": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "ThemeDataColor": {
+                      "ColorId": 0,
+                      "Percent": -0.1
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      ],
+      "title": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            },
+            "text": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Chart'"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "visualTooltip": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}

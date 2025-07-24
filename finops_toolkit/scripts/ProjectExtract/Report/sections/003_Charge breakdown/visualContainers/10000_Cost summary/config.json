@@ -1,0 +1,152 @@
+{
+  "name": "5afdfb0fea1b611eb31e",
+  "layouts": [
+    {
+      "id": 0,
+      "position": {
+        "x": 503.99999999999994,
+        "y": 8,
+        "z": 3000,
+        "width": 376,
+        "height": 184,
+        "tabOrder": 10000
+      }
+    }
+  ],
+  "singleVisual": {
+    "visualType": "funnel",
+    "projections": {
+      "Y": [
+        {
+          "queryRef": "Sum(Costs.ListCost)"
+        },
+        {
+          "queryRef": "Sum(Costs.ContractedCost)"
+        },
+        {
+          "queryRef": "Sum(Costs.EffectiveCost)"
+        }
+      ]
+    },
+    "prototypeQuery": {
+      "Version": 2,
+      "From": [
+        {
+          "Name": "c",
+          "Entity": "Costs",
+          "Type": 0
+        }
+      ],
+      "Select": [
+        {
+          "Aggregation": {
+            "Expression": {
+              "Column": {
+                "Expression": {
+                  "SourceRef": {
+                    "Source": "c"
+                  }
+                },
+                "Property": "ListCost"
+              }
+            },
+            "Function": 0
+          },
+          "Name": "Sum(Costs.ListCost)",
+          "NativeReferenceName": "List"
+        },
+        {
+          "Aggregation": {
+            "Expression": {
+              "Column": {
+                "Expression": {
+                  "SourceRef": {
+                    "Source": "c"
+                  }
+                },
+                "Property": "EffectiveCost"
+              }
+            },
+            "Function": 0
+          },
+          "Name": "Sum(Costs.EffectiveCost)",
+          "NativeReferenceName": "EffectiveCost1"
+        },
+        {
+          "Aggregation": {
+            "Expression": {
+              "Column": {
+                "Expression": {
+                  "SourceRef": {
+                    "Source": "c"
+                  }
+                },
+                "Property": "ContractedCost"
+              }
+            },
+            "Function": 0
+          },
+          "Name": "Sum(Costs.ContractedCost)",
+          "NativeReferenceName": "ContractedCost"
+        }
+      ],
+      "OrderBy": [
+        {
+          "Direction": 2,
+          "Expression": {
+            "Aggregation": {
+              "Expression": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Source": "c"
+                    }
+                  },
+                  "Property": "ListCost"
+                }
+              },
+              "Function": 0
+            }
+          }
+        }
+      ]
+    },
+    "columnProperties": {
+      "Sum(Costs.ListCost)": {
+        "displayName": "List"
+      }
+    },
+    "drillFilterOtherVisuals": true,
+    "hasDefaultSort": true,
+    "objects": {
+      "percentBarLabel": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "vcObjects": {
+      "title": [
+        {
+          "properties": {
+            "text": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Cost summary'"
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}

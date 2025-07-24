@@ -1,0 +1,46 @@
+﻿table PricingUnits
+
+	column UnitOfMeasure
+		dataType: string
+		summarizeBy: none
+		sourceColumn: UnitOfMeasure
+
+		annotation SummarizationSetBy = Automatic
+
+	column PricingBlockSize
+		dataType: double
+		summarizeBy: sum
+		sourceColumn: PricingBlockSize
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column DistinctUnits
+		dataType: string
+		summarizeBy: none
+		sourceColumn: DistinctUnits
+
+		annotation SummarizationSetBy = Automatic
+
+	partition PricingUnits = m
+		mode: import
+		queryGroup: 'Open data'
+		source =
+				let
+				  Source = Csv.Document(Web.Contents("https://github.com/microsoft/finops-toolkit/releases/latest/download/PricingUnits.csv"), [Delimiter = ",", Columns = 4, QuoteStyle = QuoteStyle.None]),
+				  PromoteHeaders = Table.PromoteHeaders(Source, [PromoteAllScalars = true]),
+				  Remove = Table.RemoveColumns(PromoteHeaders, {"AccountTypes"}),
+				  Types = Table.TransformColumnTypes(Remove, {
+				    {"UnitOfMeasure",    type text},
+				    {"PricingBlockSize", type number},
+				    {"DistinctUnits",    type text}
+				  }),
+				  RemoveBlanks = Table.SelectRows(Types, each not List.IsEmpty(List.RemoveMatchingItems(Record.FieldValues(_), {"", null})))
+				in
+				  RemoveBlanks
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+

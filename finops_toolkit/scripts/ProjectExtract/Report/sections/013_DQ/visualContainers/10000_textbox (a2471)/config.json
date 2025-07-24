@@ -1,0 +1,110 @@
+{
+  "name": "a2471f6e8787e490185d",
+  "layouts": [
+    {
+      "id": 0,
+      "position": {
+        "x": 0,
+        "y": 48,
+        "z": 10000,
+        "width": 1280,
+        "height": 112,
+        "tabOrder": 10000
+      }
+    }
+  ],
+  "singleVisual": {
+    "visualType": "textbox",
+    "drillFilterOtherVisuals": true,
+    "objects": {
+      "general": [
+        {
+          "properties": {
+            "paragraphs": [
+              {
+                "textRuns": [
+                  {
+                    "value": "Normalization validation",
+                    "textStyle": {
+                      "fontFamily": "Segoe UI Light",
+                      "fontSize": "20pt"
+                    }
+                  }
+                ]
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": "The following columns are modified as part of the FOCUS transforms from native actual/amortized schemas and can be used to identify if there are any unexpected values. If you notice anything that does not look correct, like a ServiceName that is incorrect or a ServiceCategory that is \"Other\", please "
+                  },
+                  {
+                    "value": "create an issue in GitHub",
+                    "textStyle": {},
+                    "url": "https://aka.ms/ftk/idea"
+                  },
+                  {
+                    "value": ". If you need this to be resolved immediately, please file a support request on Cost Management."
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "vcObjects": {
+      "padding": [
+        {
+          "properties": {
+            "top": {
+              "expr": {
+                "Literal": {
+                  "Value": "10D"
+                }
+              }
+            },
+            "bottom": {
+              "expr": {
+                "Literal": {
+                  "Value": "10D"
+                }
+              }
+            },
+            "left": {
+              "expr": {
+                "Literal": {
+                  "Value": "15D"
+                }
+              }
+            },
+            "right": {
+              "expr": {
+                "Literal": {
+                  "Value": "15D"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "background": [
+        {
+          "properties": {
+            "color": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "ThemeDataColor": {
+                      "ColorId": 2,
+                      "Percent": 0.6
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}

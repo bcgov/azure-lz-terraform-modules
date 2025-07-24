@@ -1,0 +1,134 @@
+[
+  {
+    "expression": {
+      "HierarchyLevel": {
+        "Expression": {
+          "Hierarchy": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "Costs"
+              }
+            },
+            "Hierarchy": "Service Hierarchy"
+          }
+        },
+        "Level": "ServiceCategory"
+      }
+    },
+    "filter": {
+      "Version": 2,
+      "From": [
+        {
+          "Name": "subquery",
+          "Expression": {
+            "Subquery": {
+              "Query": {
+                "Version": 2,
+                "From": [
+                  {
+                    "Name": "c",
+                    "Entity": "Costs",
+                    "Type": 0
+                  }
+                ],
+                "Select": [
+                  {
+                    "HierarchyLevel": {
+                      "Expression": {
+                        "Hierarchy": {
+                          "Expression": {
+                            "SourceRef": {
+                              "Source": "c"
+                            }
+                          },
+                          "Hierarchy": "Service Hierarchy"
+                        }
+                      },
+                      "Level": "ServiceCategory"
+                    },
+                    "Name": "field"
+                  }
+                ],
+                "OrderBy": [
+                  {
+                    "Direction": 2,
+                    "Expression": {
+                      "Aggregation": {
+                        "Expression": {
+                          "Column": {
+                            "Expression": {
+                              "SourceRef": {
+                                "Source": "c"
+                              }
+                            },
+                            "Property": "EffectiveCost"
+                          }
+                        },
+                        "Function": 0
+                      }
+                    }
+                  }
+                ],
+                "Top": 10
+              }
+            }
+          },
+          "Type": 2
+        },
+        {
+          "Name": "c",
+          "Entity": "Costs",
+          "Type": 0
+        }
+      ],
+      "Where": [
+        {
+          "Condition": {
+            "In": {
+              "Expressions": [
+                {
+                  "HierarchyLevel": {
+                    "Expression": {
+                      "Hierarchy": {
+                        "Expression": {
+                          "SourceRef": {
+                            "Source": "c"
+                          }
+                        },
+                        "Hierarchy": "Service Hierarchy"
+                      }
+                    },
+                    "Level": "ServiceCategory"
+                  }
+                }
+              ],
+              "Table": {
+                "SourceRef": {
+                  "Source": "subquery"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "type": "TopN",
+    "howCreated": 1,
+    "isHiddenInViewMode": false
+  },
+  {
+    "name": "0080faeff1e264f3c4f4",
+    "expression": {
+      "Column": {
+        "Expression": {
+          "SourceRef": {
+            "Entity": "Costs"
+          }
+        },
+        "Property": "ChargePeriodStart"
+      }
+    },
+    "type": "RelativeDate",
+    "howCreated": 1
+  }
+]

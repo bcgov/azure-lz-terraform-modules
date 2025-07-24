@@ -1,0 +1,21 @@
+{
+  "name": "d6cdb8ede8cf4893d913",
+  "layouts": [
+    {
+      "id": 0,
+      "position": {
+        "x": 216,
+        "y": 304,
+        "z": 7000,
+        "width": 272,
+        "height": 368,
+        "tabOrder": 5000
+      }
+    }
+  ],
+  "singleVisualGroup": {
+    "displayName": "Connect copy",
+    "groupMode": 0,
+    "isHidden": false
+  }
+}

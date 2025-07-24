@@ -1,0 +1,55 @@
+[
+  {
+    "name": "03de859739f61a767fea",
+    "expression": {
+      "Column": {
+        "Expression": {
+          "SourceRef": {
+            "Entity": "Costs"
+          }
+        },
+        "Property": "SubAccountId"
+      }
+    },
+    "filter": {
+      "Version": 2,
+      "From": [
+        {
+          "Name": "c",
+          "Entity": "Costs",
+          "Type": 0
+        }
+      ],
+      "Where": [
+        {
+          "Condition": {
+            "Not": {
+              "Expression": {
+                "Comparison": {
+                  "ComparisonKind": 0,
+                  "Left": {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Source": "c"
+                        }
+                      },
+                      "Property": "SubAccountId"
+                    }
+                  },
+                  "Right": {
+                    "Literal": {
+                      "Value": "''"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "type": "Advanced",
+    "howCreated": 1
+  }
+]

@@ -1,0 +1,327 @@
+{
+  "objects": {
+    "labels": [
+      {
+        "properties": {
+          "show": {
+            "expr": {
+              "Literal": {
+                "Value": "false"
+              }
+            }
+          }
+        }
+      }
+    ],
+    "legend": [
+      {
+        "properties": {
+          "position": {
+            "expr": {
+              "Literal": {
+                "Value": "'Bottom'"
+              }
+            }
+          },
+          "show": {
+            "expr": {
+              "Literal": {
+                "Value": "false"
+              }
+            }
+          }
+        }
+      }
+    ],
+    "dataPoint": [
+      {
+        "properties": {
+          "fill": {
+            "solid": {
+              "color": {
+                "expr": {
+                  "ThemeDataColor": {
+                    "ColorId": 4,
+                    "Percent": 0
+                  }
+                }
+              }
+            }
+          }
+        },
+        "selector": {
+          "data": [
+            {
+              "scopeId": {
+                "Comparison": {
+                  "ComparisonKind": 0,
+                  "Left": {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "Costs"
+                        }
+                      },
+                      "Property": "ChargeCategory"
+                    }
+                  },
+                  "Right": {
+                    "Literal": {
+                      "Value": "'Adjustment'"
+                    }
+                  }
+                }
+              }
+            }
+          ]
+        }
+      },
+      {
+        "properties": {
+          "fill": {
+            "solid": {
+              "color": {
+                "expr": {
+                  "ThemeDataColor": {
+                    "ColorId": 2,
+                    "Percent": 0
+                  }
+                }
+              }
+            }
+          }
+        },
+        "selector": {
+          "data": [
+            {
+              "scopeId": {
+                "Comparison": {
+                  "ComparisonKind": 0,
+                  "Left": {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "Costs"
+                        }
+                      },
+                      "Property": "ChargeCategory"
+                    }
+                  },
+                  "Right": {
+                    "Literal": {
+                      "Value": "'Purchase'"
+                    }
+                  }
+                }
+              }
+            }
+          ]
+        }
+      },
+      {
+        "properties": {
+          "fill": {
+            "solid": {
+              "color": {
+                "expr": {
+                  "ThemeDataColor": {
+                    "ColorId": 3,
+                    "Percent": 0
+                  }
+                }
+              }
+            }
+          }
+        },
+        "selector": {
+          "data": [
+            {
+              "scopeId": {
+                "Comparison": {
+                  "ComparisonKind": 0,
+                  "Left": {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "Costs"
+                        }
+                      },
+                      "Property": "ChargeCategory"
+                    }
+                  },
+                  "Right": {
+                    "Literal": {
+                      "Value": "'Usage'"
+                    }
+                  }
+                }
+              }
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "projectionOrdering": {
+    "Group": [
+      0,
+      2
+    ],
+    "Values": [
+      1
+    ]
+  },
+  "projectionActiveItems": {
+    "Group": [
+      {
+        "queryRef": "Costs.ServiceCategory",
+        "suppressConcat": false
+      }
+    ]
+  },
+  "queryMetadata": {
+    "Select": [
+      {
+        "Restatement": "ServiceCategory",
+        "Name": "Costs.ServiceCategory",
+        "Type": 2048
+      },
+      {
+        "Restatement": "EffectiveCost",
+        "Name": "Sum(Costs.EffectiveCost)",
+        "Type": 1
+      },
+      {
+        "Restatement": "ResourceType",
+        "Name": "Costs.ResourceType",
+        "Type": 2048
+      }
+    ],
+    "Filters": [
+      {
+        "type": 5,
+        "expression": {
+          "HierarchyLevel": {
+            "Expression": {
+              "Hierarchy": {
+                "Expression": {
+                  "SourceRef": {
+                    "Entity": "Costs"
+                  }
+                },
+                "Hierarchy": "Service Hierarchy"
+              }
+            },
+            "Level": "ServiceCategory"
+          }
+        }
+      },
+      {
+        "type": 8,
+        "expression": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "Costs"
+              }
+            },
+            "Property": "ChargePeriodStart"
+          }
+        }
+      }
+    ]
+  },
+  "visualElements": [
+    {
+      "DataRoles": [
+        {
+          "Name": "Group",
+          "Projection": 0,
+          "isActive": true
+        },
+        {
+          "Name": "Group",
+          "Projection": 2,
+          "isActive": false
+        },
+        {
+          "Name": "Values",
+          "Projection": 1,
+          "isActive": false
+        }
+      ]
+    }
+  ],
+  "selects": [
+    {
+      "displayName": "ServiceCategory",
+      "queryName": "Costs.ServiceCategory",
+      "roles": {
+        "Group": true
+      },
+      "type": {
+        "category": null,
+        "underlyingType": 1
+      },
+      "expr": {
+        "Column": {
+          "Expression": {
+            "SourceRef": {
+              "Entity": "Costs"
+            }
+          },
+          "Property": "ServiceCategory"
+        }
+      }
+    },
+    {
+      "displayName": "EffectiveCost",
+      "queryName": "Sum(Costs.EffectiveCost)",
+      "roles": {
+        "Values": true
+      },
+      "sort": 2,
+      "sortOrder": 0,
+      "type": {
+        "category": null,
+        "underlyingType": 259
+      },
+      "expr": {
+        "Aggregation": {
+          "Expression": {
+            "Column": {
+              "Expression": {
+                "SourceRef": {
+                  "Entity": "Costs"
+                }
+              },
+              "Property": "EffectiveCost"
+            }
+          },
+          "Function": 0
+        }
+      }
+    },
+    {
+      "displayName": "ResourceType",
+      "queryName": "Costs.ResourceType",
+      "roles": {
+        "Group": true
+      },
+      "type": {
+        "category": null,
+        "underlyingType": 1
+      },
+      "expr": {
+        "Column": {
+          "Expression": {
+            "SourceRef": {
+              "Entity": "Costs"
+            }
+          },
+          "Property": "ResourceType"
+        }
+      }
+    }
+  ]
+}

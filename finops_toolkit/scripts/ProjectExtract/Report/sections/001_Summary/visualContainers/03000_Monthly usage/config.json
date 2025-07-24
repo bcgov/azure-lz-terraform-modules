@@ -1,0 +1,433 @@
+{
+  "name": "54261075325195d8c01b",
+  "layouts": [
+    {
+      "id": 0,
+      "position": {
+        "x": 214.86535008976659,
+        "y": 8.0430879712746854,
+        "z": 3000,
+        "width": 665.278276481149,
+        "height": 280.359066427289,
+        "tabOrder": 3000
+      }
+    }
+  ],
+  "singleVisual": {
+    "visualType": "columnChart",
+    "projections": {
+      "Category": [
+        {
+          "queryRef": "Costs.x_ChargeMonth",
+          "active": true
+        }
+      ],
+      "Y": [
+        {
+          "queryRef": "Sum(Costs.EffectiveCost)"
+        }
+      ],
+      "Tooltips": [
+        {
+          "queryRef": "Costs.x_EffectiveSavingsRate"
+        }
+      ],
+      "Series": [
+        {
+          "queryRef": "Costs.PricingCategory"
+        }
+      ]
+    },
+    "prototypeQuery": {
+      "Version": 2,
+      "From": [
+        {
+          "Name": "c",
+          "Entity": "Costs",
+          "Type": 0
+        }
+      ],
+      "Select": [
+        {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Source": "c"
+              }
+            },
+            "Property": "x_ChargeMonth"
+          },
+          "Name": "Costs.x_ChargeMonth",
+          "NativeReferenceName": "ChargeMonth"
+        },
+        {
+          "Aggregation": {
+            "Expression": {
+              "Column": {
+                "Expression": {
+                  "SourceRef": {
+                    "Source": "c"
+                  }
+                },
+                "Property": "EffectiveCost"
+              }
+            },
+            "Function": 0
+          },
+          "Name": "Sum(Costs.EffectiveCost)",
+          "NativeReferenceName": "EffectiveCost"
+        },
+        {
+          "Measure": {
+            "Expression": {
+              "SourceRef": {
+                "Source": "c"
+              }
+            },
+            "Property": "x_EffectiveSavingsRate"
+          },
+          "Name": "Costs.x_EffectiveSavingsRate",
+          "NativeReferenceName": "Effective savings rate"
+        },
+        {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Source": "c"
+              }
+            },
+            "Property": "PricingCategory"
+          },
+          "Name": "Costs.PricingCategory",
+          "NativeReferenceName": "PricingCategory"
+        }
+      ],
+      "OrderBy": [
+        {
+          "Direction": 1,
+          "Expression": {
+            "Column": {
+              "Expression": {
+                "SourceRef": {
+                  "Source": "c"
+                }
+              },
+              "Property": "x_ChargeMonth"
+            }
+          }
+        }
+      ]
+    },
+    "columnProperties": {
+      "Costs.EffectiveCostRunningTotal": {
+        "displayName": "Cost"
+      },
+      "Costs.x_TotalSavingsRunningTotal": {
+        "displayName": "Total savings"
+      },
+      "Costs.x_NegotiatedDiscountSavingsRunningTotal": {
+        "displayName": "Negotiated savings"
+      },
+      "Costs.x_CommitmentDiscountSavingsRunningTotal": {
+        "displayName": "Commitment savings"
+      },
+      "Costs.x_ChargeMonth": {
+        "displayName": "ChargeMonth"
+      },
+      "Costs.x_EffectiveSavingsRate": {
+        "displayName": "Effective savings rate"
+      }
+    },
+    "drillFilterOtherVisuals": true,
+    "hasDefaultSort": true,
+    "objects": {
+      "labels": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            },
+            "labelDisplayUnits": {
+              "expr": {
+                "Literal": {
+                  "Value": "0D"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "categoryAxis": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "showAxisTitle": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            },
+            "axisType": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Scalar'"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "valueAxis": [
+        {
+          "properties": {
+            "showAxisTitle": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "legend": [
+        {
+          "properties": {
+            "position": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Bottom'"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "dataPoint": [
+        {
+          "properties": {
+            "fill": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "ThemeDataColor": {
+                      "ColorId": 4,
+                      "Percent": 0
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "selector": {
+            "data": [
+              {
+                "scopeId": {
+                  "Comparison": {
+                    "ComparisonKind": 0,
+                    "Left": {
+                      "Column": {
+                        "Expression": {
+                          "SourceRef": {
+                            "Entity": "Costs"
+                          }
+                        },
+                        "Property": "ChargeCategory"
+                      }
+                    },
+                    "Right": {
+                      "Literal": {
+                        "Value": "'Adjustment'"
+                      }
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "properties": {
+            "fill": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "ThemeDataColor": {
+                      "ColorId": 2,
+                      "Percent": 0
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "selector": {
+            "data": [
+              {
+                "scopeId": {
+                  "Comparison": {
+                    "ComparisonKind": 0,
+                    "Left": {
+                      "Column": {
+                        "Expression": {
+                          "SourceRef": {
+                            "Entity": "Costs"
+                          }
+                        },
+                        "Property": "ChargeCategory"
+                      }
+                    },
+                    "Right": {
+                      "Literal": {
+                        "Value": "'Purchase'"
+                      }
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "properties": {
+            "fill": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "ThemeDataColor": {
+                      "ColorId": 3,
+                      "Percent": 0
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "selector": {
+            "data": [
+              {
+                "scopeId": {
+                  "Comparison": {
+                    "ComparisonKind": 0,
+                    "Left": {
+                      "Column": {
+                        "Expression": {
+                          "SourceRef": {
+                            "Entity": "Costs"
+                          }
+                        },
+                        "Property": "ChargeCategory"
+                      }
+                    },
+                    "Right": {
+                      "Literal": {
+                        "Value": "'Usage'"
+                      }
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "zoom": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "ribbonBands": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "vcObjects": {
+      "border": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "color": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "ThemeDataColor": {
+                      "ColorId": 0,
+                      "Percent": -0.1
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      ],
+      "title": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "text": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Monthly usage'"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "visualTooltip": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}

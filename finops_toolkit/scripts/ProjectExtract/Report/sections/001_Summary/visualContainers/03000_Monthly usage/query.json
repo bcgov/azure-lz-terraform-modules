@@ -1,0 +1,109 @@
+{
+  "Commands": [
+    {
+      "SemanticQueryDataShapeCommand": {
+        "Query": {
+          "Version": 2,
+          "From": [
+            {
+              "Name": "c",
+              "Entity": "Costs",
+              "Type": 0
+            }
+          ],
+          "Select": [
+            {
+              "Column": {
+                "Expression": {
+                  "SourceRef": {
+                    "Source": "c"
+                  }
+                },
+                "Property": "x_ChargeMonth"
+              },
+              "Name": "Costs.x_ChargeMonth",
+              "NativeReferenceName": "ChargeMonth"
+            },
+            {
+              "Aggregation": {
+                "Expression": {
+                  "Column": {
+                    "Expression": {
+                      "SourceRef": {
+                        "Source": "c"
+                      }
+                    },
+                    "Property": "EffectiveCost"
+                  }
+                },
+                "Function": 0
+              },
+              "Name": "Sum(Costs.EffectiveCost)",
+              "NativeReferenceName": "EffectiveCost"
+            },
+            {
+              "Measure": {
+                "Expression": {
+                  "SourceRef": {
+                    "Source": "c"
+                  }
+                },
+                "Property": "x_EffectiveSavingsRate"
+              },
+              "Name": "Costs.x_EffectiveSavingsRate",
+              "NativeReferenceName": "Effective savings rate"
+            },
+            {
+              "Column": {
+                "Expression": {
+                  "SourceRef": {
+                    "Source": "c"
+                  }
+                },
+                "Property": "PricingCategory"
+              },
+              "Name": "Costs.PricingCategory",
+              "NativeReferenceName": "PricingCategory"
+            }
+          ]
+        },
+        "Binding": {
+          "Primary": {
+            "Groupings": [
+              {
+                "Projections": [
+                  0,
+                  1,
+                  2
+                ]
+              }
+            ]
+          },
+          "Secondary": {
+            "Groupings": [
+              {
+                "Projections": [
+                  3
+                ]
+              }
+            ]
+          },
+          "DataReduction": {
+            "DataVolume": 4,
+            "Primary": {
+              "Sample": {}
+            },
+            "Secondary": {
+              "Top": {}
+            }
+          },
+          "SuppressedJoinPredicates": [
+            2
+          ],
+          "Version": 1
+        },
+        "ExecutionMetricsKind": 1
+      }
+    }
+  ]
+}

@@ -1,0 +1,106 @@
+{
+  "name": "a005b8bdd44bed5b100c",
+  "layouts": [
+    {
+      "id": 0,
+      "position": {
+        "x": 983.99999999999989,
+        "y": 8,
+        "z": 2000,
+        "width": 280,
+        "height": 376,
+        "tabOrder": 0
+      }
+    }
+  ],
+  "singleVisual": {
+    "visualType": "treemap",
+    "projections": {
+      "Group": [
+        {
+          "queryRef": "Costs.tag_CostCenter",
+          "active": true
+        }
+      ],
+      "Values": [
+        {
+          "queryRef": "Sum(Costs.EffectiveCost)"
+        }
+      ],
+      "Details": [
+        {
+          "queryRef": "Costs.tag_Project"
+        }
+      ]
+    },
+    "prototypeQuery": {
+      "Version": 2,
+      "From": [
+        {
+          "Name": "c",
+          "Entity": "Costs",
+          "Type": 0
+        }
+      ],
+      "Select": [
+        {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Source": "c"
+              }
+            },
+            "Property": "tag_CostCenter"
+          },
+          "Name": "Costs.tag_CostCenter",
+          "NativeReferenceName": "tag_CostCenter"
+        },
+        {
+          "Aggregation": {
+            "Expression": {
+              "Column": {
+                "Expression": {
+                  "SourceRef": {
+                    "Source": "c"
+                  }
+                },
+                "Property": "EffectiveCost"
+              }
+            },
+            "Function": 0
+          },
+          "Name": "Sum(Costs.EffectiveCost)",
+          "NativeReferenceName": "EffectiveCost"
+        },
+        {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Source": "c"
+              }
+            },
+            "Property": "tag_Project"
+          },
+          "Name": "Costs.tag_Project",
+          "NativeReferenceName": "tag_Project"
+        }
+      ]
+    },
+    "drillFilterOtherVisuals": true,
+    "vcObjects": {
+      "title": [
+        {
+          "properties": {
+            "fontSize": {
+              "expr": {
+                "Literal": {
+                  "Value": "12D"
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}

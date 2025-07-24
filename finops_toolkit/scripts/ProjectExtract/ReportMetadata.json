@@ -1,0 +1,7 @@
+{
+  "Version": 5,
+  "AutoCreatedRelationships": [],
+  "FileDescription": "The Cost summary report provides several summaries of your effective (amortized) and billed costs based on the FinOps Open Cost and Usage Specification (FOCUS). Amortization breaks down reservation and savings plan purchases and allocates costs to the resources that received the benefit. Effective costs will not match your invoice.\n\nTo customize queries or data source settings, select the Edit option in the Load button.\n\nLearn more at https://aka.ms/ftk/pbi/CostSummary",
+  "CreatedFrom": "Cloud",
+  "CreatedFromRelease": "2025.07"
+}

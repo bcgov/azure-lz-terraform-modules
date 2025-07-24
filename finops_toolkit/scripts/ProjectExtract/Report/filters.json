@@ -1,0 +1,24 @@
+[
+  {
+    "name": "71f23e9beb592a377302",
+    "expression": {
+      "Column": {
+        "Expression": {
+          "SourceRef": {
+            "Entity": "Costs"
+          }
+        },
+        "Property": "x_CostAllocationRuleName"
+      }
+    },
+    "type": "Categorical",
+    "howCreated": 1,
+    "objects": {
+      "general": [
+        {
+          "properties": {}
+        }
+      ]
+    }
+  }
+]

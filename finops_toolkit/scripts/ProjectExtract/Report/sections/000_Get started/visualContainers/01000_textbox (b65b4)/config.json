@@ -1,0 +1,87 @@
+{
+  "name": "b65b40f83e6aadd2dcb8",
+  "layouts": [
+    {
+      "id": 0,
+      "position": {
+        "x": 0.036008230452665657,
+        "y": 192,
+        "z": 0,
+        "width": 256,
+        "height": 176,
+        "tabOrder": 1000
+      }
+    }
+  ],
+  "singleVisual": {
+    "visualType": "textbox",
+    "drillFilterOtherVisuals": true,
+    "objects": {
+      "general": [
+        {
+          "properties": {
+            "paragraphs": [
+              {
+                "textRuns": [
+                  {
+                    "value": "Connect your data",
+                    "textStyle": {
+                      "fontSize": "14pt"
+                    }
+                  }
+                ]
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": "Connect to data across billing accounts and subscriptions to get started."
+                  }
+                ]
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": ""
+                  }
+                ]
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": ""
+                  }
+                ]
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": ""
+                  }
+                ]
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": ""
+                  }
+                ]
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": "Troubleshooting guide",
+                    "textStyle": {
+                      "color": "#6f4bb2"
+                    },
+                    "url": "https://aka.ms/ftk/trouble"
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    }
+  },
+  "parentGroupName": "d6cdb8ede8cf4893d913"
+}

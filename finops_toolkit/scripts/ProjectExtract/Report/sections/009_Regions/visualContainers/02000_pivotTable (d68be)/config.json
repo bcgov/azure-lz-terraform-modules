@@ -1,0 +1,238 @@
+{
+  "name": "d68bed5034799d04c9e0",
+  "layouts": [
+    {
+      "id": 0,
+      "position": {
+        "x": 216,
+        "y": 392,
+        "z": 2000,
+        "width": 568,
+        "height": 320,
+        "tabOrder": 2000
+      }
+    }
+  ],
+  "singleVisual": {
+    "visualType": "pivotTable",
+    "projections": {
+      "Rows": [
+        {
+          "queryRef": "Costs.RegionName",
+          "active": true
+        },
+        {
+          "queryRef": "Costs.ServiceName"
+        },
+        {
+          "queryRef": "Costs.ResourceName"
+        }
+      ],
+      "Values": [
+        {
+          "queryRef": "Sum(Costs.EffectiveCost)"
+        }
+      ],
+      "Columns": [
+        {
+          "queryRef": "Costs.x_ChargeMonth",
+          "active": true
+        }
+      ]
+    },
+    "prototypeQuery": {
+      "Version": 2,
+      "From": [
+        {
+          "Name": "c",
+          "Entity": "Costs",
+          "Type": 0
+        }
+      ],
+      "Select": [
+        {
+          "Aggregation": {
+            "Expression": {
+              "Column": {
+                "Expression": {
+                  "SourceRef": {
+                    "Source": "c"
+                  }
+                },
+                "Property": "EffectiveCost"
+              }
+            },
+            "Function": 0
+          },
+          "Name": "Sum(Costs.EffectiveCost)",
+          "NativeReferenceName": "Effective cost"
+        },
+        {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Source": "c"
+              }
+            },
+            "Property": "ServiceName"
+          },
+          "Name": "Costs.ServiceName",
+          "NativeReferenceName": "Service"
+        },
+        {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Source": "c"
+              }
+            },
+            "Property": "RegionName"
+          },
+          "Name": "Costs.RegionName",
+          "NativeReferenceName": "Region"
+        },
+        {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Source": "c"
+              }
+            },
+            "Property": "x_ChargeMonth"
+          },
+          "Name": "Costs.x_ChargeMonth",
+          "NativeReferenceName": "Month"
+        },
+        {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Source": "c"
+              }
+            },
+            "Property": "ResourceName"
+          },
+          "Name": "Costs.ResourceName",
+          "NativeReferenceName": "Resource"
+        }
+      ]
+    },
+    "expansionStates": [
+      {
+        "roles": [
+          "Rows"
+        ],
+        "levels": [
+          {
+            "queryRefs": [
+              "Costs.RegionName"
+            ],
+            "isCollapsed": true,
+            "isPinned": true
+          },
+          {
+            "queryRefs": [
+              "Costs.ServiceName"
+            ],
+            "isCollapsed": true,
+            "identityKeys": [
+              {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Costs"
+                    }
+                  },
+                  "Property": "ServiceName"
+                }
+              }
+            ],
+            "isPinned": true
+          },
+          {
+            "queryRefs": [
+              "Costs.ResourceName"
+            ],
+            "isCollapsed": true,
+            "isPinned": true
+          }
+        ],
+        "root": {
+          "identityValues": null
+        }
+      }
+    ],
+    "columnProperties": {
+      "Sum(Costs.EffectiveCost)": {
+        "displayName": "Effective cost"
+      },
+      "Costs.ServiceName": {
+        "displayName": "Service"
+      },
+      "Costs.RegionName": {
+        "displayName": "Region"
+      },
+      "Costs.x_ChargeMonth": {
+        "displayName": "Month"
+      },
+      "Costs.ResourceName": {
+        "displayName": "Resource"
+      }
+    },
+    "drillFilterOtherVisuals": true,
+    "objects": {},
+    "vcObjects": {
+      "border": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "color": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "ThemeDataColor": {
+                      "ColorId": 0,
+                      "Percent": -0.1
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      ],
+      "title": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "visualTooltip": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}

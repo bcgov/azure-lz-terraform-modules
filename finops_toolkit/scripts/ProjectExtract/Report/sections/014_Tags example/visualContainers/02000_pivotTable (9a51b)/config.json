@@ -1,0 +1,304 @@
+{
+  "name": "9a51bcd76059cc069e7e",
+  "layouts": [
+    {
+      "id": 0,
+      "position": {
+        "x": 216,
+        "y": 8,
+        "z": 4000,
+        "width": 472.00000000000006,
+        "height": 376,
+        "tabOrder": 2000
+      }
+    }
+  ],
+  "singleVisual": {
+    "visualType": "pivotTable",
+    "projections": {
+      "Rows": [
+        {
+          "queryRef": "Costs.tag_CostCenter",
+          "active": true
+        },
+        {
+          "queryRef": "Costs.tag_Project",
+          "active": true
+        },
+        {
+          "queryRef": "Costs.tag_Department"
+        }
+      ],
+      "Values": [
+        {
+          "queryRef": "Sum(Costs.EffectiveCost)"
+        },
+        {
+          "queryRef": "Divide(Sum(Costs.EffectiveCost), ScopedEval(Sum(Costs.EffectiveCost), [Role.Columns]))"
+        },
+        {
+          "queryRef": "Sum(Costs.EffectiveCost)"
+        },
+        {
+          "queryRef": "SparklineData(Sum(Costs.EffectiveCost)_[Costs.ChargePeriodStart])"
+        }
+      ]
+    },
+    "prototypeQuery": {
+      "Version": 2,
+      "From": [
+        {
+          "Name": "c",
+          "Entity": "Costs",
+          "Type": 0
+        }
+      ],
+      "Select": [
+        {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Source": "c"
+              }
+            },
+            "Property": "tag_CostCenter"
+          },
+          "Name": "Costs.tag_CostCenter",
+          "NativeReferenceName": "tag_CostCenter"
+        },
+        {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Source": "c"
+              }
+            },
+            "Property": "tag_Project"
+          },
+          "Name": "Costs.tag_Project",
+          "NativeReferenceName": "tag_Project"
+        },
+        {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Source": "c"
+              }
+            },
+            "Property": "tag_Department"
+          },
+          "Name": "Costs.tag_Department",
+          "NativeReferenceName": "tag_Department"
+        },
+        {
+          "Aggregation": {
+            "Expression": {
+              "Column": {
+                "Expression": {
+                  "SourceRef": {
+                    "Source": "c"
+                  }
+                },
+                "Property": "EffectiveCost"
+              }
+            },
+            "Function": 0
+          },
+          "Name": "Sum(Costs.EffectiveCost)",
+          "NativeReferenceName": "EffectiveCost"
+        },
+        {
+          "Arithmetic": {
+            "Left": {
+              "Aggregation": {
+                "Expression": {
+                  "Column": {
+                    "Expression": {
+                      "SourceRef": {
+                        "Source": "c"
+                      }
+                    },
+                    "Property": "EffectiveCost"
+                  }
+                },
+                "Function": 0
+              }
+            },
+            "Right": {
+              "ScopedEval": {
+                "Expression": {
+                  "Aggregation": {
+                    "Expression": {
+                      "Column": {
+                        "Expression": {
+                          "SourceRef": {
+                            "Source": "c"
+                          }
+                        },
+                        "Property": "EffectiveCost"
+                      }
+                    },
+                    "Function": 0
+                  }
+                },
+                "Scope": [
+                  {
+                    "RoleRef": {
+                      "Role": "Columns"
+                    }
+                  }
+                ]
+              }
+            },
+            "Operator": 3
+          },
+          "Name": "Divide(Sum(Costs.EffectiveCost), ScopedEval(Sum(Costs.EffectiveCost), [Role.Columns]))",
+          "NativeReferenceName": "Percent"
+        },
+        {
+          "SparklineData": {
+            "Measure": {
+              "Aggregation": {
+                "Expression": {
+                  "Column": {
+                    "Expression": {
+                      "SourceRef": {
+                        "Source": "c"
+                      }
+                    },
+                    "Property": "EffectiveCost"
+                  }
+                },
+                "Function": 0
+              }
+            },
+            "Groupings": [
+              {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Source": "c"
+                    }
+                  },
+                  "Property": "ChargePeriodStart"
+                }
+              }
+            ]
+          },
+          "Name": "SparklineData(Sum(Costs.EffectiveCost)_[Costs.ChargePeriodStart])",
+          "NativeReferenceName": "EffectiveCost by ChargePeriodStart"
+        }
+      ]
+    },
+    "expansionStates": [
+      {
+        "roles": [
+          "Rows"
+        ],
+        "levels": [
+          {
+            "queryRefs": [
+              "Costs.tag_CostCenter"
+            ],
+            "isCollapsed": true,
+            "identityKeys": [
+              {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Costs"
+                    }
+                  },
+                  "Property": "tag_CostCenter"
+                }
+              }
+            ],
+            "isPinned": true
+          },
+          {
+            "queryRefs": [
+              "Costs.tag_Project"
+            ],
+            "isCollapsed": true,
+            "isPinned": true
+          },
+          {
+            "queryRefs": [
+              "Costs.tag_Department"
+            ],
+            "isCollapsed": true
+          }
+        ],
+        "root": {
+          "identityValues": null,
+          "children": [
+            {
+              "identityValues": [
+                {
+                  "Literal": {
+                    "Value": "'SubACM'"
+                  }
+                }
+              ],
+              "isToggled": true
+            },
+            {
+              "identityValues": [
+                {
+                  "Literal": {
+                    "Value": "'ACM-PM'"
+                  }
+                }
+              ],
+              "isToggled": true
+            },
+            {
+              "identityValues": [
+                {
+                  "Literal": {
+                    "Value": "'1234'"
+                  }
+                }
+              ],
+              "isToggled": true
+            },
+            {
+              "identityValues": [
+                {
+                  "Literal": {
+                    "Value": "null"
+                  }
+                }
+              ],
+              "isToggled": true
+            }
+          ]
+        }
+      }
+    ],
+    "columnProperties": {
+      "Divide(Sum(Costs.EffectiveCost), ScopedEval(Sum(Costs.EffectiveCost), [Role.Columns]))": {
+        "displayName": "Percent"
+      }
+    },
+    "drillFilterOtherVisuals": true,
+    "objects": {
+      "columnWidth": [
+        {
+          "properties": {
+            "value": {
+              "expr": {
+                "Literal": {
+                  "Value": "117.38805142969727D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "SparklineData(Sum(Costs.EffectiveCost)_[Costs.ChargePeriodStart])"
+          }
+        }
+      ]
+    }
+  }
+}

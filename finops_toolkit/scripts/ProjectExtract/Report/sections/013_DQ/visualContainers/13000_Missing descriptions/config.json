@@ -1,0 +1,264 @@
+{
+  "name": "072c21c0a28e75a621a2",
+  "layouts": [
+    {
+      "id": 0,
+      "position": {
+        "x": 8,
+        "y": 903.94375001914659,
+        "z": 13000,
+        "width": 1264,
+        "height": 272,
+        "tabOrder": 13000
+      }
+    }
+  ],
+  "singleVisual": {
+    "visualType": "tableEx",
+    "projections": {
+      "Values": [
+        {
+          "queryRef": "Costs.ChargeCategory"
+        },
+        {
+          "queryRef": "Costs.ChargeClass"
+        },
+        {
+          "queryRef": "Costs.PricingCategory"
+        },
+        {
+          "queryRef": "Costs.ServiceCategory"
+        },
+        {
+          "queryRef": "Costs.ServiceName"
+        },
+        {
+          "queryRef": "Costs.ResourceType"
+        },
+        {
+          "queryRef": "Costs.SkuMeter"
+        },
+        {
+          "queryRef": "Sum(Costs.ListCost)"
+        },
+        {
+          "queryRef": "Sum(Costs.ContractedCost)"
+        },
+        {
+          "queryRef": "Sum(Costs.BilledCost)"
+        },
+        {
+          "queryRef": "Sum(Costs.EffectiveCost)"
+        }
+      ]
+    },
+    "prototypeQuery": {
+      "Version": 2,
+      "From": [
+        {
+          "Name": "c",
+          "Entity": "Costs",
+          "Type": 0
+        }
+      ],
+      "Select": [
+        {
+          "Aggregation": {
+            "Expression": {
+              "Column": {
+                "Expression": {
+                  "SourceRef": {
+                    "Source": "c"
+                  }
+                },
+                "Property": "BilledCost"
+              }
+            },
+            "Function": 0
+          },
+          "Name": "Sum(Costs.BilledCost)",
+          "NativeReferenceName": "BilledCost"
+        },
+        {
+          "Aggregation": {
+            "Expression": {
+              "Column": {
+                "Expression": {
+                  "SourceRef": {
+                    "Source": "c"
+                  }
+                },
+                "Property": "EffectiveCost"
+              }
+            },
+            "Function": 0
+          },
+          "Name": "Sum(Costs.EffectiveCost)",
+          "NativeReferenceName": "EffectiveCost"
+        },
+        {
+          "Aggregation": {
+            "Expression": {
+              "Column": {
+                "Expression": {
+                  "SourceRef": {
+                    "Source": "c"
+                  }
+                },
+                "Property": "ContractedCost"
+              }
+            },
+            "Function": 0
+          },
+          "Name": "Sum(Costs.ContractedCost)",
+          "NativeReferenceName": "ContractedCost"
+        },
+        {
+          "Aggregation": {
+            "Expression": {
+              "Column": {
+                "Expression": {
+                  "SourceRef": {
+                    "Source": "c"
+                  }
+                },
+                "Property": "ListCost"
+              }
+            },
+            "Function": 0
+          },
+          "Name": "Sum(Costs.ListCost)",
+          "NativeReferenceName": "ListCost"
+        },
+        {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Source": "c"
+              }
+            },
+            "Property": "ChargeCategory"
+          },
+          "Name": "Costs.ChargeCategory",
+          "NativeReferenceName": "ChargeCategory"
+        },
+        {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Source": "c"
+              }
+            },
+            "Property": "PricingCategory"
+          },
+          "Name": "Costs.PricingCategory",
+          "NativeReferenceName": "PricingCategory"
+        },
+        {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Source": "c"
+              }
+            },
+            "Property": "ChargeClass"
+          },
+          "Name": "Costs.ChargeClass",
+          "NativeReferenceName": "ChargeClass"
+        },
+        {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Source": "c"
+              }
+            },
+            "Property": "SkuMeter"
+          },
+          "Name": "Costs.SkuMeter",
+          "NativeReferenceName": "SkuMeter"
+        },
+        {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Source": "c"
+              }
+            },
+            "Property": "ServiceCategory"
+          },
+          "Name": "Costs.ServiceCategory",
+          "NativeReferenceName": "ServiceCategory"
+        },
+        {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Source": "c"
+              }
+            },
+            "Property": "ServiceName"
+          },
+          "Name": "Costs.ServiceName",
+          "NativeReferenceName": "ServiceName"
+        },
+        {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Source": "c"
+              }
+            },
+            "Property": "ResourceType"
+          },
+          "Name": "Costs.ResourceType",
+          "NativeReferenceName": "ResourceType"
+        }
+      ],
+      "OrderBy": [
+        {
+          "Direction": 2,
+          "Expression": {
+            "Aggregation": {
+              "Expression": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Source": "c"
+                    }
+                  },
+                  "Property": "EffectiveCost"
+                }
+              },
+              "Function": 0
+            }
+          }
+        }
+      ]
+    },
+    "drillFilterOtherVisuals": true,
+    "objects": {},
+    "vcObjects": {
+      "title": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "text": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Missing descriptions'"
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}

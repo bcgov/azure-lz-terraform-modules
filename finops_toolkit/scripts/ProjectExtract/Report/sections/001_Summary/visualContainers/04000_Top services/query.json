@@ -1,0 +1,234 @@
+{
+  "Commands": [
+    {
+      "SemanticQueryDataShapeCommand": {
+        "Query": {
+          "Version": 2,
+          "From": [
+            {
+              "Name": "c",
+              "Entity": "Costs",
+              "Type": 0
+            },
+            {
+              "Name": "subquery",
+              "Expression": {
+                "Subquery": {
+                  "Query": {
+                    "Version": 2,
+                    "From": [
+                      {
+                        "Name": "c1",
+                        "Entity": "Costs",
+                        "Type": 0
+                      }
+                    ],
+                    "Select": [
+                      {
+                        "HierarchyLevel": {
+                          "Expression": {
+                            "Hierarchy": {
+                              "Expression": {
+                                "SourceRef": {
+                                  "Source": "c1"
+                                }
+                              },
+                              "Hierarchy": "Service Hierarchy"
+                            }
+                          },
+                          "Level": "ServiceCategory"
+                        },
+                        "Name": "field"
+                      }
+                    ],
+                    "Where": [
+                      {
+                        "Condition": {
+                          "Comparison": {
+                            "ComparisonKind": 0,
+                            "Left": {
+                              "Column": {
+                                "Expression": {
+                                  "SourceRef": {
+                                    "Source": "c1"
+                                  }
+                                },
+                                "Property": "ServiceCategory"
+                              }
+                            },
+                            "Right": {
+                              "AnyValue": {
+                                "DefaultValueOverridesAncestors": true
+                              }
+                            }
+                          }
+                        }
+                      },
+                      {
+                        "Condition": {
+                          "Comparison": {
+                            "ComparisonKind": 0,
+                            "Left": {
+                              "Column": {
+                                "Expression": {
+                                  "SourceRef": {
+                                    "Source": "c1"
+                                  }
+                                },
+                                "Property": "ResourceType"
+                              }
+                            },
+                            "Right": {
+                              "AnyValue": {
+                                "DefaultValueOverridesAncestors": true
+                              }
+                            }
+                          }
+                        }
+                      }
+                    ],
+                    "OrderBy": [
+                      {
+                        "Direction": 2,
+                        "Expression": {
+                          "Aggregation": {
+                            "Expression": {
+                              "Column": {
+                                "Expression": {
+                                  "SourceRef": {
+                                    "Source": "c1"
+                                  }
+                                },
+                                "Property": "EffectiveCost"
+                              }
+                            },
+                            "Function": 0
+                          }
+                        }
+                      }
+                    ],
+                    "Top": 10
+                  }
+                }
+              },
+              "Type": 2
+            }
+          ],
+          "Select": [
+            {
+              "Column": {
+                "Expression": {
+                  "SourceRef": {
+                    "Source": "c"
+                  }
+                },
+                "Property": "ServiceCategory"
+              },
+              "Name": "Costs.ServiceCategory",
+              "NativeReferenceName": "ServiceCategory"
+            },
+            {
+              "Aggregation": {
+                "Expression": {
+                  "Column": {
+                    "Expression": {
+                      "SourceRef": {
+                        "Source": "c"
+                      }
+                    },
+                    "Property": "EffectiveCost"
+                  }
+                },
+                "Function": 0
+              },
+              "Name": "Sum(Costs.EffectiveCost)",
+              "NativeReferenceName": "EffectiveCost"
+            },
+            {
+              "Column": {
+                "Expression": {
+                  "SourceRef": {
+                    "Source": "c"
+                  }
+                },
+                "Property": "ResourceType"
+              },
+              "Name": "Costs.ResourceType",
+              "NativeReferenceName": "ResourceType"
+            }
+          ],
+          "Where": [
+            {
+              "Condition": {
+                "In": {
+                  "Expressions": [
+                    {
+                      "HierarchyLevel": {
+                        "Expression": {
+                          "Hierarchy": {
+                            "Expression": {
+                              "SourceRef": {
+                                "Source": "c"
+                              }
+                            },
+                            "Hierarchy": "Service Hierarchy"
+                          }
+                        },
+                        "Level": "ServiceCategory"
+                      }
+                    }
+                  ],
+                  "Table": {
+                    "SourceRef": {
+                      "Source": "subquery"
+                    }
+                  }
+                }
+              }
+            }
+          ],
+          "OrderBy": [
+            {
+              "Direction": 2,
+              "Expression": {
+                "Aggregation": {
+                  "Expression": {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Source": "c"
+                        }
+                      },
+                      "Property": "EffectiveCost"
+                    }
+                  },
+                  "Function": 0
+                }
+              }
+            }
+          ]
+        },
+        "Binding": {
+          "Primary": {
+            "Groupings": [
+              {
+                "Projections": [
+                  0,
+                  1
+                ]
+              }
+            ]
+          },
+          "DataReduction": {
+            "DataVolume": 3,
+            "Primary": {
+              "Top": {}
+            }
+          },
+          "Version": 1
+        },
+        "ExecutionMetricsKind": 1
+      }
+    }
+  ]
+}

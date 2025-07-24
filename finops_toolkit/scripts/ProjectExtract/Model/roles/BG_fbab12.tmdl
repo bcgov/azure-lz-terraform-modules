@@ -1,0 +1,4 @@
+role 'BG_fbab12'
+    modelPermission: read
+
+    tablePermission Costs = [tag_billing_group] == "fbab12"

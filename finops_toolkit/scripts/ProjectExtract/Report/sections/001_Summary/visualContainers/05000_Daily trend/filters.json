@@ -1,0 +1,212 @@
+[
+  {
+    "name": "332a09731a312c3d7c80",
+    "expression": {
+      "Column": {
+        "Expression": {
+          "SourceRef": {
+            "Entity": "Costs"
+          }
+        },
+        "Property": "ChargePeriodStart"
+      }
+    },
+    "filter": {
+      "Version": 2,
+      "From": [
+        {
+          "Name": "c",
+          "Entity": "Costs",
+          "Type": 0
+        }
+      ],
+      "Where": [
+        {
+          "Condition": {
+            "Between": {
+              "Expression": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Source": "c"
+                    }
+                  },
+                  "Property": "ChargePeriodStart"
+                }
+              },
+              "LowerBound": {
+                "DateSpan": {
+                  "Expression": {
+                    "DateAdd": {
+                      "Expression": {
+                        "DateAdd": {
+                          "Expression": {
+                            "DateAdd": {
+                              "Expression": {
+                                "Now": {}
+                              },
+                              "Amount": -1,
+                              "TimeUnit": 0
+                            }
+                          },
+                          "Amount": 1,
+                          "TimeUnit": 0
+                        }
+                      },
+                      "Amount": -31,
+                      "TimeUnit": 0
+                    }
+                  },
+                  "TimeUnit": 0
+                }
+              },
+              "UpperBound": {
+                "DateSpan": {
+                  "Expression": {
+                    "DateAdd": {
+                      "Expression": {
+                        "Now": {}
+                      },
+                      "Amount": -1,
+                      "TimeUnit": 0
+                    }
+                  },
+                  "TimeUnit": 0
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "type": "RelativeDate",
+    "howCreated": 0,
+    "isHiddenInViewMode": false,
+    "ordinal": 0
+  },
+  {
+    "name": "95474c68662a9d90ce47",
+    "expression": {
+      "Aggregation": {
+        "Expression": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "Costs"
+              }
+            },
+            "Property": "EffectiveCost"
+          }
+        },
+        "Function": 0
+      }
+    },
+    "type": "Advanced",
+    "howCreated": 0,
+    "isHiddenInViewMode": false,
+    "ordinal": 1
+  },
+  {
+    "name": "a72a0f57aa669948210c",
+    "expression": {
+      "Column": {
+        "Expression": {
+          "SourceRef": {
+            "Entity": "Costs"
+          }
+        },
+        "Property": "ChargePeriodStart"
+      }
+    },
+    "filter": {
+      "Version": 2,
+      "From": [
+        {
+          "Name": "subquery",
+          "Expression": {
+            "Subquery": {
+              "Query": {
+                "Version": 2,
+                "From": [
+                  {
+                    "Name": "c",
+                    "Entity": "Costs",
+                    "Type": 0
+                  }
+                ],
+                "Select": [
+                  {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Source": "c"
+                        }
+                      },
+                      "Property": "ChargePeriodStart"
+                    },
+                    "Name": "field"
+                  }
+                ],
+                "OrderBy": [
+                  {
+                    "Direction": 1,
+                    "Expression": {
+                      "Aggregation": {
+                        "Expression": {
+                          "Column": {
+                            "Expression": {
+                              "SourceRef": {
+                                "Source": "c"
+                              }
+                            },
+                            "Property": "ChargePeriodStart"
+                          }
+                        },
+                        "Function": 3
+                      }
+                    }
+                  }
+                ],
+                "Top": 30
+              }
+            }
+          },
+          "Type": 2
+        },
+        {
+          "Name": "c",
+          "Entity": "Costs",
+          "Type": 0
+        }
+      ],
+      "Where": [
+        {
+          "Condition": {
+            "In": {
+              "Expressions": [
+                {
+                  "Column": {
+                    "Expression": {
+                      "SourceRef": {
+                        "Source": "c"
+                      }
+                    },
+                    "Property": "ChargePeriodStart"
+                  }
+                }
+              ],
+              "Table": {
+                "SourceRef": {
+                  "Source": "subquery"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "type": "TopN",
+    "howCreated": 1,
+    "ordinal": 2
+  }
+]

@@ -1,0 +1,4 @@
+role 'MN_CITZ'
+    modelPermission: read
+
+    tablePermission Costs = [tag_ministry_name] == "CITZ"

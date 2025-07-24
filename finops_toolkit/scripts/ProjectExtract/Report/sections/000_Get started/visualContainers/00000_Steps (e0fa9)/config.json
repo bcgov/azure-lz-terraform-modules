@@ -1,0 +1,622 @@
+{
+  "name": "e0fa9dae2344df6f995f",
+  "layouts": [
+    {
+      "id": 0,
+      "position": {
+        "x": 40,
+        "y": 96,
+        "z": 1000,
+        "width": 776,
+        "height": 384,
+        "tabOrder": 0
+      }
+    }
+  ],
+  "singleVisual": {
+    "visualType": "textbox",
+    "drillFilterOtherVisuals": true,
+    "objects": {
+      "general": [
+        {
+          "properties": {
+            "paragraphs": [
+              {
+                "textRuns": [
+                  {
+                    "value": "Sorry to hear that you're experiencing issues. We're here to help!",
+                    "textStyle": {
+                      "fontSize": "13.3333px"
+                    }
+                  }
+                ]
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": ""
+                  }
+                ]
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": "Please note Microsoft Support does not handle support requests for FinOps toolkit. However, the underlying products sued by tools in the toolkit are officially supported. Use the following steps if you run into an issue:",
+                    "textStyle": {
+                      "fontSize": "13.3333px"
+                    }
+                  }
+                ]
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": ""
+                  }
+                ]
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": "Before you begin",
+                    "textStyle": {
+                      "fontWeight": "bold",
+                      "fontSize": "14pt"
+                    }
+                  }
+                ]
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": ""
+                  }
+                ]
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": "If you aren't seeing data after connecting and syncing successfully, try the following troubleshooting steps:"
+                  }
+                ]
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": ""
+                  }
+                ]
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": "Clear all filters (see the button below)."
+                  }
+                ],
+                "listType": "bullet"
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": "Clear "
+                  },
+                  {
+                    "value": "RangeStart, RangeEnd, Number of Months date ",
+                    "textStyle": {
+                      "fontSize": "12px"
+                    }
+                  },
+                  {
+                    "value": "parameters and refresh data."
+                  }
+                ],
+                "listType": "bullet"
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": "Confirm data is loading by navigating to Home > Transform Data > Queries > Costs."
+                  }
+                ],
+                "listType": "bullet"
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": "If data is in this view, then there is a filter causing the data to not render in the report."
+                  }
+                ],
+                "listType": "bullet"
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": "If using raw exports (not FinOps hubs):"
+                  }
+                ],
+                "listType": "bullet"
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": "Confirm there are CSV or parquet files in the specified storage path."
+                  }
+                ],
+                "listType": "ordered",
+                "indent": 1
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": "If not, confirm Cost Management exports were configured correctly, have no failures, and run them again."
+                  }
+                ],
+                "listType": "ordered",
+                "indent": 1
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": "If using FinOps hubs:"
+                  }
+                ],
+                "listType": "bullet"
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": "Confirm there are parquet files in the ingestion container in the storage account."
+                  }
+                ],
+                "listType": "ordered",
+                "indent": 1
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": "If not, check for CSV or parquet files in the msexports container."
+                  }
+                ],
+                "listType": "ordered",
+                "indent": 1
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": "If not, confirm Cost Management exports were configured correctly, have no failed runs, and run them again."
+                  }
+                ],
+                "listType": "ordered",
+                "indent": 1
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": "If data is in msexports, check the Data Factory triggers to confirm they are all started. You may need to register the Microsoft.EventGrid resource provider, restart the triggers, then re-run the exports (or manually retry the failed pipeline runs)."
+                  }
+                ],
+                "listType": "ordered",
+                "indent": 1
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": ""
+                  }
+                ]
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": "This is a condensed version of the troubleshooting guide. If these did not help, continue with the list below and run through the full troubleshooting guide, if needed."
+                  }
+                ]
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": ""
+                  }
+                ]
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": ""
+                  }
+                ]
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": "1. Report security issues securely",
+                    "textStyle": {
+                      "fontWeight": "bold",
+                      "fontSize": "14pt"
+                    }
+                  }
+                ]
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": ""
+                  }
+                ]
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": "If you believe you've found a security vulnerability, refer to ",
+                    "textStyle": {
+                      "fontSize": "13.3333px"
+                    }
+                  },
+                  {
+                    "value": "Reporting security issues",
+                    "textStyle": {
+                      "fontSize": "13.3333px"
+                    },
+                    "url": "https://github.com/microsoft/finops-toolkit/blob/dev/SECURITY.md"
+                  },
+                  {
+                    "value": ". ",
+                    "textStyle": {
+                      "fontSize": "13.3333px"
+                    }
+                  }
+                ]
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": ""
+                  }
+                ]
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": ""
+                  }
+                ]
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": "2. Confirm all setup instructions were completed in order",
+                    "textStyle": {
+                      "fontWeight": "bold",
+                      "fontSize": "14pt"
+                    }
+                  }
+                ]
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": ""
+                  }
+                ]
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": "9 out of 10 issues are due to missing steps. Please review and follow the instructions carefully. For this report, close this dialog and select the ",
+                    "textStyle": {
+                      "fontSize": "13.3333px"
+                    }
+                  },
+                  {
+                    "value": "Connect your data",
+                    "textStyle": {
+                      "fontWeight": "bold",
+                      "fontSize": "13.3333px"
+                    }
+                  },
+                  {
+                    "value": " button.",
+                    "textStyle": {
+                      "fontSize": "13.3333px"
+                    }
+                  }
+                ]
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": ""
+                  }
+                ]
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": ""
+                  }
+                ]
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": "3. Walk through the troubleshooting guide",
+                    "textStyle": {
+                      "fontWeight": "bold",
+                      "fontSize": "14pt"
+                    }
+                  }
+                ]
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": ""
+                  }
+                ]
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": "The most common issues and their solutions are documented and should be able to be resolved independently. If you have a specific error code, refer to ",
+                    "textStyle": {
+                      "fontSize": "13.3333px"
+                    }
+                  },
+                  {
+                    "value": "Common errors",
+                    "textStyle": {
+                      "fontSize": "13.3333px"
+                    },
+                    "url": "https://learn.microsoft.com/cloud-computing/finops/toolkit/help/errors"
+                  },
+                  {
+                    "value": ". For a guided walk through, refer to the ",
+                    "textStyle": {
+                      "fontSize": "13.3333px"
+                    }
+                  },
+                  {
+                    "value": "Troubleshooting guide",
+                    "textStyle": {
+                      "fontSize": "13.3333px"
+                    },
+                    "url": "https://learn.microsoft.com/cloud-computing/finops/toolkit/help/troubleshooting"
+                  },
+                  {
+                    "value": ".",
+                    "textStyle": {
+                      "fontSize": "13.3333px"
+                    }
+                  }
+                ]
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": ""
+                  }
+                ]
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": ""
+                  }
+                ]
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": "4. Identify the source of the issue",
+                    "textStyle": {
+                      "fontWeight": "bold",
+                      "fontSize": "14pt"
+                    }
+                  }
+                ]
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": ""
+                  }
+                ]
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": "For error message, what product is showing the error? Does the error refer to another product? For missing or incorrect data, is the data generated in a Power BI report or does it come directly from a product, like Cost Management?",
+                    "textStyle": {
+                      "fontSize": "13.3333px"
+                    }
+                  }
+                ]
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": ""
+                  }
+                ]
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": ""
+                  }
+                ]
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": "5. Create support requests for product issues",
+                    "textStyle": {
+                      "fontWeight": "bold",
+                      "fontSize": "14pt"
+                    }
+                  }
+                ]
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": ""
+                  }
+                ]
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": "If the source of the issue is a managed product (including data from Cost Management), create a Microsoft support request for that specific product. Refer to the data dictionary to identify whether a specific column is sourced from Cost Management or is created or updated by the FinOps toolkit. If you're not sure about the source, ask in the ",
+                    "textStyle": {
+                      "fontSize": "13.3333px"
+                    }
+                  },
+                  {
+                    "value": "discussion forum",
+                    "textStyle": {
+                      "fontSize": "13.3333px"
+                    },
+                    "url": "https://github.com/microsoft/finops-toolkit/discussions/categories/q-a"
+                  },
+                  {
+                    "value": ".",
+                    "textStyle": {
+                      "fontSize": "13.3333px"
+                    }
+                  }
+                ]
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": ""
+                  }
+                ]
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": ""
+                  }
+                ]
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": "6. Create an issue in GitHub",
+                    "textStyle": {
+                      "fontWeight": "bold",
+                      "fontSize": "14pt"
+                    }
+                  }
+                ]
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": ""
+                  }
+                ]
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": "Whether you submit a support request or not, we recommend ",
+                    "textStyle": {
+                      "fontSize": "13.3333px"
+                    }
+                  },
+                  {
+                    "value": "creating an issue in GitHub",
+                    "textStyle": {
+                      "fontSize": "13.3333px"
+                    },
+                    "url": "https://aka.ms/ftk/ideas"
+                  },
+                  {
+                    "value": " to let us know about the problems you're facing. Even if the issue is a product bug, we would like to document it to help others.",
+                    "textStyle": {
+                      "fontSize": "13.3333px"
+                    }
+                  }
+                ]
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": ""
+                  }
+                ]
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": ""
+                  }
+                ]
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": ""
+                  }
+                ]
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": "We try to respond to issues and discussions within two business days but there can sometimes be unanticipated delays. If you completed all of the preceding steps and the issue wasn't resolved within a week, we should set up a Teams call for you. Then you can share your screen so we can troubleshoot the issue together."
+                  }
+                ]
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": ""
+                  }
+                ]
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": ""
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "vcObjects": {
+      "title": [
+        {
+          "properties": {
+            "text": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Steps'"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "visualHeader": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  },
+  "parentGroupName": "db0699bd090645927783"
+}

@@ -1,0 +1,126 @@
+{
+  "name": "c4024c5e9940182e5000",
+  "layouts": [
+    {
+      "id": 0,
+      "position": {
+        "x": 376,
+        "y": 1287.9437500191466,
+        "z": 14000,
+        "width": 632,
+        "height": 200,
+        "tabOrder": 14000
+      }
+    }
+  ],
+  "singleVisual": {
+    "visualType": "tableEx",
+    "projections": {
+      "Values": [
+        {
+          "queryRef": "Costs.BillingPeriod"
+        },
+        {
+          "queryRef": "Costs.ChargeCategory"
+        },
+        {
+          "queryRef": "Costs.SkuMeter"
+        },
+        {
+          "queryRef": "Sum(Costs.BilledCost)"
+        },
+        {
+          "queryRef": "Costs.ChargePeriodStart"
+        }
+      ]
+    },
+    "prototypeQuery": {
+      "Version": 2,
+      "From": [
+        {
+          "Name": "c",
+          "Entity": "Costs",
+          "Type": 0
+        }
+      ],
+      "Select": [
+        {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Source": "c"
+              }
+            },
+            "Property": "ChargeCategory"
+          },
+          "Name": "Costs.ChargeCategory",
+          "NativeReferenceName": "ChargeCategory"
+        },
+        {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Source": "c"
+              }
+            },
+            "Property": "BilledCost"
+          },
+          "Name": "Sum(Costs.BilledCost)",
+          "NativeReferenceName": "BilledCost1"
+        },
+        {
+          "Measure": {
+            "Expression": {
+              "SourceRef": {
+                "Source": "c"
+              }
+            },
+            "Property": "BillingPeriod"
+          },
+          "Name": "Costs.BillingPeriod",
+          "NativeReferenceName": "BillingPeriod"
+        },
+        {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Source": "c"
+              }
+            },
+            "Property": "SkuMeter"
+          },
+          "Name": "Costs.SkuMeter",
+          "NativeReferenceName": "SkuMeter"
+        },
+        {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Source": "c"
+              }
+            },
+            "Property": "ChargePeriodStart"
+          },
+          "Name": "Costs.ChargePeriodStart",
+          "NativeReferenceName": "ChargePeriodStart"
+        }
+      ],
+      "OrderBy": [
+        {
+          "Direction": 1,
+          "Expression": {
+            "Column": {
+              "Expression": {
+                "SourceRef": {
+                  "Source": "c"
+                }
+              },
+              "Property": "ChargePeriodStart"
+            }
+          }
+        }
+      ]
+    },
+    "drillFilterOtherVisuals": true
+  }
+}

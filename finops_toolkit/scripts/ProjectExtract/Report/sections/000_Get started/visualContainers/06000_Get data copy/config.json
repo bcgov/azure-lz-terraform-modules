@@ -1,0 +1,21 @@
+{
+  "name": "e2db4806d2fd5c9d95ea",
+  "layouts": [
+    {
+      "id": 0,
+      "position": {
+        "x": 792,
+        "y": 304,
+        "z": 5000,
+        "width": 272.00000000000011,
+        "height": 312,
+        "tabOrder": 6000
+      }
+    }
+  ],
+  "singleVisualGroup": {
+    "displayName": "Get data copy",
+    "groupMode": 0,
+    "isHidden": false
+  }
+}

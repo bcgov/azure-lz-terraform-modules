@@ -1,0 +1,64 @@
+{
+  "version": "5.65",
+  "themeCollection": {
+    "baseTheme": {
+      "name": "CY24SU10",
+      "type": 2,
+      "version": "5.61"
+    },
+    "customTheme": {
+      "name": "Microsoft_FinOps_light_theme5385236195184553.json",
+      "type": 1,
+      "version": "5.61"
+    }
+  },
+  "activeSectionIndex": 1,
+  "tags": {
+    "serviceAppObjectId": "f24eab2c-a736-4aa1-af7c-2729d34249bc"
+  },
+  "defaultDrillFilterOtherVisuals": true,
+  "slowDataSourceSettings": {
+    "isCrossHighlightingDisabled": false,
+    "isSlicerSelectionsButtonEnabled": false,
+    "isFilterSelectionsButtonEnabled": false,
+    "isFieldWellButtonEnabled": false,
+    "isApplyAllButtonEnabled": false
+  },
+  "linguisticSchemaSyncVersion": 2,
+  "settings": {
+    "useStylableVisualContainerHeader": true,
+    "exportDataMode": 1,
+    "useNewFilterPaneExperience": true,
+    "allowChangeFilterTypes": true,
+    "allowDataPointLassoSelect": true,
+    "useEnhancedTooltips": true
+  },
+  "objects": {
+    "section": [
+      {
+        "properties": {
+          "verticalAlignment": {
+            "expr": {
+              "Literal": {
+                "Value": "'Top'"
+              }
+            }
+          }
+        }
+      }
+    ],
+    "outspacePane": [
+      {
+        "properties": {
+          "expanded": {
+            "expr": {
+              "Literal": {
+                "Value": "false"
+              }
+            }
+          }
+        }
+      }
+    ]
+  }
+}

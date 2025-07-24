@@ -1,0 +1,21 @@
+{
+  "name": "330980de6a26f7e92210",
+  "layouts": [
+    {
+      "id": 0,
+      "position": {
+        "x": 504,
+        "y": 304,
+        "z": 6000,
+        "width": 272,
+        "height": 368,
+        "tabOrder": 4000
+      }
+    }
+  ],
+  "singleVisualGroup": {
+    "displayName": "Customize copy",
+    "groupMode": 0,
+    "isHidden": false
+  }
+}

@@ -1,0 +1,813 @@
+{
+  "name": "b2d7a8e0700267836531",
+  "layouts": [
+    {
+      "id": 0,
+      "position": {
+        "x": 216,
+        "y": 200,
+        "z": 1000,
+        "width": 1048,
+        "height": 512,
+        "tabOrder": 0
+      }
+    }
+  ],
+  "singleVisual": {
+    "visualType": "decompositionTreeVisual",
+    "projections": {
+      "ExplainBy": [
+        {
+          "queryRef": "Costs.ChargeCategory",
+          "active": true
+        },
+        {
+          "queryRef": "Costs.PricingCategory",
+          "active": true
+        },
+        {
+          "queryRef": "Costs.CommitmentDiscountStatus",
+          "active": true
+        },
+        {
+          "queryRef": "Costs.ServiceCategory",
+          "active": true
+        },
+        {
+          "queryRef": "Costs.ServiceName",
+          "active": true
+        },
+        {
+          "queryRef": "Costs.x_SkuMeterCategory",
+          "active": true
+        },
+        {
+          "queryRef": "Costs.x_SkuMeterSubcategory",
+          "active": true
+        },
+        {
+          "queryRef": "Costs.SkuMeter",
+          "active": true
+        },
+        {
+          "queryRef": "Costs.SubAccountName",
+          "active": true
+        }
+      ],
+      "Analyze": [
+        {
+          "queryRef": "Sum(Costs.EffectiveCost)"
+        }
+      ]
+    },
+    "prototypeQuery": {
+      "Version": 2,
+      "From": [
+        {
+          "Name": "c",
+          "Entity": "Costs",
+          "Type": 0
+        }
+      ],
+      "Select": [
+        {
+          "Aggregation": {
+            "Expression": {
+              "Column": {
+                "Expression": {
+                  "SourceRef": {
+                    "Source": "c"
+                  }
+                },
+                "Property": "EffectiveCost"
+              }
+            },
+            "Function": 0
+          },
+          "Name": "Sum(Costs.EffectiveCost)",
+          "NativeReferenceName": "EffectiveCost"
+        },
+        {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Source": "c"
+              }
+            },
+            "Property": "ChargeCategory"
+          },
+          "Name": "Costs.ChargeCategory",
+          "NativeReferenceName": "ChargeCategory1"
+        },
+        {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Source": "c"
+              }
+            },
+            "Property": "PricingCategory"
+          },
+          "Name": "Costs.PricingCategory",
+          "NativeReferenceName": "PricingCategory1"
+        },
+        {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Source": "c"
+              }
+            },
+            "Property": "ServiceCategory"
+          },
+          "Name": "Costs.ServiceCategory",
+          "NativeReferenceName": "ServiceCategory1"
+        },
+        {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Source": "c"
+              }
+            },
+            "Property": "ServiceName"
+          },
+          "Name": "Costs.ServiceName",
+          "NativeReferenceName": "ServiceName1"
+        },
+        {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Source": "c"
+              }
+            },
+            "Property": "x_SkuMeterCategory"
+          },
+          "Name": "Costs.x_SkuMeterCategory",
+          "NativeReferenceName": "x_SkuMeterCategory"
+        },
+        {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Source": "c"
+              }
+            },
+            "Property": "SubAccountName"
+          },
+          "Name": "Costs.SubAccountName",
+          "NativeReferenceName": "SubAccountName1"
+        },
+        {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Source": "c"
+              }
+            },
+            "Property": "x_SkuMeterSubcategory"
+          },
+          "Name": "Costs.x_SkuMeterSubcategory",
+          "NativeReferenceName": "x_SkuMeterSubcategory"
+        },
+        {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Source": "c"
+              }
+            },
+            "Property": "SkuMeter"
+          },
+          "Name": "Costs.SkuMeter",
+          "NativeReferenceName": "SkuMeter"
+        },
+        {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Source": "c"
+              }
+            },
+            "Property": "CommitmentDiscountStatus"
+          },
+          "Name": "Costs.CommitmentDiscountStatus",
+          "NativeReferenceName": "CommitmentDiscountStatus"
+        }
+      ],
+      "OrderBy": [
+        {
+          "Direction": 2,
+          "Expression": {
+            "Aggregation": {
+              "Expression": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Source": "c"
+                    }
+                  },
+                  "Property": "EffectiveCost"
+                }
+              },
+              "Function": 0
+            }
+          }
+        }
+      ]
+    },
+    "expansionStates": [
+      {
+        "roles": [
+          "ExplainBy"
+        ],
+        "levels": [
+          {
+            "queryRefs": [
+              "Costs.ChargeCategory"
+            ],
+            "isCollapsed": true,
+            "identityKeys": [
+              {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Costs"
+                    }
+                  },
+                  "Property": "ChargeCategory"
+                }
+              }
+            ],
+            "isPinned": true
+          },
+          {
+            "queryRefs": [
+              "Costs.PricingCategory"
+            ],
+            "isCollapsed": true,
+            "identityKeys": [
+              {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Costs"
+                    }
+                  },
+                  "Property": "PricingCategory"
+                }
+              }
+            ],
+            "isPinned": true
+          },
+          {
+            "queryRefs": [
+              "Costs.CommitmentDiscountStatus"
+            ],
+            "isCollapsed": true,
+            "identityKeys": [
+              {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Costs"
+                    }
+                  },
+                  "Property": "CommitmentDiscountStatus"
+                }
+              }
+            ],
+            "isPinned": true
+          },
+          {
+            "queryRefs": [
+              "Costs.ServiceCategory"
+            ],
+            "isCollapsed": true,
+            "identityKeys": [
+              {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Costs"
+                    }
+                  },
+                  "Property": "ServiceCategory"
+                }
+              }
+            ],
+            "isPinned": true
+          },
+          {
+            "queryRefs": [
+              "Costs.ServiceName"
+            ],
+            "isCollapsed": true,
+            "identityKeys": [
+              {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Costs"
+                    }
+                  },
+                  "Property": "ServiceName"
+                }
+              }
+            ],
+            "isPinned": true
+          },
+          {
+            "queryRefs": [
+              "Costs.x_SkuMeterCategory"
+            ],
+            "isCollapsed": true,
+            "identityKeys": [
+              {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Costs"
+                    }
+                  },
+                  "Property": "x_SkuMeterCategory"
+                }
+              }
+            ],
+            "isPinned": true
+          },
+          {
+            "queryRefs": [
+              "Costs.x_SkuMeterSubcategory"
+            ],
+            "isCollapsed": true,
+            "identityKeys": [
+              {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Costs"
+                    }
+                  },
+                  "Property": "x_SkuMeterSubcategory"
+                }
+              }
+            ],
+            "isPinned": true
+          },
+          {
+            "queryRefs": [
+              "Costs.SkuMeter"
+            ],
+            "isCollapsed": true,
+            "identityKeys": [
+              {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Costs"
+                    }
+                  },
+                  "Property": "SkuMeter"
+                }
+              }
+            ],
+            "isPinned": true
+          },
+          {
+            "queryRefs": [
+              "Costs.SubAccountName"
+            ],
+            "isCollapsed": true,
+            "identityKeys": [
+              {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Costs"
+                    }
+                  },
+                  "Property": "SubAccountName"
+                }
+              }
+            ],
+            "isPinned": true
+          }
+        ],
+        "root": {
+          "identityValues": null,
+          "children": [
+            {
+              "identityValues": [
+                {
+                  "Literal": {
+                    "Value": "'Usage'"
+                  }
+                }
+              ],
+              "isToggled": true,
+              "children": [
+                {
+                  "identityValues": [
+                    {
+                      "Literal": {
+                        "Value": "'Standard'"
+                      }
+                    }
+                  ],
+                  "isToggled": true,
+                  "children": [
+                    {
+                      "identityValues": [
+                        {
+                          "Literal": {
+                            "Value": "''"
+                          }
+                        }
+                      ],
+                      "isToggled": true,
+                      "children": [
+                        {
+                          "identityValues": [
+                            {
+                              "Literal": {
+                                "Value": "'Compute'"
+                              }
+                            }
+                          ],
+                          "isToggled": true,
+                          "children": [
+                            {
+                              "identityValues": [
+                                {
+                                  "Literal": {
+                                    "Value": "'Virtual Machines'"
+                                  }
+                                }
+                              ],
+                              "isToggled": true,
+                              "children": [
+                                {
+                                  "identityValues": [
+                                    {
+                                      "Literal": {
+                                        "Value": "'Microsoft Fabric'"
+                                      }
+                                    }
+                                  ],
+                                  "isToggled": true,
+                                  "children": [
+                                    {
+                                      "identityValues": [
+                                        {
+                                          "Literal": {
+                                            "Value": "'Fabric Capacity'"
+                                          }
+                                        }
+                                      ],
+                                      "isToggled": true,
+                                      "children": [
+                                        {
+                                          "identityValues": [
+                                            {
+                                              "Literal": {
+                                                "Value": "'Available Capacity Usage CU'"
+                                              }
+                                            }
+                                          ],
+                                          "isToggled": true
+                                        }
+                                      ]
+                                    }
+                                  ]
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      }
+    ],
+    "drillFilterOtherVisuals": true,
+    "hasDefaultSort": true,
+    "objects": {
+      "tree": [
+        {
+          "properties": {
+            "effectiveBarsPerLevel": {
+              "expr": {
+                "Literal": {
+                  "Value": "6L"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "insights": [
+        {
+          "properties": {
+            "isAINode": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            }
+          },
+          "selector": {
+            "data": [
+              {
+                "scopeId": {
+                  "Comparison": {
+                    "ComparisonKind": 0,
+                    "Left": {
+                      "Column": {
+                        "Expression": {
+                          "SourceRef": {
+                            "Entity": "Costs"
+                          }
+                        },
+                        "Property": "ChargeCategory"
+                      }
+                    },
+                    "Right": {
+                      "Literal": {
+                        "Value": "'Usage'"
+                      }
+                    }
+                  }
+                }
+              },
+              {
+                "scopeId": {
+                  "Comparison": {
+                    "ComparisonKind": 0,
+                    "Left": {
+                      "Column": {
+                        "Expression": {
+                          "SourceRef": {
+                            "Entity": "Costs"
+                          }
+                        },
+                        "Property": "CommitmentDiscountStatus"
+                      }
+                    },
+                    "Right": {
+                      "Literal": {
+                        "Value": "'Other'"
+                      }
+                    }
+                  }
+                }
+              },
+              {
+                "scopeId": {
+                  "Comparison": {
+                    "ComparisonKind": 0,
+                    "Left": {
+                      "Column": {
+                        "Expression": {
+                          "SourceRef": {
+                            "Entity": "Costs"
+                          }
+                        },
+                        "Property": "PricingCategory"
+                      }
+                    },
+                    "Right": {
+                      "Literal": {
+                        "Value": "'On-Demand'"
+                      }
+                    }
+                  }
+                }
+              },
+              {
+                "scopeId": {
+                  "Comparison": {
+                    "ComparisonKind": 0,
+                    "Left": {
+                      "Column": {
+                        "Expression": {
+                          "SourceRef": {
+                            "Entity": "Costs"
+                          }
+                        },
+                        "Property": "x_PricingSubcategory"
+                      }
+                    },
+                    "Right": {
+                      "Literal": {
+                        "Value": "'Standard'"
+                      }
+                    }
+                  }
+                }
+              },
+              {
+                "scopeId": {
+                  "Comparison": {
+                    "ComparisonKind": 0,
+                    "Left": {
+                      "Column": {
+                        "Expression": {
+                          "SourceRef": {
+                            "Entity": "Costs"
+                          }
+                        },
+                        "Property": "ServiceCategory"
+                      }
+                    },
+                    "Right": {
+                      "Literal": {
+                        "Value": "'Analytics'"
+                      }
+                    }
+                  }
+                }
+              },
+              {
+                "scopeId": {
+                  "Comparison": {
+                    "ComparisonKind": 0,
+                    "Left": {
+                      "Column": {
+                        "Expression": {
+                          "SourceRef": {
+                            "Entity": "Costs"
+                          }
+                        },
+                        "Property": "ServiceName"
+                      }
+                    },
+                    "Right": {
+                      "Literal": {
+                        "Value": "'Microsoft Fabric'"
+                      }
+                    }
+                  }
+                }
+              },
+              {
+                "scopeId": {
+                  "Comparison": {
+                    "ComparisonKind": 0,
+                    "Left": {
+                      "Column": {
+                        "Expression": {
+                          "SourceRef": {
+                            "Entity": "Costs"
+                          }
+                        },
+                        "Property": "x_SkuMeterCategory"
+                      }
+                    },
+                    "Right": {
+                      "Literal": {
+                        "Value": "'Microsoft Fabric'"
+                      }
+                    }
+                  }
+                }
+              },
+              {
+                "scopeId": {
+                  "Comparison": {
+                    "ComparisonKind": 0,
+                    "Left": {
+                      "Column": {
+                        "Expression": {
+                          "SourceRef": {
+                            "Entity": "Costs"
+                          }
+                        },
+                        "Property": "SubAccountName"
+                      }
+                    },
+                    "Right": {
+                      "Literal": {
+                        "Value": "'FTK Fabric'"
+                      }
+                    }
+                  }
+                }
+              },
+              {
+                "scopeId": {
+                  "Comparison": {
+                    "ComparisonKind": 0,
+                    "Left": {
+                      "Column": {
+                        "Expression": {
+                          "SourceRef": {
+                            "Entity": "Costs"
+                          }
+                        },
+                        "Property": "x_ResourceGroupName"
+                      }
+                    },
+                    "Right": {
+                      "Literal": {
+                        "Value": "'Haven'"
+                      }
+                    }
+                  }
+                }
+              },
+              {
+                "scopeId": {
+                  "Comparison": {
+                    "ComparisonKind": 0,
+                    "Left": {
+                      "Column": {
+                        "Expression": {
+                          "SourceRef": {
+                            "Entity": "Costs"
+                          }
+                        },
+                        "Property": "ResourceName"
+                      }
+                    },
+                    "Right": {
+                      "Literal": {
+                        "Value": "'havencapacity'"
+                      }
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "categoryLabels": [
+        {
+          "properties": {
+            "categoryLabelFontSize": {
+              "expr": {
+                "Literal": {
+                  "Value": "8D"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "dataLabels": [
+        {
+          "properties": {
+            "dataLabelFontSize": {
+              "expr": {
+                "Literal": {
+                  "Value": "8D"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "levelHeader": [
+        {
+          "properties": {
+            "levelTitleFontSize": {
+              "expr": {
+                "Literal": {
+                  "Value": "10D"
+                }
+              }
+            },
+            "levelSubtitleFontSize": {
+              "expr": {
+                "Literal": {
+                  "Value": "8D"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "dataBars": [
+        {
+          "properties": {
+            "dataBarWidthPercent": {
+              "expr": {
+                "Literal": {
+                  "Value": "80L"
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}

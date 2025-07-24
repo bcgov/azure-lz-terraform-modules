@@ -1,0 +1,80 @@
+﻿expression '▶️  START HERE' = ```
+		let
+				    // Cluster
+				    ClusterUrl = #"Cluster URL",
+				    ClusterUrlSegments = if ClusterUrl <> null then Text.Split(Text.Trim(ClusterUrl, "/"), "/") else {},
+				    ClusterUrlSegmentCount = List.Count(ClusterUrlSegments),
+				    ClusterCheck = 
+				        if ClusterUrl = "" or ClusterUrl = null then {"✖ Invalid", "Cluster URL not specified."}
+				        else if (ClusterUrlSegmentCount = 1 or ClusterUrlSegmentCount = 3) then {"✔️ Specified", "Will use cluster: " & ClusterUrl & "."}
+				        else {"✖️ Invalid", "Unable to validate to the specified cluster: " & ClusterUrl & "."},
+				
+				    // Incremental refresh
+				    DateEnd = null,
+				    DateStart = null,
+				    DateMonths = #"Number of Months",
+				    DateStartEffective = if DateStart <> null and DateStart <> "" then DateStart else Date.AddMonths(if DateEnd <> null and DateEnd <> "" then DateEnd else Date.AddMonths(Date.StartOfMonth(DateTime.LocalNow()), 1), -DateMonths+1),
+				    _formatDate = (d) => try DateTime.ToText(d, [Format="MMM d, yyyy"]) otherwise d,
+				    DateStartFormat = 
+				        if (DateStart = null or DateStart = "") and (DateMonths = null or DateMonths < 1) then "*"
+				        else if (DateStart = null or DateStart = "") and DateMonths <> null and DateMonths >= 1 then _formatDate(DateStartEffective)
+				        else _formatDate(DateStart),
+				    DateEndFormat = if DateEnd = null or DateEnd = "" then "*" else _formatDate(DateEnd),
+				    DateValue = 
+				        if DateStartFormat = "*" and DateEndFormat = "*" then "(no dates)" else DateStartFormat & " - " & DateEndFormat,
+				    DateCheck =
+				        // TODO: Catch when DateEnd and DateMonths create a start date in the future
+				        if DateValue = "(no dates)"   then {"⚠️ Warning", "Will pull all data. May fail if over $2-5M."}
+				        else if DateStart <> null and DateStart <> "" and DateEndFormat = "*" then {"⚠️ Warning", "Will pull all data after start date. May fail if over $2-5M."}
+				        else if (DateStart = null or DateStart = "")  and DateEndFormat = "*" then {"✔️ Specified", "Will pull data for the last " & (if DateMonths = 1 then "1 month" else (Text.From(DateMonths) & " months")) & "."}
+				        else if DateStartFormat = "*" then {"⚠️ Warning", "Will pull all data before end date. May fail if over $2-5M."}
+				        else if DateStart <> null and DateStart <> "" and DateStart > DateEnd then {"✖ Invalid", "The start date must be before the end date."}
+				        else if DateStart <> null and DateStart <> "" and DateStart < DateEnd then try {"✔️ Specified", "Will pull data for " & Number.ToText(Duration.Days(DateEnd - DateStart)) & " days."} otherwise {"✖ Invalid", "Unable to parse dates: " & DateStart & " - " & DateEnd & "."}
+				        else if DateStart = null and DateMonths <> null and DateMonths < 1 then {"✖ Invalid", "The number of months must be more 1 or more (empty for all)."}
+				        else if DateStart = null and DateMonths <> null and DateMonths > 0 then try {"✔️ Specified", "Will pull data for " & Number.ToText(Duration.Days(DateEnd - DateStartEffective)) & " days."} otherwise {"✖ Invalid", "Unable to parse dates: " & DateStartEffective & " - " & DateEnd & "."}
+				        else {"✖ Invalid", "Unable to confirm dates: " & (if DateStart = null then "(null)" else ("'"&Text.From(DateStart)&"'")) & " - " & (if DateEnd = null then "(null)" else ("'"&Text.From(DateEnd)&"'")) & " or # of months: " & (if DateMonths = null then "(null)" else ("'"&Text.From(DateMonths)&"'")) & "."},
+				
+				    MainChecks = Table.InsertRows(#table({"Instructions", "Value", "Status", "Message"}, {}), 0, {
+		                [ Instructions = "① Set the cluster URL on the left", Value = ClusterUrl, Status = ClusterCheck{0}, Message = ClusterCheck{1} ],
+		                [ Instructions = "        ➖ Go to your hub resource group", Value = "", Status = "", Message = "" ],
+		                [ Instructions = "        ➖ Open Deployments > `hub` > Outputs", Value = "", Status = "", Message = "" ],
+		                [ Instructions = "        ➖ Copy the 'clusterUri' value", Value = "", Status = "", Message = "" ],
+		                [ Instructions = "        ", Value = "", Status = "", Message = "" ],
+		                [ Instructions = "② Optional: Set the desired date range", Value = DateValue, Status = DateCheck{0}, Message = DateCheck{1} ],
+				        [ Instructions = "        ", Value = "", Status = "", Message = "" ]
+				    })
+				in
+				    MainChecks
+		```
+	queryGroup: '🛠️ Setup'
+
+	annotation PBI_ResultType = Table
+
+	annotation PBI_NavigationStepName = Navigation
+
+/// Optional. Number of months to include in the report before the RangeEnd date. Ignored if RangeStart is specified. Default: (all available data).
+expression 'Number of Months' = 13 meta [IsParameterQuery=true, Type="Number", IsParameterQueryRequired=false]
+	queryGroup: '🛠️ Setup'
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Exception
+
+/// URI of the FinOps hub Azure Data Explorer cluster to pull data from. Copy from the "clusterUri" deployment output.
+/// 
+/// Pro tip: As a shortcut, you can alternatively use the "{name}.{region}" subset of the URI.
+expression 'Cluster URL' = "https://bcgov-live-finops-adx.canadacentral.kusto.windows.net" meta [IsParameterQuery=true, Type="Text", IsParameterQueryRequired=true]
+	queryGroup: '🛠️ Setup'
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Exception
+
+/// Indicate whether you want the default granularity to be daily or monthly in this report. This only impacts visuals configured to use the x_ReportingDate column. Use ChargePeriodStart for daily and x_ChargeMonth for monthly to ignore this setting.
+expression 'Default Granularity' = "Daily" meta [IsParameterQuery=true, List={"Daily", "Monthly"}, DefaultValue="Daily", Type="Text", IsParameterQueryRequired=true]
+	queryGroup: '🛠️ Setup'
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Exception
+

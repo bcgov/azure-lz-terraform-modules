@@ -1,0 +1,37 @@
+{
+  "name": "e08c57813d6faef8268c",
+  "layouts": [
+    {
+      "id": 0,
+      "position": {
+        "height": 280.80123456789806,
+        "width": 200,
+        "x": 0,
+        "y": 104.00000000000006,
+        "z": 4000,
+        "tabOrder": 0
+      }
+    }
+  ],
+  "singleVisualGroup": {
+    "displayName": "Filters",
+    "groupMode": 0,
+    "isHidden": false,
+    "objects": {
+      "background": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  },
+  "parentGroupName": "d8f31e644b3ef11fcec8"
+}

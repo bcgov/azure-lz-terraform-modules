@@ -1,0 +1,277 @@
+{
+  "name": "82ee16620a8d5590e9e2",
+  "layouts": [
+    {
+      "id": 0,
+      "position": {
+        "x": 216,
+        "y": 104,
+        "z": 3000,
+        "width": 760,
+        "height": 608,
+        "tabOrder": 2000
+      }
+    }
+  ],
+  "singleVisual": {
+    "visualType": "tableEx",
+    "projections": {
+      "Values": [
+        {
+          "queryRef": "Costs.x_SkuDescription"
+        },
+        {
+          "queryRef": "Costs.CommitmentDiscountType"
+        },
+        {
+          "queryRef": "Costs.x_SkuTermLabel"
+        },
+        {
+          "queryRef": "Sum(Costs.ListUnitPrice)"
+        },
+        {
+          "queryRef": "Sum(Costs.ContractedUnitPrice)"
+        },
+        {
+          "queryRef": "Costs.x_EffectiveUnitPrice"
+        },
+        {
+          "queryRef": "Sum(Costs.ConsumedQuantity)"
+        },
+        {
+          "queryRef": "Costs.ConsumedUnit"
+        },
+        {
+          "queryRef": "Sum(Costs.EffectiveCost)"
+        }
+      ]
+    },
+    "prototypeQuery": {
+      "Version": 2,
+      "From": [
+        {
+          "Name": "c",
+          "Entity": "Costs",
+          "Type": 0
+        }
+      ],
+      "Select": [
+        {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Source": "c"
+              }
+            },
+            "Property": "x_EffectiveUnitPrice"
+          },
+          "Name": "Costs.x_EffectiveUnitPrice",
+          "NativeReferenceName": "Effective"
+        },
+        {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Source": "c"
+              }
+            },
+            "Property": "ListUnitPrice"
+          },
+          "Name": "Sum(Costs.ListUnitPrice)",
+          "NativeReferenceName": "List"
+        },
+        {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Source": "c"
+              }
+            },
+            "Property": "CommitmentDiscountType"
+          },
+          "Name": "Costs.CommitmentDiscountType",
+          "NativeReferenceName": "Commitment"
+        },
+        {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Source": "c"
+              }
+            },
+            "Property": "x_SkuTermLabel"
+          },
+          "Name": "Costs.x_SkuTermLabel",
+          "NativeReferenceName": "Term"
+        },
+        {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Source": "c"
+              }
+            },
+            "Property": "x_SkuDescription"
+          },
+          "Name": "Costs.x_SkuDescription",
+          "NativeReferenceName": "SKU"
+        },
+        {
+          "Aggregation": {
+            "Expression": {
+              "Column": {
+                "Expression": {
+                  "SourceRef": {
+                    "Source": "c"
+                  }
+                },
+                "Property": "ConsumedQuantity"
+              }
+            },
+            "Function": 0
+          },
+          "Name": "Sum(Costs.ConsumedQuantity)",
+          "NativeReferenceName": "Quantity"
+        },
+        {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Source": "c"
+              }
+            },
+            "Property": "ContractedUnitPrice"
+          },
+          "Name": "Sum(Costs.ContractedUnitPrice)",
+          "NativeReferenceName": "Contracted"
+        },
+        {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Source": "c"
+              }
+            },
+            "Property": "ConsumedUnit"
+          },
+          "Name": "Costs.ConsumedUnit",
+          "NativeReferenceName": "Unit"
+        },
+        {
+          "Aggregation": {
+            "Expression": {
+              "Column": {
+                "Expression": {
+                  "SourceRef": {
+                    "Source": "c"
+                  }
+                },
+                "Property": "EffectiveCost"
+              }
+            },
+            "Function": 0
+          },
+          "Name": "Sum(Costs.EffectiveCost)",
+          "NativeReferenceName": "Cost"
+        }
+      ],
+      "OrderBy": [
+        {
+          "Direction": 2,
+          "Expression": {
+            "Aggregation": {
+              "Expression": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Source": "c"
+                    }
+                  },
+                  "Property": "EffectiveCost"
+                }
+              },
+              "Function": 0
+            }
+          }
+        }
+      ]
+    },
+    "columnProperties": {
+      "Costs.CommitmentDiscountType": {
+        "displayName": "Commitment"
+      },
+      "Costs.x_EffectiveUnitPrice": {
+        "displayName": "Effective"
+      },
+      "Sum(Costs.ListUnitPrice)": {
+        "displayName": "List"
+      },
+      "Costs.x_SkuTermLabel": {
+        "displayName": "Term"
+      },
+      "Costs.x_SkuDescription": {
+        "displayName": "SKU"
+      },
+      "Sum(Costs.ContractedUnitPrice)": {
+        "displayName": "Contracted"
+      },
+      "Sum(Costs.ConsumedQuantity)": {
+        "displayName": "Quantity"
+      },
+      "Costs.ConsumedUnit": {
+        "displayName": "Unit"
+      },
+      "Sum(Costs.EffectiveCost)": {
+        "displayName": "Cost"
+      }
+    },
+    "drillFilterOtherVisuals": true,
+    "objects": {
+      "columnWidth": [
+        {
+          "properties": {
+            "value": {
+              "expr": {
+                "Literal": {
+                  "Value": "65.83913379737045D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "Sum(Costs.ListUnitPrice)"
+          }
+        },
+        {
+          "properties": {
+            "value": {
+              "expr": {
+                "Literal": {
+                  "Value": "208.62690723349726D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "Costs.x_SkuDescription"
+          }
+        }
+      ]
+    },
+    "vcObjects": {
+      "background": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}

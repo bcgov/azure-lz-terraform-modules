@@ -1,0 +1,7 @@
+﻿role 'Billing Group: abc123'
+	modelPermission: read
+
+	tablePermission Costs = [tag_billing_group] == "abc123"
+
+	annotation PBI_Id = ec676addbeb5417b8c5111515c5ec114
+

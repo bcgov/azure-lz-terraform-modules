@@ -1,0 +1,48 @@
+﻿model Model
+	culture: en-US
+	defaultPowerBIDataSourceVersion: powerBI_V3
+	sourceQueryCulture: en-US
+	dataAccessOptions
+		fastCombine
+		legacyRedirects
+		returnErrorValuesAsNull
+
+queryGroup '🛠️ Setup'
+
+	annotation PBI_QueryGroupOrder = 0
+
+queryGroup Storage
+
+	annotation PBI_QueryGroupOrder = 3
+
+queryGroup Functions
+
+	annotation PBI_QueryGroupOrder = 1
+
+queryGroup 'Resource Graph'
+
+	annotation PBI_QueryGroupOrder = 4
+
+queryGroup 'Open data'
+
+	annotation PBI_QueryGroupOrder = 5
+
+queryGroup 'Data Explorer'
+
+	annotation PBI_QueryGroupOrder = 2
+
+annotation __PBI_TimeIntelligenceEnabled = 0
+
+annotation PBIDesktopVersion = 2.145.1262.0 (25.07)+10bdeda5ab0db954b2cf824e7a117ad7cee97f88
+
+annotation PBI_QueryOrder = ["PricingUnits","Costs","▶️  START HERE","Number of Months","Cluster URL","Default Granularity"]
+
+annotation PBI_ProTooling = ["DevMode"]
+
+ref table PricingUnits
+ref table Costs
+
+ref role 'Billing Group: abc123'
+
+ref cultureInfo en-US
+

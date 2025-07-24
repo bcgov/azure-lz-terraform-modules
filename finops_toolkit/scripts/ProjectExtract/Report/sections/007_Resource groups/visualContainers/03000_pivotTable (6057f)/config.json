@@ -1,0 +1,244 @@
+{
+  "name": "6057f1ff52b6cd4022bc",
+  "layouts": [
+    {
+      "id": 0,
+      "position": {
+        "x": 216,
+        "y": 296,
+        "z": 2000,
+        "width": 1048,
+        "height": 416,
+        "tabOrder": 3000
+      }
+    }
+  ],
+  "singleVisual": {
+    "visualType": "pivotTable",
+    "projections": {
+      "Rows": [
+        {
+          "queryRef": "Costs.x_ResourceGroupName",
+          "active": true
+        },
+        {
+          "queryRef": "Costs.ResourceName"
+        },
+        {
+          "queryRef": "Costs.x_SkuDescription"
+        }
+      ],
+      "Values": [
+        {
+          "queryRef": "Sum(Costs.EffectiveCost)"
+        }
+      ],
+      "Columns": [
+        {
+          "queryRef": "Costs.x_ChargeMonth",
+          "active": true
+        }
+      ]
+    },
+    "prototypeQuery": {
+      "Version": 2,
+      "From": [
+        {
+          "Name": "c",
+          "Entity": "Costs",
+          "Type": 0
+        }
+      ],
+      "Select": [
+        {
+          "Aggregation": {
+            "Expression": {
+              "Column": {
+                "Expression": {
+                  "SourceRef": {
+                    "Source": "c"
+                  }
+                },
+                "Property": "EffectiveCost"
+              }
+            },
+            "Function": 0
+          },
+          "Name": "Sum(Costs.EffectiveCost)",
+          "NativeReferenceName": "Effective cost"
+        },
+        {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Source": "c"
+              }
+            },
+            "Property": "x_SkuDescription"
+          },
+          "Name": "Costs.x_SkuDescription",
+          "NativeReferenceName": "SKU"
+        },
+        {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Source": "c"
+              }
+            },
+            "Property": "x_ResourceGroupName"
+          },
+          "Name": "Costs.x_ResourceGroupName",
+          "NativeReferenceName": "Resource group"
+        },
+        {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Source": "c"
+              }
+            },
+            "Property": "ResourceName"
+          },
+          "Name": "Costs.ResourceName",
+          "NativeReferenceName": "Resource"
+        },
+        {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Source": "c"
+              }
+            },
+            "Property": "x_ChargeMonth"
+          },
+          "Name": "Costs.x_ChargeMonth",
+          "NativeReferenceName": "Month"
+        }
+      ],
+      "OrderBy": [
+        {
+          "Direction": 2,
+          "Expression": {
+            "Aggregation": {
+              "Expression": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Source": "c"
+                    }
+                  },
+                  "Property": "EffectiveCost"
+                }
+              },
+              "Function": 0
+            }
+          }
+        }
+      ]
+    },
+    "expansionStates": [
+      {
+        "roles": [
+          "Rows"
+        ],
+        "levels": [
+          {
+            "queryRefs": [
+              "Costs.x_ResourceGroupName"
+            ],
+            "isCollapsed": true,
+            "isPinned": true
+          },
+          {
+            "queryRefs": [
+              "Costs.ResourceName"
+            ],
+            "isCollapsed": true
+          },
+          {
+            "queryRefs": [
+              "Costs.x_SkuDescription"
+            ],
+            "isCollapsed": true
+          }
+        ],
+        "root": {
+          "identityValues": null
+        }
+      }
+    ],
+    "columnProperties": {
+      "Sum(Costs.EffectiveCost)": {
+        "displayName": "Effective cost"
+      },
+      "Costs.x_SkuDescription": {
+        "displayName": "SKU"
+      },
+      "Costs.x_ResourceGroupName": {
+        "displayName": "Resource group"
+      },
+      "Costs.ResourceName": {
+        "displayName": "Resource"
+      },
+      "Costs.x_ChargeMonth": {
+        "displayName": "Month"
+      }
+    },
+    "drillFilterOtherVisuals": true,
+    "objects": {},
+    "vcObjects": {
+      "border": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "color": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "ThemeDataColor": {
+                      "ColorId": 0,
+                      "Percent": -0.1
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      ],
+      "title": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "visualTooltip": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}

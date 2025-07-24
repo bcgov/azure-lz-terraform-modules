@@ -1,0 +1,378 @@
+{
+  "name": "6e8ecfeea70c71e30dcc",
+  "layouts": [
+    {
+      "id": 0,
+      "position": {
+        "x": 216,
+        "y": 392,
+        "z": 2000,
+        "width": 1048,
+        "height": 320,
+        "tabOrder": 1000
+      }
+    }
+  ],
+  "singleVisual": {
+    "visualType": "pivotTable",
+    "projections": {
+      "Rows": [
+        {
+          "queryRef": "Costs.ServiceCategory",
+          "active": true
+        },
+        {
+          "queryRef": "Costs.ServiceName"
+        },
+        {
+          "queryRef": "Costs.ResourceType"
+        },
+        {
+          "queryRef": "Costs.ResourceName"
+        },
+        {
+          "queryRef": "Costs.ChargeDescription"
+        }
+      ],
+      "Values": [
+        {
+          "queryRef": "Sum(Costs.EffectiveCost)"
+        },
+        {
+          "queryRef": "Sum(Costs.x_TotalSavings)"
+        }
+      ],
+      "Columns": [
+        {
+          "queryRef": "Costs.x_ChargeMonth",
+          "active": true
+        }
+      ]
+    },
+    "prototypeQuery": {
+      "Version": 2,
+      "From": [
+        {
+          "Name": "c",
+          "Entity": "Costs",
+          "Type": 0
+        }
+      ],
+      "Select": [
+        {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Source": "c"
+              }
+            },
+            "Property": "ChargeDescription"
+          },
+          "Name": "Costs.ChargeDescription",
+          "NativeReferenceName": "Charge"
+        },
+        {
+          "Aggregation": {
+            "Expression": {
+              "Column": {
+                "Expression": {
+                  "SourceRef": {
+                    "Source": "c"
+                  }
+                },
+                "Property": "EffectiveCost"
+              }
+            },
+            "Function": 0
+          },
+          "Name": "Sum(Costs.EffectiveCost)",
+          "NativeReferenceName": "Effective cost"
+        },
+        {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Source": "c"
+              }
+            },
+            "Property": "ServiceCategory"
+          },
+          "Name": "Costs.ServiceCategory",
+          "NativeReferenceName": "Category"
+        },
+        {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Source": "c"
+              }
+            },
+            "Property": "ServiceName"
+          },
+          "Name": "Costs.ServiceName",
+          "NativeReferenceName": "Service"
+        },
+        {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Source": "c"
+              }
+            },
+            "Property": "ResourceName"
+          },
+          "Name": "Costs.ResourceName",
+          "NativeReferenceName": "Resource"
+        },
+        {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Source": "c"
+              }
+            },
+            "Property": "x_ChargeMonth"
+          },
+          "Name": "Costs.x_ChargeMonth",
+          "NativeReferenceName": "Month"
+        },
+        {
+          "Aggregation": {
+            "Expression": {
+              "Column": {
+                "Expression": {
+                  "SourceRef": {
+                    "Source": "c"
+                  }
+                },
+                "Property": "x_TotalSavings"
+              }
+            },
+            "Function": 0
+          },
+          "Name": "Sum(Costs.x_TotalSavings)",
+          "NativeReferenceName": "Savings"
+        },
+        {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Source": "c"
+              }
+            },
+            "Property": "ResourceType"
+          },
+          "Name": "Costs.ResourceType",
+          "NativeReferenceName": "Type"
+        }
+      ],
+      "OrderBy": [
+        {
+          "Direction": 2,
+          "Expression": {
+            "Aggregation": {
+              "Expression": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Source": "c"
+                    }
+                  },
+                  "Property": "EffectiveCost"
+                }
+              },
+              "Function": 0
+            }
+          }
+        }
+      ]
+    },
+    "expansionStates": [
+      {
+        "roles": [
+          "Rows"
+        ],
+        "levels": [
+          {
+            "queryRefs": [
+              "Costs.ServiceCategory"
+            ],
+            "isCollapsed": true,
+            "identityKeys": [
+              {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Costs"
+                    }
+                  },
+                  "Property": "ServiceCategory"
+                }
+              }
+            ],
+            "isPinned": true
+          },
+          {
+            "queryRefs": [
+              "Costs.ServiceName"
+            ],
+            "isCollapsed": true,
+            "identityKeys": [
+              {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Costs"
+                    }
+                  },
+                  "Property": "ServiceName"
+                }
+              }
+            ],
+            "isPinned": true
+          },
+          {
+            "queryRefs": [
+              "Costs.ResourceType"
+            ],
+            "isCollapsed": true,
+            "isPinned": true
+          },
+          {
+            "queryRefs": [
+              "Costs.ResourceName"
+            ],
+            "isCollapsed": true,
+            "isPinned": true
+          },
+          {
+            "queryRefs": [
+              "Costs.ChargeDescription"
+            ],
+            "isCollapsed": true,
+            "identityKeys": [
+              {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Costs"
+                    }
+                  },
+                  "Property": "ChargeDescription"
+                }
+              }
+            ],
+            "isPinned": true
+          }
+        ],
+        "root": {
+          "identityValues": null,
+          "children": [
+            {
+              "identityValues": [
+                {
+                  "Literal": {
+                    "Value": "'Databases'"
+                  }
+                }
+              ],
+              "children": [
+                {
+                  "identityValues": [
+                    {
+                      "Literal": {
+                        "Value": "'Azure SQL Database'"
+                      }
+                    }
+                  ],
+                  "isToggled": true
+                }
+              ]
+            }
+          ]
+        }
+      }
+    ],
+    "columnProperties": {
+      "Costs.ChargeDescription": {
+        "displayName": "Charge"
+      },
+      "Sum(Costs.EffectiveCost)": {
+        "displayName": "Effective cost"
+      },
+      "Costs.ResourceName": {
+        "displayName": "Resource"
+      },
+      "Costs.ServiceCategory": {
+        "displayName": "Category"
+      },
+      "Costs.ServiceName": {
+        "displayName": "Service"
+      },
+      "Costs.x_ChargeMonth": {
+        "displayName": "Month"
+      },
+      "Sum(Costs.x_TotalSavings)": {
+        "displayName": "Savings"
+      },
+      "Costs.ResourceType": {
+        "displayName": "Type"
+      }
+    },
+    "drillFilterOtherVisuals": true,
+    "objects": {},
+    "vcObjects": {
+      "border": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "color": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "ThemeDataColor": {
+                      "ColorId": 0,
+                      "Percent": -0.1
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      ],
+      "title": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "visualTooltip": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}

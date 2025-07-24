@@ -1,0 +1,4 @@
+role 'BG_abc123'
+    modelPermission: read
+
+    tablePermission Costs = [tag_billing_group] == "abc123"

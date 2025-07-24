@@ -1,0 +1,48 @@
+{
+  "name": "8e00d79ffc746643c0f6",
+  "layouts": [
+    {
+      "id": 0,
+      "position": {
+        "x": 1.1368683772161603E-13,
+        "y": 192.00000000000006,
+        "z": 0,
+        "width": 272,
+        "height": 96,
+        "tabOrder": 1000
+      }
+    }
+  ],
+  "singleVisual": {
+    "visualType": "textbox",
+    "drillFilterOtherVisuals": true,
+    "objects": {
+      "general": [
+        {
+          "properties": {
+            "paragraphs": [
+              {
+                "textRuns": [
+                  {
+                    "value": "Add business context",
+                    "textStyle": {
+                      "fontSize": "14pt"
+                    }
+                  }
+                ]
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": "Join cost with business data to align with your organization and quantify business value."
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    }
+  },
+  "parentGroupName": "e2db4806d2fd5c9d95ea"
+}

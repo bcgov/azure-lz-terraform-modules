@@ -1,0 +1,112 @@
+{
+  "layoutOptimization": 0,
+  "pods": [
+    {
+      "boundSection": "c563657f6b3f4fc63ea9",
+      "config": "{}",
+      "name": "f0ae2d45b4cca93a1d32"
+    }
+  ],
+  "publicCustomVisuals": [],
+  "resourcePackages": [
+    {
+      "resourcePackage": {
+        "disabled": false,
+        "items": [
+          {
+            "name": "Bug9076115215259053.svg",
+            "path": "Bug9076115215259053.svg",
+            "type": 100
+          },
+          {
+            "name": "Close-White9525936596282278.svg",
+            "path": "Close-White9525936596282278.svg",
+            "type": 100
+          },
+          {
+            "name": "Close-White9813616349546728.svg",
+            "path": "Close-White9813616349546728.svg",
+            "type": 100
+          },
+          {
+            "name": "Close9574438897237076.svg",
+            "path": "Close9574438897237076.svg",
+            "type": 100
+          },
+          {
+            "name": "ExternalLink292390249589896.svg",
+            "path": "ExternalLink292390249589896.svg",
+            "type": 100
+          },
+          {
+            "name": "ExternalLink7990467786314797.svg",
+            "path": "ExternalLink7990467786314797.svg",
+            "type": 100
+          },
+          {
+            "name": "Feedback-White08007760675531328.svg",
+            "path": "Feedback-White08007760675531328.svg",
+            "type": 100
+          },
+          {
+            "name": "Feedback010740419814817104.svg",
+            "path": "Feedback010740419814817104.svg",
+            "type": 100
+          },
+          {
+            "name": "GetStarted-AddData17914943068990197.png",
+            "path": "GetStarted-AddData17914943068990197.png",
+            "type": 100
+          },
+          {
+            "name": "GetStarted-ConnectData7243700207572936.png",
+            "path": "GetStarted-ConnectData7243700207572936.png",
+            "type": 100
+          },
+          {
+            "name": "GetStarted-CustomizeReport5477659270158559.png",
+            "path": "GetStarted-CustomizeReport5477659270158559.png",
+            "type": 100
+          },
+          {
+            "name": "Microsoft_FinOps_light_theme5385236195184553.json",
+            "path": "Microsoft_FinOps_light_theme5385236195184553.json",
+            "type": 201
+          },
+          {
+            "name": "Question-Circled-White3792978913051954.svg",
+            "path": "Question-Circled-White3792978913051954.svg",
+            "type": 100
+          },
+          {
+            "name": "Question-Circled40465909342341844.svg",
+            "path": "Question-Circled40465909342341844.svg",
+            "type": 100
+          },
+          {
+            "name": "Toolbox3204520726329514.svg",
+            "path": "Toolbox3204520726329514.svg",
+            "type": 100
+          }
+        ],
+        "name": "RegisteredResources",
+        "type": 1
+      }
+    },
+    {
+      "resourcePackage": {
+        "disabled": false,
+        "items": [
+          {
+            "name": "CY24SU10",
+            "path": "BaseThemes/CY24SU10.json",
+            "type": 202
+          }
+        ],
+        "name": "SharedResources",
+        "type": 2
+      }
+    }
+  ],
+  "theme": "Microsoft_FinOps_light_theme5385236195184553.json"
+}

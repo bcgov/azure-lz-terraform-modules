@@ -1,0 +1,218 @@
+{
+  "name": "bbdd2190d3f1f1dbad01",
+  "layouts": [
+    {
+      "id": 0,
+      "position": {
+        "x": 8,
+        "y": 2128,
+        "z": 19000,
+        "width": 1264,
+        "height": 216,
+        "tabOrder": 19000
+      }
+    }
+  ],
+  "singleVisual": {
+    "visualType": "tableEx",
+    "projections": {
+      "Values": [
+        {
+          "queryRef": "Costs.ChargePeriodStart"
+        },
+        {
+          "queryRef": "Costs.ChargeCategory"
+        },
+        {
+          "queryRef": "Costs.ChargeClass"
+        },
+        {
+          "queryRef": "Costs.PricingCategory"
+        },
+        {
+          "queryRef": "Costs.ChargeDescription"
+        },
+        {
+          "queryRef": "Sum(Costs.BilledCost)"
+        },
+        {
+          "queryRef": "Sum(Costs.ContractedCost)"
+        },
+        {
+          "queryRef": "Sum(Costs.PricingQuantity)"
+        },
+        {
+          "queryRef": "Sum(Costs.EffectiveCost)"
+        }
+      ]
+    },
+    "prototypeQuery": {
+      "Version": 2,
+      "From": [
+        {
+          "Name": "c",
+          "Entity": "Costs",
+          "Type": 0
+        }
+      ],
+      "Select": [
+        {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Source": "c"
+              }
+            },
+            "Property": "BilledCost"
+          },
+          "Name": "Sum(Costs.BilledCost)",
+          "NativeReferenceName": "BilledCost1"
+        },
+        {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Source": "c"
+              }
+            },
+            "Property": "ChargeCategory"
+          },
+          "Name": "Costs.ChargeCategory",
+          "NativeReferenceName": "ChargeCategory"
+        },
+        {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Source": "c"
+              }
+            },
+            "Property": "ContractedCost"
+          },
+          "Name": "Sum(Costs.ContractedCost)",
+          "NativeReferenceName": "ContractedCost1"
+        },
+        {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Source": "c"
+              }
+            },
+            "Property": "ChargeDescription"
+          },
+          "Name": "Costs.ChargeDescription",
+          "NativeReferenceName": "ChargeDescription"
+        },
+        {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Source": "c"
+              }
+            },
+            "Property": "PricingQuantity"
+          },
+          "Name": "Sum(Costs.PricingQuantity)",
+          "NativeReferenceName": "PricingQuantity1"
+        },
+        {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Source": "c"
+              }
+            },
+            "Property": "EffectiveCost"
+          },
+          "Name": "Sum(Costs.EffectiveCost)",
+          "NativeReferenceName": "EffectiveCost1"
+        },
+        {
+          "Aggregation": {
+            "Expression": {
+              "Column": {
+                "Expression": {
+                  "SourceRef": {
+                    "Source": "c"
+                  }
+                },
+                "Property": "ChargePeriodStart"
+              }
+            },
+            "Function": 5
+          },
+          "Name": "Costs.ChargePeriodStart",
+          "NativeReferenceName": "Count of ChargePeriodStart"
+        },
+        {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Source": "c"
+              }
+            },
+            "Property": "PricingCategory"
+          },
+          "Name": "Costs.PricingCategory",
+          "NativeReferenceName": "PricingCategory"
+        },
+        {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Source": "c"
+              }
+            },
+            "Property": "ChargeClass"
+          },
+          "Name": "Costs.ChargeClass",
+          "NativeReferenceName": "ChargeClass"
+        }
+      ]
+    },
+    "columnProperties": {
+      "Costs.ChargePeriodStart": {
+        "displayName": "Row count"
+      }
+    },
+    "drillFilterOtherVisuals": true,
+    "objects": {
+      "total": [
+        {
+          "properties": {
+            "totals": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "vcObjects": {
+      "title": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "text": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Columns that share the same unique values (should only be 1)'"
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,61 @@
+[
+  {
+    "expression": {
+      "Aggregation": {
+        "Expression": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "Costs"
+              }
+            },
+            "Property": "ChargePeriodStart"
+          }
+        },
+        "Function": 5
+      }
+    },
+    "filter": {
+      "Version": 2,
+      "From": [
+        {
+          "Name": "c",
+          "Entity": "Costs",
+          "Type": 0
+        }
+      ],
+      "Where": [
+        {
+          "Condition": {
+            "Comparison": {
+              "ComparisonKind": 1,
+              "Left": {
+                "Aggregation": {
+                  "Expression": {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Source": "c"
+                        }
+                      },
+                      "Property": "ChargePeriodStart"
+                    }
+                  },
+                  "Function": 5
+                }
+              },
+              "Right": {
+                "Literal": {
+                  "Value": "1L"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "type": "Advanced",
+    "howCreated": 0,
+    "isHiddenInViewMode": false
+  }
+]

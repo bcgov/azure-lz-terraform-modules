@@ -1,0 +1,21 @@
+{
+  "name": "072bd3c00d09b7e59a45",
+  "layouts": [
+    {
+      "id": 0,
+      "position": {
+        "height": 704,
+        "width": 1048.0876708841058,
+        "x": 216,
+        "y": 8,
+        "z": 5000,
+        "tabOrder": 1000
+      }
+    }
+  ],
+  "singleVisualGroup": {
+    "displayName": "Layout grid",
+    "groupMode": 0,
+    "isHidden": true
+  }
+}

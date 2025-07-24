@@ -1,0 +1,260 @@
+{
+  "name": "80e1414eff12c399d600",
+  "layouts": [
+    {
+      "id": 0,
+      "position": {
+        "x": 216,
+        "y": 392,
+        "z": 2000,
+        "width": 1048,
+        "height": 320,
+        "tabOrder": 1000
+      }
+    }
+  ],
+  "singleVisual": {
+    "visualType": "tableEx",
+    "projections": {
+      "Values": [
+        {
+          "queryRef": "Costs.ChargeDescription"
+        },
+        {
+          "queryRef": "Sum(Costs.ConsumedQuantity)"
+        },
+        {
+          "queryRef": "Costs.ConsumedUnit"
+        },
+        {
+          "queryRef": "Sum(Costs.x_PricingBlockSize)"
+        },
+        {
+          "queryRef": "Sum(Costs.x_EffectiveUnitPrice)"
+        },
+        {
+          "queryRef": "Sum(Costs.EffectiveCost)"
+        }
+      ]
+    },
+    "prototypeQuery": {
+      "Version": 2,
+      "From": [
+        {
+          "Name": "c",
+          "Entity": "Costs",
+          "Type": 0
+        }
+      ],
+      "Select": [
+        {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Source": "c"
+              }
+            },
+            "Property": "ChargeDescription"
+          },
+          "Name": "Costs.ChargeDescription",
+          "NativeReferenceName": "Charge"
+        },
+        {
+          "Aggregation": {
+            "Expression": {
+              "Column": {
+                "Expression": {
+                  "SourceRef": {
+                    "Source": "c"
+                  }
+                },
+                "Property": "EffectiveCost"
+              }
+            },
+            "Function": 0
+          },
+          "Name": "Sum(Costs.EffectiveCost)",
+          "NativeReferenceName": "Cost"
+        },
+        {
+          "Aggregation": {
+            "Expression": {
+              "Column": {
+                "Expression": {
+                  "SourceRef": {
+                    "Source": "c"
+                  }
+                },
+                "Property": "ConsumedQuantity"
+              }
+            },
+            "Function": 0
+          },
+          "Name": "Sum(Costs.ConsumedQuantity)",
+          "NativeReferenceName": "Consumed qty"
+        },
+        {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Source": "c"
+              }
+            },
+            "Property": "ConsumedUnit"
+          },
+          "Name": "Costs.ConsumedUnit",
+          "NativeReferenceName": "Unit"
+        },
+        {
+          "Aggregation": {
+            "Expression": {
+              "Column": {
+                "Expression": {
+                  "SourceRef": {
+                    "Source": "c"
+                  }
+                },
+                "Property": "x_PricingBlockSize"
+              }
+            },
+            "Function": 0
+          },
+          "Name": "Sum(Costs.x_PricingBlockSize)",
+          "NativeReferenceName": "Block size"
+        },
+        {
+          "Aggregation": {
+            "Expression": {
+              "Column": {
+                "Expression": {
+                  "SourceRef": {
+                    "Source": "c"
+                  }
+                },
+                "Property": "x_EffectiveUnitPrice"
+              }
+            },
+            "Function": 0
+          },
+          "Name": "Sum(Costs.x_EffectiveUnitPrice)",
+          "NativeReferenceName": "Price"
+        }
+      ],
+      "OrderBy": [
+        {
+          "Direction": 2,
+          "Expression": {
+            "Aggregation": {
+              "Expression": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Source": "c"
+                    }
+                  },
+                  "Property": "EffectiveCost"
+                }
+              },
+              "Function": 0
+            }
+          }
+        }
+      ]
+    },
+    "columnProperties": {
+      "Costs.ChargeDescription": {
+        "displayName": "Charge"
+      },
+      "Sum(Costs.EffectiveCost)": {
+        "displayName": "Cost"
+      },
+      "Costs.x_ChargeMonth": {
+        "displayName": "Month"
+      },
+      "Sum(Costs.x_EffectiveUnitPrice)": {
+        "displayName": "Price"
+      },
+      "Sum(Costs.x_PricingBlockSize)": {
+        "displayName": "Block size"
+      },
+      "Costs.ConsumedUnit": {
+        "displayName": "Unit"
+      },
+      "Sum(Costs.ConsumedQuantity)": {
+        "displayName": "Consumed qty"
+      }
+    },
+    "drillFilterOtherVisuals": true,
+    "objects": {
+      "columnWidth": [
+        {
+          "properties": {
+            "value": {
+              "expr": {
+                "Literal": {
+                  "Value": "645.2462012435892D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "Costs.ChargeDescription"
+          }
+        }
+      ]
+    },
+    "vcObjects": {
+      "border": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "color": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "ThemeDataColor": {
+                      "ColorId": 0,
+                      "Percent": -0.1
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      ],
+      "title": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "visualTooltip": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}

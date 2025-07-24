@@ -1,0 +1,80 @@
+{
+  "name": "8ac8b68f0dbfd67863ea",
+  "layouts": [
+    {
+      "id": 0,
+      "position": {
+        "x": 0,
+        "y": 192,
+        "z": 0,
+        "width": 247.99999999999997,
+        "height": 176,
+        "tabOrder": 3000
+      }
+    }
+  ],
+  "singleVisual": {
+    "visualType": "textbox",
+    "drillFilterOtherVisuals": true,
+    "objects": {
+      "general": [
+        {
+          "properties": {
+            "paragraphs": [
+              {
+                "textRuns": [
+                  {
+                    "value": "Customize your report",
+                    "textStyle": {
+                      "fontSize": "14pt"
+                    }
+                  }
+                ]
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": "Keep what works, remove what you don't need, and tailor visuals and metrics to highlight what's important."
+                  }
+                ]
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": ""
+                  }
+                ]
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": ""
+                  }
+                ]
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": ""
+                  }
+                ]
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": "Data dictionary",
+                    "textStyle": {
+                      "color": "#6f4bb2"
+                    },
+                    "url": "https://learn.microsoft.com/cloud-computing/finops/toolkit/help/data-dictionary"
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    }
+  },
+  "parentGroupName": "330980de6a26f7e92210"
+}

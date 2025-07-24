@@ -1,0 +1,398 @@
+{
+  "objects": {
+    "labels": [
+      {
+        "properties": {
+          "show": {
+            "expr": {
+              "Literal": {
+                "Value": "false"
+              }
+            }
+          },
+          "labelDisplayUnits": {
+            "expr": {
+              "Literal": {
+                "Value": "0D"
+              }
+            }
+          }
+        }
+      }
+    ],
+    "categoryAxis": [
+      {
+        "properties": {
+          "show": {
+            "expr": {
+              "Literal": {
+                "Value": "true"
+              }
+            }
+          },
+          "showAxisTitle": {
+            "expr": {
+              "Literal": {
+                "Value": "false"
+              }
+            }
+          },
+          "axisType": {
+            "expr": {
+              "Literal": {
+                "Value": "'Scalar'"
+              }
+            }
+          }
+        }
+      }
+    ],
+    "valueAxis": [
+      {
+        "properties": {
+          "showAxisTitle": {
+            "expr": {
+              "Literal": {
+                "Value": "false"
+              }
+            }
+          }
+        }
+      }
+    ],
+    "legend": [
+      {
+        "properties": {
+          "position": {
+            "expr": {
+              "Literal": {
+                "Value": "'Bottom'"
+              }
+            }
+          }
+        }
+      }
+    ],
+    "dataPoint": [
+      {
+        "properties": {
+          "fill": {
+            "solid": {
+              "color": {
+                "expr": {
+                  "ThemeDataColor": {
+                    "ColorId": 4,
+                    "Percent": 0
+                  }
+                }
+              }
+            }
+          }
+        },
+        "selector": {
+          "data": [
+            {
+              "scopeId": {
+                "Comparison": {
+                  "ComparisonKind": 0,
+                  "Left": {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "Costs"
+                        }
+                      },
+                      "Property": "ChargeCategory"
+                    }
+                  },
+                  "Right": {
+                    "Literal": {
+                      "Value": "'Adjustment'"
+                    }
+                  }
+                }
+              }
+            }
+          ]
+        }
+      },
+      {
+        "properties": {
+          "fill": {
+            "solid": {
+              "color": {
+                "expr": {
+                  "ThemeDataColor": {
+                    "ColorId": 2,
+                    "Percent": 0
+                  }
+                }
+              }
+            }
+          }
+        },
+        "selector": {
+          "data": [
+            {
+              "scopeId": {
+                "Comparison": {
+                  "ComparisonKind": 0,
+                  "Left": {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "Costs"
+                        }
+                      },
+                      "Property": "ChargeCategory"
+                    }
+                  },
+                  "Right": {
+                    "Literal": {
+                      "Value": "'Purchase'"
+                    }
+                  }
+                }
+              }
+            }
+          ]
+        }
+      },
+      {
+        "properties": {
+          "fill": {
+            "solid": {
+              "color": {
+                "expr": {
+                  "ThemeDataColor": {
+                    "ColorId": 3,
+                    "Percent": 0
+                  }
+                }
+              }
+            }
+          }
+        },
+        "selector": {
+          "data": [
+            {
+              "scopeId": {
+                "Comparison": {
+                  "ComparisonKind": 0,
+                  "Left": {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "Costs"
+                        }
+                      },
+                      "Property": "ChargeCategory"
+                    }
+                  },
+                  "Right": {
+                    "Literal": {
+                      "Value": "'Usage'"
+                    }
+                  }
+                }
+              }
+            }
+          ]
+        }
+      }
+    ],
+    "zoom": [
+      {
+        "properties": {
+          "show": {
+            "expr": {
+              "Literal": {
+                "Value": "false"
+              }
+            }
+          }
+        }
+      }
+    ],
+    "ribbonBands": [
+      {
+        "properties": {
+          "show": {
+            "expr": {
+              "Literal": {
+                "Value": "false"
+              }
+            }
+          }
+        }
+      }
+    ]
+  },
+  "projectionOrdering": {
+    "Category": [
+      0
+    ],
+    "Y": [
+      1
+    ],
+    "Tooltips": [
+      2
+    ],
+    "Series": [
+      3
+    ]
+  },
+  "projectionActiveItems": {
+    "Category": [
+      {
+        "queryRef": "Costs.x_ChargeMonth",
+        "suppressConcat": false
+      }
+    ]
+  },
+  "queryMetadata": {
+    "Select": [
+      {
+        "Restatement": "ChargeMonth",
+        "Name": "Costs.x_ChargeMonth",
+        "Type": 4,
+        "Format": "MMM yyyy"
+      },
+      {
+        "Restatement": "EffectiveCost",
+        "Name": "Sum(Costs.EffectiveCost)",
+        "Type": 1
+      },
+      {
+        "Restatement": "Effective savings rate",
+        "Name": "Costs.x_EffectiveSavingsRate",
+        "Type": 1,
+        "Format": "0.00%;-0.00%;0.00%"
+      },
+      {
+        "Restatement": "PricingCategory",
+        "Name": "Costs.PricingCategory",
+        "Type": 2048
+      }
+    ]
+  },
+  "visualElements": [
+    {
+      "DataRoles": [
+        {
+          "Name": "Category",
+          "Projection": 0,
+          "isActive": true
+        },
+        {
+          "Name": "Y",
+          "Projection": 1,
+          "isActive": false
+        },
+        {
+          "Name": "Tooltips",
+          "Projection": 2,
+          "isActive": false
+        },
+        {
+          "Name": "Series",
+          "Projection": 3,
+          "isActive": false
+        }
+      ]
+    }
+  ],
+  "selects": [
+    {
+      "displayName": "ChargeMonth",
+      "format": "MMM yyyy",
+      "queryName": "Costs.x_ChargeMonth",
+      "roles": {
+        "Category": true
+      },
+      "type": {
+        "category": null,
+        "underlyingType": 519
+      },
+      "expr": {
+        "Column": {
+          "Expression": {
+            "SourceRef": {
+              "Entity": "Costs"
+            }
+          },
+          "Property": "x_ChargeMonth"
+        }
+      }
+    },
+    {
+      "displayName": "EffectiveCost",
+      "queryName": "Sum(Costs.EffectiveCost)",
+      "roles": {
+        "Y": true
+      },
+      "type": {
+        "category": null,
+        "underlyingType": 259
+      },
+      "expr": {
+        "Aggregation": {
+          "Expression": {
+            "Column": {
+              "Expression": {
+                "SourceRef": {
+                  "Entity": "Costs"
+                }
+              },
+              "Property": "EffectiveCost"
+            }
+          },
+          "Function": 0
+        }
+      }
+    },
+    {
+      "displayName": "Effective savings rate",
+      "format": "0.00%;-0.00%;0.00%",
+      "queryName": "Costs.x_EffectiveSavingsRate",
+      "roles": {
+        "Tooltips": true
+      },
+      "type": {
+        "category": null,
+        "underlyingType": 259
+      },
+      "expr": {
+        "Measure": {
+          "Expression": {
+            "SourceRef": {
+              "Entity": "Costs"
+            }
+          },
+          "Property": "x_EffectiveSavingsRate"
+        }
+      }
+    },
+    {
+      "displayName": "PricingCategory",
+      "queryName": "Costs.PricingCategory",
+      "roles": {
+        "Series": true
+      },
+      "type": {
+        "category": null,
+        "underlyingType": 1
+      },
+      "expr": {
+        "Column": {
+          "Expression": {
+            "SourceRef": {
+              "Entity": "Costs"
+            }
+          },
+          "Property": "PricingCategory"
+        }
+      }
+    }
+  ]
+}

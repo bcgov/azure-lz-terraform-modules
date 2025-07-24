@@ -1,0 +1,389 @@
+{
+  "name": "ca9d6ef5117c152fdd27",
+  "layouts": [
+    {
+      "id": 0,
+      "position": {
+        "x": 8,
+        "y": 1624,
+        "z": 16000,
+        "width": 1264,
+        "height": 496,
+        "tabOrder": 16000
+      }
+    }
+  ],
+  "singleVisual": {
+    "visualType": "tableEx",
+    "projections": {
+      "Values": [
+        {
+          "queryRef": "CountNonNull(Costs.ChargePeriodStart)"
+        },
+        {
+          "queryRef": "Costs.BillingAccountId"
+        },
+        {
+          "queryRef": "Costs.ChargeClass"
+        },
+        {
+          "queryRef": "Costs.ChargePeriodStart"
+        },
+        {
+          "queryRef": "Costs.CommitmentDiscountId"
+        },
+        {
+          "queryRef": "Costs.RegionId"
+        },
+        {
+          "queryRef": "Costs.ResourceId"
+        },
+        {
+          "queryRef": "Costs.SkuPriceId"
+        },
+        {
+          "queryRef": "Costs.Tags"
+        },
+        {
+          "queryRef": "Costs.x_AccountOwnerId"
+        },
+        {
+          "queryRef": "Costs.x_CostCenter"
+        },
+        {
+          "queryRef": "Costs.x_InvoiceSectionId"
+        },
+        {
+          "queryRef": "Costs.x_SkuDetails"
+        },
+        {
+          "queryRef": "Costs.x_SkuMeterId"
+        },
+        {
+          "queryRef": "Costs.x_SkuOfferId"
+        },
+        {
+          "queryRef": "Costs.x_SkuPartNumber"
+        },
+        {
+          "queryRef": "Costs.x_CostAllocationRuleName"
+        }
+      ]
+    },
+    "prototypeQuery": {
+      "Version": 2,
+      "From": [
+        {
+          "Name": "c",
+          "Entity": "Costs",
+          "Type": 0
+        }
+      ],
+      "Select": [
+        {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Source": "c"
+              }
+            },
+            "Property": "BillingAccountId"
+          },
+          "Name": "Costs.BillingAccountId",
+          "NativeReferenceName": "BillingAccountId"
+        },
+        {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Source": "c"
+              }
+            },
+            "Property": "CommitmentDiscountId"
+          },
+          "Name": "Costs.CommitmentDiscountId",
+          "NativeReferenceName": "CommitmentDiscountId"
+        },
+        {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Source": "c"
+              }
+            },
+            "Property": "RegionId"
+          },
+          "Name": "Costs.RegionId",
+          "NativeReferenceName": "RegionId"
+        },
+        {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Source": "c"
+              }
+            },
+            "Property": "ResourceId"
+          },
+          "Name": "Costs.ResourceId",
+          "NativeReferenceName": "ResourceId"
+        },
+        {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Source": "c"
+              }
+            },
+            "Property": "SkuPriceId"
+          },
+          "Name": "Costs.SkuPriceId",
+          "NativeReferenceName": "SkuPriceId"
+        },
+        {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Source": "c"
+              }
+            },
+            "Property": "Tags"
+          },
+          "Name": "Costs.Tags",
+          "NativeReferenceName": "Tags"
+        },
+        {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Source": "c"
+              }
+            },
+            "Property": "x_AccountOwnerId"
+          },
+          "Name": "Costs.x_AccountOwnerId",
+          "NativeReferenceName": "x_AccountOwnerId"
+        },
+        {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Source": "c"
+              }
+            },
+            "Property": "x_CostCenter"
+          },
+          "Name": "Costs.x_CostCenter",
+          "NativeReferenceName": "x_CostCenter"
+        },
+        {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Source": "c"
+              }
+            },
+            "Property": "x_InvoiceSectionId"
+          },
+          "Name": "Costs.x_InvoiceSectionId",
+          "NativeReferenceName": "x_InvoiceSectionId"
+        },
+        {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Source": "c"
+              }
+            },
+            "Property": "x_SkuDetails"
+          },
+          "Name": "Costs.x_SkuDetails",
+          "NativeReferenceName": "x_SkuDetails"
+        },
+        {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Source": "c"
+              }
+            },
+            "Property": "x_SkuMeterId"
+          },
+          "Name": "Costs.x_SkuMeterId",
+          "NativeReferenceName": "x_SkuMeterId"
+        },
+        {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Source": "c"
+              }
+            },
+            "Property": "x_SkuOfferId"
+          },
+          "Name": "Costs.x_SkuOfferId",
+          "NativeReferenceName": "x_SkuOfferId"
+        },
+        {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Source": "c"
+              }
+            },
+            "Property": "x_SkuPartNumber"
+          },
+          "Name": "Costs.x_SkuPartNumber",
+          "NativeReferenceName": "x_SkuPartNumber"
+        },
+        {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Source": "c"
+              }
+            },
+            "Property": "ChargePeriodStart"
+          },
+          "Name": "Costs.ChargePeriodStart",
+          "NativeReferenceName": "ChargePeriodStart"
+        },
+        {
+          "Aggregation": {
+            "Expression": {
+              "Column": {
+                "Expression": {
+                  "SourceRef": {
+                    "Source": "c"
+                  }
+                },
+                "Property": "ChargePeriodStart"
+              }
+            },
+            "Function": 5
+          },
+          "Name": "CountNonNull(Costs.ChargePeriodStart)",
+          "NativeReferenceName": "Row count"
+        },
+        {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Source": "c"
+              }
+            },
+            "Property": "x_CostAllocationRuleName"
+          },
+          "Name": "Costs.x_CostAllocationRuleName",
+          "NativeReferenceName": "x_CostAllocationRuleName"
+        },
+        {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Source": "c"
+              }
+            },
+            "Property": "ChargeClass"
+          },
+          "Name": "Costs.ChargeClass",
+          "NativeReferenceName": "ChargeClass"
+        }
+      ],
+      "OrderBy": [
+        {
+          "Direction": 2,
+          "Expression": {
+            "Aggregation": {
+              "Expression": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Source": "c"
+                    }
+                  },
+                  "Property": "ChargePeriodStart"
+                }
+              },
+              "Function": 5
+            }
+          }
+        }
+      ]
+    },
+    "columnProperties": {
+      "CountNonNull(Costs.ChargePeriodStart)": {
+        "displayName": "Row count"
+      }
+    },
+    "drillFilterOtherVisuals": true,
+    "objects": {
+      "columnWidth": [
+        {
+          "properties": {
+            "value": {
+              "expr": {
+                "Literal": {
+                  "Value": "136.26255725521855D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "Costs.BillingAccountId"
+          }
+        },
+        {
+          "properties": {
+            "value": {
+              "expr": {
+                "Literal": {
+                  "Value": "133.7086092715232D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "Costs.ResourceId"
+          }
+        },
+        {
+          "properties": {
+            "value": {
+              "expr": {
+                "Literal": {
+                  "Value": "117.39735099337747D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "Costs.Tags"
+          }
+        }
+      ]
+    },
+    "vcObjects": {
+      "title": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "text": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Columns that determine uniqueness'"
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}

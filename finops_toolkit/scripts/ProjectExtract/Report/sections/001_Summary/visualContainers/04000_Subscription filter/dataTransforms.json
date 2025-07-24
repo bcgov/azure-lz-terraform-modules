@@ -1,0 +1,311 @@
+{
+  "objects": {
+    "selection": [
+      {
+        "properties": {
+          "singleSelect": {
+            "expr": {
+              "Literal": {
+                "Value": "false"
+              }
+            }
+          },
+          "selectAllCheckboxEnabled": {
+            "expr": {
+              "Literal": {
+                "Value": "true"
+              }
+            }
+          }
+        }
+      }
+    ],
+    "header": [
+      {
+        "properties": {
+          "fontColor": {
+            "solid": {
+              "color": {
+                "expr": {
+                  "ThemeDataColor": {
+                    "ColorId": 0,
+                    "Percent": 0
+                  }
+                }
+              }
+            }
+          },
+          "fontFamily": {
+            "expr": {
+              "Literal": {
+                "Value": "'''Segoe UI Semibold'', wf_segoe-ui_semibold, helvetica, arial, sans-serif'"
+              }
+            }
+          },
+          "show": {
+            "expr": {
+              "Literal": {
+                "Value": "true"
+              }
+            }
+          },
+          "textSize": {
+            "expr": {
+              "Literal": {
+                "Value": "9D"
+              }
+            }
+          },
+          "text": {
+            "expr": {
+              "Literal": {
+                "Value": "'Subscription'"
+              }
+            }
+          },
+          "outlineStyle": {
+            "expr": {
+              "Literal": {
+                "Value": "0D"
+              }
+            }
+          }
+        }
+      }
+    ],
+    "items": [
+      {
+        "properties": {
+          "steppedLayoutIndentation": {
+            "expr": {
+              "Literal": {
+                "Value": "16D"
+              }
+            }
+          },
+          "expandCollapseToggleType": {
+            "expr": {
+              "Literal": {
+                "Value": "0D"
+              }
+            }
+          },
+          "padding": {
+            "expr": {
+              "Literal": {
+                "Value": "0D"
+              }
+            }
+          },
+          "background": {
+            "solid": {
+              "color": {
+                "expr": {
+                  "Literal": {
+                    "Value": "'#E0DAF1'"
+                  }
+                }
+              }
+            }
+          },
+          "outlineStyle": {
+            "expr": {
+              "Literal": {
+                "Value": "0D"
+              }
+            }
+          },
+          "fontColor": {
+            "solid": {
+              "color": {
+                "expr": {
+                  "ThemeDataColor": {
+                    "ColorId": 1,
+                    "Percent": 0
+                  }
+                }
+              }
+            }
+          },
+          "textSize": {
+            "expr": {
+              "Literal": {
+                "Value": "8D"
+              }
+            }
+          },
+          "bold": {
+            "expr": {
+              "Literal": {
+                "Value": "false"
+              }
+            }
+          }
+        }
+      }
+    ],
+    "data": [
+      {
+        "properties": {
+          "mode": {
+            "expr": {
+              "Literal": {
+                "Value": "'Dropdown'"
+              }
+            }
+          }
+        }
+      }
+    ],
+    "pendingChangesIcon": [
+      {
+        "properties": {
+          "show": {
+            "expr": {
+              "Literal": {
+                "Value": "false"
+              }
+            }
+          },
+          "color": {
+            "solid": {
+              "color": {
+                "expr": {
+                  "ThemeDataColor": {
+                    "ColorId": 8,
+                    "Percent": 0
+                  }
+                }
+              }
+            }
+          },
+          "position": {
+            "expr": {
+              "Literal": {
+                "Value": "'left'"
+              }
+            }
+          }
+        }
+      }
+    ],
+    "general": [
+      {
+        "properties": {}
+      }
+    ]
+  },
+  "projectionOrdering": {
+    "Values": [
+      0,
+      1
+    ]
+  },
+  "projectionActiveItems": {
+    "Values": [
+      {
+        "queryRef": "Costs.SubAccountName",
+        "suppressConcat": false
+      }
+    ]
+  },
+  "queryMetadata": {
+    "Select": [
+      {
+        "Restatement": "Subscription",
+        "Name": "Costs.SubAccountName",
+        "Type": 2048
+      },
+      {
+        "Restatement": "Resource group",
+        "Name": "Costs.x_ResourceGroupName",
+        "Type": 2048
+      }
+    ]
+  },
+  "visualElements": [
+    {
+      "DataRoles": [
+        {
+          "Name": "Values",
+          "Projection": 0,
+          "isActive": true
+        },
+        {
+          "Name": "Values",
+          "Projection": 1,
+          "isActive": false
+        }
+      ]
+    }
+  ],
+  "selects": [
+    {
+      "displayName": "Subscription",
+      "queryName": "Costs.SubAccountName",
+      "roles": {
+        "Values": true
+      },
+      "type": {
+        "category": null,
+        "underlyingType": 1
+      },
+      "expr": {
+        "Column": {
+          "Expression": {
+            "SourceRef": {
+              "Entity": "Costs"
+            }
+          },
+          "Property": "SubAccountName"
+        }
+      }
+    },
+    {
+      "displayName": "Resource group",
+      "queryName": "Costs.x_ResourceGroupName",
+      "roles": {
+        "Values": true
+      },
+      "type": {
+        "category": null,
+        "underlyingType": 1
+      },
+      "expr": {
+        "Column": {
+          "Expression": {
+            "SourceRef": {
+              "Entity": "Costs"
+            }
+          },
+          "Property": "x_ResourceGroupName"
+        }
+      }
+    }
+  ],
+  "expansionStates": [
+    {
+      "roles": [
+        "Values"
+      ],
+      "levels": [
+        {
+          "queryRefs": [
+            "Costs.SubAccountName"
+          ],
+          "isCollapsed": true,
+          "isPinned": true
+        },
+        {
+          "queryRefs": [
+            "Costs.x_ResourceGroupName"
+          ],
+          "isCollapsed": true
+        }
+      ],
+      "root": {
+        "identityValues": null
+      }
+    }
+  ]
+}

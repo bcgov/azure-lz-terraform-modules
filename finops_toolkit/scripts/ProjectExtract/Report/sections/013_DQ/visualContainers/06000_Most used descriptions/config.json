@@ -1,0 +1,191 @@
+{
+  "name": "3504840db022b9e41e28",
+  "layouts": [
+    {
+      "id": 0,
+      "position": {
+        "x": 8,
+        "y": 623.94375001914659,
+        "z": 6000,
+        "width": 1264,
+        "height": 272,
+        "tabOrder": 6000
+      }
+    }
+  ],
+  "singleVisual": {
+    "visualType": "tableEx",
+    "projections": {
+      "Values": [
+        {
+          "queryRef": "Costs.ChargeDescription"
+        },
+        {
+          "queryRef": "Sum(Costs.ListCost)"
+        },
+        {
+          "queryRef": "Sum(Costs.ContractedCost)"
+        },
+        {
+          "queryRef": "Sum(Costs.BilledCost)"
+        },
+        {
+          "queryRef": "Sum(Costs.EffectiveCost)"
+        }
+      ]
+    },
+    "prototypeQuery": {
+      "Version": 2,
+      "From": [
+        {
+          "Name": "c",
+          "Entity": "Costs",
+          "Type": 0
+        }
+      ],
+      "Select": [
+        {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Source": "c"
+              }
+            },
+            "Property": "ChargeDescription"
+          },
+          "Name": "Costs.ChargeDescription",
+          "NativeReferenceName": "ChargeDescription"
+        },
+        {
+          "Aggregation": {
+            "Expression": {
+              "Column": {
+                "Expression": {
+                  "SourceRef": {
+                    "Source": "c"
+                  }
+                },
+                "Property": "BilledCost"
+              }
+            },
+            "Function": 0
+          },
+          "Name": "Sum(Costs.BilledCost)",
+          "NativeReferenceName": "BilledCost"
+        },
+        {
+          "Aggregation": {
+            "Expression": {
+              "Column": {
+                "Expression": {
+                  "SourceRef": {
+                    "Source": "c"
+                  }
+                },
+                "Property": "EffectiveCost"
+              }
+            },
+            "Function": 0
+          },
+          "Name": "Sum(Costs.EffectiveCost)",
+          "NativeReferenceName": "EffectiveCost"
+        },
+        {
+          "Aggregation": {
+            "Expression": {
+              "Column": {
+                "Expression": {
+                  "SourceRef": {
+                    "Source": "c"
+                  }
+                },
+                "Property": "ContractedCost"
+              }
+            },
+            "Function": 0
+          },
+          "Name": "Sum(Costs.ContractedCost)",
+          "NativeReferenceName": "ContractedCost"
+        },
+        {
+          "Aggregation": {
+            "Expression": {
+              "Column": {
+                "Expression": {
+                  "SourceRef": {
+                    "Source": "c"
+                  }
+                },
+                "Property": "ListCost"
+              }
+            },
+            "Function": 0
+          },
+          "Name": "Sum(Costs.ListCost)",
+          "NativeReferenceName": "ListCost"
+        }
+      ],
+      "OrderBy": [
+        {
+          "Direction": 2,
+          "Expression": {
+            "Aggregation": {
+              "Expression": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Source": "c"
+                    }
+                  },
+                  "Property": "EffectiveCost"
+                }
+              },
+              "Function": 0
+            }
+          }
+        }
+      ]
+    },
+    "drillFilterOtherVisuals": true,
+    "objects": {
+      "columnWidth": [
+        {
+          "properties": {
+            "value": {
+              "expr": {
+                "Literal": {
+                  "Value": "889.3484175956339D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "Costs.ChargeDescription"
+          }
+        }
+      ]
+    },
+    "vcObjects": {
+      "title": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "text": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Most used descriptions'"
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}

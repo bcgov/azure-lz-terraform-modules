@@ -1,0 +1,121 @@
+{
+  "name": "6eb9ebc5ae01b9000216",
+  "layouts": [
+    {
+      "id": 0,
+      "position": {
+        "x": 0,
+        "y": 535.94375001914659,
+        "z": 12000,
+        "width": 1280,
+        "height": 80,
+        "tabOrder": 12000
+      }
+    }
+  ],
+  "singleVisual": {
+    "visualType": "textbox",
+    "drillFilterOtherVisuals": true,
+    "objects": {
+      "general": [
+        {
+          "properties": {
+            "paragraphs": [
+              {
+                "textRuns": [
+                  {
+                    "value": "Charge descriptions",
+                    "textStyle": {
+                      "fontFamily": "Segoe UI Light",
+                      "fontSize": "20pt"
+                    }
+                  }
+                ]
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": "Summarizes charge descriptions used across all charges to identify gaps. If you have any feedback, "
+                  },
+                  {
+                    "value": "please ",
+                    "textStyle": {
+                      "fontSize": "13.3333px"
+                    }
+                  },
+                  {
+                    "value": "create an issue in GitHub",
+                    "textStyle": {
+                      "fontSize": "13.3333px"
+                    },
+                    "url": "https://aka.ms/ftk/idea"
+                  },
+                  {
+                    "value": " so we can address it in a future release.",
+                    "textStyle": {
+                      "fontSize": "13.3333px"
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "vcObjects": {
+      "padding": [
+        {
+          "properties": {
+            "top": {
+              "expr": {
+                "Literal": {
+                  "Value": "10D"
+                }
+              }
+            },
+            "bottom": {
+              "expr": {
+                "Literal": {
+                  "Value": "10D"
+                }
+              }
+            },
+            "left": {
+              "expr": {
+                "Literal": {
+                  "Value": "15D"
+                }
+              }
+            },
+            "right": {
+              "expr": {
+                "Literal": {
+                  "Value": "15D"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "background": [
+        {
+          "properties": {
+            "color": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "ThemeDataColor": {
+                      "ColorId": 2,
+                      "Percent": 0.6
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}
