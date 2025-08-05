@@ -1,4 +1,0 @@
-role 'BG_a1fb6f'
-    modelPermission: read
-
-    tablePermission Costs = [tag_billing_group] == "a1fb6f"
