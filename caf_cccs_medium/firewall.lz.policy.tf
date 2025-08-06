@@ -14,8 +14,9 @@ module "lz_firewall_policy" {
   resource_group_name  = azurerm_resource_group.base_firewall_policy.name
   location             = var.primary_location
 
-  base_policy_id = azurerm_firewall_policy.base_firewall_policy.id
-  dns            = var.dns ## TODO: Update to use module output
+  base_policy_id    = azurerm_firewall_policy.base_firewall_policy.id
+  dns               = var.dns ## TODO: Update to use module output
+  private_ip_ranges = var.private_ip_ranges != null ? var.private_ip_ranges : []
 
   insights = {
     enabled                            = true
