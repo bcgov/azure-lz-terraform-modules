@@ -32,6 +32,7 @@
 | <a name="input_VNet-DNS-Settings"></a> [VNet-DNS-Settings](#input\_VNet-DNS-Settings) | Sets the VNet DNS settings for the policy assignment. | `list(any)` | n/a | yes |
 | <a name="input_configure_connectivity_resources"></a> [configure\_connectivity\_resources](#input\_configure\_connectivity\_resources) | Configuration settings for "connectivity" resources. | `any` | n/a | yes |
 | <a name="input_configure_management_resources"></a> [configure\_management\_resources](#input\_configure\_management\_resources) | Configuration settings for "management" resources. | `any` | n/a | yes |
+| <a name="input_country_location"></a> [country\_location](#input\_country\_location) | Sets the country location. Used by some Azure resources taht are not tied to the regions. | `string` | n/a | yes |
 | <a name="input_policy_effect"></a> [policy\_effect](#input\_policy\_effect) | Sets the effect for the policy assignment. | `string` | `null` | no |
 | <a name="input_primary_location"></a> [primary\_location](#input\_primary\_location) | Sets the location for "primary" resources to be created in. | `string` | n/a | yes |
 | <a name="input_root_id"></a> [root\_id](#input\_root\_id) | Sets the value used for generating unique resource naming within the module. | `string` | n/a | yes |
