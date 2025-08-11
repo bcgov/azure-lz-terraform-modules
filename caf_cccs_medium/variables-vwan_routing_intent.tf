@@ -14,12 +14,12 @@ variable "onpremises_address_ranges" {
   type        = list(string)  
 }
 
-variable "vhub_resource_id" {
-  description = "Resource ID of the Virtual Hub."
-  type        = string  
-}
+# variable "vhub_resource_id" {
+#   description = "Resource ID of the Virtual Hub."
+#   type        = string  
+# }
 
-variable "firewall_resource_id" {
-  description = "Resource ID of the Azure Firewall."
-  type        = string  
-}
+# variable "firewall_resource_id" {
+#   description = "Resource ID of the Azure Firewall."
+#   type        = string  
+# }

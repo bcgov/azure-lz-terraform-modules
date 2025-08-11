@@ -4,7 +4,7 @@
 
 resource "azapi_update_resource" "vwan_routing_intent_and_policies" {
   type        = "Microsoft.Network/virtualHubs/hubRouteTables@2024-07-01"
-  parent_id = local.vhub_resource_id
+  parent_id = var.vhub_resource_id
   name = "defaultRouteTable"
 
   body = {
@@ -12,10 +12,10 @@ resource "azapi_update_resource" "vwan_routing_intent_and_policies" {
       labels = ["default"]
       routes = [
         {
-          destinations = local.onpremises_address_ranges
+          destinations = var.onpremises_address_ranges
           destinationType = "CIDR"
           name = "private_traffic"
-          nextHop = local.firewall_resource_id # Azure Firewall resource ID
+          nextHop = var.firewall_resource_id
           nextHopType = "ResourceId"
         }
       ]
