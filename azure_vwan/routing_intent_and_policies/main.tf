@@ -12,6 +12,24 @@ resource "azapi_update_resource" "vwan_routing_intent_and_policies" {
       labels = ["default"]
       routes = [
         {
+          destinations    = ["0.0.0.0/0"]
+          destinationType = "CIDR"
+          name            = "_policy_InternetTrafficPolicy"
+          nextHop         = var.firewall_resource_id
+          nextHopType     = "ResourceId"
+        },
+        {
+          destinations    = [
+            "10.0.0.0/8",
+            "172.16.0.0/12",
+            "192.168.0.0/16"
+          ]
+          destinationType = "CIDR"
+          name            = "_policy_PrivateTrafficPolicy"
+          nextHop         = var.firewall_resource_id
+          nextHopType     = "ResourceId"
+        },
+        {
           destinations    = var.onpremises_address_ranges
           destinationType = "CIDR"
           name            = "private_traffic"
