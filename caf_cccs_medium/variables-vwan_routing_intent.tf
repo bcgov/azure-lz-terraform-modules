@@ -11,15 +11,15 @@ variable "rfc_1918_address_ranges" {
 
 variable "onpremises_address_ranges" {
   description = "List of on-premises address ranges."
-  type        = list(string)  
+  type        = list(string)
 }
 
 # variable "vhub_resource_id" {
 #   description = "Resource ID of the Virtual Hub."
-#   type        = string  
+#   type        = string
 # }
 
 # variable "firewall_resource_id" {
 #   description = "Resource ID of the Azure Firewall."
-#   type        = string  
+#   type        = string
 # }
