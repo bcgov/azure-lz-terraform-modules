@@ -1,18 +1,27 @@
-# Azure Firewall IDPS Signature Rules Overrides
+# Azure Virtual WAN Routing Intent and Policies
 
-This code is incomplete/work in progress. It is being kept for future reference.
+This Terraform code is designed to manage the routing policies for vWAN. This is speficically for the Private Address Prefixes, which is linked to the Default route table.
 
 ## Of Note
 
-The primary process for using this code is as follows:
+We originally attempted to include calling the `vwan_routing_intent_and_policies` module as part of the CAF deployment, but Terraform threw the following error:
 
-1. Run the `idps_signature_rules.sh` script to get all of the IDPS signature rules from Azure Firewall.
-  - This will create multiple JSON files (each with up to 1000 rules) in the `idps_signature_rules` directory.
-2. Run the `merge_results.sh` script to merge all of the JSON files into a single JSON file.
-  - This will create a single JSON file (called `merged_results_formatted.json`) in the `temp` directory.
-3. Run the Terraform code, that should read/extract each respective signature rule ID from the merged results, and loop over them, setting the desired **Intrusion Detection** `signatureOverrides` action for each rule.
+```shell
+--------------------------------------------------------------------------------
+RESPONSE 400: 400 Bad Request │ ERROR CODE: CannotModifyRoutingPolicyInternalRoutes
+--------------------------------------------------------------------------------
+{
+  "error": {
+    "code": "CannotModifyRoutingPolicyInternalRoutes",
+    "message": "Cannot add, update or delete route /subscriptions/09bd024b-fbda-417d-b8db-694680c2b44e/resourceGroups/bcgov-managed-lz-forge-connectivity/providers/Microsoft.Network/virtualHubs/bcgov-managed-lz-forge-hub-canadacentral/hubRouteTables/defaultRouteTable created by Routing Intent.",
+    "details": []
+  }
+}
+```
 
-Additionally, there is some other (incomplete) code that reads the `SampleThreatExport.json` file, extracts the object names, and creates a list of `fqdn_names` and `ip_addresses`. This code would then be used to set the **Threat Intelligence Allow List** (ie. `threatIntelWhitelist`).
+According to CoPilot, this is because "_the `defaultRouteTable` routes when routing intent is enabled are **owned by routing intent** and are read-only._"
+
+However, when calling the module directly, we can successfully update the routing intent and policies, which correctly updates the Private Address Prefixes in the Default Route Table.
 
 <!-- BEGIN_TF_DOCS -->
 ## Requirements
@@ -20,14 +29,14 @@ Additionally, there is some other (incomplete) code that reads the `SampleThreat
 | Name | Version |
 |------|---------|
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >=1.9.0, < 2.0.0 |
-| <a name="requirement_azapi"></a> [azapi](#requirement\_azapi) | ~> 1.13, != 1.13.0 |
+| <a name="requirement_azapi"></a> [azapi](#requirement\_azapi) | ~> 2.0, != 1.13.0 |
 | <a name="requirement_azurerm"></a> [azurerm](#requirement\_azurerm) | >=3.112.0, < 4.0.0 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
-| <a name="provider_azapi"></a> [azapi](#provider\_azapi) | 2.5.0 |
+| <a name="provider_azapi"></a> [azapi](#provider\_azapi) | ~> 2.0, != 1.13.0 |
 
 ## Modules
 
@@ -51,5 +60,7 @@ No modules.
 
 ## Outputs
 
-No outputs.
+| Name | Description |
+|------|-------------|
+| <a name="output_routing_intent_and_policies_routes"></a> [routing\_intent\_and\_policies\_routes](#output\_routing\_intent\_and\_policies\_routes) | n/a |
 <!-- END_TF_DOCS -->
