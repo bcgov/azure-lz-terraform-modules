@@ -4,8 +4,7 @@ terraform {
   required_providers {
     azurerm = {
       source  = "hashicorp/azurerm"
-      version = ">=3.112.0, < 4.0.0"
-      # configuration_aliases = [azurerm.connectivity]
+      version = "~> 4.0"
     }
 
     azapi = {
@@ -19,5 +18,6 @@ provider "azurerm" {
   use_oidc = true
   features {}
 
+  alias           = "connectivity"
   subscription_id = var.subscription_id_connectivity
 }
