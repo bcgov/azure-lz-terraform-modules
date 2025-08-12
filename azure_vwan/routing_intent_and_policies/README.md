@@ -20,14 +20,14 @@ Additionally, there is some other (incomplete) code that reads the `SampleThreat
 | Name | Version |
 |------|---------|
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >=1.9.0, < 2.0.0 |
+| <a name="requirement_azapi"></a> [azapi](#requirement\_azapi) | ~> 1.13, != 1.13.0 |
 | <a name="requirement_azurerm"></a> [azurerm](#requirement\_azurerm) | >=3.112.0, < 4.0.0 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
-| <a name="provider_azapi"></a> [azapi](#provider\_azapi) | n/a |
-| <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) | >=3.112.0, < 4.0.0 |
+| <a name="provider_azapi"></a> [azapi](#provider\_azapi) | 2.5.0 |
 
 ## Modules
 
@@ -37,27 +37,19 @@ No modules.
 
 | Name | Type |
 |------|------|
-| [azapi_update_resource.fwpolicy_idps](https://registry.terraform.io/providers/azure/azapi/latest/docs/resources/update_resource) | resource |
-| [azapi_update_resource.fwpolicy_threat_intel_allow_list](https://registry.terraform.io/providers/azure/azapi/latest/docs/resources/update_resource) | resource |
-| [azurerm_client_config.current](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/data-sources/client_config) | data source |
-| [azurerm_firewall_policy.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/data-sources/firewall_policy) | data source |
-| [azurerm_resource_group.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/data-sources/resource_group) | data source |
+| [azapi_update_resource.vwan_routing_intent_and_policies](https://registry.terraform.io/providers/azure/azapi/latest/docs/resources/update_resource) | resource |
 
 ## Inputs
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| <a name="input_firewall_policy_name"></a> [firewall\_policy\_name](#input\_firewall\_policy\_name) | The name of the Azure Firewall Policy. | `string` | n/a | yes |
-| <a name="input_firewall_policy_resource_group_name"></a> [firewall\_policy\_resource\_group\_name](#input\_firewall\_policy\_resource\_group\_name) | The name of the resource group in which the Azure Firewall Policy exists. | `string` | n/a | yes |
-| <a name="input_idps_private_ip_ranges"></a> [idps\_private\_ip\_ranges](#input\_idps\_private\_ip\_ranges) | (Optional) A list of Private IP address ranges to identify traffic direction. By default, only ranges defined by IANA RFC 1918 are considered private IP addresses. | `list(string)` | `[]` | no |
+| <a name="input_firewall_resource_id"></a> [firewall\_resource\_id](#input\_firewall\_resource\_id) | Resource ID of the Azure Firewall. | `string` | n/a | yes |
+| <a name="input_onpremises_address_ranges"></a> [onpremises\_address\_ranges](#input\_onpremises\_address\_ranges) | List of on-premises address ranges. | `list(string)` | n/a | yes |
+| <a name="input_rfc_1918_address_ranges"></a> [rfc\_1918\_address\_ranges](#input\_rfc\_1918\_address\_ranges) | List of RFC 1918 address ranges. | `list(string)` | <pre>[<br/>  "10.0.0.0/8",<br/>  "172.16.0.0/12",<br/>  "192.168.0.0/16",<br/>  "100.64.0.0/10"<br/>]</pre> | no |
 | <a name="input_subscription_id_connectivity"></a> [subscription\_id\_connectivity](#input\_subscription\_id\_connectivity) | Subscription ID to use for "connectivity" resources. | `string` | n/a | yes |
+| <a name="input_vhub_resource_id"></a> [vhub\_resource\_id](#input\_vhub\_resource\_id) | Resource ID of the Virtual Hub. | `string` | n/a | yes |
 
 ## Outputs
 
-| Name | Description |
-|------|-------------|
-| <a name="output_firewall_policy_id"></a> [firewall\_policy\_id](#output\_firewall\_policy\_id) | n/a |
-| <a name="output_fqdn_names"></a> [fqdn\_names](#output\_fqdn\_names) | n/a |
-| <a name="output_ip_addresses"></a> [ip\_addresses](#output\_ip\_addresses) | n/a |
-| <a name="output_object_names"></a> [object\_names](#output\_object\_names) | List of object names |
+No outputs.
 <!-- END_TF_DOCS -->

@@ -41,3 +41,9 @@ providers.tf
 
 # ALZ Terraform Module
 .alzlib
+
+# FinOps Toolkit WIP
+**/finops_toolkit/customDeploy/
+**/finops_toolkit/pbi_reports/
+**/.github/copilot-instructions.md
+**/.github/prompts/*
