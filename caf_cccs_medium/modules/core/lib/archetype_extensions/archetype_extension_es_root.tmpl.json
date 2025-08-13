@@ -5,6 +5,7 @@
       "Deny-Public-IP-On-NIC",
       "DINE-Private-DNS-Zones",
       "Deploy-Private-DNS-Sql",
+      "Deploy-Private-DNS-APIM",
       "Deploy-Private-DNS-CgSrv",
       "Deny-AppGw-Without-Tls",
       "Deploy-Private-DNS-PSQL",
@@ -40,6 +41,9 @@
           "FirewallLogAnalyticsDestinationType": "Dedicated"
         },
         "Deploy-Private-DNS-Sql": {
+          "privateDnsZoneId": "SET using local.archetype_config_overrides"
+        },
+        "Deploy-Private-DNS-APIM": {
           "privateDnsZoneId": "SET using local.archetype_config_overrides"
         },
         "Deploy-Private-DNS-PSQL": {
