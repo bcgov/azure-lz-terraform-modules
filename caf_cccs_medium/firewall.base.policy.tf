@@ -94,6 +94,20 @@ resource "azurerm_firewall_policy" "base_firewall_policy" {
   resource_group_name = azurerm_resource_group.base_firewall_policy.name
   location            = var.primary_location
   sku                 = var.sku
+  
+  intrusion_detection {
+    mode = var.intrusion_detection.mode
+
+    traffic_bypass {
+      
+      name = var.intrusion_detection.traffic_bypass.name
+      description = var.intrusion_detection.traffic_bypass.description
+      protocol = var.intrusion_detection.traffic_bypass.protocol
+      destination_addresses = var.intrusion_detection.traffic_bypass.destination_addresses
+      destination_ports = var.intrusion_detection.traffic_bypass.destination_ports
+      source_addresses = var.intrusion_detection.traffic_bypass.source_addresses
+    }
+  }
 
   identity {
     type = "UserAssigned"
@@ -107,7 +121,6 @@ resource "azurerm_firewall_policy" "base_firewall_policy" {
     name                = module.base_firewall_policy_key_vault_certificate.key_vault_certificate_name
     key_vault_secret_id = module.base_firewall_policy_key_vault_certificate.key_vault_secret_id
   }
-
   lifecycle {
     ignore_changes = all
   }
