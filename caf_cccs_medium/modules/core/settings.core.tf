@@ -25,8 +25,7 @@ locals {
           location : var.primary_location
         },
         Deploy-Private-DNS-ACA = {
-          defaultPrivateDnsZoneId : "/subscriptions/${var.subscription_id_connectivity}/resourceGroups/${var.root_id}-dns/providers/Microsoft.Network/privateDnsZones/privatelink.${lower(var.primary_location)}.azurecontainerapps.io",
-          location : var.primary_location
+          defaultPrivateDnsZoneId : "/subscriptions/${var.subscription_id_connectivity}/resourceGroups/${var.root_id}-dns/providers/Microsoft.Network/privateDnsZones/privatelink.${lower(var.primary_location)}.azurecontainerapps.io"
         },
         Audit-ZoneResiliency = {
           effect = "Disabled",
