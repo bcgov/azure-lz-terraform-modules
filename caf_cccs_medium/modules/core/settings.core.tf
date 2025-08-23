@@ -9,11 +9,11 @@ locals {
         }
         Deploy-Private-DNS-Sql = {
           privateDnsZoneId : "/subscriptions/${var.subscription_id_connectivity}/resourceGroups/${var.root_id}-dns/providers/Microsoft.Network/privateDnsZones/privatelink.database.windows.net",
-          location : var.primary_location,
+          location : var.primary_location
         }
         Deploy-Private-DNS-APIM = {
           privateDnsZoneId : "/subscriptions/${var.subscription_id_connectivity}/resourceGroups/${var.root_id}-dns/providers/Microsoft.Network/privateDnsZones/privatelink.azure-api.net",
-          location : var.primary_location,
+          location : var.primary_location
         }
         Deploy-Private-DNS-CgSrv = {
           cognitiveServicesPrivateDnsZoneId : "/subscriptions/${var.subscription_id_connectivity}/resourceGroups/${var.root_id}-dns/providers/Microsoft.Network/privateDnsZones/privatelink.cognitiveservices.azure.com",
@@ -22,7 +22,11 @@ locals {
         },
         Deploy-Private-DNS-PSQL = {
           privateDnsZoneId : "/subscriptions/${var.subscription_id_connectivity}/resourceGroups/${var.root_id}-dns/providers/Microsoft.Network/privateDnsZones/privatelink.postgres.database.azure.com",
-          location : var.primary_location,
+          location : var.primary_location
+        },
+        Deploy-Private-DNS-ACA = {
+          defaultPrivateDnsZoneId : "/subscriptions/${var.subscription_id_connectivity}/resourceGroups/${var.root_id}-dns/providers/Microsoft.Network/privateDnsZones/privatelink.${lower(var.primary_location)}.azurecontainerapps.io",
+          location : var.primary_location
         },
         Audit-ZoneResiliency = {
           effect = "Disabled",
@@ -51,7 +55,6 @@ locals {
           scopeToSupportedImages = true
         },
         Deny-VNet-DNS-Changes = {
-          # VNet-DNS-Settings = var.root_id == "bcgov-managed-lz-forge" ? ["10.41.253.4"] : ["10.53.244.4"]
           VNet-DNS-Settings = var.VNet-DNS-Settings
         }
       }
