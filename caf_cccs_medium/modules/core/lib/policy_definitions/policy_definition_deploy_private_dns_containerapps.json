@@ -44,11 +44,11 @@
                 "allOf": [
                   {
                     "field": "Microsoft.Network/privateEndpoints/privateLinkServiceConnections[*].privateLinkServiceId",
-                    "contains": "Microsoft.App/containerapps"
+                    "contains": "Microsoft.App/managedEnvironments"
                   },
                   {
                     "field": "Microsoft.Network/privateEndpoints/privateLinkServiceConnections[*].groupIds[*]",
-                    "equals": "account"
+                    "equals": "managedEnvironments"
                   }
                 ]
               }
