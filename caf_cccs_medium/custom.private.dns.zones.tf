@@ -6,8 +6,8 @@
 # This custom Private DNS Zone inclusion has the same challenge, where it needs the Private DNS Resolver VNet ID to link the Private DNS Zones.
 
 module "lz_custom_private_dns_zones" {
-  # source = "git::https://github.com/bcgov/azure-lz-terraform-modules.git//azure_private_dns/private_dns_zone?ref=v0.0.17"
-  source = "../azure_private_dns/private_dns_zone" # NOTE: For local testing only, replace with the above for production
+  source = "git::https://github.com/bcgov/azure-lz-terraform-modules.git//azure_private_dns/private_dns_zone?ref=v0.0.18"
+  # source = "../azure_private_dns/private_dns_zone" # NOTE: For local testing only, replace with the above for production
 
   providers = {
     azurerm = azurerm.connectivity
@@ -19,8 +19,8 @@ module "lz_custom_private_dns_zones" {
 }
 
 module "private_dns_zone_virtual_network_link" {
-  # source = "git::https://github.com/bcgov/azure-lz-terraform-modules.git//azure_private_dns/private_dns_zone_virtual_network_link?ref=v0.0.17"
-  source = "../azure_private_dns/private_dns_zone_virtual_network_link" # NOTE: For local testing only, replace with the above for production
+  source = "git::https://github.com/bcgov/azure-lz-terraform-modules.git//azure_private_dns/private_dns_zone_virtual_network_link?ref=v0.0.18"
+  # source = "../azure_private_dns/private_dns_zone_virtual_network_link" # NOTE: For local testing only, replace with the above for production
 
   providers = {
     azurerm = azurerm.connectivity
