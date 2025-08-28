@@ -3,23 +3,6 @@ variable "location" {
   description = "Azure region where the resource should be deployed.  If null, the location will be inferred from the resource group location."
   nullable    = false
 }
-
-# variable "network_watcher_id" {
-#   type        = string
-#   description = "The ID of the Network Watcher."
-# }
-
-# variable "network_watcher_name" {
-#   type        = string
-#   description = "The name of the Network Watcher."
-# }
-
-# This is required for most resource modules
-# variable "resource_group_name" {
-#   type        = string
-#   description = "The name of the Network Watcher Resource Group."
-# }
-
 variable "condition_monitor" {
   type = map(object({
     name = string

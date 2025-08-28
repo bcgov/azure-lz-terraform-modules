@@ -5,7 +5,7 @@ module "network_connection_monitor" {
   location             = var.location
   network_watcher_id   = local.network_watcher_id
   network_watcher_name = "NetworkWatcher_${lower(var.location)}"
-  resource_group_name  = "NetworkWatcherRG" # Universal?
+  resource_group_name  = "NetworkWatcherRG" # Universal resource group name for Network Watcher
 
   condition_monitor = var.condition_monitor
 }
