@@ -18,6 +18,12 @@ module "lz_firewall_policy" {
   dns               = var.dns ## TODO: Update to use module output
   private_ip_ranges = var.private_ip_ranges != null ? var.private_ip_ranges : []
 
+  insights = {
+    enabled                            = true
+    default_log_analytics_workspace_id = "${values(module.management.log_analytics_workspace)[0].id}"
+    retention_in_days                  = 90
+  }
+
   sku = var.sku
 
   # NOTE: "Threat Intel Mode should be stricter than the Base Policy", therefore using the Base Policy's Threat Intel Mode
