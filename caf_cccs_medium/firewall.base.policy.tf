@@ -8,7 +8,7 @@ resource "azurerm_resource_group" "base_firewall_policy" {
 
 # NOTE: The Managed Identity, Key Vault, Key Vault Access Policy, and Certificate are only required if enabling TLS Inspection in the Firewall Policy
 module "base_firewall_policy_managed_identity" {
-  source = "git::https://github.com/bcgov/azure-lz-terraform-modules.git//azure_identity/user_assigned_identity?ref=v0.0.13"
+  source = "git::https://github.com/bcgov/azure-lz-terraform-modules.git//azure_identity/user_assigned_identity?ref=v0.0.20"
 
   providers = {
     azurerm = azurerm.connectivity
@@ -22,7 +22,7 @@ module "base_firewall_policy_managed_identity" {
 }
 
 module "base_firewall_policy_key_vault" {
-  source = "git::https://github.com/bcgov/azure-lz-terraform-modules.git//azure_key_vault/key_vault?ref=v0.0.13"
+  source = "git::https://github.com/bcgov/azure-lz-terraform-modules.git//azure_key_vault/key_vault?ref=v0.0.20"
 
   providers = {
     azurerm = azurerm.connectivity
@@ -52,7 +52,7 @@ module "base_firewall_policy_key_vault" {
 # NOTE: If executing/testing locally, the first apply will fail due to your account not having access to the Key Vault.
 # Manually add your account with the Certificate "Get" and "List" permissions to the Key Vault Access Policy, and re-run the apply.
 module "base_firewall_policy_key_vault_access_policy" {
-  source = "git::https://github.com/bcgov/azure-lz-terraform-modules.git//azure_key_vault/key_vault_access_policy?ref=v0.0.13"
+  source = "git::https://github.com/bcgov/azure-lz-terraform-modules.git//azure_key_vault/key_vault_access_policy?ref=v0.0.20"
 
   providers = {
     azurerm = azurerm.connectivity
@@ -72,7 +72,7 @@ module "base_firewall_policy_key_vault_access_policy" {
 }
 
 module "base_firewall_policy_key_vault_certificate" {
-  source = "git::https://github.com/bcgov/azure-lz-terraform-modules.git//azure_key_vault/key_vault_certificate?ref=v0.0.13"
+  source = "git::https://github.com/bcgov/azure-lz-terraform-modules.git//azure_key_vault/key_vault_certificate?ref=v0.0.20"
 
   providers = {
     azurerm = azurerm.connectivity
@@ -95,6 +95,28 @@ resource "azurerm_firewall_policy" "base_firewall_policy" {
   location            = var.primary_location
   sku                 = var.sku
 
+  dynamic "intrusion_detection" {
+    for_each = var.intrusion_detection != null ? [var.intrusion_detection] : []
+
+    content {
+      mode = intrusion_detection.value.mode
+
+      dynamic "traffic_bypass" {
+        for_each = toset(intrusion_detection.value.traffic_bypass)
+        content {
+          name                  = traffic_bypass.value.name
+          description           = traffic_bypass.value.description
+          protocol              = traffic_bypass.value.protocol
+          destination_addresses = traffic_bypass.value.destination_addresses
+          destination_ip_groups = traffic_bypass.value.destination_ip_groups
+          destination_ports     = traffic_bypass.value.destination_ports
+          source_addresses      = traffic_bypass.value.source_addresses
+          source_ip_groups      = traffic_bypass.value.source_ip_groups
+        }
+      }
+    }
+  }
+
   identity {
     type = "UserAssigned"
     identity_ids = [
@@ -108,7 +130,29 @@ resource "azurerm_firewall_policy" "base_firewall_policy" {
     key_vault_secret_id = module.base_firewall_policy_key_vault_certificate.key_vault_secret_id
   }
 
+  dynamic "insights" {
+    for_each = var.insights != null ? [var.insights] : []
+    content {
+      enabled                            = insights.value.enabled
+      default_log_analytics_workspace_id = insights.value.default_log_analytics_workspace_id
+      retention_in_days                  = insights.value.retention_in_days
+
+      dynamic "log_analytics_workspace" {
+        for_each = insights.value.log_analytics_workspace != null ? [insights.value.log_analytics_workspace] : []
+        content {
+          id                = log_analytics_workspace.value.id
+          firewall_location = log_analytics_workspace.value.firewall_location
+        }
+      }
+    }
+  }
+
   lifecycle {
-    ignore_changes = all
+    ignore_changes = [
+      private_ip_ranges,
+      insights,
+      threat_intelligence_allowlist,
+      tags
+    ]
   }
 }
