@@ -182,3 +182,57 @@ resource "azurerm_subscription_policy_assignment" "this" {
     }
   })
 }
+
+resource "azurerm_subscription_policy_assignment" "vnet_flow_logs" {
+  for_each = var.vnet_flow_logs_policy_definition_id != null ? var.subscriptions : {}
+
+  name        = "Configure virtual network to enable Flow Log and Traffic Analytics (${var.license_plate}-${each.key})"
+  description = "This policy enabled Traffic analytics and Flow logs for all virtual networks hosted in a particular region."
+  non_compliance_message {
+    content = "VNet is not configured to enable Flow Log and Traffic Analytics."
+  }
+
+  policy_definition_id = var.vnet_flow_logs_policy_definition_id
+
+  # NOTE: This expects 2 segments for its value.
+  # Expected a Subscription ID that matched (containing 2 segments): /subscriptions/12345678-1234-9876-4563-123456789012
+  #   The following Segments are expected:
+  # * Segment 0 - this should be the literal value "subscriptions"
+  # * Segment 1 - this should be the UUID of the Azure Subscription
+  subscription_id = "/subscriptions/${module.lz_vending[each.key].subscription_id}"
+
+  resource_selectors {
+    name = "vnet"
+    selectors {
+      kind = "resourceType"
+      in = [
+        "Microsoft.Network/virtualNetworks"
+      ]
+    }
+  }
+
+  parameters = jsonencode({
+    "vnetRegion" = {
+      "value" = var.primary_location
+    },
+    "storageId" = {
+      "value" = var.vnet_flow_logs_storage_account_id
+    },
+    "timeInterval" = {
+      "value" = "60"
+    },
+    "workspaceResourceId" = {
+      "value" = var.workspace_resource_id
+    },
+    "workspaceRegion" = {
+      "value" = var.primary_location
+    },
+    # Network Watcher resource ID
+    "networkWatcherName" = {
+      "value" = "${subscription_id}/resourcegroups/NetworkWatcherRG/providers/microsoft.network/networkwatchers/networkwatcher_${lower(var.primary_location)}"
+    },
+    "retentionDays" = {
+      "value" = "30"
+    }
+  })
+}
