@@ -229,7 +229,7 @@ resource "azurerm_subscription_policy_assignment" "vnet_flow_logs" {
     },
     # Network Watcher resource ID
     "networkWatcherName" = {
-      "value" = "${subscription_id}/resourcegroups/NetworkWatcherRG/providers/microsoft.network/networkwatchers/networkwatcher_${lower(var.primary_location)}"
+      "value" = "/subscriptions/${module.lz_vending[each.key].subscription_id}/resourcegroups/NetworkWatcherRG/providers/microsoft.network/networkwatchers/networkwatcher_${lower(var.primary_location)}"
     },
     "retentionDays" = {
       "value" = "30"
