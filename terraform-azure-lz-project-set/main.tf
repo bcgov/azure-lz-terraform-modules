@@ -211,6 +211,10 @@ resource "azurerm_subscription_policy_assignment" "vnet_flow_logs" {
     }
   }
 
+  identity {
+    type = "SystemAssigned"
+  }
+
   parameters = jsonencode({
     "vnetRegion" = {
       "value" = var.primary_location
