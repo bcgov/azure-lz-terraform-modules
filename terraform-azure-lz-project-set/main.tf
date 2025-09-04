@@ -186,7 +186,7 @@ resource "azurerm_subscription_policy_assignment" "this" {
 resource "azurerm_subscription_policy_assignment" "vnet_flow_logs" {
   for_each = var.vnet_flow_logs_policy_definition_id != null ? var.subscriptions : {}
 
-  name        = "Configure virtual network to enable Flow Log and Traffic Analytics (${var.license_plate}-${each.key})"
+  name        = "Configure VNet Flow Logs and Traffic Analytics (${var.license_plate}-${each.key})"
   description = "This policy enabled Traffic analytics and Flow logs for all virtual networks hosted in a particular region."
   non_compliance_message {
     content = "VNet is not configured to enable Flow Log and Traffic Analytics."
