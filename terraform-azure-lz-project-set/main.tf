@@ -242,12 +242,18 @@ resource "azurerm_subscription_policy_assignment" "vnet_flow_logs" {
   })
 }
 
-# azurerm_subscription_policy_assignment.vnet_flow_logs.principal_id
-
 resource "azurerm_role_assignment" "vnet_flow_logs_contributor" {
   for_each = var.vnet_flow_logs_policy_definition_id != null ? var.subscriptions : {}
 
   scope                = "/subscriptions/${module.lz_vending[each.key].subscription_id}"
   role_definition_name = "Contributor"
+  principal_id         = azurerm_subscription_policy_assignment.vnet_flow_logs[each.key].identity[0].principal_id
+}
+
+resource "azurerm_role_assignment" "vnet_flow_logs_storage_list_keys" {
+  for_each = var.vnet_flow_logs_policy_definition_id != null ? var.subscriptions : {}
+
+  scope                = "/subscriptions/${module.lz_vending[each.key].subscription_id}"
+  role_definition_name = "Storage Account Key Operator Service Role"
   principal_id         = azurerm_subscription_policy_assignment.vnet_flow_logs[each.key].identity[0].principal_id
 }
