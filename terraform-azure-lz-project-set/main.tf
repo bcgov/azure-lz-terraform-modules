@@ -211,6 +211,7 @@ resource "azurerm_subscription_policy_assignment" "vnet_flow_logs" {
     }
   }
 
+  location = var.primary_location
   identity {
     type = "SystemAssigned"
   }
