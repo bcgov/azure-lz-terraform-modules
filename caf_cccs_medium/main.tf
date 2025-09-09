@@ -2,13 +2,16 @@
 # version and features{} block
 
 terraform {
-  # required_version = ">=1.9.0, < 2.0.0"
-
   required_providers {
     azurerm = {
       source                = "hashicorp/azurerm"
       version               = "3.116.0"
       configuration_aliases = [azurerm.connectivity, azurerm.management]
+    }
+
+    assert = {
+      source  = "hashicorp/assert"
+      version = "~> 0.16.0"
     }
   }
 }
