@@ -3,6 +3,7 @@
 
 module "lz_firewall_policy" {
   source = "git::https://github.com/bcgov/azure-lz-terraform-modules.git//azure_firewall/firewall_policy?ref=v0.0.20"
+  # source = "../azure_firewall/firewall_policy"
 
   providers = {
     azurerm = azurerm.connectivity
@@ -32,6 +33,7 @@ module "lz_firewall_policy" {
 
 module "lz_firewall_policy_rules" {
   source = "git::https://github.com/bcgov/azure-lz-terraform-modules.git//azure_firewall/firewall_policy_rcg?ref=v0.0.20"
+  # source = "../azure_firewall/firewall_policy_rcg"
   providers = {
     azurerm = azurerm.connectivity
   }

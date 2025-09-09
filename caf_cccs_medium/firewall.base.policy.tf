@@ -9,6 +9,7 @@ resource "azurerm_resource_group" "base_firewall_policy" {
 # NOTE: The Managed Identity, Key Vault, Key Vault Access Policy, and Certificate are only required if enabling TLS Inspection in the Firewall Policy
 module "base_firewall_policy_managed_identity" {
   source = "git::https://github.com/bcgov/azure-lz-terraform-modules.git//azure_identity/user_assigned_identity?ref=v0.0.20"
+  # source = "../azure_identity/user_assigned_identity"
 
   providers = {
     azurerm = azurerm.connectivity
@@ -23,6 +24,7 @@ module "base_firewall_policy_managed_identity" {
 
 module "base_firewall_policy_key_vault" {
   source = "git::https://github.com/bcgov/azure-lz-terraform-modules.git//azure_key_vault/key_vault?ref=v0.0.20"
+  # source = "../azure_key_vault/key_vault"
 
   providers = {
     azurerm = azurerm.connectivity
@@ -53,6 +55,7 @@ module "base_firewall_policy_key_vault" {
 # Manually add your account with the Certificate "Get" and "List" permissions to the Key Vault Access Policy, and re-run the apply.
 module "base_firewall_policy_key_vault_access_policy" {
   source = "git::https://github.com/bcgov/azure-lz-terraform-modules.git//azure_key_vault/key_vault_access_policy?ref=v0.0.20"
+  # source = "../azure_key_vault/key_vault_access_policy"
 
   providers = {
     azurerm = azurerm.connectivity
@@ -73,6 +76,7 @@ module "base_firewall_policy_key_vault_access_policy" {
 
 module "base_firewall_policy_key_vault_certificate" {
   source = "git::https://github.com/bcgov/azure-lz-terraform-modules.git//azure_key_vault/key_vault_certificate?ref=v0.0.20"
+  # source = "../azure_key_vault/key_vault_certificate"
 
   providers = {
     azurerm = azurerm.connectivity
