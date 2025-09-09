@@ -1,6 +1,6 @@
 repos:
 - repo: https://github.com/pre-commit/pre-commit-hooks
-  rev: v5.0.0
+  rev: v6.0.0
   hooks:
   -   id: trailing-whitespace
   -   id: end-of-file-fixer
@@ -10,7 +10,7 @@ repos:
   -   id: check-added-large-files
   # -   id: check-shebang-scripts-are-executable
 - repo: https://github.com/antonbabenko/pre-commit-terraform
-  rev: v1.97.4 # Get the latest from: https://github.com/antonbabenko/pre-commit-terraform/releases
+  rev: v1.100.0 # Get the latest from: https://github.com/antonbabenko/pre-commit-terraform/releases
   hooks:
   - id: terraform_fmt
     args:

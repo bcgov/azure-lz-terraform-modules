@@ -11,4 +11,5 @@ resource "azurerm_ip_group" "ipgroup" {
   resource_group_name = azurerm_resource_group.this.name
 
   cidrs = each.value.ip_addresses
+  tags  = each.value.tags
 }
