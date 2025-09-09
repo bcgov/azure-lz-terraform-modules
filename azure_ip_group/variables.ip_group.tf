@@ -15,15 +15,7 @@ variable "ip_group" {
   }
 
   validation {
-    condition = alltrue([
-      for obj in var.ip_group : alltrue([
-        for ip in obj.ip_addresses : provider::assert::cidrv4(ip) ||
-        provider::assert::ipv4(ip) ||
-        can(
-          regex("^((25[0-5]|2[0-4][0-9]|1?[0-9][0-9]?)\\.){3}(25[0-5]|2[0-4][0-9]|1?[0-9][0-9]?)\\-((25[0-5]|2[0-4][0-9]|1?[0-9][0-9]?)\\.){3}(25[0-5]|2[0-4][0-9]|1?[0-9][0-9]?)$", ip)
-        )
-      ])
-    ])
+    condition     = local.ip_group_validation
     error_message = <<DESCRIPTION
 Each IP address in every IP Group must be either:
 - A valid IPv4 address (e.g., '192.168.1.1'),
