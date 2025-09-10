@@ -1,5 +1,5 @@
 module "lz_firewall_ipgroups" {
-  source = "git::https://github.com/bcgov/azure-lz-terraform-modules.git//azure_ip_group?ref=v1.0.23"
+  source = "git::https://github.com/bcgov/azure-lz-terraform-modules.git//azure_ip_group?ref=v1.0.24"
   # source = "../azure_ip_group"
 
   subscription_id_connectivity = var.subscription_id_connectivity
