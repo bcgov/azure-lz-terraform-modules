@@ -24,7 +24,9 @@ No modules.
 |------|------|
 | [azurerm_private_dns_resolver.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/private_dns_resolver) | resource |
 | [azurerm_private_dns_resolver_dns_forwarding_ruleset.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/private_dns_resolver_dns_forwarding_ruleset) | resource |
-| [azurerm_private_dns_resolver_forwarding_rule.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/private_dns_resolver_forwarding_rule) | resource |
+| [azurerm_private_dns_resolver_forwarding_rule.bcgov_domain](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/private_dns_resolver_forwarding_rule) | resource |
+| [azurerm_private_dns_resolver_forwarding_rule.dmz_domain](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/private_dns_resolver_forwarding_rule) | resource |
+| [azurerm_private_dns_resolver_forwarding_rule.gov_domain](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/private_dns_resolver_forwarding_rule) | resource |
 | [azurerm_private_dns_resolver_inbound_endpoint.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/private_dns_resolver_inbound_endpoint) | resource |
 | [azurerm_private_dns_resolver_outbound_endpoint.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/private_dns_resolver_outbound_endpoint) | resource |
 | [azurerm_client_config.current](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/data-sources/client_config) | data source |
@@ -45,7 +47,9 @@ No modules.
 |------|-------------|
 | <a name="output_private_dns_resolver"></a> [private\_dns\_resolver](#output\_private\_dns\_resolver) | The ID of the Private DNS Resolver. |
 | <a name="output_private_dns_resolver_dns_forwarding_ruleset"></a> [private\_dns\_resolver\_dns\_forwarding\_ruleset](#output\_private\_dns\_resolver\_dns\_forwarding\_ruleset) | The ID of the Private DNS Resolver DNS Forwarding Ruleset. |
-| <a name="output_private_dns_resolver_forwarding_rule"></a> [private\_dns\_resolver\_forwarding\_rule](#output\_private\_dns\_resolver\_forwarding\_rule) | The ID of the Private DNS Resolver Forwarding Rule. |
+| <a name="output_private_dns_resolver_forwarding_rule-bcgov_domain"></a> [private\_dns\_resolver\_forwarding\_rule-bcgov\_domain](#output\_private\_dns\_resolver\_forwarding\_rule-bcgov\_domain) | The Private DNS Resolver Forwarding Rule. |
+| <a name="output_private_dns_resolver_forwarding_rule-dmz_domain"></a> [private\_dns\_resolver\_forwarding\_rule-dmz\_domain](#output\_private\_dns\_resolver\_forwarding\_rule-dmz\_domain) | The Private DNS Resolver Forwarding Rule. |
+| <a name="output_private_dns_resolver_forwarding_rule-gov_domain"></a> [private\_dns\_resolver\_forwarding\_rule-gov\_domain](#output\_private\_dns\_resolver\_forwarding\_rule-gov\_domain) | The Private DNS Resolver Forwarding Rule. |
 | <a name="output_private_dns_resolver_inbound_endpoint"></a> [private\_dns\_resolver\_inbound\_endpoint](#output\_private\_dns\_resolver\_inbound\_endpoint) | The ID of the Private DNS Resolver Inbound Endpoint. |
 | <a name="output_private_dns_resolver_outbound_endpoint"></a> [private\_dns\_resolver\_outbound\_endpoint](#output\_private\_dns\_resolver\_outbound\_endpoint) | The ID of the Private DNS Resolver Outbound Endpoint. |
 <!-- END_TF_DOCS -->
