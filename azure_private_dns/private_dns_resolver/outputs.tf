@@ -18,7 +18,17 @@ output "private_dns_resolver_dns_forwarding_ruleset" {
   value       = azurerm_private_dns_resolver_dns_forwarding_ruleset.this
 }
 
-output "private_dns_resolver_forwarding_rule" {
-  description = "The ID of the Private DNS Resolver Forwarding Rule."
-  value       = azurerm_private_dns_resolver_forwarding_rule.this
+output "private_dns_resolver_forwarding_rule-dmz_domain" {
+  description = "The Private DNS Resolver Forwarding Rule."
+  value       = azurerm_private_dns_resolver_forwarding_rule.dmz_domain
+}
+
+output "private_dns_resolver_forwarding_rule-bcgov_domain" {
+  description = "The Private DNS Resolver Forwarding Rule."
+  value       = azurerm_private_dns_resolver_forwarding_rule.bcgov_domain
+}
+
+output "private_dns_resolver_forwarding_rule-gov_domain" {
+  description = "The Private DNS Resolver Forwarding Rule."
+  value       = azurerm_private_dns_resolver_forwarding_rule.gov_domain
 }
