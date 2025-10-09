@@ -15,6 +15,10 @@ data "azurerm_management_group" "landing_zones" {
   name = var.lz_management_group_id
 }
 
+locals {
+  any_network_enabled = length([for v in var.subscriptions : v if try(v.network.enabled, false)]) > 0
+}
+
 # create a management group for the project set
 resource "azurerm_management_group" "project_set" {
   name                       = var.license_plate
@@ -49,11 +53,11 @@ module "lz_vending" {
   subscription_management_group_id                  = trimprefix(azurerm_management_group.project_set.id, "/providers/Microsoft.Management/managementGroups/")
 
   # virtual network variables
-  virtual_network_enabled = each.value.network.enabled
-  virtual_networks = each.value.network.enabled ? {
+  virtual_network_enabled = try(each.value.network.enabled, false)
+  virtual_networks = try(each.value.network.enabled, false) ? {
     vwan_spoke = {
       name                        = "${var.license_plate}-${each.value.name}-vwan-spoke"
-      address_space               = each.value.network.address_space
+      address_space               = try(each.value.network.address_space, [])
       resource_group_name         = "${var.license_plate}-${each.value.name}-networking"
       resource_group_lock_enabled = false
       vwan_connection_enabled     = true
@@ -149,7 +153,7 @@ module "resourceproviders_insights" {
 
 # Used to assign the policy definition to the Project Set subscription to prevent end-users from changing the VNet address space
 resource "azurerm_subscription_policy_assignment" "this" {
-  for_each = var.deny_vnet_address_change_policy_definition_id != null ? var.subscriptions : {}
+  for_each = var.deny_vnet_address_change_policy_definition_id != null ? { for k, v in var.subscriptions : k => v if try(v.network.enabled, false) } : {}
 
   name        = "Deny changing Address Space of a Virtual Network (${var.license_plate}-${each.key})"
   description = "This Policy will prevent users from changing the Address Space on a VNet"
@@ -178,7 +182,7 @@ resource "azurerm_subscription_policy_assignment" "this" {
 
   parameters = jsonencode({
     "addressSpaceSettings" = {
-      "value" = each.value.network.address_space
+      "value" = try(each.value.network.address_space, [])
     }
   })
 }
