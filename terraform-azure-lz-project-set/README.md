@@ -18,7 +18,7 @@ For each environment, the module will create a subscription, a network resource 
 
 | Name | Version |
 |------|---------|
-| <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) | 4.47.0 |
+| <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) | >= 3.109.0 |
 
 ## Modules
 
