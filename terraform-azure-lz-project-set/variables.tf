@@ -21,8 +21,13 @@ variable "lz_management_group_id" {
 }
 
 variable "vwan_hub_resource_id" {
-  description = "The resource ID for the virtual WAN hub"
+  description = "The resource ID for the virtual WAN hub (required only if any subscription enables networking)"
   type        = string
+  default     = null
+  validation {
+    condition = var.vwan_hub_resource_id != null || length([for v in var.subscriptions : v if try(v.network.enabled, false)]) == 0
+    error_message = "vwan_hub_resource_id must be provided when any subscription has networking enabled."
+  }
 }
 
 variable "license_plate" {
@@ -45,11 +50,11 @@ variable "subscriptions" {
     name : string
     display_name : string
     budget : optional(number, 0)
-    network : object({
+    network : optional(object({
       enabled : bool
       address_space : list(string)
       dns_servers : optional(list(string))
-    })
+    }))
     tags : optional(map(string), {})
   }))
 }
