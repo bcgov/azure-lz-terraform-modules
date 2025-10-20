@@ -2,11 +2,11 @@ terraform {
   required_providers {
     azurerm = {
       source  = "hashicorp/azurerm"
-      version = ">= 3.109.0"
+      version = "4.49.0"
     }
     azapi = {
       source  = "azure/azapi"
-      version = ">= 1.13.1"
+      version = "2.7.0"
     }
   }
 }
@@ -24,7 +24,7 @@ resource "azurerm_management_group" "project_set" {
 
 module "lz_vending" {
   source  = "Azure/lz-vending/azurerm"
-  version = "4.1.5" # NOTE: When updating this version, please update the respective `resourceproviders_*` modules below
+  version = "6.0.0" # NOTE: When updating this version, please update the respective `resourceproviders_*` modules below
 
   for_each = var.subscriptions
 
@@ -42,7 +42,7 @@ module "lz_vending" {
   subscription_register_resource_providers_enabled      = true
   subscription_register_resource_providers_and_features = local.default_resource_providers_and_features
 
-  network_watcher_resource_group_enabled = true
+  # network_watcher_resource_group_enabled = true
 
   # management group association variables
   subscription_management_group_association_enabled = true
@@ -51,20 +51,18 @@ module "lz_vending" {
   # virtual network variables
   virtual_network_enabled = each.value.network.enabled
   virtual_networks = each.value.network.enabled ? {
-    vwan_spoke = {
-      name                        = "${var.license_plate}-${each.value.name}-vwan-spoke"
-      address_space               = each.value.network.address_space
-      resource_group_name         = "${var.license_plate}-${each.value.name}-networking"
-      resource_group_lock_enabled = false
-      vwan_connection_enabled     = true
-      vwan_hub_resource_id        = var.vwan_hub_resource_id
-      vwan_security_configuration = {
-        secure_internet_traffic = true
-        routing_intent_enabled  = true
-      }
-      dns_servers = try(each.value.network.dns_servers, null)
-      tags        = var.common_tags
+    name                        = "${var.license_plate}-${each.value.name}-vwan-spoke"
+    address_space               = each.value.network.address_space
+    resource_group_name         = "${var.license_plate}-${each.value.name}-networking"
+    resource_group_lock_enabled = false
+    vwan_connection_enabled     = true
+    vwan_hub_resource_id        = var.vwan_hub_resource_id
+    vwan_security_configuration = {
+      secure_internet_traffic = true
+      routing_intent_enabled  = true
     }
+    dns_servers = try(each.value.network.dns_servers, null)
+    tags        = var.common_tags
   } : {}
 
   depends_on = [azurerm_management_group.project_set]
@@ -122,7 +120,7 @@ resource "azurerm_consumption_budget_subscription" "subscription_budget" {
 # NOTE: This Resource Provider is required when using Azure Monitor Baseline Alerts (AMBA)
 module "resourceproviders_alerts_management" {
   source  = "Azure/lz-vending/azurerm//modules/resourceprovider"
-  version = "4.1.5" # Should match the lz_vending module version
+  version = "6.0.0" # Should match the lz_vending module version
 
   for_each = {
     for k, v in var.subscriptions : k => v
