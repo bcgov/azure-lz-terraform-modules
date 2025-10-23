@@ -2,10 +2,10 @@ variable "vpn_gateway_connection" {
   description = ""
   type = list(object({
     vpn_gateway_connection_name = string
-    resource_group_name        = string
-    location                   = string
-    remote_vpn_site_id         = string
-    vpn_gateway_id             = string
+    resource_group_name         = string
+    location                    = string
+    remote_vpn_site_id          = string
+    vpn_gateway_id              = string
     vpn_link = list(object({
       name                 = string
       egress_nat_rule_ids  = optional(list(string))
