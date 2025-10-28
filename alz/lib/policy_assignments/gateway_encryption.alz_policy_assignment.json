@@ -1,0 +1,32 @@
+{
+  "name": "Deny-AppGw-Without-Tls",
+  "type": "Microsoft.Authorization/policyAssignments",
+  "apiVersion": "2025-03-01",
+  "properties": {
+    "displayName": "Deny App Gateway Without TLS",
+    "description": "This policy denies the creation of Application Gateways that do not have TLS enabled.",
+    "policyDefinitionId": "/providers/Microsoft.Authorization/policyDefinitions/Deny-AppGw-Without-Tls",
+    "metadata": {},
+    "scope": "/providers/Microsoft.Management/managementGroups/bcgov-managed-lz-forge",
+    "notScopes": [],
+    "parameters": {
+      "predefinedPolicyName": {
+        "value": [
+          "AppGwSslPolicy20220101",
+          "AppGwSslPolicy20220101S"
+        ]
+      }
+    },
+    "enforcementMode": "Default",
+    "overrides": [],
+    "nonComplianceMessages": [
+      {
+        "message": "This resource must use AppGwSslPolicy20220101 or AppGwSslPolicy20220101S as the TLS policy"
+      }
+    ]
+  },
+  "location": "canadacentral",
+  "identity": {
+    "type": "SystemAssigned"
+  }
+}

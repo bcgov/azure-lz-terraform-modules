@@ -1,0 +1,27 @@
+{
+  "name": "Deny-New-VNet-Peerings",
+  "type": "Microsoft.Authorization/policyAssignments",
+  "apiVersion": "2019-09-01",
+  "properties": {
+    "displayName": "Deny New VNet Peering",
+    "description": "This policy denies the creation of VNet Peerings under the assigned scope.",
+    "notScopes": [],
+    "parameters": {
+      "effect": {
+        "value": "Deny"
+      }
+    },
+    "policyDefinitionId": "/providers/Microsoft.Authorization/policyDefinitions/Deny-New-VNet-Peerings",
+    "nonComplianceMessages": [
+      {
+        "message": "Creation of VNet Peering in the Landing Zones is not allowed."
+      }
+    ],
+    "scope": "/providers/Microsoft.Management/managementGroups/bcgov-managed-lz-forge",
+    "enforcementMode": "Default"
+  },
+  "location": "canadacentral",
+  "identity": {
+    "type": "SystemAssigned"
+  }
+}

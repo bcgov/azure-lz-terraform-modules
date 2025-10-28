@@ -1,0 +1,112 @@
+variable "starter_locations" {
+  type        = list(string)
+  description = "The default for Azure resources. (e.g 'uksouth')"
+}
+
+variable "subscription_id_connectivity" {
+  type        = string
+  description = "value of the subscription id for the Connectivity subscription"
+}
+
+variable "subscription_id_identity" {
+  type        = string
+  description = "value of the subscription id for the Identity subscription"
+}
+
+variable "subscription_id_management" {
+  type        = string
+  description = "value of the subscription id for the Management subscription"
+}
+
+variable "subscription_id_security" {
+  type        = string
+  description = "value of the subscription id for the Security subscription"
+}
+
+variable "root_parent_management_group_id" {
+  type        = string
+  default     = ""
+  description = "This is the id of the management group that the ALZ hierarchy will be nested under, will default to the Tenant Root Group"
+}
+
+variable "root_id" {
+  type        = string
+  default     = ""
+  description = "Root management group ID for the ALZ hierarchy"
+}
+
+variable "root_display_name" {
+  type        = string
+  default     = ""
+  description = "Display name for the root management group"
+}
+
+variable "enable_telemetry" {
+  type        = bool
+  default     = true
+  description = "Flag to enable/disable telemetry"
+}
+
+variable "custom_replacements" {
+  type = object({
+    names                      = optional(map(string), {})
+    resource_group_identifiers = optional(map(string), {})
+    resource_identifiers       = optional(map(string), {})
+  })
+  description = "Custom replacements"
+}
+
+variable "tags" {
+  type        = map(string)
+  default     = null
+  description = "(Optional) Tags of the resource."
+}
+
+variable "connectivity_resource_groups" {
+  type = map(object({
+    name     = string
+    location = string
+    settings = optional(any)
+  }))
+  default     = {}
+  description = <<DESCRIPTION
+A map of resource groups to create. These must be created before the connectivity module is applied.
+
+The following attributes are supported:
+
+  - name: The name of the resource group
+  - location: The location of the resource group
+  - settings: (Optional) An object, which can include an `enabled` setting value that indicates whether the resource group should be created.
+
+DESCRIPTION
+}
+
+variable "hub_and_spoke_vnet_settings" {
+  type    = any
+  default = {}
+}
+
+variable "hub_and_spoke_vnet_virtual_networks" {
+  type    = any
+  default = {}
+}
+
+variable "virtual_wan_settings" {
+  type    = any
+  default = {}
+}
+
+variable "virtual_wan_virtual_hubs" {
+  type    = any
+  default = {}
+}
+
+variable "management_resource_settings" {
+  type    = any
+  default = {}
+}
+
+variable "management_group_settings" {
+  type    = any
+  default = {}
+}
