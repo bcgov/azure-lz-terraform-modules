@@ -363,7 +363,7 @@ This module is licensed under the MIT License.
 
 | Name | Version |
 |------|---------|
-| <a name="provider_external"></a> [external](#provider\_external) | 2.3.5 |
+| <a name="provider_external"></a> [external](#provider\_external) | >= 2.0.0 |
 
 ## Modules
 
