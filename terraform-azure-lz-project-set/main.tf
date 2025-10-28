@@ -51,19 +51,21 @@ module "lz_vending" {
   # virtual network variables
   virtual_network_enabled = each.value.network.enabled
   virtual_networks = each.value.network.enabled ? {
-    name                        = "${var.license_plate}-${each.value.name}-vwan-spoke"
-    address_space               = each.value.network.address_space
-    resource_group_name         = "${var.license_plate}-${each.value.name}-networking"
-    resource_group_lock_enabled = false
-    vwan_connection_enabled     = true
-    vwan_hub_resource_id        = var.vwan_hub_resource_id
-    vwan_security_configuration = {
-      secure_internet_traffic = true
-      routing_intent_enabled  = true
+    vwan_spoke = {
+      name                         = "${var.license_plate}-${each.value.name}-vwan-spoke"
+      address_space                = each.value.network.address_space
+      resource_group_name_existing = "${var.license_plate}-${each.value.name}-networking"
+      resource_group_lock_enabled  = false
+      vwan_connection_enabled      = true
+      vwan_hub_resource_id         = var.vwan_hub_resource_id
+      vwan_security_configuration = {
+        secure_internet_traffic = true
+        routing_intent_enabled  = true
+      }
+      dns_servers = try(each.value.network.dns_servers, null)
+      tags        = var.common_tags
     }
-    dns_servers = try(each.value.network.dns_servers, null)
-    tags        = var.common_tags
-  } : {}
+  } : null
 
   depends_on = [azurerm_management_group.project_set]
 }
@@ -134,7 +136,7 @@ module "resourceproviders_alerts_management" {
 # NOTE: This Resource Provider is required when using Azure Monitor Baseline Alerts (AMBA)
 module "resourceproviders_insights" {
   source  = "Azure/lz-vending/azurerm//modules/resourceprovider"
-  version = "4.1.5" # Should match the lz_vending module version
+  version = "6.0.0" # Should match the lz_vending module version
 
   for_each = {
     for k, v in var.subscriptions : k => v
