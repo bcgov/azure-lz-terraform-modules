@@ -1,0 +1,27 @@
+{
+  "name": "Deny-Protected-Network",
+  "type": "Microsoft.Authorization/policyAssignments",
+  "apiVersion": "2019-09-01",
+  "properties": {
+    "displayName": "Deny Creating Protected Networking Resource",
+    "description": "This Policy will prevent users from creating Express Route circuits, VPN Sites, VPN/NAT/Local Gateways, or Route Tables.",
+    "notScopes": [],
+    "parameters": {
+      "effect": {
+        "value": "Deny"
+      }
+    },
+    "policyDefinitionId": "/providers/Microsoft.Authorization/policyDefinitions/Deny-Protected-Network-Resources",
+    "nonComplianceMessages": [
+      {
+        "message": "Deploying Express Route circuits, VPN Sites, VPN/NAT/Local Gateways, or Route Tables in the Landing Zones is not allowed."
+      }
+    ],
+    "scope": "/providers/Microsoft.Management/managementGroups/bcgov-managed-lz-forge",
+    "enforcementMode": "Default"
+  },
+  "location": "canadacentral",
+  "identity": {
+    "type": "SystemAssigned"
+  }
+}
