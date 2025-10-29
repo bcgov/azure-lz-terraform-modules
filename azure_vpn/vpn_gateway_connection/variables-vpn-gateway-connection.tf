@@ -1,12 +1,12 @@
 variable "vpn_gateway_connection" {
-  description = ""
+  description = "(Required) A list of VPN Gateway Connection configurations."
   type = list(object({
     vpn_gateway_connection_name = string
     resource_group_name         = string
     location                    = string
     remote_vpn_site_id          = string
     vpn_gateway_id              = string
-    vpn_link = list(object({
+    vpn_link = optional(list(object({
       name                 = string
       egress_nat_rule_ids  = optional(list(string))
       ingress_nat_rule_ids = optional(list(string))
@@ -14,6 +14,7 @@ variable "vpn_gateway_connection" {
       bandwidth_mbps       = optional(number)
       bgp_enabled          = optional(bool)
       connection_mode      = optional(string)
+      dpd_timeout_seconds  = optional(number)
       ipsec_policy = optional(list(object({
         dh_group                 = string
         ike_encryption_algorithm = string
@@ -34,7 +35,7 @@ variable "vpn_gateway_connection" {
         ip_address          = string
         ip_configuration_id = string
       })))
-    }))
+    })))
     internet_security_enabled = optional(bool)
     routing = optional(object({
       associated_route_table = string

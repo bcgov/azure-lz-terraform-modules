@@ -16,6 +16,7 @@ resource "azurerm_vpn_gateway_connection" "this" {
       bandwidth_mbps       = vpn_link.value.bandwidth_mbps
       bgp_enabled          = vpn_link.value.bgp_enabled
       connection_mode      = vpn_link.value.connection_mode
+      dpd_timeout_seconds  = vpn_link.value.dpd_timeout_seconds
 
       dynamic "ipsec_policy" {
         for_each = vpn_link.value.ipsec_policy != null ? vpn_link.value.ipsec_policy : []
