@@ -1,10 +1,12 @@
 resource "azurerm_vpn_gateway_connection" "this" {
-  name               = var.vpn_gateway_connection_name
-  remote_vpn_site_id = var.remote_vpn_site_id
-  vpn_gateway_id     = var.vpn_gateway_id
+  for_each = { for conn in var.vpn_gateway_connection : conn.vpn_gateway_connection_name => conn }
+
+  name               = each.value.vpn_gateway_connection_name
+  remote_vpn_site_id = each.value.remote_vpn_site_id
+  vpn_gateway_id     = each.value.vpn_gateway_id
 
   dynamic "vpn_link" {
-    for_each = var.vpn_link
+    for_each = each.value.vpn_link != null ? each.value.vpn_link : []
 
     content {
       name                 = vpn_link.value.name
@@ -48,10 +50,10 @@ resource "azurerm_vpn_gateway_connection" "this" {
     }
   }
 
-  internet_security_enabled = var.internet_security_enabled
+  internet_security_enabled = each.value.internet_security_enabled
 
   dynamic "routing" {
-    for_each = var.routing != null ? [var.routing] : []
+    for_each = each.value.routing != null ? [each.value.routing] : []
 
     content {
       associated_route_table = routing.value.associated_route_table
@@ -71,7 +73,7 @@ resource "azurerm_vpn_gateway_connection" "this" {
   }
 
   dynamic "traffic_selector_policy" {
-    for_each = var.traffic_selector_policy != null ? var.traffic_selector_policy : []
+    for_each = each.value.traffic_selector_policy != null ? each.value.traffic_selector_policy : []
 
     content {
       local_address_ranges  = traffic_selector_policy.value.local_address_ranges
