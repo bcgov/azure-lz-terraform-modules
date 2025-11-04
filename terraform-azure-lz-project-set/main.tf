@@ -49,15 +49,22 @@ module "lz_vending" {
   subscription_management_group_id                  = trimprefix(azurerm_management_group.project_set.id, "/providers/Microsoft.Management/managementGroups/")
 
   # virtual network variables
-  virtual_network_enabled = each.value.network.enabled
+  virtual_network_enabled         = each.value.network.enabled
+  resource_group_creation_enabled = true
+  resource_groups = {
+    "${var.license_plate}-${each.value.name}-networking" = {
+      name     = "${var.license_plate}-${each.value.name}-networking"
+      location = var.primary_location
+    },
+  }
   virtual_networks = each.value.network.enabled ? {
     vwan_spoke = {
-      name                         = "${var.license_plate}-${each.value.name}-vwan-spoke"
-      address_space                = each.value.network.address_space
-      resource_group_name_existing = "${var.license_plate}-${each.value.name}-networking"
-      resource_group_lock_enabled  = false
-      vwan_connection_enabled      = true
-      vwan_hub_resource_id         = var.vwan_hub_resource_id
+      name                        = "${var.license_plate}-${each.value.name}-vwan-spoke"
+      address_space               = each.value.network.address_space
+      resource_group_key          = "${var.license_plate}-${each.value.name}-networking"
+      resource_group_lock_enabled = false
+      vwan_connection_enabled     = true
+      vwan_hub_resource_id        = var.vwan_hub_resource_id
       vwan_security_configuration = {
         secure_internet_traffic = true
         routing_intent_enabled  = true
@@ -181,4 +188,24 @@ resource "azurerm_subscription_policy_assignment" "this" {
       "value" = each.value.network.address_space
     }
   })
+}
+
+moved {
+  from = module.virtualnetwork[0].azapi_resource.vhubconnection["vwan_spoke"]
+  to   = module.virtualnetwork[0].azapi_resource.vhubconnection_routing_intent["vwan_spoke"]
+}
+
+moved {
+  from = module.virtualnetwork[0].azapi_resource.vnet["vwan_spoke"]
+  to   = module.virtual_networks["vwan_spoke"].azapi_resource.vnet
+}
+
+moved {
+  from = module.subscription[0].azurerm_subscription.this[0]
+  to   = module.subscription[0].azapi_resource.subscription[0]
+}
+
+moved {
+  from = module.subscription[0].azurerm_management_group_subscription_association.this[0]
+  to   = module.subscription[0].azapi_resource_action.subscription_association[0]
 }
