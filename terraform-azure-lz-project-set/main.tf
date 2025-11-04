@@ -32,13 +32,13 @@ module "lz_vending" {
   location = var.primary_location
 
   # subscription variables
-  subscription_alias_enabled = true
-  subscription_billing_scope = var.subscription_billing_scope
-  subscription_display_name  = substr("${var.license_plate}-${each.value.name} - ${var.project_set_name}", 0, 63)
-  subscription_alias_name    = "${var.license_plate}-${each.value.name}"
-  subscription_workload      = "Production"
-  subscription_tags          = each.value.tags
-
+  subscription_alias_enabled                            = true
+  subscription_billing_scope                            = var.subscription_billing_scope
+  subscription_display_name                             = substr("${var.license_plate}-${each.value.name} - ${var.project_set_name}", 0, 63)
+  subscription_alias_name                               = "${var.license_plate}-${each.value.name}"
+  subscription_workload                                 = "Production"
+  subscription_tags                                     = each.value.tags
+  subscription_id                                       = "60e89f81-a15c-4d7a-9be3-c3795a33a277"
   subscription_register_resource_providers_enabled      = true
   subscription_register_resource_providers_and_features = local.default_resource_providers_and_features
 
@@ -202,11 +202,6 @@ moved {
 }
 
 moved {
-  from = module.subscription[0].azurerm_subscription.this[0]
-  to   = module.subscription[0].azapi_resource.subscription[0]
-}
-
-moved {
-  from = module.subscription[0].azurerm_management_group_subscription_association.this[0]
-  to   = module.subscription[0].azapi_resource_action.subscription_association[0]
+  from = module.virtualnetwork[0].azapi_resource.rg["abc125-dev-networking"]
+  to   = module.resourcegroup["abc124-dev-networking"].azapi_resource.rg
 }
