@@ -56,6 +56,10 @@ module "lz_vending" {
       name     = "${var.license_plate}-${each.value.name}-networking"
       location = var.primary_location
     },
+    "NetworkWatcherRG" = {
+      name     = "NetworkWatcherRG"
+      location = var.primary_location
+    },
   }
   disable_telemetry = true
   virtual_networks = each.value.network.enabled ? {
@@ -189,19 +193,4 @@ resource "azurerm_subscription_policy_assignment" "this" {
       "value" = each.value.network.address_space
     }
   })
-}
-
-moved {
-  from = module.virtualnetwork[0].azapi_resource.vhubconnection["vwan_spoke"]
-  to   = module.virtualnetwork[0].azapi_resource.vhubconnection_routing_intent["vwan_spoke"]
-}
-
-moved {
-  from = module.virtualnetwork[0].azapi_resource.vnet["vwan_spoke"]
-  to   = module.virtual_networks["vwan_spoke"].azapi_resource.vnet
-}
-
-moved {
-  from = module.virtualnetwork[0].azapi_resource.rg["abc125-dev-networking"]
-  to   = module.resourcegroup["abc124-dev-networking"].azapi_resource.rg
 }
