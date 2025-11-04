@@ -57,6 +57,7 @@ module "lz_vending" {
       location = var.primary_location
     },
   }
+  disable_telemetry = true
   virtual_networks = each.value.network.enabled ? {
     vwan_spoke = {
       name                        = "${var.license_plate}-${each.value.name}-vwan-spoke"
