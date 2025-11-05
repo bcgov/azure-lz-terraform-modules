@@ -38,7 +38,6 @@ module "lz_vending" {
   subscription_alias_name                               = "${var.license_plate}-${each.value.name}"
   subscription_workload                                 = "Production"
   subscription_tags                                     = each.value.tags
-  subscription_id                                       = "6db502fa-872b-4997-9b93-5ea9432be035"
   subscription_register_resource_providers_enabled      = true
   subscription_register_resource_providers_and_features = local.default_resource_providers_and_features
 
