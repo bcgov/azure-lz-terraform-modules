@@ -52,7 +52,6 @@ locals {
     "Microsoft.Management" : [],
     "Microsoft.Maps" : [],
     "Microsoft.MarketplaceOrdering" : [],
-    "Microsoft.MixedReality" : [],
     "Microsoft.Network" : [],
     "Microsoft.NotificationHubs" : [],
     "Microsoft.OperationalInsights" : [],
