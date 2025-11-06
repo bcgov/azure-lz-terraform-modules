@@ -40,7 +40,6 @@ module "lz_vending" {
   subscription_tags                                     = each.value.tags
   subscription_register_resource_providers_enabled      = true
   subscription_register_resource_providers_and_features = local.default_resource_providers_and_features
-  subscription_id                                       = "b2868d30-5168-4bef-b7b1-44b8c8947bd7"
   # network_watcher_resource_group_enabled = true
 
   # management group association variables
