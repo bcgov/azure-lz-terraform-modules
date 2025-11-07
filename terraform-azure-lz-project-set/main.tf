@@ -72,7 +72,7 @@ module "lz_vending" {
     vwan_spoke = {
       name                        = "${var.license_plate}-${each.value.name}-vwan-spoke"
       address_space               = try(each.value.network.address_space, [])
-      resource_group_name         = "${var.license_plate}-${each.value.name}-networking"
+      resource_group_key          = "${var.license_plate}-${each.value.name}-networking"
       resource_group_lock_enabled = false
       vwan_connection_enabled     = true
       vwan_hub_resource_id        = var.vwan_hub_resource_id
