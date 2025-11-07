@@ -25,7 +25,7 @@ variable "vwan_hub_resource_id" {
   type        = string
   default     = null
   validation {
-    condition = var.vwan_hub_resource_id != null || length([for v in var.subscriptions : v if try(v.network.enabled, false)]) == 0
+    condition     = var.vwan_hub_resource_id != null || length([for v in var.subscriptions : v if try(v.network.enabled, false)]) == 0
     error_message = "vwan_hub_resource_id must be provided when any subscription has networking enabled."
   }
 }
