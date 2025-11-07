@@ -1,0 +1,56 @@
+{
+  "name": "Inherit-Account-Code-Tag",
+  "type": "Microsoft.Authorization/policyDefinitions",
+  "apiVersion": "2021-06-01",
+  "scope": null,
+  "properties": {
+    "displayName": "Inherit the Account Code tag from the subscription",
+    "description": "Adds or replaces the specified tag and value from the containing subscription when any resource is created or updated. Existing resources can be remediated by triggering a remediation task.",
+    "policyType": "Custom",
+    "mode": "Indexed",
+    "metadata": {
+      "version": "1.0.0",
+      "category": "Tags"
+    },
+    "policyRule": {
+      "if": {
+        "allOf": [
+          {
+            "field": "[concat('tags[', parameters('InheritTag-Account-Coding'), ']')]",
+            "notEquals": "[subscription().tags[parameters('InheritTag-Account-Coding')]]"
+          },
+          {
+            "value": "[subscription().tags[parameters('InheritTag-Account-Coding')]]",
+            "notEquals": ""
+          }
+        ]
+      },
+      "then": {
+        "effect": "modify",
+        "details": {
+          "roleDefinitionIds": [
+            "/providers/microsoft.authorization/roleDefinitions/b24988ac-6180-42a0-ab88-20f7382dd24c"
+          ],
+          "operations": [
+            {
+              "operation": "addOrReplace",
+              "field": "[concat('tags[', parameters('InheritTag-Account-Coding'), ']')]",
+              "value": "[subscription().tags[parameters('InheritTag-Account-Coding')]]"
+            }
+          ]
+        }
+      }
+    },
+    "parameters": {
+      "InheritTag-Account-Coding": {
+        "type": "String",
+        "metadata": {
+          "displayName": "Account Coding Tag Name",
+          "description": "Name of the Account Coding tag"
+        }
+      }
+    },
+    "roleDefinitionIds": []
+  },
+  "roleDefinitionIds": []
+}
