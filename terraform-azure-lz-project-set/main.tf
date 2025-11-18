@@ -61,8 +61,8 @@ module "lz_vending" {
       }
     } : {},
     {
-      "NetworkWatcherRG" = {
-        name     = "NetworkWatcherRG"
+      (local.NetworkWatcherRGName) = {
+        name     = local.NetworkWatcherRGName
         location = var.primary_location
       }
     }

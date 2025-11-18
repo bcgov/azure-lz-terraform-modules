@@ -72,3 +72,18 @@ variable "deny_vnet_address_change_policy_definition_id" {
   type        = string
   default     = null
 }
+
+variable "vnet_flow_logs_storage_account_id" {
+  description = "Storage account ID for storing VNet flow logs"
+  type        = string
+}
+
+variable "workspace_id" {
+  description = "Log Analytics workspace ID for traffic analytics"
+  type        = string
+}
+
+variable "workspace_resource_id" {
+  description = "Log Analytics workspace resource ID for traffic analytics"
+  type        = string
+}
