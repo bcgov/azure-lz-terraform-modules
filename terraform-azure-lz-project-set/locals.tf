@@ -72,4 +72,5 @@ locals {
     "Microsoft.Web" : [],
     "microsoft.insights" : []
   }
+  NetworkWatcherRGName = "NetworkWatcherRG"
 }
