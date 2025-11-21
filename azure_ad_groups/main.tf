@@ -39,9 +39,14 @@ locals {
   )))
 
   # Build a map of member UPN -> object_id for users that were actually found
-  member_id_by_upn = zipmap(
-    data.azuread_users.members.user_principal_names,
-    data.azuread_users.members.object_ids
+  # Normalize UPNs to lowercase for case-insensitive matching (Azure AD UPNs are case-insensitive)
+  # The data source returns matching arrays, so zipmap should always work when there are results
+  member_id_by_upn = try(
+    zipmap(
+      [for upn in data.azuread_users.members.user_principal_names : lower(upn)],
+      data.azuread_users.members.object_ids
+    ),
+    {}
   )
 
   # Build raw list of all group-member pairs
@@ -55,10 +60,11 @@ locals {
   ])
 
   # Only keep entries where we actually found the user
+  # Normalize member UPN to lowercase for case-insensitive comparison
   existing_group_members = {
     for item in local.raw_group_members :
     "${item.group_key}-${item.member}" => item
-    if contains(keys(local.member_id_by_upn), item.member)
+    if contains(keys(local.member_id_by_upn), lower(item.member))
   }
 }
 
@@ -69,7 +75,7 @@ data "azuread_client_config" "current" {}
 # This includes both group members and admin_email
 data "azuread_users" "members" {
   ignore_missing       = true
-  user_principal_names = local.all_members
+  user_principal_names = length(local.all_members) > 0 ? local.all_members : []
 }
 
 # Create the groups
@@ -79,7 +85,7 @@ resource "azuread_group" "groups" {
   security_enabled = true
   description      = each.value.description
   owners = compact([
-    try(local.member_id_by_upn[var.admin_email], null),
+    try(local.member_id_by_upn[lower(var.admin_email)], null),
     data.azuread_client_config.current.object_id
   ])
 }
@@ -89,7 +95,7 @@ resource "azuread_group_member" "group_members" {
   for_each = local.existing_group_members
 
   group_object_id  = azuread_group.groups[each.value.group_key].id
-  member_object_id = local.member_id_by_upn[each.value.member]
+  member_object_id = local.member_id_by_upn[lower(each.value.member)]
 }
 
 # Assign roles to groups
