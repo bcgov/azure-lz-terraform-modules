@@ -52,7 +52,7 @@ variable "subscriptions" {
     budget : optional(number, 0)
     network : optional(object({
       enabled : bool
-      address_space : list(string)
+      address_sizes : list(number)
       dns_servers : optional(list(string))
     }))
     tags : optional(map(string), {})
@@ -86,4 +86,9 @@ variable "workspace_id" {
 variable "workspace_resource_id" {
   description = "Log Analytics workspace resource ID for traffic analytics"
   type        = string
+}
+
+variable "network_manager_ipam_pool_id" {
+  type        = string
+  description = "IPAM Pool id"
 }
