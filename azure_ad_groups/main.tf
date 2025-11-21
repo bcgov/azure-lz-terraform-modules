@@ -33,9 +33,10 @@ locals {
   )
 
   # Collect all member UPNs from all groups, plus admin_email if provided
-  all_members = distinct(compact(flatten([
-    for _, group in local.groups : group.members
-  ]) + [var.admin_email]))
+  all_members = distinct(compact(concat(
+    flatten([for _, group in local.groups : group.members]),
+    var.admin_email != "" && var.admin_email != null ? [var.admin_email] : []
+  )))
 
   # Build a map of member UPN -> object_id for users that were actually found
   member_id_by_upn = zipmap(
