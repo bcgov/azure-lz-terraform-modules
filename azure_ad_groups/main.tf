@@ -41,13 +41,10 @@ locals {
   # Build a map of member UPN -> object_id for users that were actually found
   # Normalize UPNs to lowercase for case-insensitive matching (Azure AD UPNs are case-insensitive)
   # The data source returns matching arrays, so zipmap should always work when there are results
-  member_id_by_upn = try(
-    zipmap(
-      [for upn in data.azuread_users.members.user_principal_names : lower(upn)],
-      data.azuread_users.members.object_ids
-    ),
-    {}
-  )
+  member_id_by_upn = length(data.azuread_users.members.user_principal_names) > 0 ? zipmap(
+    [for upn in data.azuread_users.members.user_principal_names : lower(upn)],
+    data.azuread_users.members.object_ids
+  ) : {}
 
   # Build raw list of all group-member pairs
   raw_group_members = flatten([
@@ -55,15 +52,21 @@ locals {
       for member in toset(group.members) : {
         group_key = group_key
         member    = member
+        key       = "${group_key}-${member}"
       }
     ]
   ])
 
   # Only keep entries where we actually found the user
   # Normalize member UPN to lowercase for case-insensitive comparison
+  # This ensures all keys that should exist are present in the for_each map
   existing_group_members = {
     for item in local.raw_group_members :
-    "${item.group_key}-${item.member}" => item
+    item.key => {
+      group_key        = item.group_key
+      member           = item.member
+      member_object_id = local.member_id_by_upn[lower(item.member)]
+    }
     if contains(keys(local.member_id_by_upn), lower(item.member))
   }
 }
@@ -95,7 +98,7 @@ resource "azuread_group_member" "group_members" {
   for_each = local.existing_group_members
 
   group_object_id  = azuread_group.groups[each.value.group_key].id
-  member_object_id = local.member_id_by_upn[lower(each.value.member)]
+  member_object_id = each.value.member_object_id
 }
 
 # Assign roles to groups
