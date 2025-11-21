@@ -31,15 +31,54 @@ locals {
     "18d7d88dd35e4fb5a5c37773c20a72d9",
     "f58310d9a9f6439a9e8df62e7b41a168"]
   )
+
+  # Collect all member UPNs from all groups, plus admin_email if provided
+  all_members = distinct(compact(concat(
+    flatten([for _, group in local.groups : group.members]),
+    var.admin_email != "" && var.admin_email != null ? [var.admin_email] : []
+  )))
+
+  # Build a map of member UPN -> object_id for users that were actually found
+  # Normalize UPNs to lowercase for case-insensitive matching (Azure AD UPNs are case-insensitive)
+  # The data source returns matching arrays, so zipmap should always work when there are results
+  member_id_by_upn = length(data.azuread_users.members.user_principal_names) > 0 ? zipmap(
+    [for upn in data.azuread_users.members.user_principal_names : lower(upn)],
+    data.azuread_users.members.object_ids
+  ) : {}
+
+  # Build raw list of all group-member pairs
+  raw_group_members = flatten([
+    for group_key, group in local.groups : [
+      for member in toset(group.members) : {
+        group_key = group_key
+        member    = member
+        key       = "${group_key}-${member}"
+      }
+    ]
+  ])
+
+  # Only keep entries where we actually found the user
+  # Normalize member UPN to lowercase for case-insensitive comparison
+  # This ensures all keys that should exist are present in the for_each map
+  existing_group_members = {
+    for item in local.raw_group_members :
+    item.key => {
+      group_key        = item.group_key
+      member           = item.member
+      member_object_id = local.member_id_by_upn[lower(item.member)]
+    }
+    if contains(keys(local.member_id_by_upn), lower(item.member))
+  }
 }
 
 # Get the current client configuration
 data "azuread_client_config" "current" {}
 
-# Get user objects
-data "azuread_user" "users" {
-  for_each            = toset(flatten([for group in local.groups : group.members]))
-  user_principal_name = each.key
+# Get user objects - using plural data source with ignore_missing to handle deleted users
+# This includes both group members and admin_email
+data "azuread_users" "members" {
+  ignore_missing       = true
+  user_principal_names = length(local.all_members) > 0 ? local.all_members : []
 }
 
 # Create the groups
@@ -49,26 +88,17 @@ resource "azuread_group" "groups" {
   security_enabled = true
   description      = each.value.description
   owners = compact([
-    try(data.azuread_user.users[var.admin_email].object_id, null),
+    try(local.member_id_by_upn[lower(var.admin_email)], null),
     data.azuread_client_config.current.object_id
   ])
 }
 
-# Add users to groups
+# Add users to groups (only for users that actually exist)
 resource "azuread_group_member" "group_members" {
-  for_each = {
-    for item in flatten([
-      for group_key, group in local.groups : [
-        for member in toset(group.members) : {
-          group_key = group_key
-          member    = member
-        }
-      ]
-    ]) : "${item.group_key}-${item.member}" => item
-  }
+  for_each = local.existing_group_members
 
   group_object_id  = azuread_group.groups[each.value.group_key].id
-  member_object_id = data.azuread_user.users[each.value.member].object_id
+  member_object_id = each.value.member_object_id
 }
 
 # Assign roles to groups
