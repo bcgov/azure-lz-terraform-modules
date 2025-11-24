@@ -27,10 +27,10 @@
           "strongType": "Microsoft.Network/privateDnsZones"
         }
       },
-      "aiServicesPrivateDnsZoneId": {
+      "servicesAIPrivateDnsZoneId": {
         "type": "String",
         "metadata": {
-          "displayName": "OpenAI Services Private DNS Zone ID",
+          "displayName": "ServicesAI Services Private DNS Zone ID",
           "description": "The Private DNS Zone ID for other AI resources.",
           "strongType": "Microsoft.Network/privateDnsZones"
         }
@@ -93,8 +93,8 @@
                 "openAIPrivateDnsZoneId": {
                   "value": "[parameters('openAIPrivateDnsZoneId')]"
                 },
-                "aiServicesPrivateDnsZoneId": {
-                  "value": "[parameters('aiServicesPrivateDnsZoneId')]"
+                "servicesAIPrivateDnsZoneId": {
+                  "value": "[parameters('servicesAIPrivateDnsZoneId')]"
                 },
                 "privateEndpointName": {
                   "value": "[field('name')]"
@@ -116,7 +116,7 @@
                   "openAIPrivateDnsZoneId": {
                     "type": "string"
                   },
-                  "aiServicesPrivateDnsZoneId": {
+                  "servicesAIPrivateDnsZoneId": {
                     "type": "string"
                   },
                   "privateEndpointName": {
@@ -130,7 +130,7 @@
                   }
                 },
                 "variables": {
-                  "aiServicesPrivateDnsZoneConfigs": [
+                  "servicesAIPrivateDnsZoneConfigs": [
                     {
                       "name": "cognitiveServices-configuration",
                       "properties": {
@@ -144,9 +144,9 @@
                       }
                     },
                     {
-                      "name": "aiServices-configuration",
+                      "name": "servicesAI-configuration",
                       "properties": {
-                        "privateDnsZoneId": "[parameters('aiServicesPrivateDnsZoneId')]"
+                        "privateDnsZoneId": "[parameters('servicesAIPrivateDnsZoneId')]"
                       }
                     }
                   ],
@@ -173,7 +173,7 @@
                     "location": "[parameters('location')]",
                     "name": "[concat(parameters('privateEndpointName'), '/deployedByPolicy')]",
                     "properties": {
-                      "privateDnsZoneConfigs": "[if(equals(reference(parameters('privateLinkServiceId')[0], '2022-12-01', 'Full').kind, 'OpenAI'), variables('openAIPrivateDnsZoneConfigs'), if(equals(reference(parameters('privateLinkServiceId')[0], '2022-12-01', 'Full').kind, 'AIServices'), variables('aiServicesPrivateDnsZoneConfigs'), variables('cognitiveServicesPrivateDnsZoneConfigs')))]"
+                      "privateDnsZoneConfigs": "[if(equals(reference(parameters('privateLinkServiceId')[0], '2022-12-01', 'Full').kind, 'OpenAI'), variables('openAIPrivateDnsZoneConfigs'), if(equals(reference(parameters('privateLinkServiceId')[0], '2022-12-01', 'Full').kind, 'servicesAI'), variables('servicesAIPrivateDnsZoneConfigs'), variables('cognitiveServicesPrivateDnsZoneConfigs')))]"
                     },
                     "type": "Microsoft.Network/privateEndpoints/privateDnsZoneGroups"
                   }
