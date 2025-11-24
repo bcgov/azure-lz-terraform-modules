@@ -10,10 +10,12 @@
       "Deny-Protected-Network",
       "Deny-VNet-Creation",
       "Deny-New-VNet-Peerings",
-      "Deny-Delete-Diagnostics"
+      "Deny-Delete-Diagnostics",
+      "Deny-AMPLS-Creation"
     ],
     "policy_definitions": [
-      "Deny-VNet-Address-Changes"
+      "Deny-VNet-Address-Changes",
+      "Deny-AMPLS-Creation"
     ],
     "policy_set_definitions": [],
     "role_definitions": [],

@@ -1,0 +1,27 @@
+{
+  "name": "Deny-AMPLS-Creation",
+  "type": "Microsoft.Authorization/policyAssignments",
+  "apiVersion": "2019-09-01",
+  "properties": {
+    "displayName": "Prevent Creating Azure Monitor Private Link Scope (AMPLS)",
+    "description": "This Policy will prevent users from creating an Azure Monitor Private Link Scope (AMPLS) on their Log Analytics Workspaces.",
+    "notScopes": [],
+    "parameters": {
+      "effect": {
+        "value": "Deny"
+      }
+    },
+    "policyDefinitionId": "${root_scope_resource_id}/providers/Microsoft.Authorization/policyDefinitions/Deny-Protected-Network-Resources",
+    "nonComplianceMessages": [
+      {
+        "message": "Deploying Azure Monitor Private Link Scopes (AMPLS) in the Landing Zones is not allowed due to the gobal affect in the central DNS zones."
+      }
+    ],
+    "scope": "${current_scope_resource_id}",
+    "enforcementMode": "Default"
+  },
+  "location": "${default_location}",
+  "identity": {
+    "type": "SystemAssigned"
+  }
+}
