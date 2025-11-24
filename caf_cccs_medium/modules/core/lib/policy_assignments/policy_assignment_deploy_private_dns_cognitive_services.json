@@ -17,8 +17,8 @@
       "openAIPrivateDnsZoneId": {
         "value": "/subscriptions/[[subscriptionId]]/resourceGroups/[[resourceGroupName]]/providers/Microsoft.Network/privateDnsZones/privatelink.openai.azure.com"
       },
-      "aiServicesPrivateDnsZoneId": {
-        "value": "/subscriptions/[[subscriptionId]]/resourceGroups/[[resourceGroupName]]/providers/Microsoft.Network/privateDnsZones/privatelink.aiservices.azure.com"
+      "servicesAIPrivateDnsZoneId": {
+        "value": "/subscriptions/[[subscriptionId]]/resourceGroups/[[resourceGroupName]]/providers/Microsoft.Network/privateDnsZones/privatelink.services.ai.azure.com"
       },
       "effect": {
         "value": "DeployIfNotExists"
