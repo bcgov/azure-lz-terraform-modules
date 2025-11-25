@@ -7,6 +7,7 @@ module "network_flow_logs" {
   network_watcher_id   = format("%s/resourceGroups/%s/providers/Microsoft.Network/networkWatchers/NetworkWatcher_%s", module.lz_vending[each.key].subscription_resource_id, local.NetworkWatcherRGName, lower(var.primary_location))
   network_watcher_name = "NetworkWatcher_${lower(var.primary_location)}"
   resource_group_name  = local.NetworkWatcherRGName
+  enable_telemetry     = false
   flow_logs = {
     (each.value.name) = {
       enabled              = true
@@ -17,7 +18,7 @@ module "network_flow_logs" {
       version              = 2
 
       retention_policy = {
-        days    = 3
+        days    = 90
         enabled = true
       }
 
