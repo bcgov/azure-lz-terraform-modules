@@ -14,7 +14,7 @@
     "policyDefinitionId": "${root_scope_resource_id}/providers/Microsoft.Authorization/policyDefinitions/Deny-AMPLS-Creation",
     "nonComplianceMessages": [
       {
-        "message": "Deploying Azure Monitor Private Link Scopes (AMPLS) in the Landing Zones is not allowed due to the gobal affect in the central DNS zones."
+        "message": "Deploying Azure Monitor Private Link Scopes (AMPLS) in the Landing Zones is not allowed due to the global effect in the central DNS zones."
       }
     ],
     "scope": "${current_scope_resource_id}",
