@@ -24,7 +24,8 @@
       "Deny-VNet-Creation",
       "Deny-New-VNet-Peerings",
       "Deny-Delete-Diagnostics",
-      "Resource-Locations"
+      "Resource-Locations",
+      "Deny-AMPLS-Creation"
     ],
     "policy_set_definitions": [
       "Deploy-Private-DNS-Zones-Custom",
