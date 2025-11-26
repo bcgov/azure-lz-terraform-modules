@@ -10,7 +10,7 @@
     "mode": "All",
     "metadata": {
       "version": "1.0.0",
-      "category": "Networking"
+      "category": "Monitoring"
     },
     "parameters": {
       "effect": {
@@ -33,6 +33,22 @@
           {
             "field": "type",
             "equals": "microsoft.insights/privatelinkscopes"
+          },
+          {
+            "field": "type",
+            "equals": "microsoft.insights/privatelinkscopes/scopedResources"
+          },
+          {
+            "allOf": [
+              {
+                "field": "type",
+                "equals": "microsoft.operationalinsights/workspaces"
+              },
+              {
+                "field": "Microsoft.OperationalInsights/workspaces/privateLinkScopedResources[*]",
+                "exists": true
+              }
+            ]
           }
         ]
       },

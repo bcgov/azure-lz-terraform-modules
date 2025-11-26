@@ -14,8 +14,7 @@
       "Deny-AMPLS-Creation"
     ],
     "policy_definitions": [
-      "Deny-VNet-Address-Changes",
-      "Deny-AMPLS-Creation"
+      "Deny-VNet-Address-Changes"
     ],
     "policy_set_definitions": [],
     "role_definitions": [],
