@@ -29,4 +29,6 @@ module "private_dns_zone_virtual_network_link" {
   subscription_id_connectivity = var.subscription_id_connectivity
 
   private_dns_zone_virtual_network_link = var.private_dns_zone_virtual_network_link
+
+  depends_on = [module.lz_custom_private_dns_zones]
 }
