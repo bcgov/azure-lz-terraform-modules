@@ -6,7 +6,7 @@
 # This custom Private DNS Zone inclusion has the same challenge, where it needs the Private DNS Resolver VNet ID to link the Private DNS Zones.
 
 module "lz_custom_private_dns_zones" {
-  source = "git::https://github.com/bcgov/azure-lz-terraform-modules.git//azure_private_dns/private_dns_zone?ref=v1.0.19"
+  source = "git::https://github.com/bcgov/azure-lz-terraform-modules.git//azure_private_dns/private_dns_zone?ref=v2.2.4"
   # source = "../azure_private_dns/private_dns_zone" # NOTE: For local testing only, replace with the above for production
 
   providers = {
@@ -19,7 +19,7 @@ module "lz_custom_private_dns_zones" {
 }
 
 module "private_dns_zone_virtual_network_link" {
-  source = "git::https://github.com/bcgov/azure-lz-terraform-modules.git//azure_private_dns/private_dns_zone_virtual_network_link?ref=v1.0.19"
+  source = "git::https://github.com/bcgov/azure-lz-terraform-modules.git//azure_private_dns/private_dns_zone_virtual_network_link?ref=v2.2.4"
   # source = "../azure_private_dns/private_dns_zone_virtual_network_link" # NOTE: For local testing only, replace with the above for production
 
   providers = {
@@ -29,4 +29,6 @@ module "private_dns_zone_virtual_network_link" {
   subscription_id_connectivity = var.subscription_id_connectivity
 
   private_dns_zone_virtual_network_link = var.private_dns_zone_virtual_network_link
+
+  depends_on = [module.lz_custom_private_dns_zones]
 }

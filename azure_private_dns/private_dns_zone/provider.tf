@@ -8,11 +8,3 @@ terraform {
     }
   }
 }
-
-provider "azurerm" {
-  use_oidc = true
-  features {}
-
-  alias           = "connectivity"
-  subscription_id = var.subscription_id_connectivity
-}

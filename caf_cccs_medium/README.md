@@ -40,12 +40,12 @@ Policies are applied in the "Default" mode. It should be possible to provide [ov
 | <a name="module_base_firewall_policy_managed_identity"></a> [base\_firewall\_policy\_managed\_identity](#module\_base\_firewall\_policy\_managed\_identity) | git::https://github.com/bcgov/azure-lz-terraform-modules.git//azure_identity/user_assigned_identity | v0.0.20 |
 | <a name="module_connectivity"></a> [connectivity](#module\_connectivity) | ./modules/connectivity | n/a |
 | <a name="module_core"></a> [core](#module\_core) | ./modules/core | n/a |
-| <a name="module_lz_custom_private_dns_zones"></a> [lz\_custom\_private\_dns\_zones](#module\_lz\_custom\_private\_dns\_zones) | git::https://github.com/bcgov/azure-lz-terraform-modules.git//azure_private_dns/private_dns_zone | v1.0.19 |
+| <a name="module_lz_custom_private_dns_zones"></a> [lz\_custom\_private\_dns\_zones](#module\_lz\_custom\_private\_dns\_zones) | git::https://github.com/bcgov/azure-lz-terraform-modules.git//azure_private_dns/private_dns_zone | v2.2.4 |
 | <a name="module_lz_firewall_ipgroups"></a> [lz\_firewall\_ipgroups](#module\_lz\_firewall\_ipgroups) | git::https://github.com/bcgov/azure-lz-terraform-modules.git//azure_ip_group | v1.0.24 |
 | <a name="module_lz_firewall_policy"></a> [lz\_firewall\_policy](#module\_lz\_firewall\_policy) | git::https://github.com/bcgov/azure-lz-terraform-modules.git//azure_firewall/firewall_policy | v0.0.20 |
 | <a name="module_lz_firewall_policy_rules"></a> [lz\_firewall\_policy\_rules](#module\_lz\_firewall\_policy\_rules) | git::https://github.com/bcgov/azure-lz-terraform-modules.git//azure_firewall/firewall_policy_rcg | v0.0.20 |
 | <a name="module_management"></a> [management](#module\_management) | ./modules/management | n/a |
-| <a name="module_private_dns_zone_virtual_network_link"></a> [private\_dns\_zone\_virtual\_network\_link](#module\_private\_dns\_zone\_virtual\_network\_link) | git::https://github.com/bcgov/azure-lz-terraform-modules.git//azure_private_dns/private_dns_zone_virtual_network_link | v1.0.19 |
+| <a name="module_private_dns_zone_virtual_network_link"></a> [private\_dns\_zone\_virtual\_network\_link](#module\_private\_dns\_zone\_virtual\_network\_link) | git::https://github.com/bcgov/azure-lz-terraform-modules.git//azure_private_dns/private_dns_zone_virtual_network_link | v2.2.4 |
 
 ## Resources
 
