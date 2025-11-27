@@ -52,7 +52,8 @@ variable "subscriptions" {
     budget : optional(number, 0)
     network : optional(object({
       enabled : bool
-      address_sizes : list(number)
+      address_space : optional(list(string))
+      address_sizes : optional(list(number))
       dns_servers : optional(list(string))
     }))
     tags : optional(map(string), {})
