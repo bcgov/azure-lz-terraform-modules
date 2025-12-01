@@ -1,6 +1,6 @@
 module "amba_alz" {
   source  = "Azure/avm-ptn-monitoring-amba-alz/azurerm"
-  version = "0.1.1"
+  version = "0.3.0"
   providers = {
     azurerm = azurerm.management
   }
@@ -15,7 +15,7 @@ module "amba_alz" {
 
 module "amba_policy" {
   source             = "Azure/avm-ptn-alz/azurerm"
-  version            = "0.12.0"
+  version            = "0.15.0"
   architecture_name  = var.architecture_name
   location           = var.location
   parent_resource_id = var.parent_resource_id
