@@ -12,31 +12,31 @@ For each environment, the module will create a subscription, a network resource 
 | Name | Version |
 |------|---------|
 | <a name="requirement_azapi"></a> [azapi](#requirement\_azapi) | 2.7.0 |
-| <a name="requirement_azurerm"></a> [azurerm](#requirement\_azurerm) | 4.49.0 |
+| <a name="requirement_azurerm"></a> [azurerm](#requirement\_azurerm) | 4.54.0 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
-| <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) | 4.49.0 |
+| <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) | 4.54.0 |
 
 ## Modules
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_lz_vending"></a> [lz\_vending](#module\_lz\_vending) | Azure/lz-vending/azurerm | 6.0.0 |
+| <a name="module_lz_vending"></a> [lz\_vending](#module\_lz\_vending) | Azure/lz-vending/azurerm | 7.0.3 |
 | <a name="module_network_flow_logs"></a> [network\_flow\_logs](#module\_network\_flow\_logs) | Azure/avm-res-network-networkwatcher/azurerm | 0.3.0 |
-| <a name="module_resourceproviders_alerts_management"></a> [resourceproviders\_alerts\_management](#module\_resourceproviders\_alerts\_management) | Azure/lz-vending/azurerm//modules/resourceprovider | 6.0.0 |
-| <a name="module_resourceproviders_insights"></a> [resourceproviders\_insights](#module\_resourceproviders\_insights) | Azure/lz-vending/azurerm//modules/resourceprovider | 6.0.0 |
+| <a name="module_resourceproviders_alerts_management"></a> [resourceproviders\_alerts\_management](#module\_resourceproviders\_alerts\_management) | Azure/lz-vending/azurerm//modules/resourceprovider | 7.0.3 |
+| <a name="module_resourceproviders_insights"></a> [resourceproviders\_insights](#module\_resourceproviders\_insights) | Azure/lz-vending/azurerm//modules/resourceprovider | 7.0.3 |
 
 ## Resources
 
 | Name | Type |
 |------|------|
-| [azurerm_consumption_budget_subscription.subscription_budget](https://registry.terraform.io/providers/hashicorp/azurerm/4.49.0/docs/resources/consumption_budget_subscription) | resource |
-| [azurerm_management_group.project_set](https://registry.terraform.io/providers/hashicorp/azurerm/4.49.0/docs/resources/management_group) | resource |
-| [azurerm_subscription_policy_assignment.this](https://registry.terraform.io/providers/hashicorp/azurerm/4.49.0/docs/resources/subscription_policy_assignment) | resource |
-| [azurerm_management_group.landing_zones](https://registry.terraform.io/providers/hashicorp/azurerm/4.49.0/docs/data-sources/management_group) | data source |
+| [azurerm_consumption_budget_subscription.subscription_budget](https://registry.terraform.io/providers/hashicorp/azurerm/4.54.0/docs/resources/consumption_budget_subscription) | resource |
+| [azurerm_management_group.project_set](https://registry.terraform.io/providers/hashicorp/azurerm/4.54.0/docs/resources/management_group) | resource |
+| [azurerm_subscription_policy_assignment.this](https://registry.terraform.io/providers/hashicorp/azurerm/4.54.0/docs/resources/subscription_policy_assignment) | resource |
+| [azurerm_management_group.landing_zones](https://registry.terraform.io/providers/hashicorp/azurerm/4.54.0/docs/data-sources/management_group) | data source |
 
 ## Inputs
 
