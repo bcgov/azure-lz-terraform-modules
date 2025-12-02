@@ -71,7 +71,7 @@ module "lz_vending" {
   virtual_networks = try(each.value.network.enabled, false) ? {
     vwan_spoke = {
       name                        = "${var.license_plate}-${each.value.name}-vwan-spoke"
-      address_space               = lookup(local.ipam_reservations_by_subscription, each.value.name, [])
+      address_space               = flatten([for s, _ in each.value.network.address_sizes : flatten(azurerm_network_manager_ipam_pool_static_cidr.reservations["${each.value.name}-${s}"].address_prefixes)])
       resource_group_key          = "${var.license_plate}-${each.value.name}-networking"
       resource_group_lock_enabled = false
       vwan_connection_enabled     = true
@@ -85,7 +85,7 @@ module "lz_vending" {
     }
   } : null
 
-  depends_on = [azurerm_management_group.project_set]
+  depends_on = [azurerm_management_group.project_set, azurerm_network_manager_ipam_pool_static_cidr.reservations]
 }
 
 # Create budgets directly using azurerm provider instead of the lz-vending module
