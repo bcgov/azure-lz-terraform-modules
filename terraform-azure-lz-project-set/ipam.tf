@@ -5,11 +5,11 @@ locals {
     if try(v.network.enabled, false) && length(try(v.network.address_sizes, {})) > 0
   ]...)
 
-  ipam_reservations_by_subscription = {
-    for k, v in var.subscriptions :
-    k => compact(concat([""], flatten([for i, _ in v.network.address_sizes : compact(concat([""], flatten(lookup(azurerm_network_manager_ipam_pool_static_cidr.reservations["${k}-${i}"], "address_prefixes", []))))])))
-    if try(v.network.enabled, false) && length(try(v.network.address_sizes, {})) > 0
-  }
+  # ipam_reservations_by_subscription = {
+  #   for k, v in var.subscriptions :
+  #   k => compact(concat([""], flatten([for i, _ in v.network.address_sizes : compact(concat([""], flatten(lookup(azurerm_network_manager_ipam_pool_static_cidr.reservations["${k}-${i}"], "address_prefixes", []))))])))
+  #   if try(v.network.enabled, false) && length(try(v.network.address_sizes, {})) > 0
+  # }
 
 }
 
