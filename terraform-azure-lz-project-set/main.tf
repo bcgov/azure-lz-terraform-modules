@@ -71,7 +71,7 @@ module "lz_vending" {
   virtual_networks = try(each.value.network.enabled, false) ? {
     vwan_spoke = {
       name                        = "${var.license_plate}-${each.value.name}-vwan-spoke"
-      address_space               = lookup(local.ipam_reservations_by_subscription, each.value.name)
+      address_space               = lookup(local.ipam_reservations_by_subscription, each.value.name, [])
       resource_group_key          = "${var.license_plate}-${each.value.name}-networking"
       resource_group_lock_enabled = false
       vwan_connection_enabled     = true
