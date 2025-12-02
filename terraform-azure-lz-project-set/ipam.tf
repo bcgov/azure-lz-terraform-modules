@@ -7,8 +7,8 @@ locals {
 
   ipam_reservations_by_subscription = {
     for k, v in var.subscriptions :
-    k => flatten([for i, _ in v.network.address_sizes : lookup(azurerm_network_manager_ipam_pool_static_cidr.reservations["${k}-${i}"], "address_prefixes")])
-    if try(v.network.enabled, false) && length(try(v.network.address_sizes, [])) > 0
+    k => flatten(flatten([for i, _ in v.network.address_sizes : flatten(lookup(azurerm_network_manager_ipam_pool_static_cidr.reservations["${k}-${i}"], "address_prefixes"))]))
+    if try(v.network.enabled, false) && length(try(v.network.address_sizes, {})) > 0
   }
 
 }
