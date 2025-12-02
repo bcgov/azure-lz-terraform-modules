@@ -53,7 +53,7 @@ variable "subscriptions" {
     network : optional(object({
       enabled : bool
       address_space : optional(list(string))
-      address_sizes : optional(list(number))
+      address_sizes : optional(map(string))
       dns_servers : optional(list(string))
     }))
     tags : optional(map(string), {})
