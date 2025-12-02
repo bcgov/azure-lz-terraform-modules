@@ -1,15 +1,16 @@
 locals {
   address_sizes_by_subscription = merge([
     for k, v in var.subscriptions :
-    { for i, j in try(v.network.address_sizes, []) : "${k}-${i}" => j }
-    if try(v.network.enabled, false) && length(try(v.network.address_space, [])) == 0 && length(try(v.network.address_sizes, [])) > 0
+    { for i, j in v.network.address_sizes : "${k}-${i}" => j }
+    if try(v.network.enabled, false) && length(try(v.network.address_sizes, {})) > 0
   ]...)
 
   ipam_reservations_by_subscription = {
     for k, v in var.subscriptions :
-    k => flatten([for i, _ in try(v.network.address_sizes, []) : azurerm_network_manager_ipam_pool_static_cidr.reservations["${k}-${i}"].address_prefixes])
-    if try(v.network.enabled, false) && length(try(v.network.address_space, [])) == 0 && length(try(v.network.address_sizes, [])) > 0
+    k => flatten([for i, _ in v.network.address_sizes : lookup(azurerm_network_manager_ipam_pool_static_cidr.reservations["${k}-${i}"], "address_prefixes")])
+    if try(v.network.enabled, false) && length(try(v.network.address_sizes, [])) > 0
   }
+
 }
 
 resource "azurerm_network_manager_ipam_pool_static_cidr" "reservations" {
