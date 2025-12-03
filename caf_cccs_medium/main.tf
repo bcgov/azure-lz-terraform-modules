@@ -8,6 +8,10 @@ terraform {
       version               = "3.116.0"
       configuration_aliases = [azurerm.connectivity, azurerm.management]
     }
+    azapi = {
+      source  = "azure/azapi"
+      version = "~> 1.13, != 1.13.0"
+    }
 
     assert = {
       source  = "hashicorp/assert"
