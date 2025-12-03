@@ -186,7 +186,7 @@ locals {
             azure_web_apps_sites                 = true
             azure_web_apps_static_sites          = true
             cognitive_services_account           = true
-            microsoft_power_bi                   = true # NOTE: Set to false, due to the following GitHub Issue: https://github.com/Azure/terraform-azurerm-caf-enterprise-scale/issues/1212
+            microsoft_power_bi                   = true # NOTE: Previoulys set to false due to GitHub Issue: https://github.com/Azure/terraform-azurerm-caf-enterprise-scale/issues/1212
             signalr                              = true
             signalr_webpubsub                    = true
             storage_account_blob                 = true

@@ -47,6 +47,8 @@ module "alz" {
 
 }
 
+# NOTE: Using AzAPI as the version of the CAF does not include the resolutionPolicy property
+# Also the CAF does not use our custom module for Private DNS Zone VNet Links that includes this property
 resource "azapi_update_resource" "vnet_link_resolution_policy" {
   for_each = module.alz.azurerm_private_dns_zone_virtual_network_link.connectivity
 
