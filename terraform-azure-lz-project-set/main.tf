@@ -196,7 +196,7 @@ resource "azurerm_subscription_policy_assignment" "this" {
 
   parameters = jsonencode({
     "addressSpaceSettings" = {
-      "value" = try(each.value.network.address_space, [])
+      "value" = flatten([for s, _ in each.value.network.address_sizes : flatten(azurerm_network_manager_ipam_pool_static_cidr.reservations["${each.value.name}-${s}"].address_prefixes)])
     }
   })
 }
