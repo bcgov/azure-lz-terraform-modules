@@ -7,6 +7,10 @@ terraform {
       source  = "hashicorp/azurerm"
       version = "3.116.0"
     }
+    azapi = {
+      source  = "azure/azapi"
+      version = "~> 1.13, != 1.13.0"
+    }
   }
 }
 
@@ -41,4 +45,19 @@ module "alz" {
   configure_connectivity_resources = local.configure_connectivity_resources
   subscription_id_connectivity     = var.subscription_id_connectivity
 
+}
+
+resource "azapi_update_resource" "vnet_link_resolution_policy" {
+  for_each = module.alz.azurerm_private_dns_zone_virtual_network_link.connectivity
+
+  type        = "Microsoft.Network/privateDnsZones/virtualNetworkLinks@2024-06-01"
+  resource_id = each.value.id
+
+  body = {
+    properties = {
+      resolutionPolicy = var.private_dns_resolution_policy
+    }
+  }
+
+  depends_on = [module.alz]
 }
