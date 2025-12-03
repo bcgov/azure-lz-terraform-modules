@@ -2,7 +2,7 @@ terraform {
   required_providers {
     azurerm = {
       source  = "hashicorp/azurerm"
-      version = "4.49.0"
+      version = "4.54.0"
     }
     azapi = {
       source  = "azure/azapi"
@@ -28,7 +28,7 @@ resource "azurerm_management_group" "project_set" {
 
 module "lz_vending" {
   source  = "Azure/lz-vending/azurerm"
-  version = "6.0.0" # NOTE: When updating this version, please update the respective `resourceproviders_*` modules below
+  version = "7.0.3" # NOTE: When updating this version, please update the respective `resourceproviders_*` modules below
 
   for_each = var.subscriptions
 
@@ -140,7 +140,7 @@ resource "azurerm_consumption_budget_subscription" "subscription_budget" {
 # NOTE: This Resource Provider is required when using Azure Monitor Baseline Alerts (AMBA)
 module "resourceproviders_alerts_management" {
   source  = "Azure/lz-vending/azurerm//modules/resourceprovider"
-  version = "6.0.0" # Should match the lz_vending module version
+  version = "7.0.3" # Should match the lz_vending module version
 
   for_each = {
     for k, v in var.subscriptions : k => v
@@ -154,7 +154,7 @@ module "resourceproviders_alerts_management" {
 # NOTE: This Resource Provider is required when using Azure Monitor Baseline Alerts (AMBA)
 module "resourceproviders_insights" {
   source  = "Azure/lz-vending/azurerm//modules/resourceprovider"
-  version = "6.0.0" # Should match the lz_vending module version
+  version = "7.0.3" # Should match the lz_vending module version
 
   for_each = {
     for k, v in var.subscriptions : k => v
