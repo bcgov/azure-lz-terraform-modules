@@ -19,3 +19,9 @@ resource "azurerm_network_manager_ipam_pool_static_cidr" "reservations" {
   ipam_pool_id                       = var.network_manager_ipam_pool_id
   number_of_ip_addresses_to_allocate = each.value
 }
+
+import {
+  for_each = local.address_sizes_by_subscription
+  id       = "${var.network_manager_ipam_pool_id}/staticCidrs/${each.key}"
+  to       = azurerm_network_manager_ipam_pool_static_cidr.reservations[each.key]
+}
