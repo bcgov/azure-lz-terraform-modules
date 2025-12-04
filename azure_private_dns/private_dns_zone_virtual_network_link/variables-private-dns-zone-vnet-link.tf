@@ -5,7 +5,7 @@ variable "private_dns_zone_virtual_network_link" {
     resource_group_name             = string
     virtual_network_id              = string
     registration_enabled            = optional(bool, false)
-    resolution_policy               = optional(string, "NxDomainRedirect")
-    tags                            = optional(map(string), {})
+    # resolution_policy               = optional(string, "NxDomainRedirect") # This property is only supported in AzureRM v4.35.0 and later (but our use of the CAF has not been updated to v4 yet)
+    tags = optional(map(string), {})
   }))
 }
