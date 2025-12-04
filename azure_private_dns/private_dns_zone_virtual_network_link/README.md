@@ -28,7 +28,7 @@ No modules.
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| <a name="input_private_dns_zone_virtual_network_link"></a> [private\_dns\_zone\_virtual\_network\_link](#input\_private\_dns\_zone\_virtual\_network\_link) | n/a | <pre>map(object({<br/>    private_dns_zone_vnet_link_name = string<br/>    private_dns_zone_name           = string<br/>    resource_group_name             = string<br/>    virtual_network_id              = string<br/>    registration_enabled            = optional(bool, false)<br/>    resolution_policy               = optional(string, "NxDomainRedirect")<br/>    tags                            = optional(map(string), {})<br/>  }))</pre> | n/a | yes |
+| <a name="input_private_dns_zone_virtual_network_link"></a> [private\_dns\_zone\_virtual\_network\_link](#input\_private\_dns\_zone\_virtual\_network\_link) | n/a | <pre>map(object({<br/>    private_dns_zone_vnet_link_name = string<br/>    private_dns_zone_name           = string<br/>    resource_group_name             = string<br/>    virtual_network_id              = string<br/>    registration_enabled            = optional(bool, false)<br/>    # resolution_policy               = optional(string, "NxDomainRedirect") # This property is only supported in AzureRM v4.35.0 and later (but our use of the CAF has not been updated to v4 yet)<br/>    tags = optional(map(string), {})<br/>  }))</pre> | n/a | yes |
 | <a name="input_subscription_id_connectivity"></a> [subscription\_id\_connectivity](#input\_subscription\_id\_connectivity) | Subscription ID to use for "connectivity" resources. | `string` | n/a | yes |
 
 ## Outputs

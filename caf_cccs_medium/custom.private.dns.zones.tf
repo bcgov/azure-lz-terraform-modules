@@ -19,7 +19,7 @@ module "lz_custom_private_dns_zones" {
 }
 
 module "private_dns_zone_virtual_network_link" {
-  source = "git::https://github.com/bcgov/azure-lz-terraform-modules.git//azure_private_dns/private_dns_zone_virtual_network_link?ref=v2.2.6"
+  source = "git::https://github.com/bcgov/azure-lz-terraform-modules.git//azure_private_dns/private_dns_zone_virtual_network_link?ref=v2.2.7"
   # source = "../azure_private_dns/private_dns_zone_virtual_network_link" # NOTE: For local testing only, replace with the above for production
 
   providers = {
