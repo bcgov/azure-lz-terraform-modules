@@ -20,5 +20,14 @@ output "private_dns_resolver_dns_forwarding_ruleset" {
 
 output "private_dns_resolver_forwarding_rules" {
   description = "Map of Private DNS Resolver Forwarding Rules."
-  value       = azurerm_private_dns_resolver_forwarding_rule.this
+  value = {
+    for k, v in azurerm_private_dns_resolver_forwarding_rule.this : k => {
+      id                        = v.id
+      name                      = v.name
+      dns_forwarding_ruleset_id = v.dns_forwarding_ruleset_id
+      domain_name               = v.domain_name
+      enabled                   = v.enabled
+      target_dns_servers        = v.target_dns_servers
+    }
+  }
 }
