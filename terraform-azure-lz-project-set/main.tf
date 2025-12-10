@@ -70,8 +70,9 @@ module "lz_vending" {
   disable_telemetry = true
   virtual_networks = try(each.value.network.enabled, false) ? {
     vwan_spoke = {
-      name                        = "${var.license_plate}-${each.value.name}-vwan-spoke"
-      address_space               = flatten([for s, _ in each.value.network.address_sizes : flatten(azurerm_network_manager_ipam_pool_static_cidr.reservations["${each.value.name}-${s}"].address_prefixes)])
+      name = "${var.license_plate}-${each.value.name}-vwan-spoke"
+      # ["192.168.0.0/30"] is default range for new setups which gets replaced by IPAM allocated ranges
+      address_space               = flatten([for s, _ in each.value.network.address_sizes : flatten(coalesce(azurerm_network_manager_ipam_pool_static_cidr.reservations["${each.value.name}-${s}"].address_prefixes, ["192.168.0.0/30"]))])
       resource_group_key          = "${var.license_plate}-${each.value.name}-networking"
       resource_group_lock_enabled = false
       vwan_connection_enabled     = true
@@ -196,7 +197,9 @@ resource "azurerm_subscription_policy_assignment" "this" {
 
   parameters = jsonencode({
     "addressSpaceSettings" = {
-      "value" = flatten([for s, _ in each.value.network.address_sizes : flatten(azurerm_network_manager_ipam_pool_static_cidr.reservations["${each.value.name}-${s}"].address_prefixes)])
+      # ["192.168.0.0/30"] is default range for new setups which gets replaced by IPAM allocated ranges
+      "value" = flatten([for s, _ in each.value.network.address_sizes : flatten(coalesce(azurerm_network_manager_ipam_pool_static_cidr.reservations["${each.value.name}-${s}"].address_prefixes, ["192.168.0.0/30"]))])
     }
   })
+  depends_on = [azurerm_network_manager_ipam_pool_static_cidr.reservations]
 }
