@@ -35,6 +35,7 @@ For each environment, the module will create a subscription, a network resource 
 |------|------|
 | [azurerm_consumption_budget_subscription.subscription_budget](https://registry.terraform.io/providers/hashicorp/azurerm/4.54.0/docs/resources/consumption_budget_subscription) | resource |
 | [azurerm_management_group.project_set](https://registry.terraform.io/providers/hashicorp/azurerm/4.54.0/docs/resources/management_group) | resource |
+| [azurerm_network_manager_ipam_pool_static_cidr.reservations](https://registry.terraform.io/providers/hashicorp/azurerm/4.54.0/docs/resources/network_manager_ipam_pool_static_cidr) | resource |
 | [azurerm_subscription_policy_assignment.this](https://registry.terraform.io/providers/hashicorp/azurerm/4.54.0/docs/resources/subscription_policy_assignment) | resource |
 | [azurerm_management_group.landing_zones](https://registry.terraform.io/providers/hashicorp/azurerm/4.54.0/docs/data-sources/management_group) | data source |
 
@@ -46,11 +47,12 @@ For each environment, the module will create a subscription, a network resource 
 | <a name="input_deny_vnet_address_change_policy_definition_id"></a> [deny\_vnet\_address\_change\_policy\_definition\_id](#input\_deny\_vnet\_address\_change\_policy\_definition\_id) | The ID of the policy definition to deny changes to virtual network address spaces | `string` | `null` | no |
 | <a name="input_license_plate"></a> [license\_plate](#input\_license\_plate) | The license plate identifier for the project | `string` | n/a | yes |
 | <a name="input_lz_management_group_id"></a> [lz\_management\_group\_id](#input\_lz\_management\_group\_id) | The ID of the management group for landing zones | `string` | n/a | yes |
+| <a name="input_network_manager_ipam_pool_id"></a> [network\_manager\_ipam\_pool\_id](#input\_network\_manager\_ipam\_pool\_id) | IPAM Pool id | `string` | n/a | yes |
 | <a name="input_primary_location"></a> [primary\_location](#input\_primary\_location) | The primary location for resources | `string` | `"canadacentral"` | no |
 | <a name="input_project_set_name"></a> [project\_set\_name](#input\_project\_set\_name) | The name of the project set | `string` | n/a | yes |
 | <a name="input_secondary_location"></a> [secondary\_location](#input\_secondary\_location) | The secondary location for resources | `string` | `"canadaeast"` | no |
 | <a name="input_subscription_billing_scope"></a> [subscription\_billing\_scope](#input\_subscription\_billing\_scope) | The billing scope for the subscription | `string` | n/a | yes |
-| <a name="input_subscriptions"></a> [subscriptions](#input\_subscriptions) | Configuration details for each subscription | <pre>map(object({<br/>    name : string<br/>    display_name : string<br/>    budget : optional(number, 0)<br/>    network : optional(object({<br/>      enabled : bool<br/>      address_space : list(string)<br/>      dns_servers : optional(list(string))<br/>    }))<br/>    tags : optional(map(string), {})<br/>  }))</pre> | n/a | yes |
+| <a name="input_subscriptions"></a> [subscriptions](#input\_subscriptions) | Configuration details for each subscription | <pre>map(object({<br/>    name : string<br/>    display_name : string<br/>    budget : optional(number, 0)<br/>    network : optional(object({<br/>      enabled : bool<br/>      address_space : optional(list(string))<br/>      address_sizes : optional(map(string))<br/>      dns_servers : optional(list(string))<br/>    }))<br/>    tags : optional(map(string), {})<br/>  }))</pre> | n/a | yes |
 | <a name="input_vnet_flow_logs_storage_account_id"></a> [vnet\_flow\_logs\_storage\_account\_id](#input\_vnet\_flow\_logs\_storage\_account\_id) | Storage account ID for storing VNet flow logs | `string` | n/a | yes |
 | <a name="input_vwan_hub_resource_id"></a> [vwan\_hub\_resource\_id](#input\_vwan\_hub\_resource\_id) | The resource ID for the virtual WAN hub (required only if any subscription enables networking) | `string` | `null` | no |
 | <a name="input_workspace_id"></a> [workspace\_id](#input\_workspace\_id) | Log Analytics workspace ID for traffic analytics | `string` | n/a | yes |
