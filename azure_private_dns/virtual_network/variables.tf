@@ -55,3 +55,8 @@ variable "private_dns_resolver_virtual_network_name" {
   description = "(Required) Name of the Virtual Network to deploy the Private DNS Resolver into."
   type        = string
 }
+
+variable "network_manager_ipam_pool_id" {
+  type        = string
+  description = "IPAM Pool id"
+}
