@@ -30,8 +30,3 @@ provider "azapi" {
   skip_provider_registration = false
   enable_preflight           = true
 }
-
-provider "azureipam" {
-  api_url = local.api_url
-  token   = var.IPAM_TOKEN
-}
