@@ -66,6 +66,8 @@ def get_subscription_costs(
         for row in results.rows:
             # Print row data for debugging
             print(f"Debug - Row data: {row}")
+            sub_name = row[3].split("(")[0].strip()
+            license_plate = sub_name.split("-")[0].strip() if "-" in sub_name else sub_name
             cost_data.append(
                 {
                     "Cost": round(
@@ -73,7 +75,8 @@ def get_subscription_costs(
                     ),  # Cost is first, rounded to 2 decimals
                     "Date": row[1],  # Date is second
                     "SubscriptionId": row[2],  # ID is third
-                    "SubscriptionName": row[3].split("(")[0].strip(),  # Name is fourth
+                    "SubscriptionName": sub_name,  # Name is fourth
+                    "LicensePlate": license_plate,
                     "Currency": row[4],  # Currency is last
                 }
             )
@@ -109,6 +112,7 @@ def get_subscription_costs(
                 {
                     "Cost": lambda x: round(sum(x), 2),
                     "SubscriptionName": lambda x: ", ".join(sorted(set(x))),
+                    "LicensePlate": lambda x: ", ".join(sorted(set(x))),
                 }
             )
             .reset_index()
@@ -120,6 +124,7 @@ def get_subscription_costs(
             "Expense Authority",
             "Total Spend (CAD)",
             "Subscriptions",
+            "Projects",
         ]
 
         # Calculate taxes and fees (using Decimal for precise calculations)
@@ -159,6 +164,7 @@ def get_subscription_costs(
         summary_df = summary_df[
             [
                 "Account Coding",
+                "Projects",
                 "Total Spend (CAD)",
                 "Vendor PST",
                 "Vendor Sub-total",
@@ -279,6 +285,7 @@ if __name__ == "__main__":
                 {
                     "Cost": lambda x: round(sum(x), 2),
                     "SubscriptionName": lambda x: ", ".join(sorted(set(x))),
+                    "LicensePlate": lambda x: ", ".join(sorted(set(x))),
                 }
             )
             .reset_index()
@@ -289,6 +296,7 @@ if __name__ == "__main__":
             "Expense Authority",
             "Total Spend (CAD)",
             "Subscriptions",
+            "Projects",
         ]
 
         summary_df["Total Spend (CAD)"] = summary_df["Total Spend (CAD)"].apply(
@@ -314,6 +322,7 @@ if __name__ == "__main__":
         summary_df = summary_df[
             [
                 "Account Coding",
+                "Projects",
                 "Total Spend (CAD)",
                 "Vendor PST",
                 "Vendor Sub-total",
@@ -374,13 +383,14 @@ if __name__ == "__main__":
 
                 # Set column widths
                 worksheet.column_dimensions["A"].width = 20  # Account Coding
-                worksheet.column_dimensions["B"].width = 15  # Total Spend
-                for col in range(3, 11):  # Other monetary columns
+                worksheet.column_dimensions["B"].width = 20  # Projects
+                worksheet.column_dimensions["C"].width = 15  # Total Spend
+                for col in range(4, 8):  # Other monetary columns (D through G)
                     worksheet.column_dimensions[chr(64 + col)].width = 15
-                worksheet.column_dimensions["K"].width = 20  # Expense Authority
+                worksheet.column_dimensions["H"].width = 25  # Expense Authority
 
                 # Apply money format to numeric columns
-                for col in range(2, 11):  # Columns B through J
+                for col in range(3, 8):  # Columns C through G
                     for row in range(2, len(summary_df) + 2):
                         cell = worksheet.cell(row=row, column=col)
                         cell.number_format = money_format
