@@ -29,7 +29,7 @@ locals {
         },
         Audit-ZoneResiliency = {
           effect = "Disabled",
-        },
+        }
       }
       access_control = {}
     }
@@ -55,6 +55,10 @@ locals {
         },
         Deny-VNet-DNS-Changes = {
           VNet-DNS-Settings = var.VNet-DNS-Settings
+        },
+        Deny-PublicPaaSEndpoints = {
+          ContainerAppsEnvironmentDenyEffect = "Audit",
+          containerAppsPublicNetworkAccess   = "Audit",
         }
       }
       access_control = {}
