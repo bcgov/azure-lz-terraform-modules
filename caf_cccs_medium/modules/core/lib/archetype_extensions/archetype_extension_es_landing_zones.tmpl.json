@@ -11,8 +11,7 @@
       "Deny-VNet-Creation",
       "Deny-New-VNet-Peerings",
       "Deny-Delete-Diagnostics",
-      "Deny-AMPLS-Creation",
-      "Deny-Delete-NetworkWatcher"
+      "Deny-AMPLS-Creation"
     ],
     "policy_definitions": [
       "Deny-VNet-Address-Changes",

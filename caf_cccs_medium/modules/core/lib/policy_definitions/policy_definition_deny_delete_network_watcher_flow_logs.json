@@ -36,7 +36,7 @@
             "equals": "Microsoft.Network/networkWatchers/flowLogs"
           },
           {
-            "field": "Resource Group",
+            "field": "resourceGroup",
             "equals": "NetworkWatcherRG"
           },
           {
