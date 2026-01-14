@@ -31,11 +31,9 @@ locals {
           effect = "Disabled",
         },
         Network-Watcher-storageId = {
-          # /subscriptions/40e13180-2fb8-4399-8931-f0c3eefb3e14/resourceGroups/network-flow-logs-live/providers/Microsoft.Storage/storageAccounts/networkflowlogslive
           value = "/subscriptions/${var.subscription_id_management}/resourceGroups/${var.network_watcher_storage_account_resource_group}/providers/Microsoft.Storage/storageAccounts/${var.network_watcher_storage_account_name}"
         },
         Network-Watcher-workspaceResourceId = {
-          # /subscriptions/40e13180-2fb8-4399-8931-f0c3eefb3e14/resourceGroups/bcgov-managed-lz-live-mgmt/providers/Microsoft.OperationalInsights/workspaces/bcgov-managed-lz-live-la
           value = "/subscriptions/${var.subscription_id_management}/resourceGroups/${var.root_id}/providers/Microsoft.OperationalInsights/workspaces/${var.root_id}-la"
         },
       }

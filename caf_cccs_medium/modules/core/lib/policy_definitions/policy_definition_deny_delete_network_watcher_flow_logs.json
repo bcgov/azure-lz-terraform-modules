@@ -41,11 +41,11 @@
           },
           {
             "field": "storageId",
-            "contains": "[parameters('Network-Watcher-storageId')]"
+            "equals": "[parameters('Network-Watcher-storageId')]"
           },
           {
             "field": "workspaceResourceId",
-            "contains": "[parameters('Network-Watcher-workspaceResourceId')]"
+            "equals": "[parameters('Network-Watcher-workspaceResourceId')]"
           }
         ]
       },
