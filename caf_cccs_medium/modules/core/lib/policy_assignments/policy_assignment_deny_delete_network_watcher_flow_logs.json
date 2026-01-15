@@ -1,10 +1,10 @@
 {
-  "name": "Deny-Delete-NetworkWatcher",
+  "name": "Deny-Delete-NetworkWatch",
   "type": "Microsoft.Authorization/policyAssignments",
   "apiVersion": "2019-09-01",
   "properties": {
     "displayName": "Deny Deleting Network Watcher Flow Logs",
-    "description": "TThis Policy will prevent users from deleting the Network Watcher Flow Logs.",
+    "description": "This Policy will prevent users from deleting the Network Watcher Flow Logs.",
     "notScopes": [],
     "parameters": {
       "Network-Watcher-storageId": {

@@ -70,10 +70,10 @@ variable "VNet-DNS-Settings" {
 
 variable "network_watcher_storage_account_resource_group" {
   type        = string
-  description = "The name of the Resource Group where the Network Watcher Storage Account is located."
+  description = "The Resource Group of the Storage Account used for Network Watcher VNet Flow Logs."
 }
 
 variable "network_watcher_storage_account_name" {
   type        = string
-  description = "The name of the Storage Account used for Network Watcher VNet Flow Logs."
+  description = "The Storage Account name used for Network Watcher VNet Flow Logs."
 }

@@ -36,15 +36,11 @@
             "equals": "Microsoft.Network/networkWatchers/flowLogs"
           },
           {
-            "field": "resourceGroup",
-            "equals": "NetworkWatcherRG"
-          },
-          {
-            "field": "storageId",
+            "field": "Microsoft.Network/networkWatchers/flowLogs/storageId",
             "equals": "[parameters('Network-Watcher-storageId')]"
           },
           {
-            "field": "workspaceResourceId",
+            "field": "Microsoft.Network/networkWatchers/flowLogs/flowAnalyticsConfiguration.networkWatcherFlowAnalyticsConfiguration.workspaceResourceId",
             "equals": "[parameters('Network-Watcher-workspaceResourceId')]"
           }
         ]

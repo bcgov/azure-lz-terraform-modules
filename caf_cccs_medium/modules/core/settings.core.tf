@@ -30,12 +30,10 @@ locals {
         Audit-ZoneResiliency = {
           effect = "Disabled",
         },
-        Network-Watcher-storageId = {
-          value = "/subscriptions/${var.subscription_id_management}/resourceGroups/${var.network_watcher_storage_account_resource_group}/providers/Microsoft.Storage/storageAccounts/${var.network_watcher_storage_account_name}"
-        },
-        Network-Watcher-workspaceResourceId = {
-          value = "/subscriptions/${var.subscription_id_management}/resourceGroups/${var.root_id}/providers/Microsoft.OperationalInsights/workspaces/${var.root_id}-la"
-        },
+        Deny-Delete-NetworkWatch = {
+          Network-Watcher-storageId = "/subscriptions/${var.subscription_id_management}/resourceGroups/${var.network_watcher_storage_account_resource_group}/providers/Microsoft.Storage/storageAccounts/${var.network_watcher_storage_account_name}"
+          Network-Watcher-workspaceResourceId = "/subscriptions/${var.subscription_id_management}/resourceGroups/${var.root_id}/providers/Microsoft.OperationalInsights/workspaces/${var.root_id}-la"
+        }
       }
       access_control = {}
     }

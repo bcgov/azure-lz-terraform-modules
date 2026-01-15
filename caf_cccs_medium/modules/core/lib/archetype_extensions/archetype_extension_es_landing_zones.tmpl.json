@@ -11,11 +11,11 @@
       "Deny-VNet-Creation",
       "Deny-New-VNet-Peerings",
       "Deny-Delete-Diagnostics",
-      "Deny-AMPLS-Creation"
+      "Deny-AMPLS-Creation",
+      "Deny-Delete-NetworkWatch"
     ],
     "policy_definitions": [
-      "Deny-VNet-Address-Changes",
-      "Deny-Delete-NetworkWatcher"
+      "Deny-VNet-Address-Changes"
     ],
     "policy_set_definitions": [],
     "role_definitions": [],
@@ -48,11 +48,9 @@
         "Deny-VNet-DNS-Changes": {
           "VNet-DNS-Settings": "SET using local.archetype_config_overrides"
         },
-        "Network-Watcher-storageId": {
-          "value": "SET using local.archetype_config_overrides"
-        },
-        "Network-Watcher-workspaceResourceId": {
-          "value": "SET using local.archetype_config_overrides"
+        "Deny-Delete-NetworkWatch": {
+          "Network-Watcher-storageId": "SET using local.archetype_config_overrides",
+          "Network-Watcher-workspaceResourceId": "SET using local.archetype_config_overrides"
         }
       },
       "access_control": {}
