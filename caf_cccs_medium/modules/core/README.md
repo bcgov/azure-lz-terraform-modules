@@ -33,6 +33,8 @@
 | <a name="input_configure_connectivity_resources"></a> [configure\_connectivity\_resources](#input\_configure\_connectivity\_resources) | Configuration settings for "connectivity" resources. | `any` | n/a | yes |
 | <a name="input_configure_management_resources"></a> [configure\_management\_resources](#input\_configure\_management\_resources) | Configuration settings for "management" resources. | `any` | n/a | yes |
 | <a name="input_country_location"></a> [country\_location](#input\_country\_location) | Sets the country location. Used by some Azure resources taht are not tied to the regions. | `string` | n/a | yes |
+| <a name="input_network_watcher_storage_account_name"></a> [network\_watcher\_storage\_account\_name](#input\_network\_watcher\_storage\_account\_name) | The Storage Account name used for Network Watcher VNet Flow Logs. | `string` | n/a | yes |
+| <a name="input_network_watcher_storage_account_resource_group"></a> [network\_watcher\_storage\_account\_resource\_group](#input\_network\_watcher\_storage\_account\_resource\_group) | The Resource Group of the Storage Account used for Network Watcher VNet Flow Logs. | `string` | n/a | yes |
 | <a name="input_policy_effect"></a> [policy\_effect](#input\_policy\_effect) | Sets the effect for the policy assignment. | `string` | `null` | no |
 | <a name="input_primary_location"></a> [primary\_location](#input\_primary\_location) | Sets the location for "primary" resources to be created in. | `string` | n/a | yes |
 | <a name="input_root_id"></a> [root\_id](#input\_root\_id) | Sets the value used for generating unique resource naming within the module. | `string` | n/a | yes |
