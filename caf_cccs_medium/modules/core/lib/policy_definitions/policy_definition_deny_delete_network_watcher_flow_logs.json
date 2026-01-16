@@ -16,14 +16,14 @@
       "Network-Watcher-storageId": {
         "type": "String",
         "metadata": {
-          "displayname": "Centralized Storage Account ID",
+          "displayName": "Centralized Storage Account ID",
           "description": "The Resource ID of the centralized Storage Account used for Network Watcher Flow Logs."
         }
       },
       "Network-Watcher-workspaceResourceId": {
         "type": "String",
         "metadata": {
-          "displayname": "Centralized Log Analytics Workspace ID",
+          "displayName": "Centralized Log Analytics Workspace ID",
           "description": "The Resource ID of the centralized Log Analytics Workspace used for Network Watcher Flow Logs."
         }
       }
