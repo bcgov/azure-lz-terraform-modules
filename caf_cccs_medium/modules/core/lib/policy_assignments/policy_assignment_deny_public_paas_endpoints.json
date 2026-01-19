@@ -1,7 +1,7 @@
 {
   "name": "Deny-PublicPaaSEndpoints",
   "type": "Microsoft.Authorization/policyAssignments",
-  "apiVersion": "2019-09-01",
+  "apiVersion": "2025-03-01",
   "properties": {
     "description": "This policy initiative is a group of policies that prevents creation of Azure PaaS services with exposed public endpoints",
     "displayName": "Public network access should be disabled for PaaS services",
@@ -66,6 +66,12 @@
       },
       "StoragePublicIpDenyEffect": {
         "value": "Disabled"
+      },
+      "ContainerAppsEnvironmentDenyEffect": {
+        "value": "Deny"
+      },
+      "containerAppsPublicNetworkAccess": {
+        "value": "Deny"
       }
     },
     "policyDefinitionId": "${root_scope_resource_id}/providers/Microsoft.Authorization/policySetDefinitions/Deny-PublicPaaSEndpoints",
