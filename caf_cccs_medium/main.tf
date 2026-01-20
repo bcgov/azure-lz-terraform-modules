@@ -99,4 +99,7 @@ module "core" {
 
   policy_effect     = var.policy_effect
   VNet-DNS-Settings = var.VNet-DNS-Settings
+
+  network_watcher_storage_account_resource_group = var.network_watcher_storage_account_resource_group
+  network_watcher_storage_account_name           = var.network_watcher_storage_account_name
 }

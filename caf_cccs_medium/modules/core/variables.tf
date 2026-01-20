@@ -67,3 +67,13 @@ variable "VNet-DNS-Settings" {
   type        = list(any)
   description = "Sets the VNet DNS settings for the policy assignment."
 }
+
+variable "network_watcher_storage_account_resource_group" {
+  type        = string
+  description = "The Resource Group of the Storage Account used for Network Watcher VNet Flow Logs."
+}
+
+variable "network_watcher_storage_account_name" {
+  type        = string
+  description = "The Storage Account name used for Network Watcher VNet Flow Logs."
+}
