@@ -1,0 +1,56 @@
+{
+  "$schema": "https://raw.githubusercontent.com/Azure/Azure-Landing-Zones-Library/main/schemas/library_metadata.json",
+  "name": "bcgov-custom-policies",
+  "version": "1.0.0",
+  "description": "BCGov custom policies for Azure Landing Zone implementation",
+  "author": "BCGov",
+  "maintainers": [
+    {
+      "name": "BCGov Cloud Team",
+      "email": "cloud.pathfinder@gov.bc.ca"
+    }
+  ],
+  "license": "MIT",
+  "homepage": "https://github.com/bcgov/azure-lz-terraform-modules",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/bcgov/azure-lz-terraform-modules.git"
+  },
+  "keywords": [
+    "azure",
+    "landing-zone",
+    "policies",
+    "bcgov",
+    "canada",
+    "pbmm",
+    "nist",
+    "cis"
+  ],
+  "categories": [
+    "governance",
+    "security",
+    "compliance"
+  ],
+  "supportedClouds": [
+    "AzurePublic"
+  ],
+  "supportedRegions": [
+    "canadacentral",
+    "canadaeast"
+  ],
+  "dependencies": [
+    {
+      "path": "platform/alz",
+      "ref": "2025.09.2"
+    }
+  ],
+  "tags": {
+    "environment": "production",
+    "organization": "bcgov",
+    "compliance": [
+      "pbmm",
+      "nist-800-53",
+      "cis-azure-foundations"
+    ]
+  }
+}
