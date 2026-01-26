@@ -4,7 +4,7 @@
   "apiVersion": "2022-05-01-preview",
   "properties": {
       "roleName": "IP-Address-Lookup-Reader",
-      "description": "Can read all resources in order to perform IP address lookups, but cannot make any changes to the resources.",
+      "description": "Can read network interfaces, public IP addresses, and subscription information to perform IP address lookups, but cannot make any changes to these resources.",
       "type": "customRole",
       "permissions": [
           {
