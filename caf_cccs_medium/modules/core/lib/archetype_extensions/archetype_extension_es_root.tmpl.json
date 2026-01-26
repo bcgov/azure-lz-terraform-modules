@@ -32,7 +32,9 @@
       "Deploy-Private-DNS-Zones-Custom",
       "Inherit-Sub-Tags"
     ],
-    "role_definitions": [],
+    "role_definitions": [
+      "IP-Address-Lookup-Reader"
+    ],
     "archetype_config": {
       "parameters": {
         "CanadaFederalPBMM": {

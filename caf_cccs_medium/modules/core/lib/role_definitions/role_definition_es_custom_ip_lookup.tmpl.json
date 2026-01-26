@@ -1,0 +1,25 @@
+{
+  "name": "67ff7635-5438-433e-9394-ccec8c30bd5e",
+  "type": "Microsoft.Authorization/roleDefinitions",
+  "apiVersion": "2022-05-01-preview",
+  "properties": {
+      "roleName": "IP-Address-Lookup-Reader",
+      "description": "Can read network interfaces, public IP addresses, and subscription information to perform IP address lookups, but cannot make any changes to these resources.",
+      "type": "customRole",
+      "permissions": [
+          {
+              "actions": [
+                "Microsoft.Network/networkInterfaces/read",
+                "Microsoft.Network/publicIPAddresses/read",
+                "Microsoft.Resources/subscriptions/read"
+              ],
+              "notActions": [],
+              "dataActions": [],
+              "notDataActions": []
+          }
+      ],
+      "assignableScopes": [
+          "${current_scope_resource_id}"
+      ]
+  }
+}
