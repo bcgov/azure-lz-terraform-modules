@@ -22,10 +22,10 @@ variable "network_settings_name" {
 
 variable "github_hosted_runners_resource_group_id" {
   description = "The Resource Group ID where the GitHub runners will be deployed"
-  type = string
+  type        = string
 }
 
 variable "github_hosted_runners_subnet_id" {
   description = "The subnet ID where the GitHub runners will be deployed"
-  type = string
+  type        = string
 }

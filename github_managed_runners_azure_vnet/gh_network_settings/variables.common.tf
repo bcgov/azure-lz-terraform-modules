@@ -1,16 +1,11 @@
-variable "subscription_id_management" {
-  description = "(Required) Subscription ID to use for \"management\" resources."
-  type        = string
-}
+# variable "subscription_id_management" {
+#   description = "(Required) Subscription ID to use for \"management\" resources."
+#   type        = string
+# }
 
 variable "subscription_id_connectivity" {
   type        = string
   description = "Subscription ID to use for \"connectivity\" resources."
-}
-
-variable "environment" {
-  description = "(Optional) Which Azure environment to deploy to. Options are: forge, or live."
-  type        = string
 }
 
 variable "location" {
