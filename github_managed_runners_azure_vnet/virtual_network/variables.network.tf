@@ -39,3 +39,13 @@ variable "github_hosted_runners_subnet_address_prefix" {
     error_message = "The github_hosted_runners_subnet_address_prefix must be a whole number between 0 and 32 (valid CIDR prefix)."
   }
 }
+
+variable "virtual_wan_hub_name" {
+  description = "(Required) Name of the Virtual WAN Hub to connect to."
+  type        = string
+}
+
+variable "virtual_wan_hub_resource_group" {
+  description = "(Required) Resource Group of the Virtual WAN hub."
+  type        = string
+}

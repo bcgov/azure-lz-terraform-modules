@@ -26,7 +26,10 @@ No modules.
 | [azurerm_network_manager_ipam_pool_static_cidr.reservations](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/network_manager_ipam_pool_static_cidr) | resource |
 | [azurerm_network_security_group.github_hosted_runners_nsg](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/network_security_group) | resource |
 | [azurerm_resource_group.ghrunners](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/resource_group) | resource |
+| [azurerm_virtual_hub_connection.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/virtual_hub_connection) | resource |
 | [azurerm_virtual_network.ghrunners_vnet](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/virtual_network) | resource |
+| [azurerm_client_config.current](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/data-sources/client_config) | data source |
+| [azurerm_virtual_hub.vwan_hub](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/data-sources/virtual_hub) | data source |
 
 ## Inputs
 
@@ -43,6 +46,8 @@ No modules.
 | <a name="input_virtual_network_address_space"></a> [virtual\_network\_address\_space](#input\_virtual\_network\_address\_space) | (Required) The address space for the virtual network (ie. 24). No slash needed. | `number` | `24` | no |
 | <a name="input_virtual_network_name"></a> [virtual\_network\_name](#input\_virtual\_network\_name) | (Required) The name of the virtual network to create | `string` | n/a | yes |
 | <a name="input_virtual_network_resource_group_name"></a> [virtual\_network\_resource\_group\_name](#input\_virtual\_network\_resource\_group\_name) | (Required) The name of the resource group to create the virtual network in | `string` | n/a | yes |
+| <a name="input_virtual_wan_hub_name"></a> [virtual\_wan\_hub\_name](#input\_virtual\_wan\_hub\_name) | (Required) Name of the Virtual WAN Hub to connect to. | `string` | n/a | yes |
+| <a name="input_virtual_wan_hub_resource_group"></a> [virtual\_wan\_hub\_resource\_group](#input\_virtual\_wan\_hub\_resource\_group) | (Required) Resource Group of the Virtual WAN hub. | `string` | n/a | yes |
 
 ## Outputs
 
