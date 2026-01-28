@@ -22,6 +22,6 @@ locals {
       local.newBits,
       0 # First subnet
     ),
-    null
+    "192.168.0.0/30" # NOTE: Cannot be null (though empty string is allowed). Terraform throws an err about "null value found in list"
   )]
 }
