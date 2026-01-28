@@ -3,6 +3,11 @@ variable "subscription_id_connectivity" {
   description = "Subscription ID to use for \"connectivity\" resources."
 }
 
+variable "subscription_id_management" {
+  type        = string
+  description = "Subscription ID to use for \"management\" resources."
+}
+
 variable "environment" {
   description = "(Optional) Which Azure environment to deploy to. Options are: forge, or live."
   type        = string

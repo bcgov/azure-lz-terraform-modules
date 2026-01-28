@@ -13,6 +13,7 @@
 | Name | Version |
 |------|---------|
 | <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) | ~> 4.0 |
+| <a name="provider_azurerm.management"></a> [azurerm.management](#provider\_azurerm.management) | ~> 4.0 |
 
 ## Modules
 
@@ -37,6 +38,7 @@ No modules.
 | <a name="input_location"></a> [location](#input\_location) | (Required) Azure region to deploy to. Changing this forces a new resource to be created. | `string` | n/a | yes |
 | <a name="input_network_manager_ipam_pool_id"></a> [network\_manager\_ipam\_pool\_id](#input\_network\_manager\_ipam\_pool\_id) | Azure IPAM Pool ID | `string` | n/a | yes |
 | <a name="input_subscription_id_connectivity"></a> [subscription\_id\_connectivity](#input\_subscription\_id\_connectivity) | Subscription ID to use for "connectivity" resources. | `string` | n/a | yes |
+| <a name="input_subscription_id_management"></a> [subscription\_id\_management](#input\_subscription\_id\_management) | Subscription ID to use for "management" resources. | `string` | n/a | yes |
 | <a name="input_tags"></a> [tags](#input\_tags) | (Optional) A map of tags to add to the resources | `map(string)` | `null` | no |
 | <a name="input_virtual_network_address_space"></a> [virtual\_network\_address\_space](#input\_virtual\_network\_address\_space) | (Required) The address space for the virtual network (ie. 24). No slash needed. | `number` | `24` | no |
 | <a name="input_virtual_network_name"></a> [virtual\_network\_name](#input\_virtual\_network\_name) | (Required) The name of the virtual network to create | `string` | n/a | yes |
@@ -46,6 +48,8 @@ No modules.
 
 | Name | Description |
 |------|-------------|
+| <a name="output_ip_reservation"></a> [ip\_reservation](#output\_ip\_reservation) | The IPAM Pool Static CIDR Reservation for GitHub Runners VNet. |
 | <a name="output_resource_group_id"></a> [resource\_group\_id](#output\_resource\_group\_id) | The Resource Group ID where the GitHub Runners VNet is deployed. |
 | <a name="output_subnet_id"></a> [subnet\_id](#output\_subnet\_id) | The subnet ID for GitHub Runners delegated subnet. This is used by the GitHub Network Settings object for Service Association Links. |
+| <a name="output_virtual_network"></a> [virtual\_network](#output\_virtual\_network) | The Virtual Network object for GitHub Runners VNet. |
 <!-- END_TF_DOCS -->
