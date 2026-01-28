@@ -81,16 +81,101 @@ data "azuread_users" "members" {
   user_principal_names = length(local.all_members) > 0 ? local.all_members : []
 }
 
-# Create the groups
+locals {
+  # Admin email object ID (null if user doesn't exist)
+  admin_email_object_id = try(local.member_id_by_upn[lower(var.admin_email)], null)
+}
+
+# Check current owners of each group using Azure CLI (inline script)
+data "external" "group_owners" {
+  for_each = azuread_group.groups
+
+  program = ["bash", "-c", <<-EOF
+    group_id=$(jq -r '.group_id')
+    owners=$(az ad group owner list --group "$group_id" --query "[].id" -o tsv 2>/dev/null | jq -R -s -c 'split("\n") | map(select(length > 0))')
+    jq -n --arg ids "$${owners:-[]}" '{"owner_ids": $ids}'
+EOF
+  ]
+
+  query = {
+    group_id = each.value.id
+  }
+}
+
+locals {
+  # Parse current owners from external data
+  current_owner_ids = {
+    for k, v in data.external.group_owners : k => try(jsondecode(v.result["owner_ids"]), [])
+  }
+
+  # Groups where admin_email is NOT currently an owner (for drift correction)
+  groups_missing_admin = {
+    for k in keys(local.groups) : k => azuread_group.groups[k].id
+    if local.admin_email_object_id != null && !contains(try(local.current_owner_ids[k], []), local.admin_email_object_id)
+  }
+}
+
+# Create the groups (Terraform execution identity as owner so creation succeeds; all owners also added via terraform_data for clean remove on destroy)
+# lifecycle.ignore_changes on owners prevents Terraform from overwriting owners changed outside Terraform (e.g. in the portal)
 resource "azuread_group" "groups" {
   for_each         = local.groups
   display_name     = each.value.name
   security_enabled = true
   description      = each.value.description
-  owners = compact([
-    try(local.member_id_by_upn[lower(var.admin_email)], null),
-    data.azuread_client_config.current.object_id
-  ])
+  owners           = [data.azuread_client_config.current.object_id]
+
+  lifecycle {
+    ignore_changes = [owners]
+  }
+}
+
+# Manage admin_email lifecycle: handles admin email CHANGES (remove old, add new)
+# Triggers only on admin_email_object_id - stable, no churn
+resource "terraform_data" "admin_owner" {
+  for_each = local.admin_email_object_id != null ? local.groups : {}
+
+  # Only trigger replacement when admin_email changes
+  triggers_replace = [
+    local.admin_email_object_id
+  ]
+
+  input = {
+    group_id = azuread_group.groups[each.key].id
+    admin_id = local.admin_email_object_id
+  }
+
+  # Add admin on create (initial or after admin email change)
+  provisioner "local-exec" {
+    command = "az ad group owner add --group ${self.input.group_id} --owner-object-id ${self.input.admin_id}"
+  }
+
+  # Remove admin on destroy (when admin email changes, removes OLD admin from state)
+  provisioner "local-exec" {
+    when    = destroy
+    command = <<-EOT
+      az ad group owner remove --group ${self.input.group_id} --owner-object-id ${self.input.admin_id} || echo "Owner ${self.input.admin_id} could not be removed (may already be gone or user deleted)"
+    EOT
+  }
+}
+
+# Drift correction: re-add admin if removed outside Terraform
+# This resource is created when admin is missing, destroyed (no-op) when present
+# Fixes drift in a single apply - resource "churns" but Azure state is correct
+resource "terraform_data" "ensure_admin_present" {
+  for_each = local.groups_missing_admin
+
+  input = {
+    group_id = each.value
+    admin_id = local.admin_email_object_id
+  }
+
+  # Add admin when this resource is created (admin was missing)
+  provisioner "local-exec" {
+    command = "az ad group owner add --group ${self.input.group_id} --owner-object-id ${self.input.admin_id}"
+  }
+
+  # No destroy provisioner - when admin is present, this resource is removed from
+  # for_each and destroyed as a no-op (we don't want to remove the admin)
 }
 
 # Add users to groups (only for users that actually exist)
