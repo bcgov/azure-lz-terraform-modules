@@ -29,26 +29,5 @@ resource "azurerm_virtual_network" "ghrunners_vnet" {
       security_group = azurerm_network_security_group.github_hosted_runners_nsg.id
     }
   }
-
-  # subnet {
-  #   name                                          = var.github_hosted_runners_subnet_name
-  #   address_prefixes                              = local.subnet_address_prefix
-  #   default_outbound_access_enabled               = false
-  #   private_endpoint_network_policies             = "Enabled"
-  #   private_link_service_network_policies_enabled = true
-
-  #   delegation = [
-  #     {
-  #       name = "githubHostedRunnersDelegation"
-  #       service_delegation = [
-  #         {
-  #           name    = "GitHub.Network/networkSettings"
-  #           actions = ["Microsoft.Network/virtualNetworks/subnets/join/action"]
-  #         }
-  #       ]
-  #     }
-  #   ]
-  #   security_group = azurerm_network_security_group.github_hosted_runners_nsg.id
-  # }
   tags = var.tags
 }
