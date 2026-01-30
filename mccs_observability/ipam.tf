@@ -11,7 +11,8 @@
 #------------------------------------------------------------------------------
 
 resource "azurerm_network_manager_ipam_pool_static_cidr" "mccs_observability" {
-  count = var.use_ipam ? 1 : 0
+  count    = var.use_ipam ? 1 : 0
+  provider = azurerm.management
 
   name                               = "mccs-observability-${var.environment}"
   ipam_pool_id                       = var.network_manager_ipam_pool_id

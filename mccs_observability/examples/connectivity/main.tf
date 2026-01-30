@@ -8,6 +8,11 @@
 module "mccs_observability" {
   source = "../../"
 
+  providers = {
+    azurerm            = azurerm
+    azurerm.management = azurerm.management
+  }
+
   # Environment configuration
   environment = var.environment
   location    = var.location
