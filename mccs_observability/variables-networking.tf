@@ -85,3 +85,20 @@ variable "create_private_dns_zone_groups" {
   description = "Whether to create private DNS zone groups for private endpoints. Set to false if using DINE policies."
   default     = false
 }
+
+#------------------------------------------------------------------------------
+# Network Access Control
+#------------------------------------------------------------------------------
+
+variable "allowed_ip_addresses" {
+  type        = list(string)
+  description = "List of IP addresses or CIDR ranges allowed to access Key Vault and Storage Accounts through public endpoints. Used for Terraform runners or admin access."
+  default     = []
+
+  validation {
+    condition = alltrue([
+      for ip in var.allowed_ip_addresses : can(cidrhost("${ip}/32", 0)) || can(cidrhost(ip, 0))
+    ])
+    error_message = "Each entry must be a valid IP address or CIDR range."
+  }
+}

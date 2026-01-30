@@ -10,12 +10,13 @@ resource "azurerm_key_vault" "this" {
   sku_name                      = var.key_vault_sku
   soft_delete_retention_days    = var.key_vault_soft_delete_retention_days
   purge_protection_enabled      = true
-  public_network_access_enabled = false
+  public_network_access_enabled = length(var.allowed_ip_addresses) > 0
   rbac_authorization_enabled    = true
 
   network_acls {
     default_action = "Deny"
     bypass         = "AzureServices"
+    ip_rules       = var.allowed_ip_addresses
   }
 
   tags = local.tags

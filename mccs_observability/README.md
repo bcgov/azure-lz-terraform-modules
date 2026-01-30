@@ -362,6 +362,7 @@ No modules.
 | <a name="input_action_group_name"></a> [action\_group\_name](#input\_action\_group\_name) | Override for the Action Group name. If not provided, a name will be generated. | `string` | `null` | no |
 | <a name="input_alert_evaluation_frequency"></a> [alert\_evaluation\_frequency](#input\_alert\_evaluation\_frequency) | How often alert rules are evaluated. | `string` | `"PT5M"` | no |
 | <a name="input_alert_window_size"></a> [alert\_window\_size](#input\_alert\_window\_size) | The time window for alert evaluation. | `string` | `"PT5M"` | no |
+| <a name="input_allowed_ip_addresses"></a> [allowed\_ip\_addresses](#input\_allowed\_ip\_addresses) | List of IP addresses or CIDR ranges allowed to access Key Vault and Storage Accounts through public endpoints. Used for Terraform runners or admin access. | `list(string)` | `[]` | no |
 | <a name="input_arp_availability_threshold"></a> [arp\_availability\_threshold](#input\_arp\_availability\_threshold) | ARP availability percentage threshold for critical alerts. | `number` | `100` | no |
 | <a name="input_bandwidth_critical_threshold"></a> [bandwidth\_critical\_threshold](#input\_bandwidth\_critical\_threshold) | Bandwidth utilization percentage threshold for critical alerts. | `number` | `95` | no |
 | <a name="input_bandwidth_warning_threshold"></a> [bandwidth\_warning\_threshold](#input\_bandwidth\_warning\_threshold) | Bandwidth utilization percentage threshold for warning alerts. | `number` | `80` | no |

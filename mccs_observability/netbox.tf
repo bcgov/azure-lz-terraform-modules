@@ -18,6 +18,7 @@ resource "azurerm_storage_account" "netbox" {
     default_action             = "Deny"
     bypass                     = ["AzureServices"]
     virtual_network_subnet_ids = [azurerm_subnet.containers.id]
+    ip_rules                   = var.allowed_ip_addresses
   }
 
   tags = local.tags
