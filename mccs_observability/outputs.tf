@@ -23,7 +23,7 @@ output "ipam_allocation_id" {
 
 output "ipam_allocated_cidr" {
   description = "The CIDR block allocated from IPAM (null if not using IPAM)."
-  value       = var.use_ipam ? azurerm_network_manager_ipam_pool_static_cidr.mccs_observability[0].address_prefixes[0] : null
+  value       = var.use_ipam ? try(azurerm_network_manager_ipam_pool_static_cidr.mccs_observability[0].address_prefixes[0], null) : null
 }
 
 #------------------------------------------------------------------------------

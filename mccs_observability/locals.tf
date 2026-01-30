@@ -32,7 +32,8 @@ locals {
   # IPAM - Compute VNet address space and subnet CIDRs
   # When using IPAM, we allocate a /24 and split it into three /26 subnets
   # When not using IPAM, we use the static CIDR variable
-  ipam_base_cidr = var.use_ipam ? azurerm_network_manager_ipam_pool_static_cidr.mccs_observability[0].address_prefixes[0] : null
+  # Note: address_prefixes may be null during plan, so we use try() with a placeholder
+  ipam_base_cidr = var.use_ipam ? try(azurerm_network_manager_ipam_pool_static_cidr.mccs_observability[0].address_prefixes[0], "10.0.0.0/24") : null
 
   # VNet address space (from IPAM or static)
   vnet_address_space = var.use_ipam ? local.ipam_base_cidr : var.vnet_address_space
