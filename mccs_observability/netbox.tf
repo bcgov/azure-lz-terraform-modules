@@ -107,7 +107,7 @@ resource "azurerm_container_group" "netbox" {
       http_get {
         path   = "/api/"
         port   = 8080
-        scheme = "Http"
+        scheme = "http"
       }
       initial_delay_seconds = 120
       period_seconds        = 30
@@ -119,7 +119,7 @@ resource "azurerm_container_group" "netbox" {
       http_get {
         path   = "/api/"
         port   = 8080
-        scheme = "Http"
+        scheme = "http"
       }
       initial_delay_seconds = 60
       period_seconds        = 10

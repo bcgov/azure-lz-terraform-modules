@@ -133,7 +133,7 @@ resource "azurerm_container_group" "prometheus" {
       http_get {
         path   = "/-/healthy"
         port   = 9090
-        scheme = "Http"
+        scheme = "http"
       }
       initial_delay_seconds = 30
       period_seconds        = 15
@@ -145,7 +145,7 @@ resource "azurerm_container_group" "prometheus" {
       http_get {
         path   = "/-/ready"
         port   = 9090
-        scheme = "Http"
+        scheme = "http"
       }
       initial_delay_seconds = 30
       period_seconds        = 10
