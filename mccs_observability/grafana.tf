@@ -1,4 +1,19 @@
 #------------------------------------------------------------------------------
+# Azure Monitor Workspace (for Prometheus metrics integration with Grafana)
+#------------------------------------------------------------------------------
+
+resource "azurerm_monitor_workspace" "this" {
+  name                = "amw-${local.resource_prefix}-${local.resource_suffix}"
+  resource_group_name = azurerm_resource_group.this.name
+  location            = var.location
+  tags                = local.tags
+
+  lifecycle {
+    ignore_changes = [tags]
+  }
+}
+
+#------------------------------------------------------------------------------
 # Azure Managed Grafana
 #------------------------------------------------------------------------------
 
@@ -22,9 +37,9 @@ resource "azurerm_dashboard_grafana" "this" {
     type = "SystemAssigned"
   }
 
-  # Azure Monitor integration
+  # Azure Monitor Workspace integration (for Prometheus metrics)
   azure_monitor_workspace_integrations {
-    resource_id = azurerm_log_analytics_workspace.this.id
+    resource_id = azurerm_monitor_workspace.this.id
   }
 
   tags = local.tags

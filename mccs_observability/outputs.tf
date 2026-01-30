@@ -150,6 +150,20 @@ output "postgresql_server_name" {
 }
 
 #------------------------------------------------------------------------------
+# Azure Monitor Workspace Outputs
+#------------------------------------------------------------------------------
+
+output "azure_monitor_workspace_id" {
+  description = "The ID of the Azure Monitor Workspace."
+  value       = azurerm_monitor_workspace.this.id
+}
+
+output "azure_monitor_workspace_name" {
+  description = "The name of the Azure Monitor Workspace."
+  value       = azurerm_monitor_workspace.this.name
+}
+
+#------------------------------------------------------------------------------
 # Grafana Outputs
 #------------------------------------------------------------------------------
 
