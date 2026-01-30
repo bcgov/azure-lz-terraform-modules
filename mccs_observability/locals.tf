@@ -11,11 +11,12 @@ locals {
   resource_group_name          = coalesce(var.resource_group_name, "rg-${local.resource_prefix}-observability-${local.resource_suffix}")
   key_vault_name               = coalesce(var.key_vault_name, "kv-${local.resource_prefix}-${local.resource_suffix}")
   log_analytics_workspace_name = coalesce(var.log_analytics_workspace_name, "log-${local.resource_prefix}-${local.resource_suffix}")
-  grafana_name                 = coalesce(var.grafana_name, "grafana-${local.resource_prefix}-${local.resource_suffix}")
-  postgresql_server_name       = coalesce(var.postgresql_server_name, "psql-${local.resource_prefix}-${local.resource_suffix}")
-  storage_account_name         = coalesce(var.storage_account_name, "st${replace(local.resource_prefix, "-", "")}${local.resource_suffix}")
-  action_group_name            = coalesce(var.action_group_name, "ag-${local.resource_prefix}-alerts")
-  logic_app_name               = coalesce(var.logic_app_name, "logic-${local.resource_prefix}-alert-router")
+  # Grafana name max 23 chars, so use short prefix (grf-mccs-prod-cc-xxxx = 20 chars)
+  grafana_name           = coalesce(var.grafana_name, "grf-${local.resource_prefix}-${local.resource_suffix}")
+  postgresql_server_name = coalesce(var.postgresql_server_name, "psql-${local.resource_prefix}-${local.resource_suffix}")
+  storage_account_name   = coalesce(var.storage_account_name, "st${replace(local.resource_prefix, "-", "")}${local.resource_suffix}")
+  action_group_name      = coalesce(var.action_group_name, "ag-${local.resource_prefix}-alerts")
+  logic_app_name         = coalesce(var.logic_app_name, "logic-${local.resource_prefix}-alert-router")
 
   # Container instance names
   netbox_aci_name     = "aci-${local.resource_prefix}-netbox"
