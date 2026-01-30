@@ -53,9 +53,9 @@ resource "local_file" "prometheus_config" {
 }
 
 resource "azurerm_storage_share_file" "prometheus_config" {
-  name             = "prometheus.yml"
-  storage_share_id = azurerm_storage_share.prometheus_config.id
-  source           = local_file.prometheus_config.filename
+  name              = "prometheus.yml"
+  storage_share_url = azurerm_storage_share.prometheus_config.url
+  source            = local_file.prometheus_config.filename
 
   depends_on = [
     azurerm_storage_share.prometheus_config,
@@ -64,9 +64,9 @@ resource "azurerm_storage_share_file" "prometheus_config" {
 }
 
 resource "azurerm_storage_share_file" "prometheus_alert_rules" {
-  name             = "alert_rules.yml"
-  storage_share_id = azurerm_storage_share.prometheus_config.id
-  source           = "${path.module}/shared/prometheus-config/alert_rules.yml"
+  name              = "alert_rules.yml"
+  storage_share_url = azurerm_storage_share.prometheus_config.url
+  source            = "${path.module}/shared/prometheus-config/alert_rules.yml"
 
   depends_on = [azurerm_storage_share.prometheus_config]
 }

@@ -16,9 +16,10 @@ resource "azurerm_postgresql_flexible_server" "this" {
   administrator_login    = var.postgresql_admin_username
   administrator_password = random_password.postgresql_admin.result
 
-  # Networking - VNet integration
-  delegated_subnet_id = azurerm_subnet.postgresql.id
-  private_dns_zone_id = var.central_postgresql_dns_zone_id
+  # Networking - VNet integration (public access must be disabled when using VNet)
+  delegated_subnet_id           = azurerm_subnet.postgresql.id
+  private_dns_zone_id           = var.central_postgresql_dns_zone_id
+  public_network_access_enabled = false
 
   # Backup configuration
   backup_retention_days        = var.postgresql_backup_retention_days
