@@ -1,0 +1,89 @@
+#------------------------------------------------------------------------------
+# MCCS Observability Platform - Example Configuration
+# Copy this file to terraform.tfvars and update with your values
+#------------------------------------------------------------------------------
+
+environment                  = "prod"
+location                     = "canadacentral"
+subscription_id_connectivity = "00000000-0000-0000-0000-000000000000"
+subscription_id_management   = "00000000-0000-0000-0000-000000000000"
+
+# Networking / IPAM - Use Azure Network Manager IPAM Pool for IP allocation (recommended)
+use_ipam                     = true
+network_manager_ipam_pool_id = "/subscriptions/xxx/resourceGroups/rg-network-manager/providers/Microsoft.Network/networkManagers/nm-bcgov/ipamPools/pool-connectivity"
+
+# Static address space - Only used when use_ipam is false
+# vnet_address_space = "10.100.0.0/24"
+
+# Virtual WAN Hub Connection
+virtual_hub_id            = "/subscriptions/xxx/resourceGroups/rg-connectivity-canadacentral/providers/Microsoft.Network/virtualHubs/vhub-canadacentral"
+internet_security_enabled = true
+
+# Private DNS Zones for Private Endpoints
+central_postgresql_dns_zone_id = "/subscriptions/xxx/resourceGroups/rg-dns/providers/Microsoft.Network/privateDnsZones/privatelink.postgres.database.azure.com"
+central_keyvault_dns_zone_id   = "/subscriptions/xxx/resourceGroups/rg-dns/providers/Microsoft.Network/privateDnsZones/privatelink.vaultcore.azure.net"
+central_grafana_dns_zone_id    = "/subscriptions/xxx/resourceGroups/rg-dns/providers/Microsoft.Network/privateDnsZones/privatelink.grafana.azure.com"
+
+# Identity - Entra ID Group Object IDs
+cloud_team_group_id     = "00000000-0000-0000-0000-000000000000"
+noc_team_group_id       = "00000000-0000-0000-0000-000000000000"
+service_desk_group_id   = "00000000-0000-0000-0000-000000000000"
+terraform_spn_object_id = "00000000-0000-0000-0000-000000000000"
+
+# ExpressRoute Circuits
+expressroute_circuits = {
+  "er-kamloops-01" = {
+    circuit_name        = "er-kamloops-primary"
+    resource_group_name = "rg-connectivity-canadacentral"
+    bandwidth_mbps      = 1000
+    location            = "Kamloops DC"
+    provider_name       = "Telus"
+  }
+  "er-kamloops-02" = {
+    circuit_name        = "er-kamloops-secondary"
+    resource_group_name = "rg-connectivity-canadacentral"
+    bandwidth_mbps      = 1000
+    location            = "Kamloops DC"
+    provider_name       = "Telus"
+  }
+  "er-calgary-01" = {
+    circuit_name        = "er-calgary-primary"
+    resource_group_name = "rg-connectivity-canadacentral"
+    bandwidth_mbps      = 1000
+    location            = "Calgary DC"
+    provider_name       = "Shaw"
+  }
+  "er-calgary-02" = {
+    circuit_name        = "er-calgary-secondary"
+    resource_group_name = "rg-connectivity-canadacentral"
+    bandwidth_mbps      = 1000
+    location            = "Calgary DC"
+    provider_name       = "Shaw"
+  }
+}
+
+# ExpressRoute Gateways
+expressroute_gateways = {
+  "ergw-hub-canadacentral" = {
+    gateway_name        = "ergw-hub-canadacentral"
+    resource_group_name = "rg-connectivity-canadacentral"
+  }
+}
+
+# Alerting
+enable_alerting  = true
+cloud_team_email = "cloud-team@gov.bc.ca"
+jira_base_url    = "https://bcgov.atlassian.net"
+jira_user_email  = "automation@gov.bc.ca"
+jira_project_key = "MCCS"
+
+# Netbox
+netbox_admin_email = "cloud-team@gov.bc.ca"
+
+# Tags
+tags = {
+  CostCenter  = "IT-Cloud"
+  Owner       = "Cloud Team"
+  Project     = "MCCS Observability"
+  Criticality = "High"
+}
