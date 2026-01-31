@@ -139,6 +139,7 @@ resource "azurerm_windows_virtual_machine" "jumpbox" {
   count = var.deploy_jumpbox ? 1 : 0
 
   name                = "vm-${local.resource_prefix}-jmp"
+  computer_name       = "mccs${var.environment}jmp" # Max 15 chars for Windows
   resource_group_name = azurerm_resource_group.this.name
   location            = var.location
   size                = var.jumpbox_vm_size
