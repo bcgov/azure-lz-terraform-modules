@@ -55,6 +55,11 @@ resource "azurerm_subnet" "containers" {
       ]
     }
   }
+
+  lifecycle {
+    # Azure may normalize delegation actions differently
+    ignore_changes = [delegation]
+  }
 }
 
 # Subnet for PostgreSQL Flexible Server
@@ -161,7 +166,8 @@ resource "azurerm_private_endpoint" "grafana" {
   }
 
   lifecycle {
-    ignore_changes = [tags]
+    # Ignore DNS zone groups created by DINE policy
+    ignore_changes = [tags, private_dns_zone_group]
   }
 }
 
@@ -190,7 +196,8 @@ resource "azurerm_private_endpoint" "keyvault" {
   }
 
   lifecycle {
-    ignore_changes = [tags]
+    # Ignore DNS zone groups created by DINE policy
+    ignore_changes = [tags, private_dns_zone_group]
   }
 }
 
