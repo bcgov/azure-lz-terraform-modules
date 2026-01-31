@@ -258,3 +258,22 @@ output "netbox_storage_account_name" {
   description = "The name of the Netbox storage account."
   value       = azurerm_storage_account.netbox.name
 }
+
+#------------------------------------------------------------------------------
+# Jump Box Outputs
+#------------------------------------------------------------------------------
+
+output "jumpbox_private_ip" {
+  description = "The private IP address of the Windows jump box."
+  value       = var.deploy_jumpbox ? azurerm_network_interface.jumpbox[0].private_ip_address : null
+}
+
+output "jumpbox_name" {
+  description = "The name of the Windows jump box VM."
+  value       = var.deploy_jumpbox ? azurerm_windows_virtual_machine.jumpbox[0].name : null
+}
+
+output "jumpbox_admin_username" {
+  description = "The admin username for the jump box."
+  value       = var.deploy_jumpbox ? var.jumpbox_admin_username : null
+}

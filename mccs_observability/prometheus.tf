@@ -44,6 +44,13 @@ resource "azurerm_storage_share" "prometheus_config" {
 # Prometheus Configuration Files
 #------------------------------------------------------------------------------
 
+# Wait for storage account firewall rules to propagate before uploading files
+resource "time_sleep" "wait_for_storage_firewall" {
+  depends_on = [azurerm_storage_account.prometheus]
+
+  create_duration = "30s"
+}
+
 # Generate prometheus.yml with Netbox IP injected
 resource "local_file" "prometheus_config" {
   content = templatefile("${path.module}/shared/prometheus-config/prometheus.yml.tftpl", {
@@ -60,7 +67,8 @@ resource "azurerm_storage_share_file" "prometheus_config" {
 
   depends_on = [
     azurerm_storage_share.prometheus_config,
-    local_file.prometheus_config
+    local_file.prometheus_config,
+    time_sleep.wait_for_storage_firewall
   ]
 }
 
@@ -69,7 +77,10 @@ resource "azurerm_storage_share_file" "prometheus_alert_rules" {
   storage_share_url = azurerm_storage_share.prometheus_config.url
   source            = "${path.module}/shared/prometheus-config/alert_rules.yml"
 
-  depends_on = [azurerm_storage_share.prometheus_config]
+  depends_on = [
+    azurerm_storage_share.prometheus_config,
+    time_sleep.wait_for_storage_firewall
+  ]
 }
 
 #------------------------------------------------------------------------------

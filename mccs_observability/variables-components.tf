@@ -200,3 +200,31 @@ variable "netbox_admin_email" {
   type        = string
   description = "The email address for the Netbox admin user."
 }
+
+#------------------------------------------------------------------------------
+# Jump Box
+#------------------------------------------------------------------------------
+
+variable "deploy_jumpbox" {
+  type        = bool
+  description = "Whether to deploy a Windows jump box for accessing private resources."
+  default     = false
+}
+
+variable "jumpbox_vm_size" {
+  type        = string
+  description = "The VM size for the jump box."
+  default     = "Standard_B2s"
+}
+
+variable "jumpbox_admin_username" {
+  type        = string
+  description = "The administrator username for the jump box."
+  default     = "azureadmin"
+}
+
+variable "jumpbox_enable_aad_login" {
+  type        = bool
+  description = "Whether to enable Entra ID (AAD) login for the jump box."
+  default     = true
+}
