@@ -7,6 +7,7 @@ resource "azurerm_virtual_network" "this" {
   location            = var.location
   resource_group_name = azurerm_resource_group.this.name
   address_space       = [local.vnet_address_space]
+  dns_servers         = length(var.dns_servers) > 0 ? var.dns_servers : null
 
   tags = local.tags
 

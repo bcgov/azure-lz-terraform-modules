@@ -8,6 +8,12 @@ variable "vnet_name" {
   default     = null
 }
 
+variable "dns_servers" {
+  type        = list(string)
+  description = "List of DNS server IP addresses for the VNet. Typically the Azure Firewall private IP for centralized DNS resolution."
+  default     = []
+}
+
 #------------------------------------------------------------------------------
 # IPAM Configuration
 #------------------------------------------------------------------------------

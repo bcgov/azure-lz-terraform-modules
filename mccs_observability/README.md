@@ -258,10 +258,10 @@ Future enhancements will include:
 
 | Name | Version |
 |------|---------|
-| <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) | ~> 4.0 |
-| <a name="provider_azurerm.management"></a> [azurerm.management](#provider\_azurerm.management) | ~> 4.0 |
-| <a name="provider_local"></a> [local](#provider\_local) | ~> 2.0 |
-| <a name="provider_random"></a> [random](#provider\_random) | ~> 3.0 |
+| <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) | 4.58.0 |
+| <a name="provider_azurerm.management"></a> [azurerm.management](#provider\_azurerm.management) | 4.58.0 |
+| <a name="provider_local"></a> [local](#provider\_local) | 2.6.2 |
+| <a name="provider_random"></a> [random](#provider\_random) | 3.8.1 |
 | <a name="provider_time"></a> [time](#provider\_time) | ~> 0.11 |
 
 ## Modules
@@ -386,6 +386,7 @@ No modules.
 | <a name="input_create_private_dns_zone_groups"></a> [create\_private\_dns\_zone\_groups](#input\_create\_private\_dns\_zone\_groups) | Whether to create private DNS zone groups for private endpoints. Set to false if using DINE policies. | `bool` | `false` | no |
 | <a name="input_deploy_jumpbox"></a> [deploy\_jumpbox](#input\_deploy\_jumpbox) | Whether to deploy a Windows jump box for accessing private resources. | `bool` | `false` | no |
 | <a name="input_diagnostics_retention_days"></a> [diagnostics\_retention\_days](#input\_diagnostics\_retention\_days) | Number of days to retain diagnostic logs. Set to 0 for unlimited retention. | `number` | `90` | no |
+| <a name="input_dns_servers"></a> [dns\_servers](#input\_dns\_servers) | List of DNS server IP addresses for the VNet. Typically the Azure Firewall private IP for centralized DNS resolution. | `list(string)` | `[]` | no |
 | <a name="input_enable_alerting"></a> [enable\_alerting](#input\_enable\_alerting) | Whether to enable alerting infrastructure (Action Groups, Alert Rules, Logic App). | `bool` | `true` | no |
 | <a name="input_enable_expressroute_diagnostics"></a> [enable\_expressroute\_diagnostics](#input\_enable\_expressroute\_diagnostics) | Whether to enable diagnostic settings on ExpressRoute circuits and gateways. | `bool` | `true` | no |
 | <a name="input_environment"></a> [environment](#input\_environment) | The environment name (e.g., prod, dev, staging). | `string` | n/a | yes |
