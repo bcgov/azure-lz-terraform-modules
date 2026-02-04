@@ -46,6 +46,16 @@ resource "azurerm_container_group" "netbox" {
   ip_address_type     = "Private"
   subnet_ids          = [azurerm_subnet.containers.id]
 
+  # ACI does NOT inherit VNet DNS settings - must be explicitly configured
+  # Without this, containers use Azure DNS (168.63.129.16) and cannot resolve
+  # private DNS zone hostnames routed through the firewall
+  dynamic "dns_config" {
+    for_each = length(var.dns_servers) > 0 ? [1] : []
+    content {
+      nameservers = var.dns_servers
+    }
+  }
+
   identity {
     type         = "UserAssigned"
     identity_ids = [azurerm_user_assigned_identity.aci.id]

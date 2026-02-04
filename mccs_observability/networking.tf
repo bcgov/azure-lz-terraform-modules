@@ -227,10 +227,24 @@ resource "azurerm_network_security_group" "containers" {
     destination_address_prefix = "*"
   }
 
+  # Allow outbound DNS to custom DNS servers (firewall) for private DNS zone resolution
+  # ACI uses explicit dns_config and needs network path to DNS servers
+  security_rule {
+    name                       = "AllowDNSOutbound"
+    priority                   = 100
+    direction                  = "Outbound"
+    access                     = "Allow"
+    protocol                   = "*"
+    source_port_range          = "*"
+    destination_port_range     = "53"
+    source_address_prefix      = "*"
+    destination_address_prefix = "VirtualNetwork"
+  }
+
   # Allow outbound to VNet for PostgreSQL
   security_rule {
     name                       = "AllowPostgreSQLOutbound"
-    priority                   = 100
+    priority                   = 110
     direction                  = "Outbound"
     access                     = "Allow"
     protocol                   = "Tcp"
@@ -243,7 +257,7 @@ resource "azurerm_network_security_group" "containers" {
   # Allow outbound to Azure Storage (service endpoint)
   security_rule {
     name                       = "AllowStorageOutbound"
-    priority                   = 110
+    priority                   = 120
     direction                  = "Outbound"
     access                     = "Allow"
     protocol                   = "Tcp"
@@ -256,7 +270,7 @@ resource "azurerm_network_security_group" "containers" {
   # Allow outbound HTTPS for container image pulls and Azure services
   security_rule {
     name                       = "AllowAzureCloudOutbound"
-    priority                   = 120
+    priority                   = 130
     direction                  = "Outbound"
     access                     = "Allow"
     protocol                   = "Tcp"
