@@ -27,7 +27,6 @@ No resources.
 | <a name="input_central_keyvault_dns_zone_id"></a> [central\_keyvault\_dns\_zone\_id](#input\_central\_keyvault\_dns\_zone\_id) | Resource ID of the central Key Vault private DNS zone. | `string` | `null` | no |
 | <a name="input_central_postgresql_dns_zone_id"></a> [central\_postgresql\_dns\_zone\_id](#input\_central\_postgresql\_dns\_zone\_id) | Resource ID of the central PostgreSQL private DNS zone. | `string` | n/a | yes |
 | <a name="input_cloud_team_email"></a> [cloud\_team\_email](#input\_cloud\_team\_email) | Cloud team email address. | `string` | n/a | yes |
-| <a name="input_cloud_team_group_id"></a> [cloud\_team\_group\_id](#input\_cloud\_team\_group\_id) | Object ID of the Cloud Team Entra ID group. Optional if cloud\_team\_group\_name is provided. | `string` | `null` | no |
 | <a name="input_cloud_team_group_name"></a> [cloud\_team\_group\_name](#input\_cloud\_team\_group\_name) | Display name of the Cloud Team Entra ID group (e.g., 'PIM\_DO\_PuC\_Ops\_Infra\_O'). | `string` | n/a | yes |
 | <a name="input_enable_alerting"></a> [enable\_alerting](#input\_enable\_alerting) | Whether to enable alerting. | `bool` | `true` | no |
 | <a name="input_environment"></a> [environment](#input\_environment) | The environment name. | `string` | `"prod"` | no |

@@ -40,7 +40,6 @@ module "mccs_observability" {
 
   # Identity
   cloud_team_group_name   = var.cloud_team_group_name
-  cloud_team_group_id     = var.cloud_team_group_id
   noc_team_group_id       = var.noc_team_group_id
   service_desk_group_id   = var.service_desk_group_id
   terraform_spn_object_id = var.terraform_spn_object_id
