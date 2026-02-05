@@ -44,9 +44,14 @@ resource "grafana_dashboard" "mccs_overview" {
   folder    = grafana_folder.mccs[0].id
   overwrite = true
 
-  # Use file() instead of templatefile() because the JSON contains Grafana
-  # template variables using ${...} syntax that should not be interpreted by Terraform
-  config_json = file("${path.module}/dashboards/mccs_overview.json")
+  # Use templatefile() to inject known circuit configuration
+  # Grafana template variables are escaped with $${...}
+  config_json = templatefile("${path.module}/dashboards/mccs_overview.json.tftpl", {
+    subscription_id        = local.subscription_id_connectivity
+    default_resource_group = local.default_expressroute_resource_group
+    circuit_names          = local.expressroute_circuit_names
+    circuits               = var.expressroute_circuits
+  })
 
   depends_on = [grafana_folder.mccs]
 }
@@ -62,9 +67,12 @@ resource "grafana_dashboard" "expressroute_health" {
   folder    = grafana_folder.mccs[0].id
   overwrite = true
 
-  # Use file() instead of templatefile() because the JSON contains Grafana
-  # template variables using ${...} syntax that should not be interpreted by Terraform
-  config_json = file("${path.module}/dashboards/expressroute_health.json")
+  config_json = templatefile("${path.module}/dashboards/expressroute_health.json.tftpl", {
+    subscription_id        = local.subscription_id_connectivity
+    default_resource_group = local.default_expressroute_resource_group
+    circuit_names          = local.expressroute_circuit_names
+    circuits               = var.expressroute_circuits
+  })
 
   depends_on = [grafana_folder.mccs]
 }
@@ -80,9 +88,12 @@ resource "grafana_dashboard" "circuit_inventory" {
   folder    = grafana_folder.mccs[0].id
   overwrite = true
 
-  # Use file() instead of templatefile() because the JSON contains Grafana
-  # template variables using ${...} syntax that should not be interpreted by Terraform
-  config_json = file("${path.module}/dashboards/circuit_inventory.json")
+  config_json = templatefile("${path.module}/dashboards/circuit_inventory.json.tftpl", {
+    subscription_id        = local.subscription_id_connectivity
+    default_resource_group = local.default_expressroute_resource_group
+    circuits               = var.expressroute_circuits
+    netbox_url             = "http://${azurerm_container_group.netbox.ip_address}:8080"
+  })
 
   depends_on = [grafana_folder.mccs]
 }
@@ -107,8 +118,9 @@ resource "grafana_data_source" "azure_monitor" {
     subscriptionId          = local.subscription_id_connectivity
     azureAuthType           = "msi"
     tenantId                = data.azurerm_client_config.current.tenant_id
-    clientId                = azurerm_dashboard_grafana.this.identity[0].principal_id
     azureLogAnalyticsSameAs = true
+    # Note: When using MSI auth, no clientId is needed - Azure Managed Grafana
+    # automatically uses its system-assigned managed identity
   })
 
   # Don't set as default - the built-in Azure Monitor data source is the default
@@ -206,8 +218,4 @@ resource "azurerm_key_vault_secret" "grafana_service_account_token" {
   depends_on = [
     azurerm_key_vault.this
   ]
-
-  lifecycle {
-    ignore_changes = [tags]
-  }
 }

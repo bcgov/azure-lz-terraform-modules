@@ -41,7 +41,6 @@ resource "azurerm_postgresql_flexible_server" "this" {
 
   lifecycle {
     ignore_changes = [
-      tags,
       # Ignore password changes after initial creation
       administrator_password
     ]

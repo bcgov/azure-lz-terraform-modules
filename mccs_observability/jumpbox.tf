@@ -19,10 +19,6 @@ resource "azurerm_network_interface" "jumpbox" {
   }
 
   tags = local.tags
-
-  lifecycle {
-    ignore_changes = [tags]
-  }
 }
 
 #------------------------------------------------------------------------------
@@ -92,10 +88,6 @@ resource "azurerm_network_security_group" "jumpbox" {
   }
 
   tags = local.tags
-
-  lifecycle {
-    ignore_changes = [tags]
-  }
 }
 
 resource "azurerm_network_interface_security_group_association" "jumpbox" {
@@ -123,6 +115,7 @@ resource "azurerm_key_vault_secret" "jumpbox_admin_password" {
   name         = "jumpbox-admin-password"
   value        = random_password.jumpbox_admin[0].result
   key_vault_id = azurerm_key_vault.this.id
+  tags         = local.tags
 
   depends_on = [
     azurerm_role_assignment.terraform_spn_secrets_officer,
@@ -170,7 +163,7 @@ resource "azurerm_windows_virtual_machine" "jumpbox" {
   tags = local.tags
 
   lifecycle {
-    ignore_changes = [tags, admin_password]
+    ignore_changes = [admin_password]
   }
 }
 

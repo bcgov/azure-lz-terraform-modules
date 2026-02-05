@@ -356,11 +356,11 @@ This will enable:
 
 | Name | Version |
 |------|---------|
-| <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) | ~> 4.0 |
-| <a name="provider_azurerm.management"></a> [azurerm.management](#provider\_azurerm.management) | ~> 4.0 |
+| <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) | 4.58.0 |
+| <a name="provider_azurerm.management"></a> [azurerm.management](#provider\_azurerm.management) | 4.58.0 |
 | <a name="provider_grafana"></a> [grafana](#provider\_grafana) | ~> 3.0 |
-| <a name="provider_local"></a> [local](#provider\_local) | ~> 2.0 |
-| <a name="provider_random"></a> [random](#provider\_random) | ~> 3.0 |
+| <a name="provider_local"></a> [local](#provider\_local) | 2.6.2 |
+| <a name="provider_random"></a> [random](#provider\_random) | 3.8.1 |
 | <a name="provider_time"></a> [time](#provider\_time) | ~> 0.11 |
 
 ## Modules
@@ -551,7 +551,7 @@ No modules.
 | <a name="input_storage_account_name"></a> [storage\_account\_name](#input\_storage\_account\_name) | Override for the Storage Account name. If not provided, a name will be generated. | `string` | `null` | no |
 | <a name="input_subscription_id_connectivity"></a> [subscription\_id\_connectivity](#input\_subscription\_id\_connectivity) | The subscription ID for the connectivity subscription where resources will be deployed. | `string` | `null` | no |
 | <a name="input_subscription_id_management"></a> [subscription\_id\_management](#input\_subscription\_id\_management) | The subscription ID for the management subscription. | `string` | `null` | no |
-| <a name="input_tags"></a> [tags](#input\_tags) | A map of tags to apply to all resources. | `map(string)` | `null` | no |
+| <a name="input_tags"></a> [tags](#input\_tags) | A map of tags to apply to all resources. | `map(string)` | `{}` | no |
 | <a name="input_teams_webhook_url"></a> [teams\_webhook\_url](#input\_teams\_webhook\_url) | The Microsoft Teams incoming webhook URL for alert notifications. | `string` | n/a | yes |
 | <a name="input_terraform_spn_object_id"></a> [terraform\_spn\_object\_id](#input\_terraform\_spn\_object\_id) | The Object ID of the Terraform Service Principal for Key Vault access. | `string` | `null` | no |
 | <a name="input_use_ipam"></a> [use\_ipam](#input\_use\_ipam) | Whether to use Azure Network Manager IPAM for IP address allocation. If true, network\_manager\_ipam\_pool\_id is required. If false, vnet\_address\_space is required. | `bool` | `true` | no |

@@ -7,10 +7,6 @@ resource "azurerm_user_assigned_identity" "aci" {
   resource_group_name = azurerm_resource_group.this.name
   location            = var.location
   tags                = local.tags
-
-  lifecycle {
-    ignore_changes = [tags]
-  }
 }
 
 #------------------------------------------------------------------------------

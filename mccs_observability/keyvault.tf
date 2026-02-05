@@ -20,10 +20,6 @@ resource "azurerm_key_vault" "this" {
   }
 
   tags = local.tags
-
-  lifecycle {
-    ignore_changes = [tags]
-  }
 }
 
 #------------------------------------------------------------------------------
@@ -41,6 +37,7 @@ resource "azurerm_key_vault_secret" "postgresql_admin_password" {
   name         = "postgresql-admin-password"
   value        = random_password.postgresql_admin.result
   key_vault_id = azurerm_key_vault.this.id
+  tags         = local.tags
 
   depends_on = [
     azurerm_role_assignment.terraform_spn_secrets_officer,
@@ -60,6 +57,7 @@ resource "azurerm_key_vault_secret" "netbox_admin_password" {
   name         = "netbox-admin-password"
   value        = random_password.netbox_admin.result
   key_vault_id = azurerm_key_vault.this.id
+  tags         = local.tags
 
   depends_on = [
     azurerm_role_assignment.terraform_spn_secrets_officer,
@@ -84,6 +82,7 @@ resource "azurerm_key_vault_secret" "netbox_secret_key" {
   name         = "netbox-secret-key"
   value        = random_password.netbox_secret_key.result
   key_vault_id = azurerm_key_vault.this.id
+  tags         = local.tags
 
   depends_on = [
     azurerm_role_assignment.terraform_spn_secrets_officer,
@@ -96,6 +95,7 @@ resource "azurerm_key_vault_secret" "netbox_api_token" {
   name         = "netbox-api-token"
   value        = random_password.netbox_api_token.result
   key_vault_id = azurerm_key_vault.this.id
+  tags         = local.tags
 
   depends_on = [
     azurerm_role_assignment.terraform_spn_secrets_officer,
@@ -111,6 +111,7 @@ resource "azurerm_key_vault_secret" "jira_api_token" {
   name         = "jira-api-token"
   value        = var.jira_api_token
   key_vault_id = azurerm_key_vault.this.id
+  tags         = local.tags
 
   depends_on = [
     azurerm_role_assignment.terraform_spn_secrets_officer,
@@ -126,6 +127,7 @@ resource "azurerm_key_vault_secret" "teams_webhook_url" {
   name         = "teams-webhook-url"
   value        = var.teams_webhook_url
   key_vault_id = azurerm_key_vault.this.id
+  tags         = local.tags
 
   depends_on = [
     azurerm_role_assignment.terraform_spn_secrets_officer,

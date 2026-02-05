@@ -14,10 +14,6 @@ resource "azurerm_virtual_network" "this" {
   depends_on = [
     azurerm_network_manager_ipam_pool_static_cidr.mccs_observability
   ]
-
-  lifecycle {
-    ignore_changes = [tags]
-  }
 }
 
 #------------------------------------------------------------------------------
@@ -127,10 +123,6 @@ resource "azurerm_network_security_group" "postgresql" {
     source_address_prefix      = "*"
     destination_address_prefix = "*"
   }
-
-  lifecycle {
-    ignore_changes = [tags]
-  }
 }
 
 resource "azurerm_subnet_network_security_group_association" "postgresql" {
@@ -168,7 +160,7 @@ resource "azurerm_private_endpoint" "grafana" {
 
   lifecycle {
     # Ignore DNS zone groups created by DINE policy
-    ignore_changes = [tags, private_dns_zone_group]
+    ignore_changes = [private_dns_zone_group]
   }
 }
 
@@ -198,7 +190,7 @@ resource "azurerm_private_endpoint" "keyvault" {
 
   lifecycle {
     # Ignore DNS zone groups created by DINE policy
-    ignore_changes = [tags, private_dns_zone_group]
+    ignore_changes = [private_dns_zone_group]
   }
 }
 
@@ -280,9 +272,6 @@ resource "azurerm_network_security_group" "containers" {
     destination_address_prefix = "AzureCloud"
   }
 
-  lifecycle {
-    ignore_changes = [tags]
-  }
 }
 
 resource "azurerm_subnet_network_security_group_association" "containers" {
@@ -309,9 +298,6 @@ resource "azurerm_network_security_group" "private_endpoints" {
     destination_address_prefix = "*"
   }
 
-  lifecycle {
-    ignore_changes = [tags]
-  }
 }
 
 resource "azurerm_subnet_network_security_group_association" "private_endpoints" {

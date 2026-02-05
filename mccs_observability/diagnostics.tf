@@ -137,8 +137,4 @@ resource "azurerm_monitor_activity_log_alert" "resource_health" {
   }
 
   tags = local.tags
-
-  lifecycle {
-    ignore_changes = [tags]
-  }
 }

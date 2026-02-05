@@ -22,10 +22,6 @@ resource "azurerm_storage_account" "prometheus" {
   }
 
   tags = local.tags
-
-  lifecycle {
-    ignore_changes = [tags]
-  }
 }
 
 resource "azurerm_storage_share" "prometheus_data" {
@@ -183,10 +179,6 @@ resource "azurerm_container_group" "prometheus" {
     azurerm_storage_share_file.prometheus_config,
     azurerm_storage_share_file.prometheus_alert_rules
   ]
-
-  lifecycle {
-    ignore_changes = [tags]
-  }
 }
 
 #------------------------------------------------------------------------------

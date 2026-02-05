@@ -17,7 +17,6 @@ resource "azurerm_logic_app_workflow" "alert_router" {
 
   lifecycle {
     ignore_changes = [
-      tags,
       # Ignore definition changes as they may be managed via Azure Portal
       # or separate Logic App action resources
       parameters
@@ -154,10 +153,6 @@ resource "azurerm_monitor_action_group" "this" {
   }
 
   tags = local.tags
-
-  lifecycle {
-    ignore_changes = [tags]
-  }
 }
 
 #------------------------------------------------------------------------------
@@ -189,10 +184,6 @@ resource "azurerm_monitor_metric_alert" "bgp_availability" {
   }
 
   tags = local.tags
-
-  lifecycle {
-    ignore_changes = [tags]
-  }
 }
 
 # ARP Availability Alert (Critical - Sev0)
@@ -220,10 +211,6 @@ resource "azurerm_monitor_metric_alert" "arp_availability" {
   }
 
   tags = local.tags
-
-  lifecycle {
-    ignore_changes = [tags]
-  }
 }
 
 # Bandwidth High Utilization (Warning - Sev2)
@@ -252,10 +239,6 @@ resource "azurerm_monitor_metric_alert" "bandwidth_warning" {
   }
 
   tags = local.tags
-
-  lifecycle {
-    ignore_changes = [tags]
-  }
 }
 
 # Bandwidth Critical Utilization (Error - Sev1)
@@ -284,10 +267,6 @@ resource "azurerm_monitor_metric_alert" "bandwidth_critical" {
   }
 
   tags = local.tags
-
-  lifecycle {
-    ignore_changes = [tags]
-  }
 }
 
 #------------------------------------------------------------------------------
@@ -319,10 +298,6 @@ resource "azurerm_monitor_metric_alert" "gateway_health" {
   }
 
   tags = local.tags
-
-  lifecycle {
-    ignore_changes = [tags]
-  }
 }
 
 #------------------------------------------------------------------------------

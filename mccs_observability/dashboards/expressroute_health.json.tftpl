@@ -50,7 +50,7 @@
     {
       "datasource": {
         "type": "grafana-azure-monitor-datasource",
-        "uid": "${datasource}"
+        "uid": "$${datasource}"
       },
       "description": "Current BGP availability percentage",
       "fieldConfig": {
@@ -128,22 +128,22 @@
             "dimensionFilters": [],
             "metricName": "BgpAvailability",
             "metricNamespace": "microsoft.network/expressroutecircuits",
-            "resourceGroup": "${resource_group}",
+            "resourceGroup": "$${resource_group}",
             "resources": [
               {
-                "resourceGroup": "${resource_group}",
-                "resourceName": "${circuit}"
+                "resourceGroup": "$${resource_group}",
+                "resourceName": "$${circuit}"
               }
             ],
             "timeGrain": "PT1M"
           },
           "datasource": {
             "type": "grafana-azure-monitor-datasource",
-            "uid": "${datasource}"
+            "uid": "$${datasource}"
           },
           "queryType": "Azure Monitor",
           "refId": "A",
-          "subscription": "${subscription}"
+          "subscription": "$${subscription}"
         }
       ],
       "title": "BGP Status",
@@ -152,7 +152,7 @@
     {
       "datasource": {
         "type": "grafana-azure-monitor-datasource",
-        "uid": "${datasource}"
+        "uid": "$${datasource}"
       },
       "description": "Current ARP availability percentage",
       "fieldConfig": {
@@ -230,22 +230,22 @@
             "dimensionFilters": [],
             "metricName": "ArpAvailability",
             "metricNamespace": "microsoft.network/expressroutecircuits",
-            "resourceGroup": "${resource_group}",
+            "resourceGroup": "$${resource_group}",
             "resources": [
               {
-                "resourceGroup": "${resource_group}",
-                "resourceName": "${circuit}"
+                "resourceGroup": "$${resource_group}",
+                "resourceName": "$${circuit}"
               }
             ],
             "timeGrain": "PT1M"
           },
           "datasource": {
             "type": "grafana-azure-monitor-datasource",
-            "uid": "${datasource}"
+            "uid": "$${datasource}"
           },
           "queryType": "Azure Monitor",
           "refId": "A",
-          "subscription": "${subscription}"
+          "subscription": "$${subscription}"
         }
       ],
       "title": "ARP Status",
@@ -254,7 +254,7 @@
     {
       "datasource": {
         "type": "grafana-azure-monitor-datasource",
-        "uid": "${datasource}"
+        "uid": "$${datasource}"
       },
       "description": "Current inbound bandwidth utilization",
       "fieldConfig": {
@@ -315,22 +315,22 @@
             "dimensionFilters": [],
             "metricName": "BitsInPerSecond",
             "metricNamespace": "microsoft.network/expressroutecircuits",
-            "resourceGroup": "${resource_group}",
+            "resourceGroup": "$${resource_group}",
             "resources": [
               {
-                "resourceGroup": "${resource_group}",
-                "resourceName": "${circuit}"
+                "resourceGroup": "$${resource_group}",
+                "resourceName": "$${circuit}"
               }
             ],
             "timeGrain": "PT1M"
           },
           "datasource": {
             "type": "grafana-azure-monitor-datasource",
-            "uid": "${datasource}"
+            "uid": "$${datasource}"
           },
           "queryType": "Azure Monitor",
           "refId": "A",
-          "subscription": "${subscription}"
+          "subscription": "$${subscription}"
         }
       ],
       "title": "Inbound Bandwidth",
@@ -339,7 +339,7 @@
     {
       "datasource": {
         "type": "grafana-azure-monitor-datasource",
-        "uid": "${datasource}"
+        "uid": "$${datasource}"
       },
       "description": "Current outbound bandwidth utilization",
       "fieldConfig": {
@@ -400,22 +400,22 @@
             "dimensionFilters": [],
             "metricName": "BitsOutPerSecond",
             "metricNamespace": "microsoft.network/expressroutecircuits",
-            "resourceGroup": "${resource_group}",
+            "resourceGroup": "$${resource_group}",
             "resources": [
               {
-                "resourceGroup": "${resource_group}",
-                "resourceName": "${circuit}"
+                "resourceGroup": "$${resource_group}",
+                "resourceName": "$${circuit}"
               }
             ],
             "timeGrain": "PT1M"
           },
           "datasource": {
             "type": "grafana-azure-monitor-datasource",
-            "uid": "${datasource}"
+            "uid": "$${datasource}"
           },
           "queryType": "Azure Monitor",
           "refId": "A",
-          "subscription": "${subscription}"
+          "subscription": "$${subscription}"
         }
       ],
       "title": "Outbound Bandwidth",
@@ -437,7 +437,7 @@
     {
       "datasource": {
         "type": "grafana-azure-monitor-datasource",
-        "uid": "${datasource}"
+        "uid": "$${datasource}"
       },
       "description": "BGP session availability over time. 100% indicates healthy BGP sessions.",
       "fieldConfig": {
@@ -530,22 +530,22 @@
             ],
             "metricName": "BgpAvailability",
             "metricNamespace": "microsoft.network/expressroutecircuits",
-            "resourceGroup": "${resource_group}",
+            "resourceGroup": "$${resource_group}",
             "resources": [
               {
-                "resourceGroup": "${resource_group}",
-                "resourceName": "${circuit}"
+                "resourceGroup": "$${resource_group}",
+                "resourceName": "$${circuit}"
               }
             ],
             "timeGrain": "PT5M"
           },
           "datasource": {
             "type": "grafana-azure-monitor-datasource",
-            "uid": "${datasource}"
+            "uid": "$${datasource}"
           },
           "queryType": "Azure Monitor",
           "refId": "A",
-          "subscription": "${subscription}"
+          "subscription": "$${subscription}"
         }
       ],
       "title": "BGP Availability",
@@ -554,7 +554,7 @@
     {
       "datasource": {
         "type": "grafana-azure-monitor-datasource",
-        "uid": "${datasource}"
+        "uid": "$${datasource}"
       },
       "description": "ARP availability over time. 100% indicates healthy Layer 2 connectivity.",
       "fieldConfig": {
@@ -647,22 +647,22 @@
             ],
             "metricName": "ArpAvailability",
             "metricNamespace": "microsoft.network/expressroutecircuits",
-            "resourceGroup": "${resource_group}",
+            "resourceGroup": "$${resource_group}",
             "resources": [
               {
-                "resourceGroup": "${resource_group}",
-                "resourceName": "${circuit}"
+                "resourceGroup": "$${resource_group}",
+                "resourceName": "$${circuit}"
               }
             ],
             "timeGrain": "PT5M"
           },
           "datasource": {
             "type": "grafana-azure-monitor-datasource",
-            "uid": "${datasource}"
+            "uid": "$${datasource}"
           },
           "queryType": "Azure Monitor",
           "refId": "A",
-          "subscription": "${subscription}"
+          "subscription": "$${subscription}"
         }
       ],
       "title": "ARP Availability",
@@ -684,7 +684,7 @@
     {
       "datasource": {
         "type": "grafana-azure-monitor-datasource",
-        "uid": "${datasource}"
+        "uid": "$${datasource}"
       },
       "description": "Inbound traffic through the ExpressRoute circuit",
       "fieldConfig": {
@@ -773,22 +773,22 @@
             "dimensionFilters": [],
             "metricName": "BitsInPerSecond",
             "metricNamespace": "microsoft.network/expressroutecircuits",
-            "resourceGroup": "${resource_group}",
+            "resourceGroup": "$${resource_group}",
             "resources": [
               {
-                "resourceGroup": "${resource_group}",
-                "resourceName": "${circuit}"
+                "resourceGroup": "$${resource_group}",
+                "resourceName": "$${circuit}"
               }
             ],
             "timeGrain": "PT5M"
           },
           "datasource": {
             "type": "grafana-azure-monitor-datasource",
-            "uid": "${datasource}"
+            "uid": "$${datasource}"
           },
           "queryType": "Azure Monitor",
           "refId": "A",
-          "subscription": "${subscription}"
+          "subscription": "$${subscription}"
         }
       ],
       "title": "Inbound Bandwidth (Bits/sec)",
@@ -797,7 +797,7 @@
     {
       "datasource": {
         "type": "grafana-azure-monitor-datasource",
-        "uid": "${datasource}"
+        "uid": "$${datasource}"
       },
       "description": "Outbound traffic through the ExpressRoute circuit",
       "fieldConfig": {
@@ -886,22 +886,22 @@
             "dimensionFilters": [],
             "metricName": "BitsOutPerSecond",
             "metricNamespace": "microsoft.network/expressroutecircuits",
-            "resourceGroup": "${resource_group}",
+            "resourceGroup": "$${resource_group}",
             "resources": [
               {
-                "resourceGroup": "${resource_group}",
-                "resourceName": "${circuit}"
+                "resourceGroup": "$${resource_group}",
+                "resourceName": "$${circuit}"
               }
             ],
             "timeGrain": "PT5M"
           },
           "datasource": {
             "type": "grafana-azure-monitor-datasource",
-            "uid": "${datasource}"
+            "uid": "$${datasource}"
           },
           "queryType": "Azure Monitor",
           "refId": "A",
-          "subscription": "${subscription}"
+          "subscription": "$${subscription}"
         }
       ],
       "title": "Outbound Bandwidth (Bits/sec)",
@@ -923,7 +923,7 @@
     {
       "datasource": {
         "type": "grafana-azure-monitor-datasource",
-        "uid": "${datasource}"
+        "uid": "$${datasource}"
       },
       "description": "Dropped inbound packets - may indicate congestion or issues",
       "fieldConfig": {
@@ -1012,22 +1012,22 @@
             "dimensionFilters": [],
             "metricName": "DroppedInBitsPerSecond",
             "metricNamespace": "microsoft.network/expressroutecircuits",
-            "resourceGroup": "${resource_group}",
+            "resourceGroup": "$${resource_group}",
             "resources": [
               {
-                "resourceGroup": "${resource_group}",
-                "resourceName": "${circuit}"
+                "resourceGroup": "$${resource_group}",
+                "resourceName": "$${circuit}"
               }
             ],
             "timeGrain": "PT5M"
           },
           "datasource": {
             "type": "grafana-azure-monitor-datasource",
-            "uid": "${datasource}"
+            "uid": "$${datasource}"
           },
           "queryType": "Azure Monitor",
           "refId": "A",
-          "subscription": "${subscription}"
+          "subscription": "$${subscription}"
         }
       ],
       "title": "Dropped Inbound Traffic",
@@ -1036,7 +1036,7 @@
     {
       "datasource": {
         "type": "grafana-azure-monitor-datasource",
-        "uid": "${datasource}"
+        "uid": "$${datasource}"
       },
       "description": "Dropped outbound packets - may indicate congestion or issues",
       "fieldConfig": {
@@ -1125,22 +1125,22 @@
             "dimensionFilters": [],
             "metricName": "DroppedOutBitsPerSecond",
             "metricNamespace": "microsoft.network/expressroutecircuits",
-            "resourceGroup": "${resource_group}",
+            "resourceGroup": "$${resource_group}",
             "resources": [
               {
-                "resourceGroup": "${resource_group}",
-                "resourceName": "${circuit}"
+                "resourceGroup": "$${resource_group}",
+                "resourceName": "$${circuit}"
               }
             ],
             "timeGrain": "PT5M"
           },
           "datasource": {
             "type": "grafana-azure-monitor-datasource",
-            "uid": "${datasource}"
+            "uid": "$${datasource}"
           },
           "queryType": "Azure Monitor",
           "refId": "A",
-          "subscription": "${subscription}"
+          "subscription": "$${subscription}"
         }
       ],
       "title": "Dropped Outbound Traffic",
@@ -1162,7 +1162,7 @@
     {
       "datasource": {
         "type": "grafana-azure-monitor-datasource",
-        "uid": "${datasource}"
+        "uid": "$${datasource}"
       },
       "description": "CPU utilization of the ExpressRoute Gateway",
       "fieldConfig": {
@@ -1253,22 +1253,22 @@
             "dimensionFilters": [],
             "metricName": "ExpressRouteGatewayCpuUtilization",
             "metricNamespace": "microsoft.network/virtualnetworkgateways",
-            "resourceGroup": "${resource_group}",
+            "resourceGroup": "$${resource_group}",
             "resources": [
               {
-                "resourceGroup": "${resource_group}",
-                "resourceName": "${gateway}"
+                "resourceGroup": "$${resource_group}",
+                "resourceName": "$${gateway}"
               }
             ],
             "timeGrain": "PT5M"
           },
           "datasource": {
             "type": "grafana-azure-monitor-datasource",
-            "uid": "${datasource}"
+            "uid": "$${datasource}"
           },
           "queryType": "Azure Monitor",
           "refId": "A",
-          "subscription": "${subscription}"
+          "subscription": "$${subscription}"
         }
       ],
       "title": "Gateway CPU Utilization",
@@ -1277,7 +1277,7 @@
     {
       "datasource": {
         "type": "grafana-azure-monitor-datasource",
-        "uid": "${datasource}"
+        "uid": "$${datasource}"
       },
       "description": "Number of VMs behind the ExpressRoute Gateway",
       "fieldConfig": {
@@ -1358,22 +1358,22 @@
             "dimensionFilters": [],
             "metricName": "ExpressRouteGatewayCountOfRoutesAdvertisedToPeer",
             "metricNamespace": "microsoft.network/virtualnetworkgateways",
-            "resourceGroup": "${resource_group}",
+            "resourceGroup": "$${resource_group}",
             "resources": [
               {
-                "resourceGroup": "${resource_group}",
-                "resourceName": "${gateway}"
+                "resourceGroup": "$${resource_group}",
+                "resourceName": "$${gateway}"
               }
             ],
             "timeGrain": "PT5M"
           },
           "datasource": {
             "type": "grafana-azure-monitor-datasource",
-            "uid": "${datasource}"
+            "uid": "$${datasource}"
           },
           "queryType": "Azure Monitor",
           "refId": "A",
-          "subscription": "${subscription}"
+          "subscription": "$${subscription}"
         }
       ],
       "title": "Routes Advertised to Peer",
@@ -1439,10 +1439,14 @@
         "type": "datasource"
       },
       {
-        "current": {},
+        "current": {
+          "selected": true,
+          "text": "${subscription_id}",
+          "value": "${subscription_id}"
+        },
         "datasource": {
           "type": "grafana-azure-monitor-datasource",
-          "uid": "${datasource}"
+          "uid": "$${datasource}"
         },
         "definition": "",
         "hide": 0,
@@ -1462,10 +1466,14 @@
         "type": "query"
       },
       {
-        "current": {},
+        "current": {
+          "selected": true,
+          "text": "${default_resource_group}",
+          "value": "${default_resource_group}"
+        },
         "datasource": {
           "type": "grafana-azure-monitor-datasource",
-          "uid": "${datasource}"
+          "uid": "$${datasource}"
         },
         "definition": "",
         "hide": 0,
@@ -1477,7 +1485,7 @@
         "query": {
           "queryType": "Azure Resource Groups",
           "refId": "A",
-          "subscription": "${subscription}"
+          "subscription": "$${subscription}"
         },
         "refresh": 1,
         "regex": "",
@@ -1486,10 +1494,14 @@
         "type": "query"
       },
       {
-        "current": {},
+        "current": {
+          "selected": true,
+          "text": "%{ if length(circuit_names) > 0 }${circuit_names[0]}%{ else }%{ endif }",
+          "value": "%{ if length(circuit_names) > 0 }${circuit_names[0]}%{ else }%{ endif }"
+        },
         "datasource": {
           "type": "grafana-azure-monitor-datasource",
-          "uid": "${datasource}"
+          "uid": "$${datasource}"
         },
         "definition": "",
         "hide": 0,
@@ -1502,8 +1514,8 @@
           "queryType": "Azure Resource Names",
           "metricNamespace": "microsoft.network/expressroutecircuits",
           "refId": "A",
-          "resourceGroup": "${resource_group}",
-          "subscription": "${subscription}"
+          "resourceGroup": "$${resource_group}",
+          "subscription": "$${subscription}"
         },
         "refresh": 1,
         "regex": "",
@@ -1515,7 +1527,7 @@
         "current": {},
         "datasource": {
           "type": "grafana-azure-monitor-datasource",
-          "uid": "${datasource}"
+          "uid": "$${datasource}"
         },
         "definition": "",
         "hide": 0,
@@ -1528,8 +1540,8 @@
           "queryType": "Azure Resource Names",
           "metricNamespace": "microsoft.network/virtualnetworkgateways",
           "refId": "A",
-          "resourceGroup": "${resource_group}",
-          "subscription": "${subscription}"
+          "resourceGroup": "$${resource_group}",
+          "subscription": "$${subscription}"
         },
         "refresh": 1,
         "regex": "",

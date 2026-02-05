@@ -22,10 +22,6 @@ resource "azurerm_storage_account" "netbox" {
   }
 
   tags = local.tags
-
-  lifecycle {
-    ignore_changes = [tags]
-  }
 }
 
 resource "azurerm_storage_share" "netbox_media" {
@@ -168,10 +164,6 @@ resource "azurerm_container_group" "netbox" {
     azurerm_postgresql_flexible_server_database.netbox,
     azurerm_subnet.containers
   ]
-
-  lifecycle {
-    ignore_changes = [tags]
-  }
 }
 
 #------------------------------------------------------------------------------

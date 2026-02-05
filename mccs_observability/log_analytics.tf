@@ -16,10 +16,6 @@ resource "azurerm_log_analytics_workspace" "this" {
   internet_query_enabled     = false
 
   tags = local.tags
-
-  lifecycle {
-    ignore_changes = [tags]
-  }
 }
 
 #------------------------------------------------------------------------------
@@ -40,10 +36,6 @@ resource "azurerm_log_analytics_solution" "container_insights" {
   }
 
   tags = local.tags
-
-  lifecycle {
-    ignore_changes = [tags]
-  }
 }
 
 #------------------------------------------------------------------------------

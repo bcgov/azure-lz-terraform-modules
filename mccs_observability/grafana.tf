@@ -7,10 +7,6 @@ resource "azurerm_monitor_workspace" "this" {
   resource_group_name = azurerm_resource_group.this.name
   location            = var.location
   tags                = local.tags
-
-  lifecycle {
-    ignore_changes = [tags]
-  }
 }
 
 #------------------------------------------------------------------------------
@@ -43,10 +39,6 @@ resource "azurerm_dashboard_grafana" "this" {
   }
 
   tags = local.tags
-
-  lifecycle {
-    ignore_changes = [tags]
-  }
 }
 
 #------------------------------------------------------------------------------
