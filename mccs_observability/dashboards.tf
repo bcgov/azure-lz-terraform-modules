@@ -1,14 +1,23 @@
 #------------------------------------------------------------------------------
 # Grafana Provider Configuration
-# Uses the Azure Managed Grafana endpoint with service principal authentication
+# Uses the Azure Managed Grafana endpoint with service account token authentication
+#
+# IMPORTANT: Dashboard provisioning requires a two-phase deployment:
+# 1. First deploy with enable_grafana_dashboards = false (or no token)
+# 2. Create a service account token in Grafana UI
+# 3. Re-deploy with enable_grafana_dashboards = true and the token
 #------------------------------------------------------------------------------
 
-provider "grafana" {
-  url  = azurerm_dashboard_grafana.this.endpoint
-  auth = var.grafana_service_account_token
+# Local to determine if we can actually provision dashboards
+# Requires both the flag to be true AND a valid token to be provided
+locals {
+  can_provision_dashboards = var.enable_grafana_dashboards && var.grafana_service_account_token != ""
+}
 
-  # Use cloud provider authentication for Azure Managed Grafana
-  # The Grafana managed identity has the necessary permissions
+provider "grafana" {
+  # Only configure if we have a token - otherwise provider will fail
+  url  = local.can_provision_dashboards ? azurerm_dashboard_grafana.this.endpoint : "https://placeholder.grafana.azure.com"
+  auth = local.can_provision_dashboards ? var.grafana_service_account_token : "placeholder"
 }
 
 #------------------------------------------------------------------------------
@@ -16,10 +25,12 @@ provider "grafana" {
 #------------------------------------------------------------------------------
 
 resource "grafana_folder" "mccs" {
-  count = var.enable_grafana_dashboards ? 1 : 0
+  count = local.can_provision_dashboards ? 1 : 0
 
   title = "MCCS Observability"
   uid   = "mccs-observability"
+
+  depends_on = [azurerm_dashboard_grafana.this]
 }
 
 #------------------------------------------------------------------------------
@@ -28,7 +39,7 @@ resource "grafana_folder" "mccs" {
 #------------------------------------------------------------------------------
 
 resource "grafana_dashboard" "mccs_overview" {
-  count = var.enable_grafana_dashboards ? 1 : 0
+  count = local.can_provision_dashboards ? 1 : 0
 
   folder    = grafana_folder.mccs[0].id
   overwrite = true
@@ -36,6 +47,8 @@ resource "grafana_dashboard" "mccs_overview" {
   # Use file() instead of templatefile() because the JSON contains Grafana
   # template variables using ${...} syntax that should not be interpreted by Terraform
   config_json = file("${path.module}/dashboards/mccs_overview.json")
+
+  depends_on = [grafana_folder.mccs]
 }
 
 #------------------------------------------------------------------------------
@@ -44,7 +57,7 @@ resource "grafana_dashboard" "mccs_overview" {
 #------------------------------------------------------------------------------
 
 resource "grafana_dashboard" "expressroute_health" {
-  count = var.enable_grafana_dashboards ? 1 : 0
+  count = local.can_provision_dashboards ? 1 : 0
 
   folder    = grafana_folder.mccs[0].id
   overwrite = true
@@ -52,6 +65,8 @@ resource "grafana_dashboard" "expressroute_health" {
   # Use file() instead of templatefile() because the JSON contains Grafana
   # template variables using ${...} syntax that should not be interpreted by Terraform
   config_json = file("${path.module}/dashboards/expressroute_health.json")
+
+  depends_on = [grafana_folder.mccs]
 }
 
 #------------------------------------------------------------------------------
@@ -60,7 +75,7 @@ resource "grafana_dashboard" "expressroute_health" {
 #------------------------------------------------------------------------------
 
 resource "grafana_dashboard" "circuit_inventory" {
-  count = var.enable_grafana_dashboards ? 1 : 0
+  count = local.can_provision_dashboards ? 1 : 0
 
   folder    = grafana_folder.mccs[0].id
   overwrite = true
@@ -68,6 +83,8 @@ resource "grafana_dashboard" "circuit_inventory" {
   # Use file() instead of templatefile() because the JSON contains Grafana
   # template variables using ${...} syntax that should not be interpreted by Terraform
   config_json = file("${path.module}/dashboards/circuit_inventory.json")
+
+  depends_on = [grafana_folder.mccs]
 }
 
 #------------------------------------------------------------------------------
@@ -76,7 +93,7 @@ resource "grafana_dashboard" "circuit_inventory" {
 #------------------------------------------------------------------------------
 
 resource "grafana_data_source" "azure_monitor" {
-  count = var.enable_grafana_dashboards ? 1 : 0
+  count = local.can_provision_dashboards ? 1 : 0
 
   name = "Azure Monitor"
   type = "grafana-azure-monitor-datasource"
@@ -92,6 +109,8 @@ resource "grafana_data_source" "azure_monitor" {
 
   # Default data source for Azure Monitor queries
   is_default = true
+
+  depends_on = [azurerm_dashboard_grafana.this]
 }
 
 #------------------------------------------------------------------------------
@@ -100,7 +119,7 @@ resource "grafana_data_source" "azure_monitor" {
 #------------------------------------------------------------------------------
 
 resource "grafana_data_source" "log_analytics" {
-  count = var.enable_grafana_dashboards ? 1 : 0
+  count = local.can_provision_dashboards ? 1 : 0
 
   name = "Log Analytics - MCCS"
   type = "grafana-azure-monitor-datasource"
@@ -114,6 +133,8 @@ resource "grafana_data_source" "log_analytics" {
     logAnalyticsDefaultWorkspace = azurerm_log_analytics_workspace.this.id
     azureLogAnalyticsSameAs      = false
   })
+
+  depends_on = [azurerm_dashboard_grafana.this]
 }
 
 #------------------------------------------------------------------------------
@@ -122,7 +143,7 @@ resource "grafana_data_source" "log_analytics" {
 #------------------------------------------------------------------------------
 
 resource "grafana_data_source" "prometheus" {
-  count = var.enable_grafana_dashboards ? 1 : 0
+  count = local.can_provision_dashboards ? 1 : 0
 
   name = "Prometheus - MCCS"
   type = "prometheus"
@@ -137,6 +158,8 @@ resource "grafana_data_source" "prometheus" {
     prometheusType    = "Prometheus"
     prometheusVersion = "2.48.0"
   })
+
+  depends_on = [azurerm_dashboard_grafana.this]
 }
 
 #------------------------------------------------------------------------------
@@ -145,15 +168,17 @@ resource "grafana_data_source" "prometheus" {
 #------------------------------------------------------------------------------
 
 resource "grafana_service_account" "terraform" {
-  count = var.enable_grafana_dashboards && var.create_grafana_service_account ? 1 : 0
+  count = local.can_provision_dashboards && var.create_grafana_service_account ? 1 : 0
 
   name        = "terraform-automation"
   role        = "Admin"
   is_disabled = false
+
+  depends_on = [azurerm_dashboard_grafana.this]
 }
 
 resource "grafana_service_account_token" "terraform" {
-  count = var.enable_grafana_dashboards && var.create_grafana_service_account ? 1 : 0
+  count = local.can_provision_dashboards && var.create_grafana_service_account ? 1 : 0
 
   name               = "terraform-token"
   service_account_id = grafana_service_account.terraform[0].id
@@ -164,7 +189,7 @@ resource "grafana_service_account_token" "terraform" {
 
 # Store the service account token in Key Vault for future use
 resource "azurerm_key_vault_secret" "grafana_service_account_token" {
-  count = var.enable_grafana_dashboards && var.create_grafana_service_account ? 1 : 0
+  count = local.can_provision_dashboards && var.create_grafana_service_account ? 1 : 0
 
   name         = "grafana-service-account-token"
   value        = grafana_service_account_token.terraform[0].key

@@ -260,6 +260,34 @@ All dashboards support the following template variables:
 - `circuit`: ExpressRoute circuit multi-select
 - `gateway`: ExpressRoute gateway selector (ExpressRoute Health only)
 
+### Two-Phase Dashboard Deployment
+
+Dashboard provisioning requires a Grafana service account token for API authentication. Since the token can only be created after Grafana is deployed, a two-phase deployment is required:
+
+**Phase 1: Deploy infrastructure (without dashboards)**
+```hcl
+module "mccs_observability" {
+  # ... other config ...
+  enable_grafana_dashboards     = true   # Enable dashboard resources
+  grafana_service_account_token = ""     # No token yet - dashboards won't be created
+}
+```
+
+**Phase 2: Create token and deploy dashboards**
+1. Access Grafana UI via the endpoint
+2. Navigate to Administration → Service Accounts
+3. Create a service account with "Admin" role
+4. Generate a token and copy it
+5. Re-deploy with the token:
+
+```hcl
+module "mccs_observability" {
+  # ... other config ...
+  enable_grafana_dashboards     = true
+  grafana_service_account_token = var.grafana_token  # Provide the token
+}
+```
+
 ### Customizing Dashboards
 
 Dashboard JSON files are stored in `dashboards/`:
@@ -328,11 +356,11 @@ This will enable:
 
 | Name | Version |
 |------|---------|
-| <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) | ~> 4.0 |
-| <a name="provider_azurerm.management"></a> [azurerm.management](#provider\_azurerm.management) | ~> 4.0 |
+| <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) | 4.58.0 |
+| <a name="provider_azurerm.management"></a> [azurerm.management](#provider\_azurerm.management) | 4.58.0 |
 | <a name="provider_grafana"></a> [grafana](#provider\_grafana) | ~> 3.0 |
-| <a name="provider_local"></a> [local](#provider\_local) | ~> 2.0 |
-| <a name="provider_random"></a> [random](#provider\_random) | ~> 3.0 |
+| <a name="provider_local"></a> [local](#provider\_local) | 2.6.2 |
+| <a name="provider_random"></a> [random](#provider\_random) | 3.8.1 |
 | <a name="provider_time"></a> [time](#provider\_time) | ~> 0.11 |
 
 ## Modules
@@ -540,9 +568,9 @@ No modules.
 | <a name="output_azure_monitor_workspace_name"></a> [azure\_monitor\_workspace\_name](#output\_azure\_monitor\_workspace\_name) | The name of the Azure Monitor Workspace. |
 | <a name="output_grafana_dashboard_circuit_inventory_url"></a> [grafana\_dashboard\_circuit\_inventory\_url](#output\_grafana\_dashboard\_circuit\_inventory\_url) | The URL for the Circuit Inventory dashboard. |
 | <a name="output_grafana_dashboard_expressroute_health_url"></a> [grafana\_dashboard\_expressroute\_health\_url](#output\_grafana\_dashboard\_expressroute\_health\_url) | The URL for the ExpressRoute Health dashboard. |
-| <a name="output_grafana_dashboard_folder_uid"></a> [grafana\_dashboard\_folder\_uid](#output\_grafana\_dashboard\_folder\_uid) | The UID of the MCCS Grafana dashboard folder. |
+| <a name="output_grafana_dashboard_folder_uid"></a> [grafana\_dashboard\_folder\_uid](#output\_grafana\_dashboard\_folder\_uid) | The UID of the MCCS Grafana dashboard folder (null if dashboards not provisioned). |
 | <a name="output_grafana_dashboard_mccs_overview_url"></a> [grafana\_dashboard\_mccs\_overview\_url](#output\_grafana\_dashboard\_mccs\_overview\_url) | The URL for the MCCS Overview dashboard. |
-| <a name="output_grafana_dashboards"></a> [grafana\_dashboards](#output\_grafana\_dashboards) | Map of all provisioned Grafana dashboard URLs. |
+| <a name="output_grafana_dashboards"></a> [grafana\_dashboards](#output\_grafana\_dashboards) | Map of all provisioned Grafana dashboard URLs (null if dashboards not provisioned). |
 | <a name="output_grafana_endpoint"></a> [grafana\_endpoint](#output\_grafana\_endpoint) | The endpoint URL of the Azure Managed Grafana instance. |
 | <a name="output_grafana_id"></a> [grafana\_id](#output\_grafana\_id) | The ID of the Azure Managed Grafana instance. |
 | <a name="output_grafana_identity_principal_id"></a> [grafana\_identity\_principal\_id](#output\_grafana\_identity\_principal\_id) | The principal ID of the Grafana managed identity. |

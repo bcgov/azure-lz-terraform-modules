@@ -189,31 +189,33 @@ output "grafana_identity_principal_id" {
 
 #------------------------------------------------------------------------------
 # Grafana Dashboard Outputs
+# Note: Dashboards are only provisioned when enable_grafana_dashboards = true
+# AND a valid grafana_service_account_token is provided
 #------------------------------------------------------------------------------
 
 output "grafana_dashboard_folder_uid" {
-  description = "The UID of the MCCS Grafana dashboard folder."
-  value       = var.enable_grafana_dashboards ? grafana_folder.mccs[0].uid : null
+  description = "The UID of the MCCS Grafana dashboard folder (null if dashboards not provisioned)."
+  value       = length(grafana_folder.mccs) > 0 ? grafana_folder.mccs[0].uid : null
 }
 
 output "grafana_dashboard_mccs_overview_url" {
   description = "The URL for the MCCS Overview dashboard."
-  value       = var.enable_grafana_dashboards ? "${azurerm_dashboard_grafana.this.endpoint}/d/mccs-overview/mccs-overview" : null
+  value       = length(grafana_dashboard.mccs_overview) > 0 ? "${azurerm_dashboard_grafana.this.endpoint}/d/mccs-overview/mccs-overview" : null
 }
 
 output "grafana_dashboard_expressroute_health_url" {
   description = "The URL for the ExpressRoute Health dashboard."
-  value       = var.enable_grafana_dashboards ? "${azurerm_dashboard_grafana.this.endpoint}/d/expressroute-health/expressroute-health" : null
+  value       = length(grafana_dashboard.expressroute_health) > 0 ? "${azurerm_dashboard_grafana.this.endpoint}/d/expressroute-health/expressroute-health" : null
 }
 
 output "grafana_dashboard_circuit_inventory_url" {
   description = "The URL for the Circuit Inventory dashboard."
-  value       = var.enable_grafana_dashboards ? "${azurerm_dashboard_grafana.this.endpoint}/d/circuit-inventory/circuit-inventory" : null
+  value       = length(grafana_dashboard.circuit_inventory) > 0 ? "${azurerm_dashboard_grafana.this.endpoint}/d/circuit-inventory/circuit-inventory" : null
 }
 
 output "grafana_dashboards" {
-  description = "Map of all provisioned Grafana dashboard URLs."
-  value = var.enable_grafana_dashboards ? {
+  description = "Map of all provisioned Grafana dashboard URLs (null if dashboards not provisioned)."
+  value = length(grafana_dashboard.mccs_overview) > 0 ? {
     mccs_overview       = "${azurerm_dashboard_grafana.this.endpoint}/d/mccs-overview/mccs-overview"
     expressroute_health = "${azurerm_dashboard_grafana.this.endpoint}/d/expressroute-health/expressroute-health"
     circuit_inventory   = "${azurerm_dashboard_grafana.this.endpoint}/d/circuit-inventory/circuit-inventory"
