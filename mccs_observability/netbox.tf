@@ -81,16 +81,9 @@ resource "azurerm_container_group" "netbox" {
       DB_NAME    = local.postgresql_database_name
       DB_USER    = var.postgresql_admin_username
       DB_PORT    = "5432"
-      DB_SSLMODE = "verify-full"
+      DB_SSLMODE = "require"
 
-      # PostgreSQL SSL certificate configuration for Azure
-      # - PGSSLROOTCERT: Use system CA bundle (includes DigiCert Global Root G2 used by Azure)
-      # - PGSSLCERT/KEY: Explicitly disable client certificates (Azure doesn't require mTLS)
-      #   The netbox-docker image has a broken /root/.postgresql/postgresql.crt that causes
-      #   "Permission denied" errors - setting these to empty prevents that lookup
-      PGSSLROOTCERT = "/etc/ssl/certs/ca-certificates.crt"
-      PGSSLCERT     = ""
-      PGSSLKEY      = ""
+      HOME = "/opt/netbox"
 
       # Redis connection (sidecar)
       REDIS_HOST            = "localhost"
