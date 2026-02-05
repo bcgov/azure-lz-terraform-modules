@@ -83,6 +83,13 @@ resource "azurerm_container_group" "netbox" {
       DB_PORT    = "5432"
       DB_SSLMODE = "require"
 
+      # Disable PostgreSQL client certificate authentication (mTLS)
+      # Azure PostgreSQL uses server-side SSL only, not client certificates
+      # Without these, psycopg3 tries to load /root/.postgresql/postgresql.crt
+      # which fails because the container runs as non-root user
+      PGSSLCERT = ""
+      PGSSLKEY  = ""
+
       # Redis connection (sidecar)
       REDIS_HOST            = "localhost"
       REDIS_PORT            = "6379"
