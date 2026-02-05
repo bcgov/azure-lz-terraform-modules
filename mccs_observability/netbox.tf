@@ -81,14 +81,16 @@ resource "azurerm_container_group" "netbox" {
       DB_NAME    = local.postgresql_database_name
       DB_USER    = var.postgresql_admin_username
       DB_PORT    = "5432"
-      DB_SSLMODE = "require"
+      DB_SSLMODE = "verify-full"
 
-      # Disable PostgreSQL client certificate authentication (mTLS)
-      # Azure PostgreSQL uses server-side SSL only, not client certificates
-      # Without these, psycopg3 tries to load /root/.postgresql/postgresql.crt
-      # which fails because the container runs as non-root user
-      PGSSLCERT = ""
-      PGSSLKEY  = ""
+      # PostgreSQL SSL certificate configuration for Azure
+      # - PGSSLROOTCERT: Use system CA bundle (includes DigiCert Global Root G2 used by Azure)
+      # - PGSSLCERT/KEY: Explicitly disable client certificates (Azure doesn't require mTLS)
+      #   The netbox-docker image has a broken /root/.postgresql/postgresql.crt that causes
+      #   "Permission denied" errors - setting these to empty prevents that lookup
+      PGSSLROOTCERT = "/etc/ssl/certs/ca-certificates.crt"
+      PGSSLCERT     = ""
+      PGSSLKEY      = ""
 
       # Redis connection (sidecar)
       REDIS_HOST            = "localhost"
