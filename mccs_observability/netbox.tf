@@ -76,14 +76,15 @@ resource "azurerm_container_group" "netbox" {
     }
 
     environment_variables = {
+      # Set HOME to /opt/netbox to avoid permission errors with /root/.postgresql/postgresql.crt
+      HOME = "/opt/netbox"
+
       # Database connection
       DB_HOST    = azurerm_postgresql_flexible_server.this.fqdn
       DB_NAME    = local.postgresql_database_name
       DB_USER    = var.postgresql_admin_username
       DB_PORT    = "5432"
       DB_SSLMODE = "require"
-
-      HOME = "/opt/netbox"
 
       # Redis connection (sidecar)
       REDIS_HOST            = "localhost"
