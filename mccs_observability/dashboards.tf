@@ -33,9 +33,9 @@ resource "grafana_dashboard" "mccs_overview" {
   folder    = grafana_folder.mccs[0].id
   overwrite = true
 
-  config_json = templatefile("${path.module}/dashboards/mccs_overview.json", {
-    # Template variables can be injected here if needed
-  })
+  # Use file() instead of templatefile() because the JSON contains Grafana
+  # template variables using ${...} syntax that should not be interpreted by Terraform
+  config_json = file("${path.module}/dashboards/mccs_overview.json")
 }
 
 #------------------------------------------------------------------------------
@@ -49,9 +49,9 @@ resource "grafana_dashboard" "expressroute_health" {
   folder    = grafana_folder.mccs[0].id
   overwrite = true
 
-  config_json = templatefile("${path.module}/dashboards/expressroute_health.json", {
-    # Template variables can be injected here if needed
-  })
+  # Use file() instead of templatefile() because the JSON contains Grafana
+  # template variables using ${...} syntax that should not be interpreted by Terraform
+  config_json = file("${path.module}/dashboards/expressroute_health.json")
 }
 
 #------------------------------------------------------------------------------
@@ -65,9 +65,9 @@ resource "grafana_dashboard" "circuit_inventory" {
   folder    = grafana_folder.mccs[0].id
   overwrite = true
 
-  config_json = templatefile("${path.module}/dashboards/circuit_inventory.json", {
-    # Template variables can be injected here if needed
-  })
+  # Use file() instead of templatefile() because the JSON contains Grafana
+  # template variables using ${...} syntax that should not be interpreted by Terraform
+  config_json = file("${path.module}/dashboards/circuit_inventory.json")
 }
 
 #------------------------------------------------------------------------------
@@ -173,8 +173,9 @@ resource "azurerm_key_vault_secret" "grafana_service_account_token" {
   content_type = "text/plain"
   tags         = local.tags
 
+  # Depends on Key Vault being fully provisioned with RBAC
   depends_on = [
-    azurerm_role_assignment.terraform_keyvault_secrets_officer
+    azurerm_key_vault.this
   ]
 
   lifecycle {
