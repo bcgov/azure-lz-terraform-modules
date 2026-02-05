@@ -19,6 +19,10 @@ terraform {
       source  = "hashicorp/time"
       version = "~> 0.11"
     }
+    azuread = {
+      source  = "hashicorp/azuread"
+      version = "~> 3.0"
+    }
     grafana = {
       source  = "grafana/grafana"
       version = "~> 3.0"

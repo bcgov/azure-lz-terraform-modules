@@ -53,14 +53,14 @@ resource "azurerm_role_assignment" "grafana_log_analytics_reader" {
 resource "azurerm_role_assignment" "cloud_team_contributor" {
   scope                = azurerm_resource_group.this.id
   role_definition_name = "Contributor"
-  principal_id         = var.cloud_team_group_id
+  principal_id         = local.cloud_team_group_id
 }
 
 # Cloud Team - Grafana Admin
 resource "azurerm_role_assignment" "cloud_team_grafana_admin" {
   scope                = azurerm_dashboard_grafana.this.id
   role_definition_name = "Grafana Admin"
-  principal_id         = var.cloud_team_group_id
+  principal_id         = local.cloud_team_group_id
 }
 
 #------------------------------------------------------------------------------

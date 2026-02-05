@@ -39,6 +39,7 @@ module "mccs_observability" {
   create_private_dns_zone_groups = false # Using DINE policy
 
   # Identity
+  cloud_team_group_name   = var.cloud_team_group_name
   cloud_team_group_id     = var.cloud_team_group_id
   noc_team_group_id       = var.noc_team_group_id
   service_desk_group_id   = var.service_desk_group_id

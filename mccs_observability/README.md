@@ -346,6 +346,7 @@ This will enable:
 | Name | Version |
 |------|---------|
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >=1.9.0, < 2.0.0 |
+| <a name="requirement_azuread"></a> [azuread](#requirement\_azuread) | ~> 3.0 |
 | <a name="requirement_azurerm"></a> [azurerm](#requirement\_azurerm) | ~> 4.0 |
 | <a name="requirement_grafana"></a> [grafana](#requirement\_grafana) | ~> 3.0 |
 | <a name="requirement_local"></a> [local](#requirement\_local) | ~> 2.0 |
@@ -356,11 +357,12 @@ This will enable:
 
 | Name | Version |
 |------|---------|
-| <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) | ~> 4.0 |
-| <a name="provider_azurerm.management"></a> [azurerm.management](#provider\_azurerm.management) | ~> 4.0 |
+| <a name="provider_azuread"></a> [azuread](#provider\_azuread) | ~> 3.0 |
+| <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) | 4.58.0 |
+| <a name="provider_azurerm.management"></a> [azurerm.management](#provider\_azurerm.management) | 4.58.0 |
 | <a name="provider_grafana"></a> [grafana](#provider\_grafana) | ~> 3.0 |
-| <a name="provider_local"></a> [local](#provider\_local) | ~> 2.0 |
-| <a name="provider_random"></a> [random](#provider\_random) | ~> 3.0 |
+| <a name="provider_local"></a> [local](#provider\_local) | 2.6.2 |
+| <a name="provider_random"></a> [random](#provider\_random) | 3.8.1 |
 | <a name="provider_time"></a> [time](#provider\_time) | ~> 0.11 |
 
 ## Modules
@@ -471,6 +473,7 @@ No modules.
 | [random_password.postgresql_admin](https://registry.terraform.io/providers/hashicorp/random/latest/docs/resources/password) | resource |
 | [random_string.suffix](https://registry.terraform.io/providers/hashicorp/random/latest/docs/resources/string) | resource |
 | [time_sleep.wait_for_storage_firewall](https://registry.terraform.io/providers/hashicorp/time/latest/docs/resources/sleep) | resource |
+| [azuread_group.cloud_team](https://registry.terraform.io/providers/hashicorp/azuread/latest/docs/data-sources/group) | data source |
 | [azurerm_client_config.current](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/data-sources/client_config) | data source |
 | [azurerm_express_route_circuit.circuits](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/data-sources/express_route_circuit) | data source |
 | [azurerm_virtual_network_gateway.gateways](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/data-sources/virtual_network_gateway) | data source |
@@ -491,7 +494,8 @@ No modules.
 | <a name="input_central_keyvault_dns_zone_id"></a> [central\_keyvault\_dns\_zone\_id](#input\_central\_keyvault\_dns\_zone\_id) | The resource ID of the central Private DNS Zone for Key Vault (privatelink.vaultcore.azure.net). | `string` | `null` | no |
 | <a name="input_central_postgresql_dns_zone_id"></a> [central\_postgresql\_dns\_zone\_id](#input\_central\_postgresql\_dns\_zone\_id) | The resource ID of the central Private DNS Zone for PostgreSQL (privatelink.postgres.database.azure.com). | `string` | n/a | yes |
 | <a name="input_cloud_team_email"></a> [cloud\_team\_email](#input\_cloud\_team\_email) | The email address for the Cloud Team (fallback for alerts). | `string` | n/a | yes |
-| <a name="input_cloud_team_group_id"></a> [cloud\_team\_group\_id](#input\_cloud\_team\_group\_id) | The Object ID of the Entra ID group for the Cloud Team (Grafana Admin, Key Vault Secrets Officer). | `string` | n/a | yes |
+| <a name="input_cloud_team_group_id"></a> [cloud\_team\_group\_id](#input\_cloud\_team\_group\_id) | The Object ID of the Entra ID group for the Cloud Team. If not provided, it will be looked up using cloud\_team\_group\_name. | `string` | `null` | no |
+| <a name="input_cloud_team_group_name"></a> [cloud\_team\_group\_name](#input\_cloud\_team\_group\_name) | The display name of the Entra ID group for the Cloud Team. Used to look up the group and grant Grafana Admin, Key Vault Secrets Officer, and Contributor access. | `string` | n/a | yes |
 | <a name="input_create_grafana_service_account"></a> [create\_grafana\_service\_account](#input\_create\_grafana\_service\_account) | Whether to create a Grafana service account for Terraform automation. Set to true on first deployment, then false after token is stored. | `bool` | `false` | no |
 | <a name="input_create_private_dns_zone_groups"></a> [create\_private\_dns\_zone\_groups](#input\_create\_private\_dns\_zone\_groups) | Whether to create private DNS zone groups for private endpoints. Set to false if using DINE policies. | `bool` | `false` | no |
 | <a name="input_deploy_jumpbox"></a> [deploy\_jumpbox](#input\_deploy\_jumpbox) | Whether to deploy a Windows jump box for accessing private resources. | `bool` | `false` | no |

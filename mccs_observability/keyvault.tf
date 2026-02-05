@@ -144,7 +144,7 @@ resource "azurerm_key_vault_secret" "teams_webhook_url" {
 resource "azurerm_role_assignment" "cloud_team_secrets_officer" {
   scope                = azurerm_key_vault.this.id
   role_definition_name = "Key Vault Secrets Officer"
-  principal_id         = var.cloud_team_group_id
+  principal_id         = local.cloud_team_group_id
 }
 
 # Terraform SPN - Secrets Officer (for initial secret creation)

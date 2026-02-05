@@ -78,9 +78,15 @@ variable "central_grafana_dns_zone_id" {
 # Identity Variables
 #------------------------------------------------------------------------------
 
+variable "cloud_team_group_name" {
+  type        = string
+  description = "Display name of the Cloud Team Entra ID group (e.g., 'PIM_DO_PuC_Ops_Infra_O')."
+}
+
 variable "cloud_team_group_id" {
   type        = string
-  description = "Object ID of the Cloud Team Entra ID group."
+  description = "Object ID of the Cloud Team Entra ID group. Optional if cloud_team_group_name is provided."
+  default     = null
 }
 
 variable "noc_team_group_id" {

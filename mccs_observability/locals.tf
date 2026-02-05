@@ -3,6 +3,9 @@ locals {
   subscription_id_connectivity = coalesce(var.subscription_id_connectivity, data.azurerm_client_config.current.subscription_id)
   subscription_id_management   = coalesce(var.subscription_id_management, data.azurerm_client_config.current.subscription_id)
 
+  # Resolve Cloud Team group ID: prefer explicit ID, fall back to name-based lookup
+  cloud_team_group_id = coalesce(var.cloud_team_group_id, data.azuread_group.cloud_team.object_id)
+
   # Resource naming
   resource_prefix = "mccs-${var.environment}"
   resource_suffix = var.location == "canadacentral" ? "cc" : "ce"

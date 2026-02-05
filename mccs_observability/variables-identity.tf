@@ -2,9 +2,15 @@
 # Identity and RBAC Variables
 #------------------------------------------------------------------------------
 
+variable "cloud_team_group_name" {
+  type        = string
+  description = "The display name of the Entra ID group for the Cloud Team. Used to look up the group and grant Grafana Admin, Key Vault Secrets Officer, and Contributor access."
+}
+
 variable "cloud_team_group_id" {
   type        = string
-  description = "The Object ID of the Entra ID group for the Cloud Team (Grafana Admin, Key Vault Secrets Officer)."
+  description = "The Object ID of the Entra ID group for the Cloud Team. If not provided, it will be looked up using cloud_team_group_name."
+  default     = null
 }
 
 variable "noc_team_group_id" {

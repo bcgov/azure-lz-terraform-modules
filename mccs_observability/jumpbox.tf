@@ -194,5 +194,5 @@ resource "azurerm_role_assignment" "cloud_team_vm_admin" {
 
   scope                = azurerm_windows_virtual_machine.jumpbox[0].id
   role_definition_name = "Virtual Machine Administrator Login"
-  principal_id         = var.cloud_team_group_id
+  principal_id         = local.cloud_team_group_id
 }

@@ -216,6 +216,8 @@ resource "azurerm_key_vault_secret" "grafana_service_account_token" {
 
   # Depends on Key Vault being fully provisioned with RBAC
   depends_on = [
-    azurerm_key_vault.this
+    azurerm_role_assignment.terraform_spn_secrets_officer,
+    azurerm_role_assignment.cloud_team_secrets_officer,
+    azurerm_private_endpoint.keyvault
   ]
 }

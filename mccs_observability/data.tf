@@ -1,5 +1,11 @@
 data "azurerm_client_config" "current" {}
 
+# Look up Cloud Team Entra ID group by display name
+data "azuread_group" "cloud_team" {
+  display_name     = var.cloud_team_group_name
+  security_enabled = true
+}
+
 # Reference existing ExpressRoute circuits for diagnostic settings
 data "azurerm_express_route_circuit" "circuits" {
   for_each = var.expressroute_circuits
