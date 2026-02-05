@@ -92,10 +92,14 @@ resource "grafana_dashboard" "circuit_inventory" {
 # Automatically configured with the Grafana managed identity
 #------------------------------------------------------------------------------
 
+# Note: Azure Managed Grafana comes with a pre-configured "Azure Monitor" data source.
+# We create an additional one with MCCS-specific configuration if needed.
+# The built-in data source is typically sufficient for most use cases.
+
 resource "grafana_data_source" "azure_monitor" {
   count = local.can_provision_dashboards ? 1 : 0
 
-  name = "Azure Monitor"
+  name = "Azure Monitor - MCCS"
   type = "grafana-azure-monitor-datasource"
 
   json_data_encoded = jsonencode({
@@ -107,8 +111,8 @@ resource "grafana_data_source" "azure_monitor" {
     azureLogAnalyticsSameAs = true
   })
 
-  # Default data source for Azure Monitor queries
-  is_default = true
+  # Don't set as default - the built-in Azure Monitor data source is the default
+  is_default = false
 
   depends_on = [azurerm_dashboard_grafana.this]
 }
