@@ -144,6 +144,25 @@ variable "grafana_deterministic_outbound_ip" {
   default     = true
 }
 
+variable "enable_grafana_dashboards" {
+  type        = bool
+  description = "Whether to provision Grafana dashboards via Terraform."
+  default     = true
+}
+
+variable "grafana_service_account_token" {
+  type        = string
+  description = "Service account token for Grafana API authentication. Required when enable_grafana_dashboards is true."
+  default     = ""
+  sensitive   = true
+}
+
+variable "create_grafana_service_account" {
+  type        = bool
+  description = "Whether to create a Grafana service account for Terraform automation. Set to true on first deployment, then false after token is stored."
+  default     = false
+}
+
 #------------------------------------------------------------------------------
 # Container Instances (Netbox/Prometheus)
 #------------------------------------------------------------------------------

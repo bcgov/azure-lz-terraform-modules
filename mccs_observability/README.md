@@ -215,7 +215,62 @@ Use the Netbox API or UI to add:
 1. Access Grafana via the private endpoint
 2. Verify Azure Monitor data source is connected
 3. Add Prometheus data source pointing to `http://<prometheus-ip>:9090`
-4. Import or create dashboards
+4. Dashboards are automatically provisioned (see below)
+
+## Grafana Dashboards
+
+The module provisions the following dashboards automatically when `enable_grafana_dashboards = true`:
+
+| Dashboard | UID | Description |
+|-----------|-----|-------------|
+| **MCCS Overview** | `mccs-overview` | Consolidated view of all ExpressRoute circuits with BGP/ARP availability, bandwidth utilization, and active alerts |
+| **ExpressRoute Health** | `expressroute-health` | Detailed health metrics for individual circuits including packet drops, gateway CPU, and troubleshooting guide |
+| **Circuit Inventory** | `circuit-inventory` | Network documentation from Netbox showing circuit records, providers, and site information |
+
+### Dashboard Features
+
+**MCCS Overview:**
+- Health summary stats (BGP, ARP, bandwidth, active alerts)
+- Time series graphs for all circuits
+- Circuit status summary table
+- AWS Direct Connect placeholder (Phase 2)
+
+**ExpressRoute Health:**
+- Real-time BGP and ARP availability graphs
+- Inbound/outbound bandwidth with threshold indicators
+- Packet drop monitoring
+- Gateway CPU utilization and route counts
+- Embedded troubleshooting reference guide
+
+**Circuit Inventory:**
+- Circuit count summary by cloud provider
+- Total bandwidth capacity
+- Detailed circuit tables (ExpressRoute and Direct Connect)
+- Site and provider information
+- Quick links to Netbox and Azure Portal
+
+> **Note:** The Circuit Inventory dashboard currently displays static documentation. To enable live circuit data from Netbox, a Netbox Exporter sidecar container needs to be added to expose circuit inventory as Prometheus metrics. See [Future Enhancements](#future-enhancements) for details.
+
+### Dashboard Variables
+
+All dashboards support the following template variables:
+- `datasource`: Azure Monitor data source
+- `subscription`: Azure subscription selector
+- `resource_group`: Resource group filter
+- `circuit`: ExpressRoute circuit multi-select
+- `gateway`: ExpressRoute gateway selector (ExpressRoute Health only)
+
+### Customizing Dashboards
+
+Dashboard JSON files are stored in `dashboards/`:
+- `mccs_overview.json`
+- `expressroute_health.json`
+- `circuit_inventory.json`
+
+To customize dashboards:
+1. Export modified dashboard from Grafana UI
+2. Update the corresponding JSON file
+3. Run `terraform apply` to sync changes
 
 ## Alert Definitions
 
@@ -235,13 +290,27 @@ Use the Netbox API or UI to add:
 - Network Security Groups on subnets
 - TLS 1.2+ enforced
 
-## Phase 2: AWS Direct Connect
+## Future Enhancements
 
-Future enhancements will include:
+### Phase 2: AWS Direct Connect
 
 - AWS Direct Connect monitoring via CloudWatch metrics proxy
 - Cross-cloud correlation dashboards
 - Unified alerting across Azure and AWS
+
+### Netbox Exporter for Live Circuit Inventory
+
+The Circuit Inventory dashboard currently displays static documentation. To enable live data from Netbox:
+
+1. Add a **netbox-exporter** sidecar container (`prometheus-community/netbox-exporter`) to the Netbox container group
+2. Configure the exporter with Netbox API token for authentication
+3. Update Prometheus scrape configuration to collect `netbox_circuits_*` metrics
+4. Update the Circuit Inventory dashboard to query Prometheus for live circuit data
+
+This will enable:
+- Real-time circuit status from Netbox
+- Dynamic provider and site information
+- Automatic dashboard updates when circuits are added/modified in Netbox
 
 <!-- BEGIN_TF_DOCS -->
 ## Requirements
@@ -250,6 +319,7 @@ Future enhancements will include:
 |------|---------|
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >=1.9.0, < 2.0.0 |
 | <a name="requirement_azurerm"></a> [azurerm](#requirement\_azurerm) | ~> 4.0 |
+| <a name="requirement_grafana"></a> [grafana](#requirement\_grafana) | ~> 3.0 |
 | <a name="requirement_local"></a> [local](#requirement\_local) | ~> 2.0 |
 | <a name="requirement_random"></a> [random](#requirement\_random) | ~> 3.0 |
 | <a name="requirement_time"></a> [time](#requirement\_time) | ~> 0.11 |
@@ -258,10 +328,11 @@ Future enhancements will include:
 
 | Name | Version |
 |------|---------|
-| <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) | ~> 4.0 |
-| <a name="provider_azurerm.management"></a> [azurerm.management](#provider\_azurerm.management) | ~> 4.0 |
-| <a name="provider_local"></a> [local](#provider\_local) | ~> 2.0 |
-| <a name="provider_random"></a> [random](#provider\_random) | ~> 3.0 |
+| <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) | 4.58.0 |
+| <a name="provider_azurerm.management"></a> [azurerm.management](#provider\_azurerm.management) | 4.58.0 |
+| <a name="provider_grafana"></a> [grafana](#provider\_grafana) | ~> 3.0 |
+| <a name="provider_local"></a> [local](#provider\_local) | 2.6.2 |
+| <a name="provider_random"></a> [random](#provider\_random) | 3.8.1 |
 | <a name="provider_time"></a> [time](#provider\_time) | ~> 0.11 |
 
 ## Modules
@@ -276,6 +347,7 @@ No modules.
 | [azurerm_container_group.prometheus](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/container_group) | resource |
 | [azurerm_dashboard_grafana.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/dashboard_grafana) | resource |
 | [azurerm_key_vault.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/key_vault) | resource |
+| [azurerm_key_vault_secret.grafana_service_account_token](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/key_vault_secret) | resource |
 | [azurerm_key_vault_secret.jira_api_token](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/key_vault_secret) | resource |
 | [azurerm_key_vault_secret.jumpbox_admin_password](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/key_vault_secret) | resource |
 | [azurerm_key_vault_secret.netbox_admin_password](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/key_vault_secret) | resource |
@@ -354,6 +426,15 @@ No modules.
 | [azurerm_virtual_machine_extension.aad_login](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/virtual_machine_extension) | resource |
 | [azurerm_virtual_network.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/virtual_network) | resource |
 | [azurerm_windows_virtual_machine.jumpbox](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/windows_virtual_machine) | resource |
+| [grafana_dashboard.circuit_inventory](https://registry.terraform.io/providers/grafana/grafana/latest/docs/resources/dashboard) | resource |
+| [grafana_dashboard.expressroute_health](https://registry.terraform.io/providers/grafana/grafana/latest/docs/resources/dashboard) | resource |
+| [grafana_dashboard.mccs_overview](https://registry.terraform.io/providers/grafana/grafana/latest/docs/resources/dashboard) | resource |
+| [grafana_data_source.azure_monitor](https://registry.terraform.io/providers/grafana/grafana/latest/docs/resources/data_source) | resource |
+| [grafana_data_source.log_analytics](https://registry.terraform.io/providers/grafana/grafana/latest/docs/resources/data_source) | resource |
+| [grafana_data_source.prometheus](https://registry.terraform.io/providers/grafana/grafana/latest/docs/resources/data_source) | resource |
+| [grafana_folder.mccs](https://registry.terraform.io/providers/grafana/grafana/latest/docs/resources/folder) | resource |
+| [grafana_service_account.terraform](https://registry.terraform.io/providers/grafana/grafana/latest/docs/resources/service_account) | resource |
+| [grafana_service_account_token.terraform](https://registry.terraform.io/providers/grafana/grafana/latest/docs/resources/service_account_token) | resource |
 | [local_file.prometheus_config](https://registry.terraform.io/providers/hashicorp/local/latest/docs/resources/file) | resource |
 | [random_password.jumpbox_admin](https://registry.terraform.io/providers/hashicorp/random/latest/docs/resources/password) | resource |
 | [random_password.netbox_admin](https://registry.terraform.io/providers/hashicorp/random/latest/docs/resources/password) | resource |
@@ -383,12 +464,14 @@ No modules.
 | <a name="input_central_postgresql_dns_zone_id"></a> [central\_postgresql\_dns\_zone\_id](#input\_central\_postgresql\_dns\_zone\_id) | The resource ID of the central Private DNS Zone for PostgreSQL (privatelink.postgres.database.azure.com). | `string` | n/a | yes |
 | <a name="input_cloud_team_email"></a> [cloud\_team\_email](#input\_cloud\_team\_email) | The email address for the Cloud Team (fallback for alerts). | `string` | n/a | yes |
 | <a name="input_cloud_team_group_id"></a> [cloud\_team\_group\_id](#input\_cloud\_team\_group\_id) | The Object ID of the Entra ID group for the Cloud Team (Grafana Admin, Key Vault Secrets Officer). | `string` | n/a | yes |
+| <a name="input_create_grafana_service_account"></a> [create\_grafana\_service\_account](#input\_create\_grafana\_service\_account) | Whether to create a Grafana service account for Terraform automation. Set to true on first deployment, then false after token is stored. | `bool` | `false` | no |
 | <a name="input_create_private_dns_zone_groups"></a> [create\_private\_dns\_zone\_groups](#input\_create\_private\_dns\_zone\_groups) | Whether to create private DNS zone groups for private endpoints. Set to false if using DINE policies. | `bool` | `false` | no |
 | <a name="input_deploy_jumpbox"></a> [deploy\_jumpbox](#input\_deploy\_jumpbox) | Whether to deploy a Windows jump box for accessing private resources. | `bool` | `false` | no |
 | <a name="input_diagnostics_retention_days"></a> [diagnostics\_retention\_days](#input\_diagnostics\_retention\_days) | Number of days to retain diagnostic logs. Set to 0 for unlimited retention. | `number` | `90` | no |
 | <a name="input_dns_servers"></a> [dns\_servers](#input\_dns\_servers) | List of DNS server IP addresses for the VNet. Typically the Azure Firewall private IP for centralized DNS resolution. | `list(string)` | `[]` | no |
 | <a name="input_enable_alerting"></a> [enable\_alerting](#input\_enable\_alerting) | Whether to enable alerting infrastructure (Action Groups, Alert Rules, Logic App). | `bool` | `true` | no |
 | <a name="input_enable_expressroute_diagnostics"></a> [enable\_expressroute\_diagnostics](#input\_enable\_expressroute\_diagnostics) | Whether to enable diagnostic settings on ExpressRoute circuits and gateways. | `bool` | `true` | no |
+| <a name="input_enable_grafana_dashboards"></a> [enable\_grafana\_dashboards](#input\_enable\_grafana\_dashboards) | Whether to provision Grafana dashboards via Terraform. | `bool` | `true` | no |
 | <a name="input_environment"></a> [environment](#input\_environment) | The environment name (e.g., prod, dev, staging). | `string` | n/a | yes |
 | <a name="input_expressroute_circuits"></a> [expressroute\_circuits](#input\_expressroute\_circuits) | Map of ExpressRoute circuits to monitor. | <pre>map(object({<br/>    circuit_name        = string<br/>    resource_group_name = string<br/>    bandwidth_mbps      = number<br/>    location            = string<br/>    provider_name       = optional(string, "Unknown")<br/>  }))</pre> | n/a | yes |
 | <a name="input_expressroute_gateways"></a> [expressroute\_gateways](#input\_expressroute\_gateways) | Map of ExpressRoute gateways to monitor. | <pre>map(object({<br/>    gateway_name        = string<br/>    resource_group_name = string<br/>  }))</pre> | `{}` | no |
@@ -396,6 +479,7 @@ No modules.
 | <a name="input_grafana_deterministic_outbound_ip"></a> [grafana\_deterministic\_outbound\_ip](#input\_grafana\_deterministic\_outbound\_ip) | Whether to enable deterministic outbound IP for Grafana. | `bool` | `true` | no |
 | <a name="input_grafana_name"></a> [grafana\_name](#input\_grafana\_name) | Override for the Azure Managed Grafana name. If not provided, a name will be generated. | `string` | `null` | no |
 | <a name="input_grafana_public_network_access"></a> [grafana\_public\_network\_access](#input\_grafana\_public\_network\_access) | Whether to enable public network access to Grafana. | `bool` | `false` | no |
+| <a name="input_grafana_service_account_token"></a> [grafana\_service\_account\_token](#input\_grafana\_service\_account\_token) | Service account token for Grafana API authentication. Required when enable\_grafana\_dashboards is true. | `string` | `""` | no |
 | <a name="input_grafana_sku"></a> [grafana\_sku](#input\_grafana\_sku) | The SKU for Azure Managed Grafana. | `string` | `"Standard"` | no |
 | <a name="input_grafana_zone_redundancy"></a> [grafana\_zone\_redundancy](#input\_grafana\_zone\_redundancy) | Whether to enable zone redundancy for Grafana. | `bool` | `true` | no |
 | <a name="input_internet_security_enabled"></a> [internet\_security\_enabled](#input\_internet\_security\_enabled) | Whether to enable internet security (route internet traffic through the hub firewall). | `bool` | `true` | no |
@@ -454,6 +538,11 @@ No modules.
 | <a name="output_action_group_id"></a> [action\_group\_id](#output\_action\_group\_id) | The ID of the alert action group. |
 | <a name="output_azure_monitor_workspace_id"></a> [azure\_monitor\_workspace\_id](#output\_azure\_monitor\_workspace\_id) | The ID of the Azure Monitor Workspace. |
 | <a name="output_azure_monitor_workspace_name"></a> [azure\_monitor\_workspace\_name](#output\_azure\_monitor\_workspace\_name) | The name of the Azure Monitor Workspace. |
+| <a name="output_grafana_dashboard_circuit_inventory_url"></a> [grafana\_dashboard\_circuit\_inventory\_url](#output\_grafana\_dashboard\_circuit\_inventory\_url) | The URL for the Circuit Inventory dashboard. |
+| <a name="output_grafana_dashboard_expressroute_health_url"></a> [grafana\_dashboard\_expressroute\_health\_url](#output\_grafana\_dashboard\_expressroute\_health\_url) | The URL for the ExpressRoute Health dashboard. |
+| <a name="output_grafana_dashboard_folder_uid"></a> [grafana\_dashboard\_folder\_uid](#output\_grafana\_dashboard\_folder\_uid) | The UID of the MCCS Grafana dashboard folder. |
+| <a name="output_grafana_dashboard_mccs_overview_url"></a> [grafana\_dashboard\_mccs\_overview\_url](#output\_grafana\_dashboard\_mccs\_overview\_url) | The URL for the MCCS Overview dashboard. |
+| <a name="output_grafana_dashboards"></a> [grafana\_dashboards](#output\_grafana\_dashboards) | Map of all provisioned Grafana dashboard URLs. |
 | <a name="output_grafana_endpoint"></a> [grafana\_endpoint](#output\_grafana\_endpoint) | The endpoint URL of the Azure Managed Grafana instance. |
 | <a name="output_grafana_id"></a> [grafana\_id](#output\_grafana\_id) | The ID of the Azure Managed Grafana instance. |
 | <a name="output_grafana_identity_principal_id"></a> [grafana\_identity\_principal\_id](#output\_grafana\_identity\_principal\_id) | The principal ID of the Grafana managed identity. |
