@@ -16,6 +16,8 @@ Groups are created with the **Terraform execution identity** and **admin email**
 
 This prevents accumulating old admins as group owners over time.
 
+**Edge case:** If the old admin is the **only** owner of a group, Azure AD will not allow removal (minimum 1 owner required). In this case, the new admin is added but the old admin remains. You may need to manually remove the old admin after ensuring other owners exist.
+
 **Requirements:**
 
 - Azure CLI (`az`) must be installed and authenticated where Terraform runs.

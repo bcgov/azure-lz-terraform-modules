@@ -122,12 +122,42 @@ resource "null_resource" "admin_owner" {
   provisioner "local-exec" {
     when    = destroy
     command = <<-EOT
+      set -e
+      echo "Removing old admin '${self.triggers.admin_email}' from group '${self.triggers.group_name}'..."
+
       OLD_ADMIN_ID=$(az ad user show --id "${self.triggers.admin_email}" --query id -o tsv 2>/dev/null || true)
-      if [ -n "$OLD_ADMIN_ID" ] && [ "$OLD_ADMIN_ID" != "None" ]; then
-        GROUP_ID=$(az ad group list --display-name "${self.triggers.group_name}" --query "[0].id" -o tsv 2>/dev/null || true)
-        if [ -n "$GROUP_ID" ] && [ "$GROUP_ID" != "None" ]; then
-          az ad group owner remove --group "$GROUP_ID" --owner-id "$OLD_ADMIN_ID" 2>/dev/null || echo "Could not remove old admin (may already be gone)"
-        fi
+      if [ -z "$OLD_ADMIN_ID" ] || [ "$OLD_ADMIN_ID" = "None" ]; then
+        echo "Old admin user not found in Azure AD, skipping removal."
+        exit 0
+      fi
+
+      GROUP_ID=$(az ad group list --display-name "${self.triggers.group_name}" --query "[0].id" -o tsv 2>/dev/null || true)
+      if [ -z "$GROUP_ID" ] || [ "$GROUP_ID" = "None" ]; then
+        echo "Group not found in Azure AD, skipping removal."
+        exit 0
+      fi
+
+      # Check if this user is actually an owner
+      IS_OWNER=$(az ad group owner list --group "$GROUP_ID" --query "[?id=='$OLD_ADMIN_ID'].id" -o tsv 2>/dev/null || true)
+      if [ -z "$IS_OWNER" ]; then
+        echo "Old admin is not currently an owner of this group, skipping removal."
+        exit 0
+      fi
+
+      # Check owner count - Azure requires at least 1 owner
+      OWNER_COUNT=$(az ad group owner list --group "$GROUP_ID" --query "length(@)" -o tsv 2>/dev/null || echo "0")
+      if [ "$OWNER_COUNT" -le 1 ]; then
+        echo "WARNING: Cannot remove old admin - they are the only owner. Azure requires at least 1 owner."
+        echo "The new admin will be added, then you may need to manually remove the old admin."
+        exit 0
+      fi
+
+      echo "Removing old admin (ID: $OLD_ADMIN_ID) from group (ID: $GROUP_ID)..."
+      if az ad group owner remove --group "$GROUP_ID" --owner-object-id "$OLD_ADMIN_ID"; then
+        echo "Successfully removed old admin from group."
+      else
+        echo "ERROR: Failed to remove old admin. Check permissions."
+        exit 1
       fi
     EOT
   }
@@ -135,12 +165,34 @@ resource "null_resource" "admin_owner" {
   # Then this fires with the NEW admin_email
   provisioner "local-exec" {
     command = <<-EOT
+      set -e
+      echo "Adding new admin '${self.triggers.admin_email}' to group '${self.triggers.group_name}'..."
+
       NEW_ADMIN_ID=$(az ad user show --id "${self.triggers.admin_email}" --query id -o tsv 2>/dev/null || true)
-      if [ -n "$NEW_ADMIN_ID" ] && [ "$NEW_ADMIN_ID" != "None" ]; then
-        GROUP_ID=$(az ad group list --display-name "${self.triggers.group_name}" --query "[0].id" -o tsv 2>/dev/null || true)
-        if [ -n "$GROUP_ID" ] && [ "$GROUP_ID" != "None" ]; then
-          az ad group owner add --group "$GROUP_ID" --owner-id "$NEW_ADMIN_ID" 2>/dev/null || echo "Could not add new admin (may already be owner)"
-        fi
+      if [ -z "$NEW_ADMIN_ID" ] || [ "$NEW_ADMIN_ID" = "None" ]; then
+        echo "ERROR: New admin user '${self.triggers.admin_email}' not found in Azure AD."
+        exit 1
+      fi
+
+      GROUP_ID=$(az ad group list --display-name "${self.triggers.group_name}" --query "[0].id" -o tsv 2>/dev/null || true)
+      if [ -z "$GROUP_ID" ] || [ "$GROUP_ID" = "None" ]; then
+        echo "ERROR: Group '${self.triggers.group_name}' not found in Azure AD."
+        exit 1
+      fi
+
+      # Check if already an owner
+      IS_OWNER=$(az ad group owner list --group "$GROUP_ID" --query "[?id=='$NEW_ADMIN_ID'].id" -o tsv 2>/dev/null || true)
+      if [ -n "$IS_OWNER" ]; then
+        echo "New admin is already an owner of this group, skipping add."
+        exit 0
+      fi
+
+      echo "Adding new admin (ID: $NEW_ADMIN_ID) to group (ID: $GROUP_ID)..."
+      if az ad group owner add --group "$GROUP_ID" --owner-object-id "$NEW_ADMIN_ID"; then
+        echo "Successfully added new admin to group."
+      else
+        echo "ERROR: Failed to add new admin. Check permissions."
+        exit 1
       fi
     EOT
   }
