@@ -2,28 +2,24 @@
 
 Creates Azure AD groups (Owners, Contributors, Readers) for a project set and assigns them roles at the given scope.
 
-## Group owners
+## Group owners behaviour
 
-Groups are created with the **Terraform execution identity** as owner (required for creation). The **admin email** user is then added as an owner.
+Groups are created with the **Terraform execution identity** and **admin email** user as initial owners.
 
 **Key behaviour:**
 
-- Group owners can be managed freely outside of Terraform (e.g. in the Azure portal) – Terraform will not remove them.
-- However, if the **admin email** user is removed as an owner outside of Terraform, they will be **re-added on the next `terraform apply`**.
-- If the **admin email input changes**, the old admin is removed and the new admin is added.
+- **Portal-added owners are preserved** – After creation, Terraform uses `lifecycle { ignore_changes = [owners] }` so owners added in the Azure portal (e.g. Technical Leads, managed identities for CI/CD) are never removed.
 
-This is implemented using two `terraform_data` resources:
+- **Admin email changes are handled automatically** – When `admin_email` changes, a `null_resource` with triggers:
+  1. Removes the **old** admin email user as owner (using the value stored in Terraform state)
+  2. Adds the **new** admin email user as owner
 
-1. **`admin_owner`** – Manages the admin email lifecycle. Triggers replacement only when `admin_email` changes, using the destroy provisioner to remove the old admin and create provisioner to add the new one.
-
-2. **`ensure_admin_present`** – Drift correction. This resource only exists when the admin is missing from a group's owners (detected via an external data source). When created, it adds the admin. When the admin is present, this resource is not in the `for_each` and is destroyed as a no-op.
-
-Both cases (admin email change and external drift) are handled in a **single apply**.
+This prevents accumulating old admins as group owners over time.
 
 **Requirements:**
 
-- Azure CLI (`az`) and `jq` must be installed and authenticated where Terraform runs.
-- The `hashicorp/external` provider (~> 2.0) is required.
+- Azure CLI (`az`) must be installed and authenticated where Terraform runs.
+- The `hashicorp/null` provider (~> 3.0) is required.
 
 <!-- BEGIN_TF_DOCS -->
 ## Requirements
@@ -31,16 +27,15 @@ Both cases (admin email change and external drift) are handled in a **single app
 | Name | Version |
 |------|---------|
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.4.0 |
-| <a name="requirement_external"></a> [external](#requirement\_external) | ~> 2.0 |
+| <a name="requirement_null"></a> [null](#requirement\_null) | ~> 3.0 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
-| <a name="provider_azuread"></a> [azuread](#provider\_azuread) | n/a |
-| <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) | n/a |
-| <a name="provider_external"></a> [external](#provider\_external) | ~> 2.0 |
-| <a name="provider_terraform"></a> [terraform](#provider\_terraform) | n/a |
+| <a name="provider_azuread"></a> [azuread](#provider\_azuread) | 3.7.0 |
+| <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) | 4.59.0 |
+| <a name="provider_null"></a> [null](#provider\_null) | 3.2.4 |
 
 ## Modules
 
@@ -53,11 +48,9 @@ No modules.
 | [azuread_group.groups](https://registry.terraform.io/providers/hashicorp/azuread/latest/docs/resources/group) | resource |
 | [azuread_group_member.group_members](https://registry.terraform.io/providers/hashicorp/azuread/latest/docs/resources/group_member) | resource |
 | [azurerm_role_assignment.group_roles](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/role_assignment) | resource |
-| [terraform_data.admin_owner](https://registry.terraform.io/providers/hashicorp/terraform/latest/docs/resources/data) | resource |
-| [terraform_data.ensure_admin_present](https://registry.terraform.io/providers/hashicorp/terraform/latest/docs/resources/data) | resource |
+| [null_resource.admin_owner](https://registry.terraform.io/providers/hashicorp/null/latest/docs/resources/resource) | resource |
 | [azuread_client_config.current](https://registry.terraform.io/providers/hashicorp/azuread/latest/docs/data-sources/client_config) | data source |
 | [azuread_users.members](https://registry.terraform.io/providers/hashicorp/azuread/latest/docs/data-sources/users) | data source |
-| [external_external.group_owners](https://registry.terraform.io/providers/hashicorp/external/latest/docs/data-sources/external) | data source |
 
 ## Inputs
 
