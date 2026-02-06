@@ -1,0 +1,19 @@
+output "resource_group_id" {
+  description = "The Resource Group ID where the GitHub Runners VNet is deployed."
+  value       = azurerm_resource_group.ghrunners.id
+}
+
+output "virtual_network" {
+  description = "The Virtual Network object for GitHub Runners VNet."
+  value       = azurerm_virtual_network.ghrunners_vnet
+}
+
+output "subnet_id" {
+  description = "The subnet ID for GitHub Runners delegated subnet. This is used by the GitHub Network Settings object for Service Association Links."
+  value       = [for subnet in azurerm_virtual_network.ghrunners_vnet.subnet : subnet.id if subnet.name == var.github_hosted_runners_subnet_name][0]
+}
+
+output "ip_reservation" {
+  description = "The IPAM Pool Static CIDR Reservation for GitHub Runners VNet."
+  value       = azurerm_network_manager_ipam_pool_static_cidr.reservations
+}
