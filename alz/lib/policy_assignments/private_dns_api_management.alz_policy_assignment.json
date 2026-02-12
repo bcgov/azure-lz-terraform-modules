@@ -1,0 +1,33 @@
+{
+  "name": "Deploy-Private-DNS-APIM",
+  "type": "Microsoft.Authorization/policyAssignments",
+  "apiVersion": "2024-04-01",
+  "properties": {
+    "displayName": "Deploy Private DNS API Management",
+    "description": "Deploys private dns for API Management instances",
+    "policyDefinitionId": "/providers/Microsoft.Authorization/policyDefinitions/Deploy-Private-DNS-Generic",
+    "metadata": {},
+    "scope": "/providers/Microsoft.Management/managementGroups/bcgov-managed-lz-forge",
+    "notScopes": [],
+    "parameters": {
+      "privateDnsZoneId": {
+        "value": "privateDnsZoneId"
+      },
+      "location": {
+        "value": "location"
+      },
+      "resourceType": {
+        "value": "Microsoft.ApiManagement/service"
+      },
+      "groupId": {
+        "value": "gateway"
+      }
+    },
+    "enforcementMode": "Default",
+    "overrides": []
+  },
+  "location": "canadacentral",
+  "identity": {
+    "type": "SystemAssigned"
+  }
+}
