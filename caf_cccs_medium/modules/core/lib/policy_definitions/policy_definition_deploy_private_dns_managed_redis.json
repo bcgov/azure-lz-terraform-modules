@@ -1,0 +1,141 @@
+{
+    "name": "Deploy-Private-DNS-ManagedRedis",
+    "type": "Microsoft.Authorization/policyDefinitions",
+    "apiVersion": "2024-05-01",
+    "properties": {
+      "displayName": "Deploy-Private-DNS-ManagedRedis",
+      "policyType": "Custom",
+      "mode": "Indexed",
+      "description": "Use private DNS zones to override the DNS resolution for Azure Managed Redis private endpoint. A private DNS zone links to your virtual network to resolve to Azure Managed Redis accounts.",
+      "metadata": {
+        "version": "1.0.0",
+        "category": "Cache (Azure Managed Redis)"
+      },
+      "parameters": {
+        "effect": {
+          "type": "String",
+          "metadata": {
+            "displayName": "Effect",
+            "description": "The effect of the policy.",
+            "strongType": "Effect",
+            "defaultValue": "DeployIfNotExists"
+          }
+        },
+        "managedRedisPrivateDnsZoneId": {
+          "type": "String",
+          "metadata": {
+            "displayName": "Azure Managed Redis Private DNS Zone ID",
+            "description": "The Private DNS Zone ID for Azure Managed Redis (privatelink.redis.azure.com).",
+            "strongType": "Microsoft.Network/privateDnsZones"
+          }
+        },
+        "redisEnterprisePrivateDnsZoneId": {
+          "type": "String",
+          "metadata": {
+            "displayName": "Redis Enterprise Private DNS Zone ID",
+            "description": "The Private DNS Zone ID for Azure Cache for Redis Enterprise (privatelink.redisenterprise.cache.azure.net).",
+            "strongType": "Microsoft.Network/privateDnsZones"
+          }
+        }
+      },
+      "policyRule": {
+        "if": {
+          "allOf": [
+            {
+              "equals": "Microsoft.Network/privateEndpoints",
+              "field": "type"
+            },
+            {
+              "count": {
+                "field": "Microsoft.Network/privateEndpoints/privateLinkServiceConnections[*]",
+                "where": {
+                  "allOf": [
+                    {
+                      "field": "Microsoft.Network/privateEndpoints/privateLinkServiceConnections[*].privateLinkServiceId",
+                      "contains": "Microsoft.Cache/redisEnterprise"
+                    },
+                    {
+                      "field": "Microsoft.Network/privateEndpoints/privateLinkServiceConnections[*].groupIds[*]",
+                      "equals": "redisEnterprise"
+                    }
+                  ]
+                }
+              },
+              "greaterOrEquals": 1
+            }
+          ]
+        },
+        "then": {
+          "effect": "[parameters('effect')]",
+          "details": {
+            "type": "Microsoft.Network/privateEndpoints/privateDnsZoneGroups",
+            "roleDefinitionIds": [
+              "/providers/Microsoft.Authorization/roleDefinitions/4d97b98b-1d4f-4787-a291-c67834d212e7",
+              "/providers/Microsoft.Authorization/roleDefinitions/acdd72a7-3385-48ef-bd42-f606fba81ae7"
+            ],
+            "deployment": {
+              "properties": {
+                "mode": "incremental",
+                "parameters": {
+                  "managedRedisPrivateDnsZoneId": {
+                    "value": "[parameters('managedRedisPrivateDnsZoneId')]"
+                  },
+                  "redisEnterprisePrivateDnsZoneId": {
+                    "value": "[parameters('redisEnterprisePrivateDnsZoneId')]"
+                  },
+                  "privateEndpointName": {
+                    "value": "[field('name')]"
+                  },
+                  "location": {
+                    "value": "[field('location')]"
+                  },
+                  "privateLinkServiceId": {
+                    "value": "[field('Microsoft.Network/privateEndpoints/privateLinkServiceConnections[*].privateLinkServiceId')]"
+                  }
+                },
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "parameters": {
+                    "managedRedisPrivateDnsZoneId": {
+                      "type": "string"
+                    },
+                    "redisEnterprisePrivateDnsZoneId": {
+                      "type": "string"
+                    },
+                    "privateEndpointName": {
+                      "type": "string"
+                    },
+                    "location": {
+                      "type": "string"
+                    },
+                    "privateLinkServiceId": {
+                      "type": "array"
+                    }
+                  },
+                  "resources": [
+                    {
+                      "apiVersion": "2022-07-01",
+                      "location": "[parameters('location')]",
+                      "name": "[concat(parameters('privateEndpointName'), '/deployedByPolicy')]",
+                      "properties": {
+                        "privateDnsZoneConfigs": [
+                          {
+                            "name": "redisEnterprise-private-dns-zone",
+                            "properties": {
+                              "privateDnsZoneId": "[if(contains(reference(parameters('privateLinkServiceId')[0], '2024-02-01', 'Full').id, 'managedRedis'), parameters('managedRedisPrivateDnsZoneId'), parameters('redisEnterprisePrivateDnsZoneId'))]"
+                            }
+                          }
+                        ]
+                      },
+                      "type": "Microsoft.Network/privateEndpoints/privateDnsZoneGroups"
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
