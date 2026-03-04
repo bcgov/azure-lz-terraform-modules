@@ -61,6 +61,18 @@
           {
             "field": "type",
             "equals": "Microsoft.Network/routeTables"
+          },
+          {
+            "field": "type",
+            "equals": "Microsoft.Network/networkSecurityPerimeters"
+          },
+          {
+            "field": "type",
+            "equals": "Microsoft.Network/networkSecurityPerimeters/profiles"
+          },
+          {
+            "field": "type",
+            "equals": "Microsoft.Network/networkSecurityPerimeters/profiles/accessRules"
           }
         ]
       },

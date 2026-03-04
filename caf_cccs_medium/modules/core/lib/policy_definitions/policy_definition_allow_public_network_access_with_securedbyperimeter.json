@@ -1,0 +1,66 @@
+{
+  "name": "Allow-Public-Network-Access-With-SecuredByPerimeter",
+  "type": "Microsoft.Authorization/policyDefinitions",
+  "apiVersion": "2024-05-01",
+  "scope": null,
+  "properties": {
+    "displayName": "Allow Public Network Access with SecuredByPerimeter",
+    "description": "This Policy will allow users to create resources with public network access if they are secured by a perimeter.",
+    "policyType": "Custom",
+    "mode": "Indexed",
+    "metadata": {
+      "version": "1.0.0",
+      "category": "Networking"
+    },
+    "parameters": {
+      "resourceTypeConfigurations": {
+        "type": "Array",
+        "metadata": {
+          "displayName": "Resource type configurations",
+          "description": "Resource type and publicNetworkAccess alias mappings to evaluate."
+        },
+        "defaultValue": []
+      },
+      "effect": {
+        "type": "String",
+        "metadata": {
+          "displayName": "Effect",
+          "description": "Deny, Audit or Disabled the execution of the Policy"
+        },
+        "allowedValues": [
+          "Deny",
+          "Audit",
+          "Disabled"
+        ],
+        "defaultValue": "Deny"
+      }
+    },
+    "policyRule": {
+      "if": {
+        "count": {
+          "value": "[parameters('resourceTypeConfigurations')]",
+          "name": "resourceTypeConfiguration",
+          "where": {
+            "allOf": [
+              {
+                "field": "type",
+                "equals": "[current('resourceTypeConfiguration').resourceType]"
+              },
+              {
+                "value": "[field(current('resourceTypeConfiguration').publicNetworkAccessAlias)]",
+                "notIn": [
+                  "Disabled",
+                  "SecuredByPerimeter"
+                ]
+              }
+            ]
+          }
+        },
+        "greater": 0
+      },
+      "then": {
+        "effect": "[parameters('effect')]"
+      }
+    }
+  }
+}
