@@ -15,7 +15,8 @@
       "Deny-Delete-NetworkWatch"
     ],
     "policy_definitions": [
-      "Deny-VNet-Address-Changes"
+      "Deny-VNet-Address-Changes",
+      "Allow-Public-Network-Access-With-SecuredByPerimeter"
     ],
     "policy_set_definitions": [],
     "role_definitions": [],

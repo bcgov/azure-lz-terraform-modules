@@ -13,14 +13,6 @@
       "category": "Networking"
     },
     "parameters": {
-      "resourceTypeConfigurations": {
-        "type": "Array",
-        "metadata": {
-          "displayName": "Resource type configurations",
-          "description": "Resource type and publicNetworkAccess alias mappings to evaluate."
-        },
-        "defaultValue": []
-      },
       "effect": {
         "type": "String",
         "metadata": {
@@ -37,17 +29,45 @@
     },
     "policyRule": {
       "if": {
-        "count": {
-          "value": "[parameters('resourceTypeConfigurations')]",
-          "name": "resourceTypeConfiguration",
-          "where": {
+        "anyOf": [
+          {
             "allOf": [
               {
                 "field": "type",
-                "equals": "[current('resourceTypeConfiguration').resourceType]"
+                "equals": "Microsoft.Sql/servers"
               },
               {
-                "value": "[field(current('resourceTypeConfiguration').publicNetworkAccessAlias)]",
+                "field": "Microsoft.Sql/servers/publicNetworkAccess",
+                "notIn": [
+                  "Disabled",
+                  "SecuredByPerimeter"
+                ]
+              }
+            ]
+          },
+          {
+            "allOf": [
+              {
+                "field": "type",
+                "equals": "Microsoft.Storage/storageAccounts"
+              },
+              {
+                "field": "Microsoft.Storage/storageAccounts/publicNetworkAccess",
+                "notIn": [
+                  "Disabled",
+                  "SecuredByPerimeter"
+                ]
+              }
+            ]
+          },
+          {
+            "allOf": [
+              {
+                "field": "type",
+                "equals": "Microsoft.KeyVault/vaults"
+              },
+              {
+                "field": "Microsoft.KeyVault/vaults/publicNetworkAccess",
                 "notIn": [
                   "Disabled",
                   "SecuredByPerimeter"
@@ -55,8 +75,7 @@
               }
             ]
           }
-        },
-        "greater": 0
+        ]
       },
       "then": {
         "effect": "[parameters('effect')]"

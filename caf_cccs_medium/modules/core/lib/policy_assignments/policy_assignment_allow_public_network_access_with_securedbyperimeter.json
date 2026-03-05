@@ -7,22 +7,6 @@
     "description": "This Policy will allow users to create resources with public network access if they are secured by a perimeter.",
     "notScopes": [],
     "parameters": {
-      "resourceTypeConfigurations": {
-        "value": [
-          {
-            "resourceType": "Microsoft.Sql/servers",
-            "publicNetworkAccessAlias": "Microsoft.Sql/servers/publicNetworkAccess"
-          },
-          {
-            "resourceType": "Microsoft.Storage/storageAccounts",
-            "publicNetworkAccessAlias": "Microsoft.Storage/storageAccounts/publicNetworkAccess"
-          },
-          {
-            "resourceType": "Microsoft.KeyVault/vaults",
-            "publicNetworkAccessAlias": "Microsoft.KeyVault/vaults/publicNetworkAccess"
-          }
-        ]
-      },
       "effect": {
         "value": "Deny"
       }
