@@ -164,9 +164,7 @@
             "azureMonitorPrivateDnsZoneId3": "privatelink.ods.opinsights.azure.com",
             "azureMonitorPrivateDnsZoneId4": "privatelink.agentsvc.azure-automation.net",
             "azureMonitorPrivateDnsZoneId5": "privatelink.blob.core.windows.net",
-            "azureManagedRedisPrivateDnsZoneId": "privatelink.redis.azure.com",
             "azureRedisCachePrivateDnsZoneId": "privatelink.redis.cache.windows.net",
-            "azureRedisEnterprisePrivateDnsZoneId": "privatelink.redisenterprise.cache.azure.net",
             "azureServiceBusNamespacePrivateDnsZoneId": "privatelink.servicebus.windows.net",
             "azureSignalRPrivateDnsZoneId": "privatelink.service.signalr.net",
             "azureSiteRecoveryBackupPrivateDnsZoneId": "privatelink.{regionCode}.backup.windowsazure.com",
@@ -308,24 +306,6 @@
           "defaultValue": "",
           "metadata": {
             "displayName": "azureMigratePrivateDnsZoneId",
-            "strongType": "Microsoft.Network/privateDnsZones",
-            "description": "Private DNS Zone Identifier"
-          }
-        },
-        "azureManagedRedisPrivateDnsZoneId": {
-          "type": "string",
-          "defaultValue": "",
-          "metadata": {
-            "displayName": "azureManagedRedisPrivateDnsZoneId",
-            "strongType": "Microsoft.Network/privateDnsZones",
-            "description": "Private DNS Zone Identifier"
-          }
-        },
-        "azureRedisEnterprisePrivateDnsZoneId": {
-          "type": "string",
-          "defaultValue": "",
-          "metadata": {
-            "displayName": "azureRedisEnterprisePrivateDnsZoneId",
             "strongType": "Microsoft.Network/privateDnsZones",
             "description": "Private DNS Zone Identifier"
           }
@@ -1061,23 +1041,6 @@
           "parameters": {
             "privateDnsZoneId": {
               "value": "[if(equals(parameters('dnsZoneSubscriptionId'), ''), parameters('azureMigratePrivateDnsZoneId'), format('/subscriptions/{0}/resourceGroups/{1}/providers/{2}/{3}', parameters('dnsZoneSubscriptionId'), toLower(parameters('dnsZoneResourceGroupName')), parameters('dnsZoneResourceType'), replace(replace(parameters('dnsZoneNames').azureMigratePrivateDnsZoneId, '{regionName}', parameters('dnsZoneRegion')), '{regionCode}', parameters('dnzZoneRegionShortNames')[parameters('dnsZoneRegion')])))]"
-            },
-            "effect": {
-              "value": "[parameters('effect')]"
-            }
-          },
-          "groupNames": [],
-          "definitionVersion": "1.*.*"
-        },
-        {
-          "policyDefinitionReferenceId": "DINE-Private-DNS-Azure-ManagedRedis",
-          "policyDefinitionId": "${root_scope_resource_id}/providers/Microsoft.Authorization/policyDefinitions/Deploy-Private-DNS-ManagedRedis",
-          "parameters": {
-            "managedRedisPrivateDnsZoneId": {
-              "value": "[if(equals(parameters('dnsZoneSubscriptionId'), ''), parameters('azureManagedRedisPrivateDnsZoneId'), format('/subscriptions/{0}/resourceGroups/{1}/providers/{2}/{3}', parameters('dnsZoneSubscriptionId'), toLower(parameters('dnsZoneResourceGroupName')), parameters('dnsZoneResourceType'), replace(replace(parameters('dnsZoneNames').azureManagedRedisPrivateDnsZoneId, '{regionName}', parameters('dnsZoneRegion')), '{regionCode}', parameters('dnzZoneRegionShortNames')[parameters('dnsZoneRegion')])))]"
-            },
-            "redisEnterprisePrivateDnsZoneId": {
-              "value": "[if(equals(parameters('dnsZoneSubscriptionId'), ''), parameters('azureRedisEnterprisePrivateDnsZoneId'), format('/subscriptions/{0}/resourceGroups/{1}/providers/{2}/{3}', parameters('dnsZoneSubscriptionId'), toLower(parameters('dnsZoneResourceGroupName')), parameters('dnsZoneResourceType'), replace(replace(parameters('dnsZoneNames').azureRedisEnterprisePrivateDnsZoneId, '{regionName}', parameters('dnsZoneRegion')), '{regionCode}', parameters('dnzZoneRegionShortNames')[parameters('dnsZoneRegion')])))]"
             },
             "effect": {
               "value": "[parameters('effect')]"

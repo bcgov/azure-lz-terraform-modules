@@ -1,9 +1,9 @@
 {
-    "name": "Deploy-Private-DNS-ManagedRedis",
+    "name": "Deploy-Private-DNS-Redis",
     "type": "Microsoft.Authorization/policyDefinitions",
     "apiVersion": "2024-05-01",
     "properties": {
-      "displayName": "Deploy-Private-DNS-ManagedRedis",
+      "displayName": "Deploy-Private-DNS-Redis",
       "policyType": "Custom",
       "mode": "Indexed",
       "description": "Use private DNS zones to override the DNS resolution for Azure Managed Redis private endpoint. A private DNS zone links to your virtual network to resolve to Azure Managed Redis accounts.",
@@ -25,7 +25,7 @@
           "type": "String",
           "metadata": {
             "displayName": "Azure Managed Redis Private DNS Zone ID",
-            "description": "The Private DNS Zone ID for Azure Managed Redis (privatelink.redis.azure.com).",
+            "description": "The Private DNS Zone ID for Azure Managed Redis (privatelink.redis.azure.net).",
             "strongType": "Microsoft.Network/privateDnsZones"
           }
         },
@@ -52,7 +52,7 @@
                   "allOf": [
                     {
                       "field": "Microsoft.Network/privateEndpoints/privateLinkServiceConnections[*].privateLinkServiceId",
-                      "contains": "Microsoft.Cache/redisEnterprise"
+                      "contains": "Microsoft.Cache/RedisEnterprise"
                     },
                     {
                       "field": "Microsoft.Network/privateEndpoints/privateLinkServiceConnections[*].groupIds[*]",
@@ -121,9 +121,9 @@
                       "properties": {
                         "privateDnsZoneConfigs": [
                           {
-                            "name": "redisEnterprise-private-dns-zone",
+                            "name": "managedRedis-private-dns-zone",
                             "properties": {
-                              "privateDnsZoneId": "[if(contains(reference(parameters('privateLinkServiceId')[0], '2024-02-01', 'Full').id, 'managedRedis'), parameters('managedRedisPrivateDnsZoneId'), parameters('redisEnterprisePrivateDnsZoneId'))]"
+                              "privateDnsZoneId": "[if(equals(toLower(reference(parameters('privateLinkServiceId')[0], '2025-04-01', 'Full').kind), 'v2'), parameters('managedRedisPrivateDnsZoneId'), parameters('redisEnterprisePrivateDnsZoneId'))]"
                             }
                           }
                         ]

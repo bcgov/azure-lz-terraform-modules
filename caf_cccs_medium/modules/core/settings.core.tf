@@ -27,6 +27,10 @@ locals {
         Deploy-Private-DNS-ACA = {
           defaultPrivateDnsZoneId : "/subscriptions/${var.subscription_id_connectivity}/resourceGroups/${var.root_id}-dns/providers/Microsoft.Network/privateDnsZones/privatelink.${lower(var.primary_location)}.azurecontainerapps.io"
         },
+        Deploy-Private-DNS-Redis = {
+          managedRedisPrivateDnsZoneId : "/subscriptions/${var.subscription_id_connectivity}/resourceGroups/${var.root_id}-dns/providers/Microsoft.Network/privateDnsZones/privatelink.redis.azure.net",
+          redisEnterprisePrivateDnsZoneId : "/subscriptions/${var.subscription_id_connectivity}/resourceGroups/${var.root_id}-dns/providers/Microsoft.Network/privateDnsZones/privatelink.redisenterprise.cache.azure.net",
+        },
         Audit-ZoneResiliency = {
           effect = "Disabled",
         }

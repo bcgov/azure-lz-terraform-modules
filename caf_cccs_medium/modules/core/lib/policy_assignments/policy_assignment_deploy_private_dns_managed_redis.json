@@ -1,5 +1,5 @@
 {
-    "name": "Deploy-Private-DNS-ManagedRedis",
+    "name": "Deploy-Private-DNS-Redis",
     "type": "Microsoft.Authorization/policyAssignments",
     "apiVersion": "2022-06-01",
     "properties": {
@@ -9,10 +9,10 @@
         "version": "1.0.0",
         "category": "Cache (Azure Managed Redis)"
       },
-      "policyDefinitionId": "${root_scope_resource_id}/providers/Microsoft.Authorization/policyDefinitions/Deploy-Private-DNS-ManagedRedis",
+      "policyDefinitionId": "${root_scope_resource_id}/providers/Microsoft.Authorization/policyDefinitions/Deploy-Private-DNS-Redis",
       "parameters": {
         "managedRedisPrivateDnsZoneId": {
-          "value": "/subscriptions/[[subscriptionId]]/resourceGroups/[[resourceGroupName]]/providers/Microsoft.Network/privateDnsZones/privatelink.redis.azure.com"
+          "value": "/subscriptions/[[subscriptionId]]/resourceGroups/[[resourceGroupName]]/providers/Microsoft.Network/privateDnsZones/privatelink.redis.azure.net"
         },
         "redisEnterprisePrivateDnsZoneId": {
           "value": "/subscriptions/[[subscriptionId]]/resourceGroups/[[resourceGroupName]]/providers/Microsoft.Network/privateDnsZones/privatelink.redisenterprise.cache.azure.net"

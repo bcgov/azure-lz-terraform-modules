@@ -8,6 +8,7 @@
       "Deploy-Private-DNS-APIM",
       "Deploy-Private-DNS-CgSrv",
       "Deploy-Private-DNS-ACA",
+      "Deploy-Private-DNS-Redis",
       "Deny-AppGw-Without-Tls",
       "Deploy-Private-DNS-PSQL",
       "MicrosoftCISv2",
@@ -19,6 +20,7 @@
       "Inherit-Ministry-Name-Tag",
       "Deploy-Private-DNS-CgSrv",
       "Deploy-Private-DNS-ACA",
+      "Deploy-Private-DNS-Redis",
       "Deny-VNet-DNS-Changes",
       "Deny-Protected-Network-Resources",
       "Deny-Delete-NetworkWatcher",
@@ -62,6 +64,10 @@
         },
         "Deploy-Private-DNS-ACA": {
           "defaultPrivateDnsZoneId": "SET using local.archetype_config_overrides"
+        },
+        "Deploy-Private-DNS-Redis": {
+          "managedRedisPrivateDnsZoneId": "SET using local.archetype_config_overrides",
+          "redisEnterprisePrivateDnsZoneId": "SET using local.archetype_config_overrides"
         }
       },
       "access_control": {}
