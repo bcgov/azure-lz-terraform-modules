@@ -5,7 +5,7 @@
   "scope": null,
   "properties": {
     "displayName": "Deny Creating Protected Networking Resource",
-    "description": "This Policy will prevent users from creating Express Route circuits, VPN Sites, VPN/NAT/Local Gateways, or Route Tables.",
+    "description": "This Policy will prevent users from creating Express Route circuits, VPN Sites, VPN/NAT/Local Gateways, Route Tables or Network Security Perimeteres.",
     "policyType": "Custom",
     "mode": "All",
     "metadata": {
@@ -61,6 +61,18 @@
           {
             "field": "type",
             "equals": "Microsoft.Network/routeTables"
+          },
+          {
+            "field": "type",
+            "equals": "Microsoft.Network/networkSecurityPerimeters"
+          },
+          {
+            "field": "type",
+            "equals": "Microsoft.Network/networkSecurityPerimeters/profiles"
+          },
+          {
+            "field": "type",
+            "equals": "Microsoft.Network/networkSecurityPerimeters/profiles/accessRules"
           }
         ]
       },

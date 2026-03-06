@@ -4,7 +4,7 @@
   "apiVersion": "2019-09-01",
   "properties": {
     "displayName": "Deny Creating Protected Networking Resource",
-    "description": "This Policy will prevent users from creating Express Route circuits, VPN Sites, VPN/NAT/Local Gateways, or Route Tables.",
+    "description": "This Policy will prevent users from creating Express Route circuits, VPN Sites, VPN/NAT/Local Gateways, Route Tables or Network Security Perimeters.",
     "notScopes": [],
     "parameters": {
       "effect": {
@@ -14,7 +14,7 @@
     "policyDefinitionId": "${root_scope_resource_id}/providers/Microsoft.Authorization/policyDefinitions/Deny-Protected-Network-Resources",
     "nonComplianceMessages": [
       {
-        "message": "Deploying Express Route circuits, VPN Sites, VPN/NAT/Local Gateways, or Route Tables in the Landing Zones is not allowed."
+        "message": "Deploying Express Route circuits, VPN Sites, VPN/NAT/Local Gateways, Route Tables, or Network Security Perimeters in the Landing Zones is not allowed."
       }
     ],
     "scope": "${current_scope_resource_id}",
