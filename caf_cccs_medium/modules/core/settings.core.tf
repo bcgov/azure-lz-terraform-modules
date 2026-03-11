@@ -64,6 +64,12 @@ locals {
           Network-Watcher-storageId           = "/subscriptions/${var.subscription_id_management}/resourceGroups/${var.network_watcher_storage_account_resource_group}/providers/Microsoft.Storage/storageAccounts/${var.network_watcher_storage_account_name}"
           Network-Watcher-workspaceResourceId = "/subscriptions/${var.subscription_id_management}/resourceGroups/${var.root_id}-mgmt/providers/Microsoft.OperationalInsights/workspaces/${var.root_id}-la"
         },
+        Deploy-NSP-Association = {
+          networkSecurityPerimeterName              = var.nsp_name
+          networkSecurityPerimeterResourceGroupName = var.nsp_resource_group_name
+          networkSecurityPerimeterSubscriptionId    = var.nsp_subscription_id
+          networkSecurityPerimeterProfileId         = "/subscriptions/${var.nsp_subscription_id}/resourceGroups/${var.nsp_resource_group_name}/providers//Microsoft.Network/networkSecurityPerimeters/centralnsp/profiles/${var.nsp_profile}"
+        },
         Deny-PublicPaaSEndpoints = {
           ContainerAppsEnvironmentDenyEffect = "Audit",
           containerAppsPublicNetworkAccess   = "Audit",
