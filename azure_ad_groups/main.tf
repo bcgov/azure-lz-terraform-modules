@@ -20,6 +20,8 @@ locals {
     }
   }
 
+  desired_group_names = [for _, group in local.groups : group.name]
+
   # Privileged Role IDs:
   # 8e3af657a8ff443ca75c2fe8c4bcb635 = Owner
   # b24988ac6180420aab8820f7382dd24c = Contributor
@@ -46,6 +48,20 @@ locals {
     data.azuread_users.members.object_ids
   ) : {}
 
+  existing_group_object_id_by_name = length(data.azuread_groups.existing.display_names) > 0 ? zipmap(
+    data.azuread_groups.existing.display_names,
+    data.azuread_groups.existing.object_ids
+  ) : {}
+
+  existing_groups = {
+    for group_key, group in local.groups :
+    group_key => {
+      name      = group.name
+      object_id = local.existing_group_object_id_by_name[group.name]
+    }
+    if contains(keys(local.existing_group_object_id_by_name), group.name)
+  }
+
   # Build raw list of all group-member pairs
   raw_group_members = flatten([
     for group_key, group in local.groups : [
@@ -67,7 +83,10 @@ locals {
       member           = item.member
       member_object_id = local.member_id_by_upn[lower(item.member)]
     }
-    if contains(keys(local.member_id_by_upn), lower(item.member))
+    if contains(keys(local.member_id_by_upn), lower(item.member)) && !contains(
+      try(data.azuread_group.existing[item.group_key].members, []),
+      local.member_id_by_upn[lower(item.member)]
+    )
   }
 
   # Terraform-defined owners: admin_email + Terraform execution identity
@@ -86,6 +105,20 @@ data "azuread_client_config" "current" {}
 data "azuread_users" "members" {
   ignore_missing       = true
   user_principal_names = length(local.all_members) > 0 ? local.all_members : []
+}
+
+# Read any matching pre-existing groups so we can avoid recreating memberships
+# that already exist outside Terraform state.
+data "azuread_groups" "existing" {
+  display_names    = local.desired_group_names
+  ignore_missing   = true
+  security_enabled = true
+}
+
+data "azuread_group" "existing" {
+  for_each = local.existing_groups
+
+  object_id = each.value.object_id
 }
 
 # Create the groups
