@@ -68,7 +68,7 @@ locals {
           networkSecurityPerimeterName              = var.nsp_name
           networkSecurityPerimeterResourceGroupName = var.nsp_resource_group_name
           networkSecurityPerimeterSubscriptionId    = var.nsp_subscription_id
-          networkSecurityPerimeterProfileId         = "/subscriptions/${var.nsp_subscription_id}/resourceGroups/${var.nsp_resource_group_name}/providers//Microsoft.Network/networkSecurityPerimeters/centralnsp/profiles/${var.nsp_profile}"
+          networkSecurityPerimeterProfileId         = "/subscriptions/${var.nsp_subscription_id}/resourceGroups/${var.nsp_resource_group_name}/providers/Microsoft.Network/networkSecurityPerimeters/centralnsp/profiles/${var.nsp_profile}"
         },
         Deny-PublicPaaSEndpoints = {
           ContainerAppsEnvironmentDenyEffect = "Audit",

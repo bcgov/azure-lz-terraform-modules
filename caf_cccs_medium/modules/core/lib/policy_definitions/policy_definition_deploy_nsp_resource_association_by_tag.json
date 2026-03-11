@@ -9,7 +9,7 @@
     "policyType": "Custom",
     "mode": "All",
     "metadata": {
-      "version": "1.0.1",
+      "version": "1.0.4",
       "category": "Networking"
     },
     "parameters": {
@@ -85,14 +85,6 @@
           "Disabled"
         ],
         "defaultValue": "DeployIfNotExists"
-      },
-      "deploymentLocation": {
-        "type": "String",
-        "metadata": {
-          "displayName": "Deployment Location",
-          "description": "Azure region used for the policy-managed subscription deployment resource. Example: 'canadacentral'."
-        },
-        "defaultValue": "canadacentral"
       }
     },
     "policyRule": {
@@ -132,7 +124,7 @@
             "/providers/Microsoft.Authorization/roleDefinitions/4d97b98b-1d4f-4787-a291-c67834d212e7"
           ],
           "deployment": {
-            "location": "[parameters('deploymentLocation')]",
+            "location": "canadacentral",
             "properties": {
               "mode": "incremental",
               "parameters": {
