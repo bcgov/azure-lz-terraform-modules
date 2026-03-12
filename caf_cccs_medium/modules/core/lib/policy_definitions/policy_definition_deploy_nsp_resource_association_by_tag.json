@@ -9,7 +9,7 @@
     "policyType": "Custom",
     "mode": "All",
     "metadata": {
-      "version": "1.0.4",
+      "version": "1.0.5",
       "category": "Networking"
     },
     "parameters": {
@@ -115,13 +115,12 @@
       "then": {
         "effect": "[parameters('effect')]",
         "details": {
-          "type": "Microsoft.Resources/deployments",
-          "name": "[concat('nspAssocDeploy-', uniqueString(field('id'), parameters('networkSecurityPerimeterProfileId')))]",
+          "type": "Microsoft.Network/networkSecurityPerimeters/resourceAssociations",
+          "name": "[concat(parameters('networkSecurityPerimeterName'), '/?')]",
           "existenceScope": "Subscription",
           "deploymentScope": "Subscription",
           "roleDefinitionIds": [
-            "/providers/Microsoft.Authorization/roleDefinitions/b24988ac-6180-42a0-ab88-20f7382dd24c",
-            "/providers/Microsoft.Authorization/roleDefinitions/4d97b98b-1d4f-4787-a291-c67834d212e7"
+            "/providers/Microsoft.Authorization/roleDefinitions/b24988ac-6180-42a0-ab88-20f7382dd24c"
           ],
           "deployment": {
             "location": "canadacentral",
@@ -171,14 +170,15 @@
                   }
                 },
                 "variables": {
-                  "associationName": "[concat('assoc-', uniqueString(parameters('evaluatedResourceId'), parameters('networkSecurityPerimeterProfileId')))]",
-                  "nestedDeploymentName": "[concat('nspAssocNested-', uniqueString(parameters('evaluatedResourceId'), parameters('networkSecurityPerimeterProfileId')))]"
+                  "profileName": "[toLower(last(split(parameters('networkSecurityPerimeterProfileId'), '/')))]",
+                  "associationName": "[concat('assoc-', variables('profileName'), '-', substring(uniqueString(parameters('evaluatedResourceId'), parameters('networkSecurityPerimeterProfileId')), 0, 8))]",
+                  "profileDeploymentName": "[concat('nspAssoc-', variables('profileName'), '-', substring(uniqueString(parameters('evaluatedResourceId'), parameters('networkSecurityPerimeterProfileId')), 0, 8))]"
                 },
                 "resources": [
                   {
                     "type": "Microsoft.Resources/deployments",
                     "apiVersion": "2025-04-01",
-                    "name": "[variables('nestedDeploymentName')]",
+                    "name": "[variables('profileDeploymentName')]",
                     "subscriptionId": "[parameters('networkSecurityPerimeterSubscriptionId')]",
                     "resourceGroup": "[parameters('networkSecurityPerimeterResourceGroupName')]",
                     "properties": {

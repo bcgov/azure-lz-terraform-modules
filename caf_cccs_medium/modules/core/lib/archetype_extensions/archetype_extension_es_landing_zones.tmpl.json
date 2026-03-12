@@ -12,12 +12,10 @@
       "Deny-New-VNet-Peerings",
       "Deny-Delete-Diagnostics",
       "Deny-AMPLS-Creation",
-      "Deny-Delete-NetworkWatch",
-      "Deploy-NSP-Association"
+      "Deny-Delete-NetworkWatch"
     ],
     "policy_definitions": [
-      "Deny-VNet-Address-Changes",
-      "Deploy-NSP-Resource-Association-By-Tag"
+      "Deny-VNet-Address-Changes"
     ],
     "policy_set_definitions": [],
     "role_definitions": [],
@@ -53,12 +51,6 @@
         "Deny-Delete-NetworkWatch": {
           "Network-Watcher-storageId": "SET using local.archetype_config_overrides",
           "Network-Watcher-workspaceResourceId": "SET using local.archetype_config_overrides"
-        },
-        "Deploy-NSP-Association": {
-          "networkSecurityPerimeterName": "SET using local.archetype_config_overrides",
-          "networkSecurityPerimeterResourceGroupName": "SET using local.archetype_config_overrides",
-          "networkSecurityPerimeterSubscriptionId": "SET using local.archetype_config_overrides",
-          "networkSecurityPerimeterProfileId": "SET using local.archetype_config_overrides"
         }
       },
       "access_control": {}
