@@ -9,7 +9,7 @@
       "version": "1.0.0",
       "category": "Networking"
     },
-    "policyDefinitionId": "${current_scope_resource_id}/providers/Microsoft.Authorization/policyDefinitions/Deploy-NSP-Resource-Association-By-Tag",
+    "policyDefinitionId": "${root_scope_resource_id}/providers/Microsoft.Authorization/policyDefinitions/Deploy-NSP-Resource-Association-By-Tag",
     "parameters": {
       "networkSecurityPerimeterName": {
         "value": ""

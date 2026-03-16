@@ -9,7 +9,7 @@
     "policyType": "Custom",
     "mode": "All",
     "metadata": {
-      "version": "1.0.5",
+      "version": "1.0.6",
       "category": "Networking"
     },
     "parameters": {
@@ -115,8 +115,8 @@
       "then": {
         "effect": "[parameters('effect')]",
         "details": {
-          "type": "Microsoft.Network/networkSecurityPerimeters/resourceAssociations",
-          "name": "[concat(parameters('networkSecurityPerimeterName'), '/?')]",
+          "type": "Microsoft.Resources/deployments",
+          "name": "[concat('nspAssocDeploy-', uniqueString(field('id'), parameters('networkSecurityPerimeterProfileId')))]",
           "existenceScope": "Subscription",
           "deploymentScope": "Subscription",
           "roleDefinitionIds": [
