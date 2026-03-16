@@ -5,11 +5,11 @@
   "scope": null,
   "properties": {
     "displayName": "Deploy Network Security Perimeter (NSP) resource association",
-    "description": "Creates a Microsoft.Network/networkSecurityPerimeters/resourceAssociations entry for tagged resources.",
+    "description": "Creates a Microsoft.Network/networkSecurityPerimeters/resourceAssociations entry for tagged resources. For Microsoft.CognitiveServices/accounts, only kind OpenAI and AIServices are targeted.",
     "policyType": "Custom",
     "mode": "All",
     "metadata": {
-      "version": "1.0.6",
+      "version": "1.0.7",
       "category": "Networking"
     },
     "parameters": {
@@ -91,19 +91,37 @@
       "if": {
         "allOf": [
           {
-            "field": "type",
-            "in": [
-              "Microsoft.Insights/dataCollectionEndpoints",
-              "Microsoft.Insights/ScheduledQueryRules",
-              "Microsoft.Insights/actionGroups",
-              "Microsoft.OperationalInsights/workspaces",
-              "Microsoft.Search/searchServices",
-              "Microsoft.DocumentDB/databaseAccounts",
-              "Microsoft.EventHub/namespaces",
-              "Microsoft.KeyVault/vaults",
-              "Microsoft.Sql/servers",
-              "Microsoft.Storage/storageAccounts",
-              "Microsoft.CognitiveServices/accounts"
+            "anyOf": [
+              {
+                "field": "type",
+                "in": [
+                  "Microsoft.Insights/dataCollectionEndpoints",
+                  "Microsoft.Insights/ScheduledQueryRules",
+                  "Microsoft.Insights/actionGroups",
+                  "Microsoft.OperationalInsights/workspaces",
+                  "Microsoft.Search/searchServices",
+                  "Microsoft.DocumentDB/databaseAccounts",
+                  "Microsoft.EventHub/namespaces",
+                  "Microsoft.KeyVault/vaults",
+                  "Microsoft.Sql/servers",
+                  "Microsoft.Storage/storageAccounts"
+                ]
+              },
+              {
+                "allOf": [
+                  {
+                    "field": "type",
+                    "equals": "Microsoft.CognitiveServices/accounts"
+                  },
+                  {
+                    "field": "kind",
+                    "in": [
+                      "OpenAI",
+                      "AIServices"
+                    ]
+                  }
+                ]
+              }
             ]
           },
           {
