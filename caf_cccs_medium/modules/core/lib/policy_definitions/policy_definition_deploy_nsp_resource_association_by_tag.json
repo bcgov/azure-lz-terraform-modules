@@ -1,10 +1,10 @@
 {
-  "name": "Deploy-NSP-Resource-Association-By-Tag",
+  "name": "Deploy-NSP-Resource-Association",
   "type": "Microsoft.Authorization/policyDefinitions",
   "apiVersion": "2024-05-01",
   "scope": null,
   "properties": {
-    "displayName": "Deploy Network Security Perimeter (NSP) resource association when SecuredByPerimeter tag is set",
+    "displayName": "Deploy Network Security Perimeter (NSP) resource association",
     "description": "Creates a Microsoft.Network/networkSecurityPerimeters/resourceAssociations entry for tagged resources.",
     "policyType": "Custom",
     "mode": "All",

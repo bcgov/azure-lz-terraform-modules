@@ -30,7 +30,7 @@
       "Deny-Delete-Diagnostics",
       "Resource-Locations",
       "Deny-AMPLS-Creation",
-      "Deploy-NSP-Resource-Association-By-Tag"
+      "Deploy-NSP-Resource-Association"
     ],
     "policy_set_definitions": [
       "Deploy-Private-DNS-Zones-Custom",

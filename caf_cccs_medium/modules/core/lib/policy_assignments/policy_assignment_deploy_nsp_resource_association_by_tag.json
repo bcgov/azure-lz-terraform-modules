@@ -3,13 +3,13 @@
   "type": "Microsoft.Authorization/policyAssignments",
   "apiVersion": "2022-06-01",
   "properties": {
-    "displayName": "Deploy Network Security Perimeter (NSP) resource association by tag",
+    "displayName": "Deploy Network Security Perimeter (NSP) resource association",
     "description": "This policy deploys an NSP resource association for supported resources when the configured tag is present.",
     "metadata": {
       "version": "1.0.0",
       "category": "Networking"
     },
-    "policyDefinitionId": "${root_scope_resource_id}/providers/Microsoft.Authorization/policyDefinitions/Deploy-NSP-Resource-Association-By-Tag",
+    "policyDefinitionId": "${root_scope_resource_id}/providers/Microsoft.Authorization/policyDefinitions/Deploy-NSP-Resource-Association",
     "parameters": {
       "networkSecurityPerimeterName": {
         "value": ""
