@@ -4,7 +4,7 @@ from decimal import ROUND_HALF_UP, Decimal
 import pandas as pd
 from azure.identity import DefaultAzureCredential
 from azure.mgmt.costmanagement import CostManagementClient
-from azure.mgmt.resource import SubscriptionClient
+from azure.mgmt.resource import ResourceManagementClient
 from dateutil.relativedelta import relativedelta
 
 
@@ -21,7 +21,7 @@ def get_subscription_costs(
         # Initialize credentials and client
         credential = DefaultAzureCredential()
         cost_client = CostManagementClient(credential)
-        sub_client = SubscriptionClient(credential)
+        resource_client = ResourceManagementClient(credential, "c1351539-1deb-44e8-b9b9-10f0a608fda4")
 
         # Build query definition for costs
         query = {
@@ -87,15 +87,20 @@ def get_subscription_costs(
         print("\nFetching subscription tags...")
         for index, row in df.iterrows():
             try:
-                sub = sub_client.subscriptions.get(row["SubscriptionId"])
+                sub_scope=f"/subscriptions/{row['SubscriptionId']}"
+                tag_details = resource_client.tags.get_at_scope(sub_scope)
+                tags = (tag_details.properties.tags
+                        if tag_details and tag_details.properties
+                        else {}
+                )
                 df.at[index, "AccountCoding"] = (
-                    sub.tags.get("account_coding", "Untagged")
-                    if sub.tags
+                    tags.get("account_coding", "Untagged")
+                    if tags
                     else "Untagged"
                 )
                 df.at[index, "ExpenseAuthority"] = (
-                    sub.tags.get("expense_authority", "Untagged")
-                    if sub.tags
+                    tags.get("expense_authority", "Untagged")
+                    if tags
                     else "Untagged"
                 )
             except Exception as e:
