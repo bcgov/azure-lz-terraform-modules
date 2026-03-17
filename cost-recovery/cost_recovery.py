@@ -206,10 +206,10 @@ if __name__ == "__main__":
         help="Number of previous months to include (default: 1)",
     )
     parser.add_argument(
-        "--mgmt-group-live",
+        "--mgmt-group",
         type=str,
         default="bcgov-managed-lz-live-landing-zones",
-        help="Name of the live landing zones management group (default: bcgov-managed-lz-live-landing-zones)",
+        help="Starting management group ID for hierarchy traversal (default: bcgov-managed-lz-live-landing-zones)",
     )
     parser.add_argument(
         "--mgmt-group-decom",
@@ -249,7 +249,7 @@ if __name__ == "__main__":
     )
     args = parser.parse_args()
 
-    mgmt_group_live = args.mgmt_group_live
+    mgmt_group = args.mgmt_group
     mgmt_group_decom = args.mgmt_group_decom
     include_decom = args.include_decom
     granularity = args.granularity
@@ -268,14 +268,14 @@ if __name__ == "__main__":
         end = last_of_previous.strftime("%Y-%m-%d")
 
     print(f"\nQuerying costs for period: {start} to {end}")
-    print(f"Live management group: {mgmt_group_live}")
+    print(f"Target management group: {mgmt_group}")
     if include_decom:
         print(f"Decommissioned management group: {mgmt_group_decom}")
     print(f"Granularity: {granularity}")
 
     try:
-        # Query live management group
-        df_live, _ = get_subscription_costs(mgmt_group_live, start, end, granularity)
+        # Query target management group
+        df_live, _ = get_subscription_costs(mgmt_group, start, end, granularity)
         dfs = [df_live]
         if include_decom:
             df_decom, _ = get_subscription_costs(mgmt_group_decom, start, end, granularity)
