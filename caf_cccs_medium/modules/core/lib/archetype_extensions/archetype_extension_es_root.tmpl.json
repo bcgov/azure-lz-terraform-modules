@@ -11,7 +11,6 @@
       "Deploy-Private-DNS-Redis",
       "Deny-AppGw-Without-Tls",
       "Deploy-Private-DNS-PSQL",
-      "Deploy-NSP-Association",
       "MicrosoftCISv2",
       "NIST-SP-800-53-Rev5"
     ],
