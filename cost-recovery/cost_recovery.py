@@ -4,7 +4,7 @@ from decimal import ROUND_HALF_UP, Decimal
 import pandas as pd
 from azure.identity import DefaultAzureCredential
 from azure.mgmt.costmanagement import CostManagementClient
-from azure.mgmt.resource import SubscriptionClient
+from azure.mgmt.resource import ResourceManagementClient
 from dateutil.relativedelta import relativedelta
 
 
@@ -21,7 +21,7 @@ def get_subscription_costs(
         # Initialize credentials and client
         credential = DefaultAzureCredential()
         cost_client = CostManagementClient(credential)
-        sub_client = SubscriptionClient(credential)
+        resource_client = ResourceManagementClient(credential, "c1351539-1deb-44e8-b9b9-10f0a608fda4")
 
         # Build query definition for costs
         query = {
@@ -87,15 +87,20 @@ def get_subscription_costs(
         print("\nFetching subscription tags...")
         for index, row in df.iterrows():
             try:
-                sub = sub_client.subscriptions.get(row["SubscriptionId"])
+                sub_scope=f"/subscriptions/{row['SubscriptionId']}"
+                tag_details = resource_client.tags.get_at_scope(sub_scope)
+                tags = (tag_details.properties.tags
+                        if tag_details and tag_details.properties
+                        else {}
+                )
                 df.at[index, "AccountCoding"] = (
-                    sub.tags.get("account_coding", "Untagged")
-                    if sub.tags
+                    tags.get("account_coding", "Untagged")
+                    if tags
                     else "Untagged"
                 )
                 df.at[index, "ExpenseAuthority"] = (
-                    sub.tags.get("expense_authority", "Untagged")
-                    if sub.tags
+                    tags.get("expense_authority", "Untagged")
+                    if tags
                     else "Untagged"
                 )
             except Exception as e:
@@ -201,10 +206,10 @@ if __name__ == "__main__":
         help="Number of previous months to include (default: 1)",
     )
     parser.add_argument(
-        "--mgmt-group-live",
+        "--mgmt-group",
         type=str,
         default="bcgov-managed-lz-live-landing-zones",
-        help="Name of the live landing zones management group (default: bcgov-managed-lz-live-landing-zones)",
+        help="Starting management group ID for hierarchy traversal (default: bcgov-managed-lz-live-landing-zones)",
     )
     parser.add_argument(
         "--mgmt-group-decom",
@@ -244,7 +249,7 @@ if __name__ == "__main__":
     )
     args = parser.parse_args()
 
-    mgmt_group_live = args.mgmt_group_live
+    mgmt_group = args.mgmt_group
     mgmt_group_decom = args.mgmt_group_decom
     include_decom = args.include_decom
     granularity = args.granularity
@@ -263,14 +268,14 @@ if __name__ == "__main__":
         end = last_of_previous.strftime("%Y-%m-%d")
 
     print(f"\nQuerying costs for period: {start} to {end}")
-    print(f"Live management group: {mgmt_group_live}")
+    print(f"Target management group: {mgmt_group}")
     if include_decom:
         print(f"Decommissioned management group: {mgmt_group_decom}")
     print(f"Granularity: {granularity}")
 
     try:
-        # Query live management group
-        df_live, _ = get_subscription_costs(mgmt_group_live, start, end, granularity)
+        # Query target management group
+        df_live, _ = get_subscription_costs(mgmt_group, start, end, granularity)
         dfs = [df_live]
         if include_decom:
             df_decom, _ = get_subscription_costs(mgmt_group_decom, start, end, granularity)
