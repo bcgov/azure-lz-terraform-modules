@@ -28,7 +28,8 @@
       "Deny-New-VNet-Peerings",
       "Deny-Delete-Diagnostics",
       "Resource-Locations",
-      "Deny-AMPLS-Creation"
+      "Deny-AMPLS-Creation",
+      "Deploy-NSP-Resource-Association"
     ],
     "policy_set_definitions": [
       "Deploy-Private-DNS-Zones-Custom",
@@ -68,6 +69,12 @@
         "Deploy-Private-DNS-Redis": {
           "managedRedisPrivateDnsZoneId": "SET using local.archetype_config_overrides",
           "redisEnterprisePrivateDnsZoneId": "SET using local.archetype_config_overrides"
+        },
+        "Deploy-NSP-Association": {
+          "networkSecurityPerimeterName": "SET using local.archetype_config_overrides",
+          "networkSecurityPerimeterResourceGroupName": "SET using local.archetype_config_overrides",
+          "networkSecurityPerimeterSubscriptionId": "SET using local.archetype_config_overrides",
+          "networkSecurityPerimeterProfileId": "SET using local.archetype_config_overrides"
         }
       },
       "access_control": {}

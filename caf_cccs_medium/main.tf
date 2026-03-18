@@ -102,4 +102,9 @@ module "core" {
 
   network_watcher_storage_account_resource_group = var.network_watcher_storage_account_resource_group
   network_watcher_storage_account_name           = var.network_watcher_storage_account_name
+
+  nsp_name                = var.nsp_name
+  nsp_resource_group_name = var.nsp_resource_group_name
+  nsp_subscription_id     = var.nsp_subscription_id
+  nsp_profile             = var.nsp_profile
 }
