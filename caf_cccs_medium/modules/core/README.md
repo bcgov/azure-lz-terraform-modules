@@ -35,6 +35,10 @@
 | <a name="input_country_location"></a> [country\_location](#input\_country\_location) | Sets the country location. Used by some Azure resources taht are not tied to the regions. | `string` | n/a | yes |
 | <a name="input_network_watcher_storage_account_name"></a> [network\_watcher\_storage\_account\_name](#input\_network\_watcher\_storage\_account\_name) | The Storage Account name used for Network Watcher VNet Flow Logs. | `string` | n/a | yes |
 | <a name="input_network_watcher_storage_account_resource_group"></a> [network\_watcher\_storage\_account\_resource\_group](#input\_network\_watcher\_storage\_account\_resource\_group) | The Resource Group of the Storage Account used for Network Watcher VNet Flow Logs. | `string` | n/a | yes |
+| <a name="input_nsp_name"></a> [nsp\_name](#input\_nsp\_name) | Name of the Network Security Perimeter (NSP) to associate resources with. | `string` | `""` | no |
+| <a name="input_nsp_profile"></a> [nsp\_profile](#input\_nsp\_profile) | Name of the NSP profile. | `string` | `""` | no |
+| <a name="input_nsp_resource_group_name"></a> [nsp\_resource\_group\_name](#input\_nsp\_resource\_group\_name) | Resource group name where the Network Security Perimeter (NSP) exists. | `string` | `""` | no |
+| <a name="input_nsp_subscription_id"></a> [nsp\_subscription\_id](#input\_nsp\_subscription\_id) | Subscription ID where the Network Security Perimeter (NSP) exists. | `string` | `""` | no |
 | <a name="input_policy_effect"></a> [policy\_effect](#input\_policy\_effect) | Sets the effect for the policy assignment. | `string` | `null` | no |
 | <a name="input_primary_location"></a> [primary\_location](#input\_primary\_location) | Sets the location for "primary" resources to be created in. | `string` | n/a | yes |
 | <a name="input_root_id"></a> [root\_id](#input\_root\_id) | Sets the value used for generating unique resource naming within the module. | `string` | n/a | yes |
