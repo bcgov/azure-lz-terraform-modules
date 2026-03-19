@@ -6,7 +6,7 @@
 | Name | Version |
 |------|---------|
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.9, < 2.0 |
-| <a name="requirement_alz"></a> [alz](#requirement\_alz) | ~> 0.17 |
+| <a name="requirement_alz"></a> [alz](#requirement\_alz) | ~> 0.20 |
 | <a name="requirement_azapi"></a> [azapi](#requirement\_azapi) | ~> 2.2 |
 | <a name="requirement_azurerm"></a> [azurerm](#requirement\_azurerm) | ~> 4.0 |
 
@@ -21,7 +21,7 @@
 | Name | Source | Version |
 |------|--------|---------|
 | <a name="module_amba_alz"></a> [amba\_alz](#module\_amba\_alz) | Azure/avm-ptn-monitoring-amba-alz/azurerm | 0.3.0 |
-| <a name="module_amba_policy"></a> [amba\_policy](#module\_amba\_policy) | Azure/avm-ptn-alz/azurerm | 0.15.0 |
+| <a name="module_amba_policy"></a> [amba\_policy](#module\_amba\_policy) | Azure/avm-ptn-alz/azurerm | 0.19.0 |
 
 ## Resources
 
