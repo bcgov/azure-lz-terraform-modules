@@ -1,5 +1,9 @@
 *.tfstate
 *.tfstate.*
+tfplan
+.*tfplan
+tfplan.json
+.*tfplan.json
 crash.log
 # *.tfvars
 override.tf
