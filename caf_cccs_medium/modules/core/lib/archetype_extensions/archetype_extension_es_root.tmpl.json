@@ -29,6 +29,7 @@
       "Deny-Delete-Diagnostics",
       "Resource-Locations",
       "Deny-AMPLS-Creation",
+      "Enforce-AKS-CIDRs",
       "Deploy-NSP-Resource-Association"
     ],
     "policy_set_definitions": [

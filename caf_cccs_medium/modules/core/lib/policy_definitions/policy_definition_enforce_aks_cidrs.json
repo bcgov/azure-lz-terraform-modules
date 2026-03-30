@@ -1,0 +1,106 @@
+{
+  "name": "Enforce-AKS-CIDRs",
+  "type": "Microsoft.Authorization/policyDefinitions",
+  "apiVersion": "2024-05-01",
+  "scope": null,
+  "properties": {
+    "displayName": "Enforce AKS Pod and Service CIDR ranges",
+    "description": "Restricts AKS Pod CIDR to an approved range and optionally enforces a Service CIDR range.",
+    "policyType": "Custom",
+    "mode": "All",
+    "metadata": {
+      "version": "1.0.0",
+      "category": "Kubernetes"
+    },
+    "parameters": {
+      "allowedPodCidrRanges": {
+        "type": "Array",
+        "metadata": {
+          "displayName": "Allowed Pod CIDR Ranges",
+          "description": "AKS podCidr must be fully contained in one of these CIDR ranges."
+        },
+        "defaultValue": [
+          "10.10.0.0/16"
+        ]
+      },
+      "enforceServiceCidr": {
+        "type": "Boolean",
+        "metadata": {
+          "displayName": "Enforce Service CIDR",
+          "description": "When true, AKS serviceCidr must be fully contained in the allowed Service CIDR range."
+        },
+        "defaultValue": false
+      },
+      "allowedServiceCidrRanges": {
+        "type": "Array",
+        "metadata": {
+          "displayName": "Allowed Service CIDR Ranges",
+          "description": "AKS serviceCidr must be fully contained in one of these CIDR ranges when Service CIDR enforcement is enabled."
+        },
+        "defaultValue": [
+          "10.20.0.0/16"
+        ]
+      },
+      "effect": {
+        "type": "String",
+        "metadata": {
+          "displayName": "Effect",
+          "description": "Deny, Audit or Disabled the execution of the Policy"
+        },
+        "allowedValues": [
+          "Deny",
+          "Audit",
+          "Disabled"
+        ],
+        "defaultValue": "Deny"
+      }
+    },
+    "policyRule": {
+      "if": {
+        "allOf": [
+          {
+            "field": "type",
+            "equals": "Microsoft.ContainerService/managedClusters"
+          },
+          {
+            "anyOf": [
+              {
+                "count": {
+                  "value": "[parameters('allowedPodCidrRanges')]",
+                  "name": "allowedPodCidrRange",
+                  "where": {
+                    "value": "[if(empty(field('Microsoft.ContainerService/managedClusters/networkProfile.podCidr')), bool('false'), ipRangeContains(current('allowedPodCidrRange'), field('Microsoft.ContainerService/managedClusters/networkProfile.podCidr')))]",
+                    "equals": true
+                  }
+                },
+                "equals": 0
+              },
+              {
+                "allOf": [
+                  {
+                    "value": "[parameters('enforceServiceCidr')]",
+                    "equals": true
+                  },
+                  {
+                    "count": {
+                      "value": "[parameters('allowedServiceCidrRanges')]",
+                      "name": "allowedServiceCidrRange",
+                      "where": {
+                        "value": "[if(empty(field('Microsoft.ContainerService/managedClusters/networkProfile.serviceCidr')), bool('false'), ipRangeContains(current('allowedServiceCidrRange'), field('Microsoft.ContainerService/managedClusters/networkProfile.serviceCidr')))]",
+                        "equals": true
+                      }
+                    },
+                    "equals": 0
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "then": {
+        "effect": "[parameters('effect')]"
+      }
+    }
+  }
+}

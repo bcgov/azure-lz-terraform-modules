@@ -66,6 +66,12 @@ locals {
         Deny-VNet-DNS-Changes = {
           VNet-DNS-Settings = var.VNet-DNS-Settings
         },
+        Enforce-AKS-CIDRs = {
+          allowedPodCidrRanges     = ["10.10.0.0/16"],
+          enforceServiceCidr       = false,
+          allowedServiceCidrRanges = ["10.20.0.0/16"],
+          effect                   = "Deny",
+        },
         Deny-Delete-NetworkWatch = {
           Network-Watcher-storageId           = "/subscriptions/${var.subscription_id_management}/resourceGroups/${var.network_watcher_storage_account_resource_group}/providers/Microsoft.Storage/storageAccounts/${var.network_watcher_storage_account_name}"
           Network-Watcher-workspaceResourceId = "/subscriptions/${var.subscription_id_management}/resourceGroups/${var.root_id}-mgmt/providers/Microsoft.OperationalInsights/workspaces/${var.root_id}-la"

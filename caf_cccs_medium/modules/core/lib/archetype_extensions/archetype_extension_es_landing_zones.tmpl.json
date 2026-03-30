@@ -9,6 +9,7 @@
       "Deny-VNet-DNS-Changes",
       "Deny-Protected-Network",
       "Deny-VNet-Creation",
+      "Enforce-AKS-CIDRs",
       "Deny-New-VNet-Peerings",
       "Deny-Delete-Diagnostics",
       "Deny-AMPLS-Creation",
@@ -47,6 +48,12 @@
         },
         "Deny-VNet-DNS-Changes": {
           "VNet-DNS-Settings": "SET using local.archetype_config_overrides"
+        },
+        "Enforce-AKS-CIDRs": {
+          "allowedPodCidrRanges": "SET using local.archetype_config_overrides",
+          "enforceServiceCidr": "SET using local.archetype_config_overrides",
+          "allowedServiceCidrRanges": "SET using local.archetype_config_overrides",
+          "effect": "SET using local.archetype_config_overrides"
         },
         "Deny-Delete-NetworkWatch": {
           "Network-Watcher-storageId": "SET using local.archetype_config_overrides",

@@ -1,0 +1,40 @@
+{
+  "name": "Enforce-AKS-CIDRs",
+  "type": "Microsoft.Authorization/policyAssignments",
+  "apiVersion": "2019-09-01",
+  "properties": {
+    "displayName": "Enforce AKS Pod and Service CIDR ranges",
+    "description": "Restricts AKS Pod CIDR to an approved range and optionally enforces a Service CIDR range.",
+    "notScopes": [],
+    "parameters": {
+      "allowedPodCidrRanges": {
+        "value": [
+          "10.10.0.0/16"
+        ]
+      },
+      "enforceServiceCidr": {
+        "value": false
+      },
+      "allowedServiceCidrRanges": {
+        "value": [
+          "10.20.0.0/16"
+        ]
+      },
+      "effect": {
+        "value": "Deny"
+      }
+    },
+    "policyDefinitionId": "${root_scope_resource_id}/providers/Microsoft.Authorization/policyDefinitions/Enforce-AKS-CIDRs",
+    "nonComplianceMessages": [
+      {
+        "message": "AKS podCidr must be contained within the approved range. Service CIDR is also validated when enabled."
+      }
+    ],
+    "scope": "${current_scope_resource_id}",
+    "enforcementMode": "Default"
+  },
+  "location": "${default_location}",
+  "identity": {
+    "type": "SystemAssigned"
+  }
+}
