@@ -1,0 +1,21 @@
+{
+  "name": "AKS-Best-Practices",
+  "type": "Microsoft.Authorization/policyAssignments",
+  "apiVersion": "2024-04-01",
+  "properties": {
+    "displayName": "Deployment safeguards should help guide developers towards AKS recommended best practices",
+    "description": "A collection of Kubernetes best practices that are recommended by Azure Kubernetes Service (AKS). For the best experience, use deployment safeguards to assign this policy initiative: https://aka.ms/aks/deployment-safeguards. Azure Policy Add-On for AKS is a pre-requisite for applying these best practices to your clusters. For instructions on enabling the Azure Policy Add-On, go to aka.ms/akspolicydoc",
+    "policyDefinitionId": "/providers/Microsoft.Authorization/policySetDefinitions/c047ea8e-9c78-49b2-958b-37e56d291a44",
+    "metadata": {},
+    "notScopes": [],
+    "parameters": {},
+    "nonComplianceMessages": [],
+    "scope": "${current_scope_resource_id}",
+    "enforcementMode": "Default",
+    "overrides": []
+  },
+  "location": "${default_location}",
+  "identity": {
+    "type": "SystemAssigned"
+  }
+}

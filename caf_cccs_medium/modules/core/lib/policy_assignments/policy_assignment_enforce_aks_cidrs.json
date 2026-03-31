@@ -27,7 +27,7 @@
     "policyDefinitionId": "${root_scope_resource_id}/providers/Microsoft.Authorization/policyDefinitions/Enforce-AKS-CIDRs",
     "nonComplianceMessages": [
       {
-        "message": "AKS podCidr must be contained within the approved range. Service CIDR is also validated when enabled."
+        "message": "AKS Pod CIDR and Service CIDR must be contained within the approved range. Please refer to [TechDocs](https://developer.gov.bc.ca/docs/default/component/public-cloud-techdocs/) for more information."
       }
     ],
     "scope": "${current_scope_resource_id}",
