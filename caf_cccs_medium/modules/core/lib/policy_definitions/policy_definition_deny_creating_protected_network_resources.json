@@ -4,13 +4,14 @@
   "apiVersion": "2024-05-01",
   "scope": null,
   "properties": {
-    "displayName": "Deny Creating Protected Networking Resource",
-    "description": "This Policy will prevent users from creating Express Route circuits, VPN Sites, VPN/NAT/Local Gateways, Route Tables or Network Security Perimeteres.",
+    "displayName": "Deny Creating and Modifying Protected Networking Resources",
+    "description": "This Policy prevents users from creating/modifying protected network resources. It also blocks route child-resource operations and can enforce a protected route table to remain associated only to one protected subnet.",
     "policyType": "Custom",
     "mode": "All",
     "metadata": {
-      "version": "1.0.0",
-      "category": "Networking"
+      "version": "1.0.2",
+      "category": "Networking",
+      "updatedDate": "2026-04-02"
     },
     "parameters": {
       "effect": {
@@ -25,6 +26,22 @@
           "Disabled"
         ],
         "defaultValue": "Deny"
+      },
+      "protectedRouteTableId": {
+        "type": "String",
+        "metadata": {
+          "displayName": "Protected Route Table Resource ID",
+          "description": "Optional. When set with protectedSubnetId, the policy enforces that this route table stays associated only to the protected subnet and blocks reassociation/disassociation attempts."
+        },
+        "defaultValue": ""
+      },
+      "protectedSubnetId": {
+        "type": "String",
+        "metadata": {
+          "displayName": "Protected Subnet Resource ID",
+          "description": "Optional. When set with protectedRouteTableId, this subnet must remain associated to the protected route table."
+        },
+        "defaultValue": ""
       }
     },
     "policyRule": {
@@ -64,6 +81,10 @@
           },
           {
             "field": "type",
+            "equals": "Microsoft.Network/routeTables/routes"
+          },
+          {
+            "field": "type",
             "equals": "Microsoft.Network/networkSecurityPerimeters"
           },
           {
@@ -73,6 +94,66 @@
           {
             "field": "type",
             "equals": "Microsoft.Network/networkSecurityPerimeters/profiles/accessRules"
+          },
+          {
+            "allOf": [
+              {
+                "field": "type",
+                "equals": "Microsoft.Network/virtualNetworks/subnets"
+              },
+              {
+                "field": "Microsoft.Network/virtualNetworks/subnets/routeTable.id",
+                "exists": true
+              }
+            ]
+          },
+          {
+            "allOf": [
+              {
+                "value": "[parameters('protectedRouteTableId')]",
+                "notEquals": ""
+              },
+              {
+                "value": "[parameters('protectedSubnetId')]",
+                "notEquals": ""
+              },
+              {
+                "field": "type",
+                "equals": "Microsoft.Network/virtualNetworks/subnets"
+              },
+              {
+                "field": "id",
+                "equals": "[parameters('protectedSubnetId')]"
+              },
+              {
+                "field": "Microsoft.Network/virtualNetworks/subnets/routeTable.id",
+                "notEquals": "[parameters('protectedRouteTableId')]"
+              }
+            ]
+          },
+          {
+            "allOf": [
+              {
+                "value": "[parameters('protectedRouteTableId')]",
+                "notEquals": ""
+              },
+              {
+                "value": "[parameters('protectedSubnetId')]",
+                "notEquals": ""
+              },
+              {
+                "field": "type",
+                "equals": "Microsoft.Network/virtualNetworks/subnets"
+              },
+              {
+                "field": "id",
+                "notEquals": "[parameters('protectedSubnetId')]"
+              },
+              {
+                "field": "Microsoft.Network/virtualNetworks/subnets/routeTable.id",
+                "equals": "[parameters('protectedRouteTableId')]"
+              }
+            ]
           }
         ]
       },

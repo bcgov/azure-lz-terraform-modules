@@ -8,6 +8,7 @@
       "FedRAMPModerate",
       "Deny-VNet-DNS-Changes",
       "Deny-Protected-Network",
+      "Deny-Delete-Protected-Routes",
       "Deny-VNet-Creation",
       "Deny-New-VNet-Peerings",
       "Deny-Delete-Diagnostics",

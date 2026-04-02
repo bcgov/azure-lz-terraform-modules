@@ -1,0 +1,53 @@
+{
+  "name": "Deny-Deleting-Protected-Route-Resources",
+  "type": "Microsoft.Authorization/policyDefinitions",
+  "apiVersion": "2024-05-01",
+  "scope": null,
+  "properties": {
+    "displayName": "Deny Deleting Protected Route Resources",
+    "description": "This policy prevents deletion of route tables and route table routes. Use this with a deny policy that blocks create/update operations.",
+    "policyType": "Custom",
+    "mode": "All",
+    "metadata": {
+      "version": "1.0.0",
+      "category": "Networking",
+      "updatedDate": "2026-04-02"
+    },
+    "parameters": {
+      "effect": {
+        "type": "String",
+        "metadata": {
+          "displayName": "Effect",
+          "description": "denyAction or Disabled"
+        },
+        "allowedValues": [
+          "denyAction",
+          "Disabled"
+        ],
+        "defaultValue": "denyAction"
+      }
+    },
+    "policyRule": {
+      "if": {
+        "anyOf": [
+          {
+            "field": "type",
+            "equals": "Microsoft.Network/routeTables"
+          },
+          {
+            "field": "type",
+            "equals": "Microsoft.Network/routeTables/routes"
+          }
+        ]
+      },
+      "then": {
+        "effect": "[parameters('effect')]",
+        "details": {
+          "actionNames": [
+            "delete"
+          ]
+        }
+      }
+    }
+  }
+}
