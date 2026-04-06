@@ -5,13 +5,13 @@
   "scope": null,
   "properties": {
     "displayName": "Deny Creating and Modifying Protected Networking Resources",
-    "description": "This Policy prevents users from creating/modifying protected network resources. It also blocks route child-resource operations and can enforce a protected route table to remain associated only to one protected subnet.",
+    "description": "This policy prevents users from creating or modifying protected networking resources (ExpressRoute circuits, VPN sites/gateways, NAT/local gateways, route tables, and Network Security Perimeters). It also blocks route child-resource operations (including delete) and protected subnet-to-UDR disassociation.",
     "policyType": "Custom",
     "mode": "All",
     "metadata": {
-      "version": "1.0.2",
+      "version": "1.0.4",
       "category": "Networking",
-      "updatedDate": "2026-04-02"
+      "updatedDate": "2026-04-06"
     },
     "parameters": {
       "effect": {
@@ -85,6 +85,10 @@
           },
           {
             "field": "type",
+            "like": "Microsoft.Network/routeTables/*"
+          },
+          {
+            "field": "type",
             "equals": "Microsoft.Network/networkSecurityPerimeters"
           },
           {
@@ -110,6 +114,28 @@
           {
             "allOf": [
               {
+                "field": "type",
+                "equals": "Microsoft.Network/virtualNetworks/subnets"
+              },
+              {
+                "field": "name",
+                "notIn": [
+                  "GatewaySubnet",
+                  "AzureBastionSubnet",
+                  "AzureFirewallSubnet",
+                  "AzureFirewallManagementSubnet",
+                  "RouteServerSubnet"
+                ]
+              },
+              {
+                "field": "Microsoft.Network/virtualNetworks/subnets/routeTable.id",
+                "exists": false
+              }
+            ]
+          },
+          {
+            "allOf": [
+              {
                 "value": "[parameters('protectedRouteTableId')]",
                 "notEquals": ""
               },
@@ -126,8 +152,32 @@
                 "equals": "[parameters('protectedSubnetId')]"
               },
               {
-                "field": "Microsoft.Network/virtualNetworks/subnets/routeTable.id",
-                "notEquals": "[parameters('protectedRouteTableId')]"
+                "anyOf": [
+                  {
+                    "field": "Microsoft.Network/virtualNetworks/subnets/routeTable.id",
+                    "exists": false
+                  },
+                  {
+                    "field": "Microsoft.Network/virtualNetworks/subnets/routeTable.id",
+                    "notEquals": "[parameters('protectedRouteTableId')]"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "allOf": [
+              {
+                "value": "[parameters('protectedRouteTableId')]",
+                "notEquals": ""
+              },
+              {
+                "field": "type",
+                "equals": "Microsoft.Network/routeTables/routes"
+              },
+              {
+                "field": "id",
+                "like": "[concat(parameters('protectedRouteTableId'), '/routes/*')]"
               }
             ]
           },

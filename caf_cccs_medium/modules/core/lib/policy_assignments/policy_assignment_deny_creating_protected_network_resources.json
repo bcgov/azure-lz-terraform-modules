@@ -3,12 +3,18 @@
   "type": "Microsoft.Authorization/policyAssignments",
   "apiVersion": "2019-09-01",
   "properties": {
-    "displayName": "Deny Creating Protected Networking Resource",
-    "description": "This Policy will prevent users from creating Express Route circuits, VPN Sites, VPN/NAT/Local Gateways, Route Tables or Network Security Perimeters.",
+    "displayName": "Deny Creating and Modifying Protected Networking Resources",
+    "description": "This Policy will prevent users from creating Express Route circuits, VPN Sites, VPN/NAT/Local Gateways, Route Tables or Network Security Perimeters. It also prevents route child-resource operations (e.g. edit/delete).",
     "notScopes": [],
     "parameters": {
       "effect": {
         "value": "Deny"
+      },
+      "protectedRouteTableId": {
+        "value": ""
+      },
+      "protectedSubnetId": {
+        "value": ""
       }
     },
     "policyDefinitionId": "${root_scope_resource_id}/providers/Microsoft.Authorization/policyDefinitions/Deny-Protected-Network-Resources",
