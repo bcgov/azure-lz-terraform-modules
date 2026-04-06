@@ -63,6 +63,10 @@ locals {
         Deploy-VMSS-Monitoring = {
           scopeToSupportedImages = true
         },
+        Deny-Protected-Network = {
+          protectedRouteTableId = ""
+          protectedSubnetId     = ""
+        },
         Deny-VNet-DNS-Changes = {
           VNet-DNS-Settings = var.VNet-DNS-Settings
         },
