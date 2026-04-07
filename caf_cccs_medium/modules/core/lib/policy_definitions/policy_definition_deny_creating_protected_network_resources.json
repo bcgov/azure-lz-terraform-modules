@@ -4,13 +4,14 @@
   "apiVersion": "2024-05-01",
   "scope": null,
   "properties": {
-    "displayName": "Deny Creating Protected Networking Resource",
-    "description": "This Policy will prevent users from creating Express Route circuits, VPN Sites, VPN/NAT/Local Gateways, Route Tables or Network Security Perimeteres.",
+    "displayName": "Deny Creating and Modifying Protected Networking Resources",
+    "description": "This policy prevents users from creating or modifying protected networking resources (ExpressRoute circuits, VPN sites/gateways, NAT/local gateways, route tables, and Network Security Perimeters). It blocks route child-resource operations and optionally prevents a designated protected route table from being associated to other subnets.",
     "policyType": "Custom",
     "mode": "All",
     "metadata": {
-      "version": "1.0.0",
-      "category": "Networking"
+      "version": "1.0.8",
+      "category": "Networking",
+      "updatedDate": "2026-04-07"
     },
     "parameters": {
       "effect": {
@@ -25,6 +26,22 @@
           "Disabled"
         ],
         "defaultValue": "Deny"
+      },
+      "protectedRouteTableId": {
+        "type": "String",
+        "metadata": {
+          "displayName": "Protected Route Table Resource ID",
+          "description": "Optional. When set with protectedSubnetId, the policy prevents this route table from being associated to subnets other than the protected subnet."
+        },
+        "defaultValue": ""
+      },
+      "protectedSubnetId": {
+        "type": "String",
+        "metadata": {
+          "displayName": "Protected Subnet Resource ID",
+          "description": "Optional. Identifies the protected subnet for association control when set with protectedRouteTableId."
+        },
+        "defaultValue": ""
       }
     },
     "policyRule": {
@@ -64,6 +81,10 @@
           },
           {
             "field": "type",
+            "like": "Microsoft.Network/routeTables/*"
+          },
+          {
+            "field": "type",
             "equals": "Microsoft.Network/networkSecurityPerimeters"
           },
           {
@@ -73,6 +94,30 @@
           {
             "field": "type",
             "equals": "Microsoft.Network/networkSecurityPerimeters/profiles/accessRules"
+          },
+          {
+            "allOf": [
+              {
+                "value": "[parameters('protectedRouteTableId')]",
+                "notEquals": ""
+              },
+              {
+                "value": "[parameters('protectedSubnetId')]",
+                "notEquals": ""
+              },
+              {
+                "field": "type",
+                "equals": "Microsoft.Network/virtualNetworks/subnets"
+              },
+              {
+                "field": "id",
+                "notEquals": "[parameters('protectedSubnetId')]"
+              },
+              {
+                "field": "Microsoft.Network/virtualNetworks/subnets/routeTable.id",
+                "equals": "[parameters('protectedRouteTableId')]"
+              }
+            ]
           }
         ]
       },

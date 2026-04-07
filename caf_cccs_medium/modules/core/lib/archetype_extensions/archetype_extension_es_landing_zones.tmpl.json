@@ -8,6 +8,7 @@
       "FedRAMPModerate",
       "Deny-VNet-DNS-Changes",
       "Deny-Protected-Network",
+      "Deny-Delete-Routes",
       "Deny-VNet-Creation",
       "Deny-New-VNet-Peerings",
       "Deny-Delete-Diagnostics",
@@ -44,6 +45,10 @@
         },
         "InheritTag-Ministry-Name": {
           "value": "ministry_name"
+        },
+        "Deny-Protected-Network": {
+          "protectedRouteTableId": "SET using local.archetype_config_overrides",
+          "protectedSubnetId": "SET using local.archetype_config_overrides"
         },
         "Deny-VNet-DNS-Changes": {
           "VNet-DNS-Settings": "SET using local.archetype_config_overrides"
