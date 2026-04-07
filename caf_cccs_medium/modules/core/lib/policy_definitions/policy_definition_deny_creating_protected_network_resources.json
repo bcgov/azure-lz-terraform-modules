@@ -9,9 +9,9 @@
     "policyType": "Custom",
     "mode": "All",
     "metadata": {
-      "version": "1.0.7",
+      "version": "1.0.8",
       "category": "Networking",
-      "updatedDate": "2026-04-06"
+      "updatedDate": "2026-04-07"
     },
     "parameters": {
       "effect": {
@@ -81,10 +81,6 @@
           },
           {
             "field": "type",
-            "equals": "Microsoft.Network/routeTables/routes"
-          },
-          {
-            "field": "type",
             "like": "Microsoft.Network/routeTables/*"
           },
           {
@@ -98,22 +94,6 @@
           {
             "field": "type",
             "equals": "Microsoft.Network/networkSecurityPerimeters/profiles/accessRules"
-          },
-          {
-            "allOf": [
-              {
-                "value": "[parameters('protectedRouteTableId')]",
-                "notEquals": ""
-              },
-              {
-                "field": "type",
-                "equals": "Microsoft.Network/routeTables/routes"
-              },
-              {
-                "field": "id",
-                "like": "[concat(parameters('protectedRouteTableId'), '/routes/*')]"
-              }
-            ]
           },
           {
             "allOf": [
