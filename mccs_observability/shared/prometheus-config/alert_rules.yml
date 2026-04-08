@@ -1,0 +1,78 @@
+# MCCS Observability Platform - Prometheus Alert Rules
+#
+# Note: Primary alerting is handled by Azure Monitor Alert Rules.
+# These Prometheus rules are for supplementary alerting via Alertmanager
+# or for integration with external systems.
+
+groups:
+  - name: mccs_prometheus_health
+    rules:
+      # Alert if Prometheus is unable to scrape Netbox
+      - alert: NetboxScrapeFailed
+        expr: up{job="netbox"} == 0
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Netbox scrape failed"
+          description: "Prometheus has been unable to scrape Netbox for more than 5 minutes."
+
+      # Alert if Prometheus storage is running low
+      - alert: PrometheusStorageLow
+        expr: prometheus_tsdb_storage_blocks_bytes / 1024 / 1024 / 1024 > 40
+        for: 15m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Prometheus storage usage high"
+          description: "Prometheus storage is using more than 40GB. Consider increasing retention or storage."
+
+  - name: mccs_netbox_health
+    rules:
+      # Alert if Netbox is experiencing high error rates
+      - alert: NetboxHighErrorRate
+        expr: |
+          sum(rate(django_http_responses_total_by_status_total{job="netbox",status=~"5.."}[5m])) /
+          sum(rate(django_http_responses_total_by_status_total{job="netbox"}[5m])) > 0.05
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Netbox high error rate"
+          description: "Netbox is returning 5xx errors for more than 5% of requests."
+
+      # Alert if Netbox request latency is high
+      - alert: NetboxHighLatency
+        expr: |
+          histogram_quantile(0.95, sum(rate(django_http_requests_latency_seconds_bucket{job="netbox"}[5m])) by (le)) > 5
+        for: 10m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Netbox high latency"
+          description: "Netbox p95 latency is above 5 seconds."
+
+      # Alert if Netbox database connections are exhausted
+      - alert: NetboxDatabaseConnectionsHigh
+        expr: django_db_backends_postgresql_database_errors_total{job="netbox"} > 0
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Netbox database errors"
+          description: "Netbox is experiencing PostgreSQL database errors."
+
+  # ============================================================
+  # Phase 2: AWS Direct Connect Alert Rules
+  # ============================================================
+
+  # - name: mccs_aws_direct_connect
+  #   rules:
+  #     - alert: DirectConnectDown
+  #       expr: aws_dx_connection_state{state!="available"} == 1
+  #       for: 5m
+  #       labels:
+  #         severity: critical
+  #       annotations:
+  #         summary: "AWS Direct Connect {{ $labels.connection_id }} is down"
+  #         description: "The Direct Connect connection {{ $labels.connection_id }} is not in available state."
