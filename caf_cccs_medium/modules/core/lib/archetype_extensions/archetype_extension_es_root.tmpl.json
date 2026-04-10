@@ -25,6 +25,7 @@
       "Deploy-Private-DNS-Redis",
       "Deny-VNet-DNS-Changes",
       "Deny-Protected-Network-Resources",
+      "Deny-Deleting-Protected-Route-Resources",
       "Deny-Delete-NetworkWatcher",
       "Deny-VNet-Creation",
       "Deny-New-VNet-Peerings",
