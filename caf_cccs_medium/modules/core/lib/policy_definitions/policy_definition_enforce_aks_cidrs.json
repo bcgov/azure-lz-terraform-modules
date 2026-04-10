@@ -29,7 +29,7 @@
           "displayName": "Enforce Service CIDR",
           "description": "When true, AKS serviceCidr must be fully contained in the allowed Service CIDR range."
         },
-        "defaultValue": false
+        "defaultValue": true
       },
       "allowedServiceCidrRanges": {
         "type": "Array",
@@ -65,15 +65,31 @@
           {
             "anyOf": [
               {
-                "count": {
-                  "value": "[parameters('allowedPodCidrRanges')]",
-                  "name": "allowedPodCidrRange",
-                  "where": {
-                    "value": "[if(empty(field('Microsoft.ContainerService/managedClusters/networkProfile.podCidr')), bool('false'), ipRangeContains(current('allowedPodCidrRange'), field('Microsoft.ContainerService/managedClusters/networkProfile.podCidr')))]",
-                    "equals": true
+                "allOf": [
+                  {
+                    "anyOf": [
+                      {
+                        "field": "Microsoft.ContainerService/managedClusters/networkProfile.networkPlugin",
+                        "equals": "kubenet"
+                      },
+                      {
+                        "value": "[not(empty(field('Microsoft.ContainerService/managedClusters/networkProfile.podCidr')))]",
+                        "equals": true
+                      }
+                    ]
+                  },
+                  {
+                    "count": {
+                      "value": "[parameters('allowedPodCidrRanges')]",
+                      "name": "allowedPodCidrRange",
+                      "where": {
+                        "value": "[if(empty(field('Microsoft.ContainerService/managedClusters/networkProfile.podCidr')), bool('false'), ipRangeContains(current('allowedPodCidrRange'), field('Microsoft.ContainerService/managedClusters/networkProfile.podCidr')))]",
+                        "equals": true
+                      }
+                    },
+                    "equals": 0
                   }
-                },
-                "equals": 0
+                ]
               },
               {
                 "allOf": [

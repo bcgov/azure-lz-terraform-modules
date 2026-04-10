@@ -72,7 +72,7 @@ locals {
         },
         Enforce-AKS-CIDRs = {
           allowedPodCidrRanges     = ["10.10.0.0/16"],
-          enforceServiceCidr       = false,
+          enforceServiceCidr       = true,
           allowedServiceCidrRanges = ["10.20.0.0/16"],
           effect                   = "Deny",
         },
