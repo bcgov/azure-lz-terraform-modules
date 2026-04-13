@@ -12,7 +12,9 @@
       "Deny-AppGw-Without-Tls",
       "Deploy-Private-DNS-PSQL",
       "MicrosoftCISv2",
-      "NIST-SP-800-53-Rev5"
+      "NIST-SP-800-53-Rev5",
+      "AKS-CIS-Benchmark",
+      "AKS-Best-Practices"
     ],
     "policy_definitions": [
       "Inherit-Account-Code-Tag",
@@ -30,6 +32,7 @@
       "Deny-Delete-Diagnostics",
       "Resource-Locations",
       "Deny-AMPLS-Creation",
+      "Enforce-AKS-CIDRs",
       "Deploy-NSP-Resource-Association"
     ],
     "policy_set_definitions": [
