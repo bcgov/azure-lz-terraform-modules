@@ -11,7 +11,7 @@
     "parameters": {},
     "nonComplianceMessages": [
         {
-          "message": "Azure SQL Managed Instance does not have Microsoft Entra-only authentication enabled. Please enable Microsoft Entra-only authentication to enhance security by allowing access exclusively via Microsoft Entra identities, which supports modern authentication features such as MFA, SSO, and secret-less programmatic access with managed identities."
+          "message": "Azure SQL Managed Instance should have data access for clients outside of the connected virtual networks (public endpoint (data)) disabled. This means that the SQL Managed Instance can only be accessed from inside its virtual network or via Private Endpoints, and cannot be accessed over the internet."
         }
     ],
     "scope": "${current_scope_resource_id}",
