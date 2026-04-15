@@ -14,7 +14,9 @@
       "MicrosoftCISv2",
       "NIST-SP-800-53-Rev5",
       "AKS-CIS-Benchmark",
-      "AKS-Best-Practices"
+      "AKS-Best-Practices",
+      "SQLMI-Entra-AuthN",
+      "SQLMI-Disable-PublicData"
     ],
     "policy_definitions": [
       "Inherit-Account-Code-Tag",
