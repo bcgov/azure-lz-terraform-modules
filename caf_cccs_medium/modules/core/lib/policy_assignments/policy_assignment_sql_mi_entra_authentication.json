@@ -1,0 +1,25 @@
+{
+  "name": "SQLMI-Entra-AuthN",
+  "type": "Microsoft.Authorization/policyAssignments",
+  "apiVersion": "2024-04-01",
+  "properties": {
+    "displayName": "Azure SQL Managed Instance should have Microsoft Entra-only authentication",
+    "description": "Require Microsoft Entra-only authentication for Azure SQL Managed instance, disabling local authentication methods. This allows access exclusively via Microsoft Entra identities, enhancing security with modern authentication enhancements including MFA, SSO, and secret-less programmatic access with managed identities.",
+    "policyDefinitionId": "/providers/Microsoft.Authorization/policySetDefinitions/9b8d8228-e8cc-4c95-8d98-47f32df40b5e",
+    "metadata": {},
+    "notScopes": [],
+    "parameters": {},
+    "nonComplianceMessages": [
+        {
+          "message": "Azure SQL Managed Instance does not have Microsoft Entra-only authentication enabled. Please enable Microsoft Entra-only authentication to enhance security by allowing access exclusively via Microsoft Entra identities, which supports modern authentication features such as MFA, SSO, and secret-less programmatic access with managed identities."
+        }
+    ],
+    "scope": "${current_scope_resource_id}",
+    "enforcementMode": "Default",
+    "overrides": []
+  },
+  "location": "${default_location}",
+  "identity": {
+    "type": "SystemAssigned"
+  }
+}
