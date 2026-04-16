@@ -1,0 +1,242 @@
+{
+  "name": "",
+  "type": "Microsoft.Authorization/policySetDefinitions",
+  "apiVersion": "2021-06-01",
+  "scope": null,
+  "properties": {
+    "policyType": "Custom",
+    "displayName": "",
+    "description": "",
+    "metadata": {
+      "version": "1.0.0",
+      "category": "Kubernetes"
+    },
+    "parameters": {
+      "effect_CNI": {
+        "type": "String",
+        "metadata": {
+          "displayName": "Effect (CNI)",
+          "description": "Enable or disable the execution of the Azure CNI policy"
+        },
+        "allowableValues": [
+          "Audit",
+          "Disabled"
+        ],
+        "defaultValue": "Audit"
+      },
+      "effect_zones": {
+        "type": "String",
+        "metadata": {
+          "displayName": "Effect (Zones)",
+          "description": "This parameter lets you choose the effect of the policy. If you choose Audit (default), the policy will only audit resources for compliance. If you choose Deny, the policy will deny the creation of non-compliant resources. If you choose Disabled, the policy will not enforce compliance (useful, for example, as a second assignment to ignore a subset of non-compliant resources in a single resource group)."
+        },
+        "allowableValues": [
+          "Audit",
+          "Deny",
+          "Disabled"
+        ],
+        "defaultValue": "Audit"
+      },
+      "effect_entra_id": {
+        "type": "String",
+        "metadata": {
+          "displayName": "Effect (Entra ID integration)",
+          "description": "Enable or disable the execution of the Entra ID Integration policy."
+        },
+        "allowableValues": [
+          "Audit",
+          "Disabled"
+        ],
+        "defaultValue": "Audit"
+      },
+      "effect_rbac": {
+        "type": "String",
+        "metadata": {
+          "displayName": "Effect (RBAC)",
+          "description": "Enable or disable the execution of the RBAC policy."
+        },
+        "allowableValues": [
+          "Audit",
+          "Disabled"
+        ],
+        "defaultValue": "Audit"
+      },
+      "effect_local_auth": {
+        "type": "String",
+        "metadata": {
+          "displayName": "Effect (Local Auth Disabled)",
+          "description": "Enable or disable the execution of the policy."
+        },
+        "allowableValues": [
+          "Audit",
+          "Deny",
+          "Disabled"
+        ],
+        "defaultValue": "Audit"
+      },
+      "effect_workload_identity": {
+        "type": "String",
+        "metadata": {
+          "displayName": "Effect (Workload Identity)",
+          "description": "Enable or disable the execution of the Workload Identity policy."
+        },
+        "allowableValues": [
+          "Audit",
+          "Disabled"
+        ],
+        "defaultValue": "Audit"
+      },
+      "effect_azurePolicy": {
+        "type": "String",
+        "metadata": {
+          "displayName": "Effect (Azure Policy)",
+          "description": "Enable or disable the execution of the Enable Azure Policy policy."
+        },
+        "allowableValues": [
+          "Audit",
+          "Disabled"
+        ],
+        "defaultValue": "Audit"
+      },
+      "effect_azurePolicyAddOn": {
+        "type": "String",
+        "metadata": {
+          "displayName": "Effect (Policy Add-on)",
+          "description": "Enable or disable the execution of the policy"
+        },
+        "allowableValues": [
+          "DeployIfNotExists",
+          "Disabled"
+        ],
+        "defaultValue": "DeployIfNotExists"
+      },
+      "effect_imageCleaner": {
+        "type": "String",
+        "metadata": {
+          "displayName": "Effect (Image Cleaner)",
+          "description": "Enable or disable the execution of the Image Cleaner policy"
+        },
+        "allowableValues": [
+          "DeployIfNotExists",
+          "Disabled"
+        ],
+        "defaultValue": "DeployIfNotExists"
+      },
+      "effect_imageCleaner_audit": {
+        "type": "String",
+        "metadata": {
+          "displayName": "Effect (Image Cleaner Audit)",
+          "description": "Enable or disable the execution of the Image Cleaner Audit policy."
+        },
+        "allowableValues": [
+          "Audit",
+          "Disabled"
+        ],
+        "defaultValue": "Audit"
+      }
+    },
+    "policyDefinitions": [
+      {
+        "policyDefinitionReferenceId": "Azure Kubernetes Clusters should use Azure CNI",
+        "policyDefinitionId": "${root_scope_resource_id}/providers/Microsoft.Authorization/policyDefinitions/46238e2f-3f6f-4589-9f3f-77bed4116e67",
+        "parameters": {
+          "effect": {
+              "value": "[parameters('effect_CNI')]"
+          }
+        },
+        "groupNames": []
+      },
+      {
+        "policyDefinitionReferenceId": "[Preview]: Azure Kubernetes Service Managed Clusters should be Zone Redundant",
+        "policyDefinitionId": "${root_scope_resource_id}/providers/Microsoft.Authorization/policyDefinitions/2dec5f47-bc40-40d1-8c7d-a39d9d6808d1",
+        "parameters": {
+          "effect": {
+              "value": "[parameters('effect_zones')]"
+          }
+        },
+        "groupNames": []
+      },
+      {
+        "policyDefinitionReferenceId": "Azure Kubernetes Service Clusters should enable Microsoft Entra ID integration",
+        "policyDefinitionId": "${root_scope_resource_id}/providers/Microsoft.Authorization/policyDefinitions/450d2877-ebea-41e8-b00c-e286317d21bf",
+        "parameters": {
+          "effect": {
+              "value": "[parameters('effect_entra_id')]"
+          }
+        },
+        "groupNames": []
+      },
+      {
+        "policyDefinitionReferenceId": "Role-Based Access Control (RBAC) should be used on Kubernetes Services",
+        "policyDefinitionId": "${root_scope_resource_id}/providers/Microsoft.Authorization/policyDefinitions/ac4a19c2-fa67-49b4-8ae5-0b2e78c49457",
+        "parameters": {
+          "effect": {
+              "value": "[parameters('effect_rbac')]"
+          }
+        },
+        "groupNames": []
+      },
+      {
+        "policyDefinitionReferenceId": "Azure Kubernetes Service Clusters should have local authentication methods disabled",
+        "policyDefinitionId": "${root_scope_resource_id}/providers/Microsoft.Authorization/policyDefinitions/993c2fcd-2b29-49d2-9eb0-df2c3a730c32",
+        "parameters": {
+          "effect": {
+              "value": "[parameters('effect_local_auth')]"
+          }
+        },
+        "groupNames": []
+      },
+      {
+        "policyDefinitionReferenceId": "Azure Kubernetes Service Clusters should enable workload identity",
+        "policyDefinitionId": "${root_scope_resource_id}/providers/Microsoft.Authorization/policyDefinitions/2cc2e023-0dac-4046-875b-178f683929d5",
+        "parameters": {
+          "effect": {
+              "value": "[parameters('effect_workload_identity')]"
+          }
+        },
+        "groupNames": []
+      },
+      {
+        "policyDefinitionReferenceId": "Azure Policy Add-on for Kubernetes service (AKS) should be installed and enabled on your clusters",
+        "policyDefinitionId": "${root_scope_resource_id}/providers/Microsoft.Authorization/policyDefinitions/0a15ec92-a229-4763-bb14-0ea34a568f8d",
+        "parameters": {
+          "effect": {
+              "value": "[parameters('effect_azurePolicy')]"
+          }
+        },
+        "groupNames": []
+      },
+      {
+        "policyDefinitionReferenceId": "Deploy Azure Policy Add-on to Azure Kubernetes Service clusters",
+        "policyDefinitionId": "${root_scope_resource_id}/providers/Microsoft.Authorization/policyDefinitions/a8eff44f-8c92-45c3-a3fb-9880802d67a7",
+        "parameters": {
+          "effect": {
+              "value": "[parameters('effect_azurePolicyAddOn')]"
+          }
+        },
+        "groupNames": []
+      },
+      {
+        "policyDefinitionReferenceId": "Deploy Image Cleaner on Azure Kubernetes Service",
+        "policyDefinitionId": "${root_scope_resource_id}/providers/Microsoft.Authorization/policyDefinitions/7e49285c-4bed-4564-b26a-5225ccc311f3",
+        "parameters": {
+          "effect": {
+              "value": "[parameters('effect_imageCleaner')]"
+          }
+        },
+        "groupNames": []
+      },
+      {
+        "policyDefinitionReferenceId": "Azure Kubernetes Service Clusters should enable Image Cleaner",
+        "policyDefinitionId": "${root_scope_resource_id}/providers/Microsoft.Authorization/policyDefinitions/af3c26b2-6fad-493e-9236-9c68928516ab",
+        "parameters": {
+          "effect": {
+              "value": "[parameters('effect_imageCleaner_audit')]"
+          }
+        },
+        "groupNames": []
+      }
+    ],
+    "policyDefinitionGroups": null
+  }
+}
