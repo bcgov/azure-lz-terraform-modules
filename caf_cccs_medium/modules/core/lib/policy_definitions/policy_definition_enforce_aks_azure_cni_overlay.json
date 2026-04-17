@@ -4,8 +4,8 @@
   "apiVersion": "2024-05-01",
   "scope": null,
   "properties": {
-    "displayName": "Enforce AKS Azure CNI Overlay",
-    "description": "Audits or denies AKS clusters that are not configured with Azure CNI in overlay mode.",
+    "displayName": "Enforce AKS Azure CNI with Overlay mode",
+    "description": "Audits or denies AKS clusters that are not configured to use Azure CNI with Overlay mode.",
     "policyType": "Custom",
     "mode": "All",
     "metadata": {
