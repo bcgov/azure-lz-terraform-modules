@@ -12,6 +12,18 @@
       "category": "Kubernetes"
     },
     "parameters": {
+      "effect_CNI": {
+        "type": "String",
+        "metadata": {
+          "displayName": "Effect (CNI) [Deprecated]",
+          "description": "Deprecated compatibility parameter retained to support policy set updates. Use effect_CNI_overlay instead."
+        },
+        "allowableValues": [
+          "Audit",
+          "Disabled"
+        ],
+        "defaultValue": "Disabled"
+      },
       "effect_CNI_overlay": {
         "type": "String",
         "metadata": {
@@ -24,6 +36,19 @@
           "Disabled"
         ],
         "defaultValue": "Audit"
+      },
+      "effect_zones": {
+        "type": "String",
+        "metadata": {
+          "displayName": "Effect (Zones) [Deprecated]",
+          "description": "Deprecated compatibility parameter retained to support policy set updates."
+        },
+        "allowableValues": [
+          "Audit",
+          "Deny",
+          "Disabled"
+        ],
+        "defaultValue": "Disabled"
       },
       "effect_entra_id": {
         "type": "String",
