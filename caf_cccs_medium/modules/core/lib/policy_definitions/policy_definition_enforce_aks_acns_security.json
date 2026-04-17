@@ -1,0 +1,56 @@
+{
+  "name": "Enforce-AKS-ACNS-Security",
+  "type": "Microsoft.Authorization/policyDefinitions",
+  "apiVersion": "2024-05-01",
+  "scope": null,
+  "properties": {
+    "displayName": "Enforce AKS ACNS Security",
+    "description": "Audits or denies AKS clusters that do not have Advanced Container Networking Services security enabled.",
+    "policyType": "Custom",
+    "mode": "All",
+    "metadata": {
+      "version": "1.0.0",
+      "category": "Kubernetes"
+    },
+    "parameters": {
+      "effect": {
+        "type": "String",
+        "metadata": {
+          "displayName": "Effect",
+          "description": "Deny, Audit or Disabled the execution of the Policy"
+        },
+        "allowedValues": [
+          "Deny",
+          "Audit",
+          "Disabled"
+        ],
+        "defaultValue": "Audit"
+      }
+    },
+    "policyRule": {
+      "if": {
+        "allOf": [
+          {
+            "field": "type",
+            "equals": "Microsoft.ContainerService/managedClusters"
+          },
+          {
+            "anyOf": [
+              {
+                "field": "Microsoft.ContainerService/managedClusters/networkProfile.advancedNetworking.security.enabled",
+                "exists": "false"
+              },
+              {
+                "field": "Microsoft.ContainerService/managedClusters/networkProfile.advancedNetworking.security.enabled",
+                "notEquals": true
+              }
+            ]
+          }
+        ]
+      },
+      "then": {
+        "effect": "[parameters('effect')]"
+      }
+    }
+  }
+}

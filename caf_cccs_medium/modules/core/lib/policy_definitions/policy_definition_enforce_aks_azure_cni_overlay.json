@@ -1,0 +1,60 @@
+{
+  "name": "Enforce-AKS-Azure-CNI-Overlay",
+  "type": "Microsoft.Authorization/policyDefinitions",
+  "apiVersion": "2024-05-01",
+  "scope": null,
+  "properties": {
+    "displayName": "Enforce AKS Azure CNI Overlay",
+    "description": "Audits or denies AKS clusters that are not configured with Azure CNI in overlay mode.",
+    "policyType": "Custom",
+    "mode": "All",
+    "metadata": {
+      "version": "1.0.0",
+      "category": "Kubernetes"
+    },
+    "parameters": {
+      "effect": {
+        "type": "String",
+        "metadata": {
+          "displayName": "Effect",
+          "description": "Deny, Audit or Disabled the execution of the Policy"
+        },
+        "allowedValues": [
+          "Deny",
+          "Audit",
+          "Disabled"
+        ],
+        "defaultValue": "Audit"
+      }
+    },
+    "policyRule": {
+      "if": {
+        "allOf": [
+          {
+            "field": "type",
+            "equals": "Microsoft.ContainerService/managedClusters"
+          },
+          {
+            "anyOf": [
+              {
+                "field": "Microsoft.ContainerService/managedClusters/networkProfile.networkPlugin",
+                "notEquals": "azure"
+              },
+              {
+                "field": "Microsoft.ContainerService/managedClusters/networkProfile.networkPluginMode",
+                "exists": "false"
+              },
+              {
+                "field": "Microsoft.ContainerService/managedClusters/networkProfile.networkPluginMode",
+                "notEquals": "overlay"
+              }
+            ]
+          }
+        ]
+      },
+      "then": {
+        "effect": "[parameters('effect')]"
+      }
+    }
+  }
+}

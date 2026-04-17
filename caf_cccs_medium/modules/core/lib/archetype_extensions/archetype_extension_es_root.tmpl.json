@@ -35,11 +35,16 @@
       "Resource-Locations",
       "Deny-AMPLS-Creation",
       "Enforce-AKS-CIDRs",
+      "Enforce-AKS-Azure-CNI-Overlay",
+      "Enforce-AKS-Secrets-Store-CSI",
+      "Enforce-AKS-ACNS-Security",
+      "Enforce-AKS-Cilium-Dataplane",
       "Deploy-NSP-Resource-Association"
     ],
     "policy_set_definitions": [
       "Deploy-Private-DNS-Zones-Custom",
-      "Inherit-Sub-Tags"
+      "Inherit-Sub-Tags",
+      "AKS-Security-Best-Practices"
     ],
     "role_definitions": [
       "IP-Address-Lookup-Reader"

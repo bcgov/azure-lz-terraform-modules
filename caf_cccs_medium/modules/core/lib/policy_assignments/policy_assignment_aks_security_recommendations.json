@@ -1,0 +1,198 @@
+{
+  "name": "AKS-Security-BestPrac",
+  "type": "Microsoft.Authorization/policyAssignments",
+  "apiVersion": "2019-09-01",
+  "properties": {
+    "displayName": "Enforce AKS security best practices",
+    "description": "This initiative enforces security best practices for Azure Kubernetes Service (AKS) clusters, including network configuration, authentication, and add-on policies. By implementing these policies, you can enhance the security posture of your AKS clusters and ensure compliance with organizational standards.",
+    "notScopes": [],
+    "parameters": {
+      "effect_CNI": {
+        "type": "String",
+        "metadata": {
+          "displayName": "Effect (CNI)",
+          "description": "Enable or disable the execution of the Azure CNI policy"
+        },
+        "allowableValues": [
+          "Audit",
+          "Disabled"
+        ],
+        "defaultValue": "Audit"
+      },
+      "effect_CNI_overlay": {
+        "type": "String",
+        "metadata": {
+          "displayName": "Effect (CNI Overlay)",
+          "description": "Enable or disable the execution of the Azure CNI Overlay policy"
+        },
+        "allowableValues": [
+          "Audit",
+          "Deny",
+          "Disabled"
+        ],
+        "defaultValue": "Audit"
+      },
+      "effect_zones": {
+        "type": "String",
+        "metadata": {
+          "displayName": "Effect (Zones)",
+          "description": "This parameter lets you choose the effect of the policy. If you choose Audit (default), the policy will only audit resources for compliance. If you choose Deny, the policy will deny the creation of non-compliant resources. If you choose Disabled, the policy will not enforce compliance (useful, for example, as a second assignment to ignore a subset of non-compliant resources in a single resource group)."
+        },
+        "allowableValues": [
+          "Audit",
+          "Deny",
+          "Disabled"
+        ],
+        "defaultValue": "Audit"
+      },
+      "effect_entra_id": {
+        "type": "String",
+        "metadata": {
+          "displayName": "Effect (Entra ID integration)",
+          "description": "Enable or disable the execution of the Entra ID Integration policy."
+        },
+        "allowableValues": [
+          "Audit",
+          "Disabled"
+        ],
+        "defaultValue": "Audit"
+      },
+      "effect_rbac": {
+        "type": "String",
+        "metadata": {
+          "displayName": "Effect (RBAC)",
+          "description": "Enable or disable the execution of the RBAC policy."
+        },
+        "allowableValues": [
+          "Audit",
+          "Disabled"
+        ],
+        "defaultValue": "Audit"
+      },
+      "effect_local_auth": {
+        "type": "String",
+        "metadata": {
+          "displayName": "Effect (Local Auth Disabled)",
+          "description": "Enable or disable the execution of the policy."
+        },
+        "allowableValues": [
+          "Audit",
+          "Deny",
+          "Disabled"
+        ],
+        "defaultValue": "Audit"
+      },
+      "effect_workload_identity": {
+        "type": "String",
+        "metadata": {
+          "displayName": "Effect (Workload Identity)",
+          "description": "Enable or disable the execution of the Workload Identity policy."
+        },
+        "allowableValues": [
+          "Audit",
+          "Disabled"
+        ],
+        "defaultValue": "Audit"
+      },
+      "effect_secrets_store_csi": {
+        "type": "String",
+        "metadata": {
+          "displayName": "Effect (Secrets Store CSI Driver)",
+          "description": "Enable or disable the execution of the Secrets Store CSI Driver policy."
+        },
+        "allowableValues": [
+          "Audit",
+          "Deny",
+          "Disabled"
+        ],
+        "defaultValue": "Audit"
+      },
+      "effect_acns_security": {
+        "type": "String",
+        "metadata": {
+          "displayName": "Effect (ACNS Security)",
+          "description": "Enable or disable the execution of the ACNS Security policy."
+        },
+        "allowableValues": [
+          "Audit",
+          "Deny",
+          "Disabled"
+        ],
+        "defaultValue": "Audit"
+      },
+      "effect_cilium_dataplane": {
+        "type": "String",
+        "metadata": {
+          "displayName": "Effect (Cilium dataplane)",
+          "description": "Enable or disable the execution of the Cilium dataplane policy."
+        },
+        "allowableValues": [
+          "Audit",
+          "Deny",
+          "Disabled"
+        ],
+        "defaultValue": "Audit"
+      },
+      "effect_azurePolicy": {
+        "type": "String",
+        "metadata": {
+          "displayName": "Effect (Azure Policy)",
+          "description": "Enable or disable the execution of the Enable Azure Policy policy."
+        },
+        "allowableValues": [
+          "Audit",
+          "Disabled"
+        ],
+        "defaultValue": "Audit"
+      },
+      "effect_azurePolicyAddOn": {
+        "type": "String",
+        "metadata": {
+          "displayName": "Effect (Policy Add-on)",
+          "description": "Enable or disable the execution of the policy"
+        },
+        "allowableValues": [
+          "DeployIfNotExists",
+          "Disabled"
+        ],
+        "defaultValue": "DeployIfNotExists"
+      },
+      "effect_imageCleaner": {
+        "type": "String",
+        "metadata": {
+          "displayName": "Effect (Image Cleaner)",
+          "description": "Enable or disable the execution of the Image Cleaner policy"
+        },
+        "allowableValues": [
+          "DeployIfNotExists",
+          "Disabled"
+        ],
+        "defaultValue": "DeployIfNotExists"
+      },
+      "effect_imageCleaner_audit": {
+        "type": "String",
+        "metadata": {
+          "displayName": "Effect (Image Cleaner Audit)",
+          "description": "Enable or disable the execution of the Image Cleaner Audit policy."
+        },
+        "allowableValues": [
+          "Audit",
+          "Disabled"
+        ],
+        "defaultValue": "Audit"
+      }
+    },
+    "policyDefinitionId": "${root_scope_resource_id}/providers/Microsoft.Authorization/policySetDefinitions/AKS-Security-Best-Practices",
+    "nonComplianceMessages": [
+      {
+        "message": "Azure Kubernetes Service (AKS) clusters should adhere to security best practices, including using Azure CNI with overlay mode for network configuration, enabling Entra ID integration for authentication, disabling local authentication, implementing workload identity, enabling Secrets Store CSI Driver, enabling ACNS security, and using Cilium dataplane. Please review the AKS security best practices on TechDocs for more details."
+      }
+    ],
+    "scope": "${current_scope_resource_id}",
+    "enforcementMode": null
+  },
+  "location": "${default_location}",
+  "identity": {
+    "type": "SystemAssigned"
+  }
+}
