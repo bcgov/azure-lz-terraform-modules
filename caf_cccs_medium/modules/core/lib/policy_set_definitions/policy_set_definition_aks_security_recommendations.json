@@ -99,6 +99,19 @@
         ],
         "defaultValue": "Audit"
       },
+      "effect_oidc_issuer": {
+        "type": "String",
+        "metadata": {
+          "displayName": "Effect (OIDC issuer)",
+          "description": "Enable or disable the execution of the OIDC issuer policy."
+        },
+        "allowableValues": [
+          "Audit",
+          "Deny",
+          "Disabled"
+        ],
+        "defaultValue": "Audit"
+      },
       "effect_secrets_store_csi": {
         "type": "String",
         "metadata": {
@@ -130,19 +143,6 @@
         "metadata": {
           "displayName": "Effect (Cilium dataplane)",
           "description": "Enable or disable the execution of the Cilium dataplane policy."
-        },
-        "allowableValues": [
-          "Audit",
-          "Deny",
-          "Disabled"
-        ],
-        "defaultValue": "Audit"
-      },
-      "effect_oidc_issuer": {
-        "type": "String",
-        "metadata": {
-          "displayName": "Effect (OIDC issuer)",
-          "description": "Enable or disable the execution of the OIDC issuer policy."
         },
         "allowableValues": [
           "Audit",
@@ -272,6 +272,16 @@
         "groupNames": []
       },
       {
+        "policyDefinitionReferenceId": "Enforce AKS OIDC issuer",
+        "policyDefinitionId": "${root_scope_resource_id}/providers/Microsoft.Authorization/policyDefinitions/Enforce-AKS-OIDC-Issuer",
+        "parameters": {
+          "effect": {
+              "value": "[parameters('effect_oidc_issuer')]"
+          }
+        },
+        "groupNames": []
+      },
+      {
         "policyDefinitionReferenceId": "Enforce AKS Secrets Store CSI Driver",
         "policyDefinitionId": "${root_scope_resource_id}/providers/Microsoft.Authorization/policyDefinitions/Enforce-AKS-Secrets-Store-CSI",
         "parameters": {
@@ -297,16 +307,6 @@
         "parameters": {
           "effect": {
               "value": "[parameters('effect_cilium_dataplane')]"
-          }
-        },
-        "groupNames": []
-      },
-      {
-        "policyDefinitionReferenceId": "Enforce AKS OIDC issuer",
-        "policyDefinitionId": "${root_scope_resource_id}/providers/Microsoft.Authorization/policyDefinitions/Enforce-AKS-OIDC-Issuer",
-        "parameters": {
-          "effect": {
-              "value": "[parameters('effect_oidc_issuer')]"
           }
         },
         "groupNames": []

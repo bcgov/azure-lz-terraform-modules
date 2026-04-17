@@ -7,6 +7,18 @@
     "description": "This initiative enforces security best practices for Azure Kubernetes Service (AKS) clusters, including network configuration, authentication, and add-on policies. By implementing these policies, you can enhance the security posture of your AKS clusters and ensure compliance with organizational standards.",
     "notScopes": [],
     "parameters": {
+      "effect_CNI": {
+        "type": "String",
+        "metadata": {
+          "displayName": "Effect (CNI) [Deprecated]",
+          "description": "Deprecated compatibility parameter retained to support policy set updates. Use effect_CNI_overlay instead."
+        },
+        "allowableValues": [
+          "Audit",
+          "Disabled"
+        ],
+        "defaultValue": "Disabled"
+      },
       "effect_CNI_overlay": {
         "type": "String",
         "metadata": {
@@ -19,6 +31,19 @@
           "Disabled"
         ],
         "defaultValue": "Audit"
+      },
+      "effect_zones": {
+        "type": "String",
+        "metadata": {
+          "displayName": "Effect (Zones) [Deprecated]",
+          "description": "Deprecated compatibility parameter retained to support policy set updates."
+        },
+        "allowableValues": [
+          "Audit",
+          "Deny",
+          "Disabled"
+        ],
+        "defaultValue": "Disabled"
       },
       "effect_entra_id": {
         "type": "String",
@@ -198,7 +223,31 @@
     "policyDefinitionId": "${root_scope_resource_id}/providers/Microsoft.Authorization/policySetDefinitions/AKS-Security-Best-Practices",
     "nonComplianceMessages": [
       {
-        "message": "Azure Kubernetes Service (AKS) clusters should adhere to security best practices, including using Azure CNI with overlay mode for network configuration, enabling Entra ID integration for authentication, enabling Azure RBAC and OIDC issuer, disabling local authentication, implementing workload identity, using managed identities, enabling Secrets Store CSI Driver, enabling ACNS security, and using Cilium dataplane. Please review the AKS security best practices on TechDocs for more details."
+        "message": "AKS clusters must adhere to security best practices for network configuration, authentication, identity, and add-on enablement. Review the AKS security best practices on TechDocs for remediation guidance."
+      },
+      {
+        "message": "AKS clusters must use Azure CNI with Overlay mode. This decouples pod IP allocation from the VNet address space, improving scalability and reducing IP exhaustion risk in enterprise environments.",
+        "policyDefinitionReferenceId": "Enforce AKS Azure CNI with Overlay mode"
+      },
+      {
+        "message": "AKS clusters must enable Azure RBAC for Kubernetes authorization. This integrates Kubernetes access control with Entra ID, providing centralized audit trails and consistent permission governance across Azure.",
+        "policyDefinitionReferenceId": "Enforce AKS Azure RBAC"
+      },
+      {
+        "message": "AKS clusters must enable the OIDC issuer. This is a prerequisite for Workload Identity, which allows pods to authenticate to Azure services using federated credentials without storing secrets.",
+        "policyDefinitionReferenceId": "Enforce AKS OIDC issuer"
+      },
+      {
+        "message": "AKS clusters must enable the Secrets Store CSI Driver add-on. This allows workloads to retrieve secrets directly from Azure Key Vault as volume mounts, eliminating hardcoded credentials and reducing secret sprawl.",
+        "policyDefinitionReferenceId": "Enforce AKS Secrets Store CSI Driver"
+      },
+      {
+        "message": "AKS clusters must enable Advanced Container Networking Services (ACNS) security features. ACNS provides eBPF-based L7 network policy enforcement and threat detection for container workloads.",
+        "policyDefinitionReferenceId": "Enforce AKS ACNS Security"
+      },
+      {
+        "message": "AKS clusters must use the Cilium dataplane. Cilium provides eBPF-based networking with advanced network policy enforcement, observability, and security capabilities required for production workloads.",
+        "policyDefinitionReferenceId": "Enforce AKS Cilium dataplane"
       }
     ],
     "scope": "${current_scope_resource_id}",
