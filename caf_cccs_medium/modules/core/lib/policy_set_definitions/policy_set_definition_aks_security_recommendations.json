@@ -74,6 +74,19 @@
         ],
         "defaultValue": "Audit"
       },
+      "effect_azure_rbac": {
+        "type": "String",
+        "metadata": {
+          "displayName": "Effect (Azure RBAC)",
+          "description": "Enable or disable the execution of the Azure RBAC policy."
+        },
+        "allowableValues": [
+          "Audit",
+          "Deny",
+          "Disabled"
+        ],
+        "defaultValue": "Audit"
+      },
       "effect_local_auth": {
         "type": "String",
         "metadata": {
@@ -92,6 +105,18 @@
         "metadata": {
           "displayName": "Effect (Workload Identity)",
           "description": "Enable or disable the execution of the Workload Identity policy."
+        },
+        "allowableValues": [
+          "Audit",
+          "Disabled"
+        ],
+        "defaultValue": "Audit"
+      },
+      "effect_managed_identities": {
+        "type": "String",
+        "metadata": {
+          "displayName": "Effect (Managed Identities)",
+          "description": "Enable or disable the execution of the Managed Identities policy."
         },
         "allowableValues": [
           "Audit",
@@ -130,6 +155,19 @@
         "metadata": {
           "displayName": "Effect (Cilium dataplane)",
           "description": "Enable or disable the execution of the Cilium dataplane policy."
+        },
+        "allowableValues": [
+          "Audit",
+          "Deny",
+          "Disabled"
+        ],
+        "defaultValue": "Audit"
+      },
+      "effect_oidc_issuer": {
+        "type": "String",
+        "metadata": {
+          "displayName": "Effect (OIDC issuer)",
+          "description": "Enable or disable the execution of the OIDC issuer policy."
         },
         "allowableValues": [
           "Audit",
@@ -239,6 +277,16 @@
         "groupNames": []
       },
       {
+        "policyDefinitionReferenceId": "Enforce AKS Azure RBAC",
+        "policyDefinitionId": "${root_scope_resource_id}/providers/Microsoft.Authorization/policyDefinitions/Enforce-AKS-Azure-RBAC",
+        "parameters": {
+          "effect": {
+              "value": "[parameters('effect_azure_rbac')]"
+          }
+        },
+        "groupNames": []
+      },
+      {
         "policyDefinitionReferenceId": "Azure Kubernetes Service Clusters should have local authentication methods disabled",
         "policyDefinitionId": "/providers/Microsoft.Authorization/policyDefinitions/993c2fcd-2b29-49d2-9eb0-df2c3a730c32",
         "parameters": {
@@ -254,6 +302,16 @@
         "parameters": {
           "effect": {
               "value": "[parameters('effect_workload_identity')]"
+          }
+        },
+        "groupNames": []
+      },
+      {
+        "policyDefinitionReferenceId": "Azure Kubernetes Service Clusters should use managed identities",
+        "policyDefinitionId": "/providers/Microsoft.Authorization/policyDefinitions/da6e2401-19da-4532-9141-fb8fbde08431",
+        "parameters": {
+          "effect": {
+              "value": "[parameters('effect_managed_identities')]"
           }
         },
         "groupNames": []
@@ -284,6 +342,16 @@
         "parameters": {
           "effect": {
               "value": "[parameters('effect_cilium_dataplane')]"
+          }
+        },
+        "groupNames": []
+      },
+      {
+        "policyDefinitionReferenceId": "Enforce AKS OIDC issuer",
+        "policyDefinitionId": "${root_scope_resource_id}/providers/Microsoft.Authorization/policyDefinitions/Enforce-AKS-OIDC-Issuer",
+        "parameters": {
+          "effect": {
+              "value": "[parameters('effect_oidc_issuer')]"
           }
         },
         "groupNames": []

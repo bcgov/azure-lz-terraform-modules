@@ -69,6 +69,19 @@
         ],
         "defaultValue": "Audit"
       },
+      "effect_azure_rbac": {
+        "type": "String",
+        "metadata": {
+          "displayName": "Effect (Azure RBAC)",
+          "description": "Enable or disable the execution of the Azure RBAC policy."
+        },
+        "allowableValues": [
+          "Audit",
+          "Deny",
+          "Disabled"
+        ],
+        "defaultValue": "Audit"
+      },
       "effect_local_auth": {
         "type": "String",
         "metadata": {
@@ -87,6 +100,18 @@
         "metadata": {
           "displayName": "Effect (Workload Identity)",
           "description": "Enable or disable the execution of the Workload Identity policy."
+        },
+        "allowableValues": [
+          "Audit",
+          "Disabled"
+        ],
+        "defaultValue": "Audit"
+      },
+      "effect_managed_identities": {
+        "type": "String",
+        "metadata": {
+          "displayName": "Effect (Managed Identities)",
+          "description": "Enable or disable the execution of the Managed Identities policy."
         },
         "allowableValues": [
           "Audit",
@@ -125,6 +150,19 @@
         "metadata": {
           "displayName": "Effect (Cilium dataplane)",
           "description": "Enable or disable the execution of the Cilium dataplane policy."
+        },
+        "allowableValues": [
+          "Audit",
+          "Deny",
+          "Disabled"
+        ],
+        "defaultValue": "Audit"
+      },
+      "effect_oidc_issuer": {
+        "type": "String",
+        "metadata": {
+          "displayName": "Effect (OIDC issuer)",
+          "description": "Enable or disable the execution of the OIDC issuer policy."
         },
         "allowableValues": [
           "Audit",
@@ -185,7 +223,7 @@
     "policyDefinitionId": "${root_scope_resource_id}/providers/Microsoft.Authorization/policySetDefinitions/AKS-Security-Best-Practices",
     "nonComplianceMessages": [
       {
-        "message": "Azure Kubernetes Service (AKS) clusters should adhere to security best practices, including using Azure CNI with overlay mode for network configuration, enabling Entra ID integration for authentication, disabling local authentication, implementing workload identity, enabling Secrets Store CSI Driver, enabling ACNS security, and using Cilium dataplane. Please review the AKS security best practices on TechDocs for more details."
+        "message": "Azure Kubernetes Service (AKS) clusters should adhere to security best practices, including using Azure CNI with overlay mode for network configuration, enabling Entra ID integration for authentication, enabling Azure RBAC and OIDC issuer, disabling local authentication, implementing workload identity, using managed identities, enabling Secrets Store CSI Driver, enabling ACNS security, and using Cilium dataplane. Please review the AKS security best practices on TechDocs for more details."
       }
     ],
     "scope": "${current_scope_resource_id}",

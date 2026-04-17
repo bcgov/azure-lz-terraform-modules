@@ -36,9 +36,11 @@
       "Deny-AMPLS-Creation",
       "Enforce-AKS-CIDRs",
       "Enforce-AKS-Azure-CNI-Overlay",
+      "Enforce-AKS-Azure-RBAC",
       "Enforce-AKS-Secrets-Store-CSI",
       "Enforce-AKS-ACNS-Security",
       "Enforce-AKS-Cilium-Dataplane",
+      "Enforce-AKS-OIDC-Issuer",
       "Deploy-NSP-Resource-Association"
     ],
     "policy_set_definitions": [
