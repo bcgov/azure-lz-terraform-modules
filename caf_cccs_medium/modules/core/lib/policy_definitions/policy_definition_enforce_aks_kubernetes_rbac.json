@@ -1,11 +1,11 @@
 {
-  "name": "Enforce-AKS-Cilium-Dataplane",
+  "name": "Enforce-AKS-Kubernetes-RBAC",
   "type": "Microsoft.Authorization/policyDefinitions",
   "apiVersion": "2024-05-01",
   "scope": null,
   "properties": {
-    "displayName": "Enforce Azure Kubernetes Services (AKS) Cilium dataplane",
-    "description": "Audits or denies Azure Kubernetes Services (AKS) clusters that are not configured to use the Cilium dataplane.",
+    "displayName": "Enforce Azure Kubernetes Services (AKS) Kubernetes Role-Based Access Control (RBAC) (Kubernetes-Native Authorization)",
+    "description": "Audits or denies Azure Kubernetes Services (AKS) clusters that do not have Kubernetes Role-Based Access Control (RBAC) enabled. This policy enforces Kubernetes-native authorization based on Kubernetes Role and RoleBinding objects for users, groups, and service accounts. It is a prerequisite control and is distinct from Azure RBAC for Kubernetes authorization.",
     "policyType": "Custom",
     "mode": "All",
     "metadata": {
@@ -18,8 +18,8 @@
       "effect": {
         "type": "String",
         "metadata": {
-          "displayName": "Effect",
-          "description": "Deny, Audit or Disabled the execution of the Policy"
+          "displayName": "Effect (Kubernetes-Native RBAC Authorization)",
+          "description": "Sets whether this policy audits, denies, or is disabled for Azure Kubernetes Services (AKS) clusters that do not enable Kubernetes-native RBAC authorization."
         },
         "allowedValues": [
           "Deny",
@@ -39,12 +39,12 @@
           {
             "anyOf": [
               {
-                "field": "Microsoft.ContainerService/managedClusters/networkProfile.networkDataplane",
+                "field": "Microsoft.ContainerService/managedClusters/enableRBAC",
                 "exists": "false"
               },
               {
-                "field": "Microsoft.ContainerService/managedClusters/networkProfile.networkDataplane",
-                "notEquals": "cilium"
+                "field": "Microsoft.ContainerService/managedClusters/enableRBAC",
+                "notEquals": true
               }
             ]
           }

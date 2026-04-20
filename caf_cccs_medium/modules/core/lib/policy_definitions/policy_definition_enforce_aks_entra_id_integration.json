@@ -1,11 +1,11 @@
 {
-  "name": "Enforce-AKS-Cilium-Dataplane",
+  "name": "Enforce-AKS-Entra-ID-Integration",
   "type": "Microsoft.Authorization/policyDefinitions",
   "apiVersion": "2024-05-01",
   "scope": null,
   "properties": {
-    "displayName": "Enforce Azure Kubernetes Services (AKS) Cilium dataplane",
-    "description": "Audits or denies Azure Kubernetes Services (AKS) clusters that are not configured to use the Cilium dataplane.",
+    "displayName": "Enforce Azure Kubernetes Services (AKS) Microsoft Entra ID Integration",
+    "description": "Audits or denies Azure Kubernetes Services (AKS) clusters that do not have Microsoft Entra ID integration managed by Azure Kubernetes Services (AKS). Entra ID integration allows Kubernetes role-based access control (RBAC) to use Entra ID identities and directory group memberships for cluster access management.",
     "policyType": "Custom",
     "mode": "All",
     "metadata": {
@@ -39,12 +39,12 @@
           {
             "anyOf": [
               {
-                "field": "Microsoft.ContainerService/managedClusters/networkProfile.networkDataplane",
+                "field": "Microsoft.ContainerService/managedClusters/aadProfile.managed",
                 "exists": "false"
               },
               {
-                "field": "Microsoft.ContainerService/managedClusters/networkProfile.networkDataplane",
-                "notEquals": "cilium"
+                "field": "Microsoft.ContainerService/managedClusters/aadProfile.managed",
+                "notEquals": true
               }
             ]
           }

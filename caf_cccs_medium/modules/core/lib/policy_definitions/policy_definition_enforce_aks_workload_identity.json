@@ -1,11 +1,11 @@
 {
-  "name": "Enforce-AKS-Cilium-Dataplane",
+  "name": "Enforce-AKS-Workload-Identity",
   "type": "Microsoft.Authorization/policyDefinitions",
   "apiVersion": "2024-05-01",
   "scope": null,
   "properties": {
-    "displayName": "Enforce Azure Kubernetes Services (AKS) Cilium dataplane",
-    "description": "Audits or denies Azure Kubernetes Services (AKS) clusters that are not configured to use the Cilium dataplane.",
+    "displayName": "Enforce Azure Kubernetes Services (AKS) Workload Identity",
+    "description": "Audits or denies Azure Kubernetes Services (AKS) clusters that do not have Workload Identity enabled. Workload Identity allows pods to authenticate to Azure services using federated credentials via the OpenID Connect (OIDC) token projection, eliminating the need to store secrets or connection strings.",
     "policyType": "Custom",
     "mode": "All",
     "metadata": {
@@ -39,12 +39,12 @@
           {
             "anyOf": [
               {
-                "field": "Microsoft.ContainerService/managedClusters/networkProfile.networkDataplane",
+                "field": "Microsoft.ContainerService/managedClusters/securityProfile.workloadIdentity.enabled",
                 "exists": "false"
               },
               {
-                "field": "Microsoft.ContainerService/managedClusters/networkProfile.networkDataplane",
-                "notEquals": "cilium"
+                "field": "Microsoft.ContainerService/managedClusters/securityProfile.workloadIdentity.enabled",
+                "notEquals": true
               }
             ]
           }

@@ -41,6 +41,10 @@
       "Enforce-AKS-ACNS-Security",
       "Enforce-AKS-Cilium-Dataplane",
       "Enforce-AKS-OIDC-Issuer",
+      "Enforce-AKS-Entra-ID-Integration",
+      "Enforce-AKS-Kubernetes-RBAC",
+      "Enforce-AKS-Workload-Identity",
+      "Enforce-AKS-Managed-Identity",
       "Deploy-NSP-Resource-Association"
     ],
     "policy_set_definitions": [

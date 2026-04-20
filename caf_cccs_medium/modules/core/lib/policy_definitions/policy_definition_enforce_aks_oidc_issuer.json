@@ -4,13 +4,15 @@
   "apiVersion": "2024-05-01",
   "scope": null,
   "properties": {
-    "displayName": "Enforce AKS OIDC issuer",
-    "description": "Audits or denies AKS clusters that do not have the OIDC issuer enabled.",
+    "displayName": "Enforce Azure Kubernetes Services (AKS) OpenID Connect (OIDC) Issuer",
+    "description": "Audits or denies Azure Kubernetes Services (AKS) clusters that do not have the OIDC issuer enabled.",
     "policyType": "Custom",
     "mode": "All",
     "metadata": {
-      "version": "1.0.0",
-      "category": "Kubernetes"
+      "version": "1.1.0",
+      "category": "Kubernetes",
+      "changeReason": "Standardized metadata for governance traceability and consistent policy review context.",
+      "complianceIntent": "Enforce or audit this specific AKS security control according to the assignment effect parameter."
     },
     "parameters": {
       "effect": {
