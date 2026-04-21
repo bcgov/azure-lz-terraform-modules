@@ -11,6 +11,7 @@
       "Deny-Delete-Routes",
       "Deny-VNet-Creation",
       "Enforce-AKS-CIDRs",
+      "AKS-Security-BestPrac",
       "Deny-New-VNet-Peerings",
       "Deny-Delete-Diagnostics",
       "Deny-AMPLS-Creation",
@@ -59,6 +60,23 @@
           "enforceServiceCidr": "SET using local.archetype_config_overrides",
           "allowedServiceCidrRanges": "SET using local.archetype_config_overrides",
           "effect": "SET using local.archetype_config_overrides"
+        },
+        "AKS-Security-BestPrac": {
+          "enforce_azure_cni_overlay": "SET using local.archetype_config_overrides",
+          "enforce_entra_id_integration": "SET using local.archetype_config_overrides",
+          "enforce_kubernetes_rbac": "SET using local.archetype_config_overrides",
+          "enforce_azure_rbac": "SET using local.archetype_config_overrides",
+          "enforce_disable_local_auth": "SET using local.archetype_config_overrides",
+          "enforce_workload_identity": "SET using local.archetype_config_overrides",
+          "enforce_managed_identity": "SET using local.archetype_config_overrides",
+          "enforce_oidc_issuer": "SET using local.archetype_config_overrides",
+          "enforce_secrets_store_csi": "SET using local.archetype_config_overrides",
+          "enforce_acns_security": "SET using local.archetype_config_overrides",
+          "enforce_cilium_dataplane": "SET using local.archetype_config_overrides",
+          "audit_azure_policy_addon": "SET using local.archetype_config_overrides",
+          "deploy_azure_policy_addon": "SET using local.archetype_config_overrides",
+          "deploy_image_cleaner": "SET using local.archetype_config_overrides",
+          "audit_image_cleaner": "SET using local.archetype_config_overrides"
         },
         "Deny-Delete-NetworkWatch": {
           "Network-Watcher-storageId": "SET using local.archetype_config_overrides",

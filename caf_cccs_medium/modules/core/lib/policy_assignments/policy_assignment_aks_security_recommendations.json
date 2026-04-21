@@ -3,200 +3,54 @@
   "type": "Microsoft.Authorization/policyAssignments",
   "apiVersion": "2019-09-01",
   "properties": {
-    "displayName": "Enforce AKS security best practices",
+    "displayName": "Enforce Azure Kubernetes Service (AKS) security best practices",
     "description": "This initiative enforces security best practices for Azure Kubernetes Service (AKS) clusters, including network configuration, authentication, and add-on policies. By implementing these policies, you can enhance the security posture of your AKS clusters and ensure compliance with organizational standards.",
     "notScopes": [],
     "parameters": {
       "enforce_azure_cni_overlay": {
-        "type": "String",
-        "metadata": {
-          "displayName": "Enforce Azure Container Network Interface (CNI) with Overlay Mode",
-          "description": "Controls whether AKS clusters must use Azure CNI with Overlay mode, which decouples pod IP allocation from the VNet address space to improve scalability and reduce IP exhaustion in enterprise environments."
-        },
-        "allowableValues": [
-          "Deny",
-          "Audit",
-          "Disabled"
-        ],
-        "defaultValue": "Audit"
+        "value": "Disabled"
       },
       "enforce_entra_id_integration": {
-        "type": "String",
-        "metadata": {
-          "displayName": "Enforce Microsoft Entra ID Integration",
-          "description": "Controls whether AKS clusters must have AKS-managed Microsoft Entra ID integration enabled, allowing Kubernetes RBAC to use Entra ID identities and directory group memberships for cluster access control."
-        },
-        "allowableValues": [
-          "Deny",
-          "Audit",
-          "Disabled"
-        ],
-        "defaultValue": "Audit"
+        "value": "Disabled"
       },
       "enforce_kubernetes_rbac": {
-        "type": "String",
-        "metadata": {
-          "displayName": "Enforce Kubernetes Role-Based Access Control (RBAC) (Kubernetes-Native Authorization)",
-          "description": "Controls whether AKS clusters must enable Kubernetes-native RBAC authorization via Kubernetes Role and RoleBinding objects. This governs in-cluster permissions for users, groups, and service accounts and is separate from Azure RBAC role-assignment authorization."
-        },
-        "allowableValues": [
-          "Deny",
-          "Audit",
-          "Disabled"
-        ],
-        "defaultValue": "Audit"
+        "value": "Disabled"
       },
       "enforce_azure_rbac": {
-        "type": "String",
-        "metadata": {
-          "displayName": "Enforce Azure Role-Based Access Control (RBAC) for Kubernetes Authorization (Azure Role Assignments)",
-          "description": "Controls whether AKS clusters must use Azure RBAC role assignments for Kubernetes authorization of Microsoft Entra identities. This control integrates Kubernetes access with Azure IAM and is distinct from Kubernetes-native RBAC object authorization."
-        },
-        "allowableValues": [
-          "Deny",
-          "Audit",
-          "Disabled"
-        ],
-        "defaultValue": "Audit"
+        "value": "Disabled"
       },
       "enforce_disable_local_auth": {
-        "type": "String",
-        "metadata": {
-          "displayName": "Require Local Authentication Methods to Be Disabled",
-          "description": "Controls whether Azure Kubernetes Services (AKS) clusters must have local authentication methods disabled. When set to Deny, create or update operations are blocked if local authentication is enabled."
-        },
-        "allowableValues": [
-          "Deny",
-          "Audit",
-          "Disabled"
-        ],
-        "defaultValue": "Audit"
+        "value": "Disabled"
       },
       "enforce_workload_identity": {
-        "type": "String",
-        "metadata": {
-          "displayName": "Enforce Workload Identity",
-          "description": "Controls whether AKS clusters must have Workload Identity enabled, allowing pods to authenticate to Azure services using federated credentials without storing secrets or connection strings."
-        },
-        "allowableValues": [
-          "Deny",
-          "Audit",
-          "Disabled"
-        ],
-        "defaultValue": "Audit"
+        "value": "Disabled"
       },
       "enforce_managed_identity": {
-        "type": "String",
-        "metadata": {
-          "displayName": "Enforce Managed Identity",
-          "description": "Controls whether AKS clusters must use a managed identity (system-assigned or user-assigned) instead of a service principal, simplifying credential management and reducing the risk of credential exposure."
-        },
-        "allowableValues": [
-          "Deny",
-          "Audit",
-          "Disabled"
-        ],
-        "defaultValue": "Audit"
+        "value": "Disabled"
       },
       "enforce_oidc_issuer": {
-        "type": "String",
-        "metadata": {
-          "displayName": "Enforce OpenID Connect (OIDC) Issuer",
-          "description": "Controls whether AKS clusters must have the OpenID Connect (OIDC) issuer endpoint enabled. The OIDC issuer is a prerequisite for Workload Identity, enabling pods to authenticate to Azure services using federated credentials."
-        },
-        "allowableValues": [
-          "Deny",
-          "Audit",
-          "Disabled"
-        ],
-        "defaultValue": "Audit"
+        "value": "Disabled"
       },
       "enforce_secrets_store_csi": {
-        "type": "String",
-        "metadata": {
-          "displayName": "Enforce Secrets Store Container Storage Interface (CSI) Driver",
-          "description": "Controls whether AKS clusters must have the Secrets Store Container Storage Interface (CSI) Driver add-on enabled, allowing workloads to mount secrets from Azure Key Vault as volumes and eliminating hardcoded credentials."
-        },
-        "allowableValues": [
-          "Deny",
-          "Audit",
-          "Disabled"
-        ],
-        "defaultValue": "Audit"
+        "value": "Disabled"
       },
       "enforce_acns_security": {
-        "type": "String",
-        "metadata": {
-          "displayName": "Enforce Advanced Container Networking Services (ACNS) Security",
-          "description": "Controls whether AKS clusters must have Advanced Container Networking Services (ACNS) security features enabled, providing eBPF-based Layer 7 network policy enforcement and threat detection for container workloads."
-        },
-        "allowableValues": [
-          "Deny",
-          "Audit",
-          "Disabled"
-        ],
-        "defaultValue": "Audit"
+        "value": "Disabled"
       },
       "enforce_cilium_dataplane": {
-        "type": "String",
-        "metadata": {
-          "displayName": "Enforce Cilium Dataplane",
-          "description": "Controls whether AKS clusters must use the Cilium eBPF-based dataplane, which provides advanced network policy enforcement, observability, and security capabilities required for production-grade container workloads."
-        },
-        "allowableValues": [
-          "Deny",
-          "Audit",
-          "Disabled"
-        ],
-        "defaultValue": "Audit"
+        "value": "Disabled"
       },
       "audit_azure_policy_addon": {
-        "type": "String",
-        "metadata": {
-          "displayName": "Audit Azure Policy Add-on Installation",
-          "description": "Controls whether AKS clusters are audited for having the Azure Policy Add-on installed and enabled. The add-on applies and enforces Azure Policy definitions within the cluster."
-        },
-        "allowableValues": [
-          "Audit",
-          "Disabled"
-        ],
-        "defaultValue": "Audit"
+        "value": "Disabled"
       },
       "deploy_azure_policy_addon": {
-        "type": "String",
-        "metadata": {
-          "displayName": "Deploy Azure Policy Add-on to AKS Clusters",
-          "description": "Controls whether the Azure Policy Add-on is automatically deployed to AKS clusters that do not have it installed, enabling in-cluster policy enforcement via Open Policy Agent (OPA) Gatekeeper."
-        },
-        "allowableValues": [
-          "DeployIfNotExists",
-          "Disabled"
-        ],
-        "defaultValue": "DeployIfNotExists"
+        "value": "Disabled"
       },
       "deploy_image_cleaner": {
-        "type": "String",
-        "metadata": {
-          "displayName": "Deploy Image Cleaner on AKS Clusters",
-          "description": "Controls whether Image Cleaner is automatically deployed to AKS clusters, enabling automatic identification and removal of unused and vulnerable container images to reduce the attack surface."
-        },
-        "allowableValues": [
-          "DeployIfNotExists",
-          "Disabled"
-        ],
-        "defaultValue": "DeployIfNotExists"
+        "value": "Disabled"
       },
       "audit_image_cleaner": {
-        "type": "String",
-        "metadata": {
-          "displayName": "Audit Image Cleaner Enablement",
-          "description": "Controls whether AKS clusters are audited for having Image Cleaner enabled. Image Cleaner removes stale and vulnerable images, reducing the time to detect and remediate vulnerable image exposure."
-        },
-        "allowableValues": [
-          "Audit",
-          "Disabled"
-        ],
-        "defaultValue": "Audit"
+        "value": "Disabled"
       }
     },
     "policyDefinitionId": "${root_scope_resource_id}/providers/Microsoft.Authorization/policySetDefinitions/AKS-Security-Best-Practices",

@@ -107,4 +107,7 @@ module "core" {
   nsp_resource_group_name = var.nsp_resource_group_name
   nsp_subscription_id     = var.nsp_subscription_id
   nsp_profile             = var.nsp_profile
+
+  enforce_aks_cidrs_parameters      = var.enforce_aks_cidrs_parameters
+  aks_security_best_prac_parameters = var.aks_security_best_prac_parameters
 }
