@@ -8,12 +8,7 @@
     "notScopes": [],
     "parameters": {
       "effect": {
-        "type": "String",
-        "metadata": {
-          "displayName": "Enforce Private Cluster Configuration",
-          "description": "Controls whether AKS clusters must be deployed with private cluster configuration, restricting API server access to private endpoints and reducing exposure to the public internet."
-        },
-        "defaultValue": "Audit"
+        "value": "Audit"
       }
     },
     "policyDefinitionId": "/providers/Microsoft.Authorization/policyDefinitions/040732e8-d947-40b8-95d6-854c95024bf8",
