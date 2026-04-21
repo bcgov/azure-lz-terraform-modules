@@ -1,0 +1,58 @@
+{
+  "name": "Enforce-AKS-Azure-RBAC",
+  "type": "Microsoft.Authorization/policyDefinitions",
+  "apiVersion": "2024-05-01",
+  "scope": null,
+  "properties": {
+    "displayName": "Enforce Azure Kubernetes Services (AKS) Azure Role-Based Access Control (RBAC) for Kubernetes Authorization",
+    "description": "Audits or denies Azure Kubernetes Services (AKS) clusters that do not have Azure RBAC enabled for Kubernetes authorization. This policy enforces Azure authorization using Azure role assignments mapped to Kubernetes permissions for Microsoft Entra identities, and is distinct from Kubernetes-native RBAC object authorization.",
+    "policyType": "Custom",
+    "mode": "All",
+    "metadata": {
+      "version": "1.1.0",
+      "category": "Kubernetes",
+      "changeReason": "Standardized metadata for governance traceability and consistent policy review context.",
+      "complianceIntent": "Enforce or audit this specific AKS security control according to the assignment effect parameter."
+    },
+    "parameters": {
+      "effect": {
+        "type": "String",
+        "metadata": {
+          "displayName": "Effect (Azure RBAC Role-Assignment Authorization)",
+          "description": "Sets whether this policy audits, denies, or is disabled for Azure Kubernetes Services (AKS) clusters that do not enable Azure RBAC role-assignment authorization for Kubernetes access."
+        },
+        "allowedValues": [
+          "Deny",
+          "Audit",
+          "Disabled"
+        ],
+        "defaultValue": "Audit"
+      }
+    },
+    "policyRule": {
+      "if": {
+        "allOf": [
+          {
+            "field": "type",
+            "equals": "Microsoft.ContainerService/managedClusters"
+          },
+          {
+            "anyOf": [
+              {
+                "field": "Microsoft.ContainerService/managedClusters/aadProfile.enableAzureRBAC",
+                "exists": "false"
+              },
+              {
+                "field": "Microsoft.ContainerService/managedClusters/aadProfile.enableAzureRBAC",
+                "notEquals": true
+              }
+            ]
+          }
+        ]
+      },
+      "then": {
+        "effect": "[parameters('effect')]"
+      }
+    }
+  }
+}

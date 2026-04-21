@@ -4,20 +4,22 @@
   "apiVersion": "2024-05-01",
   "scope": null,
   "properties": {
-    "displayName": "Enforce AKS Pod and Service CIDR ranges",
-    "description": "Restricts AKS Pod CIDR to an approved range and optionally enforces a Service CIDR range.",
+    "displayName": "Enforce Azure Kubernetes Services (AKS) Pod and Service CIDR ranges",
+    "description": "Restricts Azure Kubernetes Services (AKS) Pod CIDR to an approved range and optionally enforces a Service CIDR range.",
     "policyType": "Custom",
     "mode": "All",
     "metadata": {
-      "version": "1.0.0",
-      "category": "Kubernetes"
+      "version": "1.1.0",
+      "category": "Kubernetes",
+      "changeReason": "Standardized metadata for governance traceability and consistent policy review context.",
+      "complianceIntent": "Enforce or audit this specific AKS security control according to the assignment effect parameter."
     },
     "parameters": {
       "allowedPodCidrRanges": {
         "type": "Array",
         "metadata": {
           "displayName": "Allowed Pod CIDR Ranges",
-          "description": "AKS podCidr must be fully contained in one of these CIDR ranges."
+          "description": "Azure Kubernetes Services (AKS) podCidr must be fully contained in one of these CIDR ranges."
         },
         "defaultValue": [
           "10.10.0.0/16"
@@ -27,7 +29,7 @@
         "type": "Boolean",
         "metadata": {
           "displayName": "Enforce Service CIDR",
-          "description": "When true, AKS serviceCidr must be fully contained in the allowed Service CIDR range."
+          "description": "When true, Azure Kubernetes Services (AKS) serviceCidr must be fully contained in the allowed Service CIDR range."
         },
         "defaultValue": true
       },
@@ -35,7 +37,7 @@
         "type": "Array",
         "metadata": {
           "displayName": "Allowed Service CIDR Ranges",
-          "description": "AKS serviceCidr must be fully contained in one of these CIDR ranges when Service CIDR enforcement is enabled."
+          "description": "Azure Kubernetes Services (AKS) serviceCidr must be fully contained in one of these CIDR ranges when Service CIDR enforcement is enabled."
         },
         "defaultValue": [
           "10.20.0.0/16"

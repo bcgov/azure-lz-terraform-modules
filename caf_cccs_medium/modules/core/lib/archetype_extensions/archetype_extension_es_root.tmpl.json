@@ -35,14 +35,26 @@
       "Resource-Locations",
       "Deny-AMPLS-Creation",
       "Enforce-AKS-CIDRs",
+      "Enforce-AKS-Azure-CNI-Overlay",
+      "Enforce-AKS-Azure-RBAC",
+      "Enforce-AKS-Secrets-Store-CSI",
+      "Enforce-AKS-ACNS-Security",
+      "Enforce-AKS-Cilium-Dataplane",
+      "Enforce-AKS-OIDC-Issuer",
+      "Enforce-AKS-Entra-ID-Integration",
+      "Enforce-AKS-Kubernetes-RBAC",
+      "Enforce-AKS-Workload-Identity",
+      "Enforce-AKS-Managed-Identity",
       "Deploy-NSP-Resource-Association"
     ],
     "policy_set_definitions": [
       "Deploy-Private-DNS-Zones-Custom",
-      "Inherit-Sub-Tags"
+      "Inherit-Sub-Tags",
+      "AKS-Security-Best-Practices"
     ],
     "role_definitions": [
-      "IP-Address-Lookup-Reader"
+      "IP-Address-Lookup-Reader",
+      "AKS Private DNS Record Writer"
     ],
     "archetype_config": {
       "parameters": {

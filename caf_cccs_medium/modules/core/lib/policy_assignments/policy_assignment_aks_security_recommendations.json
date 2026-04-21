@@ -1,0 +1,129 @@
+{
+  "name": "AKS-Security-BestPrac",
+  "type": "Microsoft.Authorization/policyAssignments",
+  "apiVersion": "2019-09-01",
+  "properties": {
+    "displayName": "Enforce Azure Kubernetes Service (AKS) security best practices",
+    "description": "This initiative enforces security best practices for Azure Kubernetes Service (AKS) clusters, including network configuration, authentication, and add-on policies. By implementing these policies, you can enhance the security posture of your AKS clusters and ensure compliance with organizational standards.",
+    "notScopes": [],
+    "parameters": {
+      "enforce_azure_cni_overlay": {
+        "value": "Disabled"
+      },
+      "enforce_entra_id_integration": {
+        "value": "Disabled"
+      },
+      "enforce_kubernetes_rbac": {
+        "value": "Disabled"
+      },
+      "enforce_azure_rbac": {
+        "value": "Disabled"
+      },
+      "enforce_disable_local_auth": {
+        "value": "Disabled"
+      },
+      "enforce_workload_identity": {
+        "value": "Disabled"
+      },
+      "enforce_managed_identity": {
+        "value": "Disabled"
+      },
+      "enforce_oidc_issuer": {
+        "value": "Disabled"
+      },
+      "enforce_secrets_store_csi": {
+        "value": "Disabled"
+      },
+      "enforce_acns_security": {
+        "value": "Disabled"
+      },
+      "enforce_cilium_dataplane": {
+        "value": "Disabled"
+      },
+      "audit_azure_policy_addon": {
+        "value": "Disabled"
+      },
+      "deploy_azure_policy_addon": {
+        "value": "Disabled"
+      },
+      "deploy_image_cleaner": {
+        "value": "Disabled"
+      },
+      "audit_image_cleaner": {
+        "value": "Disabled"
+      }
+    },
+    "policyDefinitionId": "${root_scope_resource_id}/providers/Microsoft.Authorization/policySetDefinitions/AKS-Security-Best-Practices",
+    "nonComplianceMessages": [
+      {
+        "message": "AKS clusters must meet Azure Landing Zone AKS security requirements. See guidance: https://developer.gov.bc.ca/docs/default/component/public-cloud-techdocs/azure/azure-services/aks/"
+      },
+      {
+        "message": "Azure Landing Zone AKS security requirements: AKS clusters must use Azure CNI with Overlay mode to improve scalability and reduce IP exhaustion risk. Guidance: https://developer.gov.bc.ca/docs/default/component/public-cloud-techdocs/azure/azure-services/aks/",
+        "policyDefinitionReferenceId": "Enforce AKS Azure Container Network Interface (CNI) with Overlay Mode"
+      },
+      {
+        "message": "Azure Landing Zone AKS security requirements: AKS clusters must have Microsoft Entra ID integration enabled for identity-based cluster access control. Guidance: https://developer.gov.bc.ca/docs/default/component/public-cloud-techdocs/azure/azure-services/aks/",
+        "policyDefinitionReferenceId": "Enforce AKS Microsoft Entra ID Integration"
+      },
+      {
+        "message": "Azure Landing Zone AKS security requirements: AKS clusters must enable Kubernetes RBAC (Kubernetes-native authorization) using Kubernetes Role and RoleBinding objects. Guidance: https://developer.gov.bc.ca/docs/default/component/public-cloud-techdocs/azure/azure-services/aks/",
+        "policyDefinitionReferenceId": "Enforce AKS Kubernetes RBAC (Kubernetes-Native)"
+      },
+      {
+        "message": "Azure Landing Zone AKS security requirements: AKS clusters must enable Azure RBAC for Kubernetes authorization, using Azure role assignments for Microsoft Entra identities. Guidance: https://developer.gov.bc.ca/docs/default/component/public-cloud-techdocs/azure/azure-services/aks/",
+        "policyDefinitionReferenceId": "Enforce AKS Azure RBAC (Azure Role Assignments)"
+      },
+      {
+        "message": "Azure Landing Zone AKS security requirements: AKS clusters must have local authentication methods disabled. When this policy is set to Deny, cluster create or update operations are blocked if local authentication is enabled. Guidance: https://developer.gov.bc.ca/docs/default/component/public-cloud-techdocs/azure/azure-services/aks/",
+        "policyDefinitionReferenceId": "Require AKS Local Authentication Methods Disabled"
+      },
+      {
+        "message": "Azure Landing Zone AKS security requirements: AKS clusters must enable Workload Identity so pods can use federated credentials instead of stored secrets. Guidance: https://developer.gov.bc.ca/docs/default/component/public-cloud-techdocs/azure/azure-services/aks/",
+        "policyDefinitionReferenceId": "Enforce AKS Workload Identity"
+      },
+      {
+        "message": "Azure Landing Zone AKS security requirements: AKS clusters must use managed identity (system-assigned or user-assigned) instead of service principal credentials. Guidance: https://developer.gov.bc.ca/docs/default/component/public-cloud-techdocs/azure/azure-services/aks/",
+        "policyDefinitionReferenceId": "Enforce AKS Managed Identity"
+      },
+      {
+        "message": "Azure Landing Zone AKS security requirements: AKS clusters must enable the OIDC issuer endpoint as a prerequisite for Workload Identity federation. Guidance: https://developer.gov.bc.ca/docs/default/component/public-cloud-techdocs/azure/azure-services/aks/",
+        "policyDefinitionReferenceId": "Enforce AKS OpenID Connect (OIDC) Issuer"
+      },
+      {
+        "message": "Azure Landing Zone AKS security requirements: AKS clusters must enable the Secrets Store CSI Driver add-on to integrate secret retrieval from Azure Key Vault. Guidance: https://developer.gov.bc.ca/docs/default/component/public-cloud-techdocs/azure/azure-services/aks/",
+        "policyDefinitionReferenceId": "Enforce AKS Secrets Store Container Storage Interface (CSI) Driver"
+      },
+      {
+        "message": "Azure Landing Zone AKS security requirements: AKS clusters must enable Advanced Container Networking Services (ACNS) security features for network policy enforcement and threat detection. Guidance: https://developer.gov.bc.ca/docs/default/component/public-cloud-techdocs/azure/azure-services/aks/",
+        "policyDefinitionReferenceId": "Enforce AKS Advanced Container Networking Services (ACNS) Security"
+      },
+      {
+        "message": "Azure Landing Zone AKS security requirements: AKS clusters must use the Cilium dataplane for advanced eBPF-based networking and policy enforcement. Guidance: https://developer.gov.bc.ca/docs/default/component/public-cloud-techdocs/azure/azure-services/aks/",
+        "policyDefinitionReferenceId": "Enforce AKS Cilium Dataplane"
+      },
+      {
+        "message": "Azure Landing Zone AKS security requirements: AKS clusters should have the Azure Policy Add-on installed and enabled to support policy governance in-cluster. Guidance: https://developer.gov.bc.ca/docs/default/component/public-cloud-techdocs/azure/azure-services/aks/",
+        "policyDefinitionReferenceId": "Audit AKS Azure Policy Add-on Installation"
+      },
+      {
+        "message": "Azure Landing Zone AKS security requirements: Deploy the Azure Policy Add-on to AKS clusters that do not already have it to establish policy enforcement controls. Guidance: https://developer.gov.bc.ca/docs/default/component/public-cloud-techdocs/azure/azure-services/aks/",
+        "policyDefinitionReferenceId": "Deploy Azure Policy Add-on to Azure Kubernetes Service Clusters"
+      },
+      {
+        "message": "Azure Landing Zone AKS security requirements: Deploy Image Cleaner to AKS clusters to reduce risk from stale or vulnerable container images. Guidance: https://developer.gov.bc.ca/docs/default/component/public-cloud-techdocs/azure/azure-services/aks/",
+        "policyDefinitionReferenceId": "Deploy Image Cleaner on Azure Kubernetes Service Clusters"
+      },
+      {
+        "message": "Azure Landing Zone AKS security requirements: AKS clusters should enable Image Cleaner to continuously remove stale or vulnerable images. Guidance: https://developer.gov.bc.ca/docs/default/component/public-cloud-techdocs/azure/azure-services/aks/",
+        "policyDefinitionReferenceId": "Audit AKS Image Cleaner Enablement"
+      }
+    ],
+    "scope": "${current_scope_resource_id}",
+    "enforcementMode": null
+  },
+  "location": "${default_location}",
+  "identity": {
+    "type": "SystemAssigned"
+  }
+}
