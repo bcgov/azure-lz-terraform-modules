@@ -110,4 +110,5 @@ module "core" {
 
   enforce_aks_cidrs_parameters      = var.enforce_aks_cidrs_parameters
   aks_security_best_prac_parameters = var.aks_security_best_prac_parameters
+  enforce_private_cluster           = var.enforce_aks_private_cluster_parameters
 }

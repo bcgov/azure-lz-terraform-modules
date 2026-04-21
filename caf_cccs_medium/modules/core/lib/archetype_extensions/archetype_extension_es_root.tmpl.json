@@ -53,7 +53,8 @@
       "AKS-Security-Best-Practices"
     ],
     "role_definitions": [
-      "IP-Address-Lookup-Reader"
+      "IP-Address-Lookup-Reader",
+      "AKS Private DNS Record Writer"
     ],
     "archetype_config": {
       "parameters": {

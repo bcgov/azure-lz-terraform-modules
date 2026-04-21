@@ -1,0 +1,28 @@
+{
+  "name": "AKS-Private-Cluster",
+  "type": "Microsoft.Authorization/policyAssignments",
+  "apiVersion": "2019-09-01",
+  "properties": {
+    "displayName": "Enforce Azure Kubernetes Service (AKS) private cluster configuration",
+    "description": "This policy assignment enforces the use of private cluster configuration for Azure Kubernetes Service (AKS) clusters. By deploying this policy, you can ensure that AKS clusters are configured to restrict API server access to private endpoints, enhancing security by reducing exposure to the public internet.",
+    "notScopes": [],
+    "parameters": {
+      "effect": {
+        "type": "String",
+        "metadata": {
+          "displayName": "Enforce Private Cluster Configuration",
+          "description": "Controls whether AKS clusters must be deployed with private cluster configuration, restricting API server access to private endpoints and reducing exposure to the public internet."
+        },
+        "defaultValue": "Audit"
+      }
+    },
+    "policyDefinitionId": "/providers/Microsoft.Authorization/policyDefinitions/040732e8-d947-40b8-95d6-854c95024bf8",
+    "nonComplianceMessages": [],
+    "scope": "${current_scope_resource_id}",
+    "enforcementMode": null
+  },
+  "location": "${default_location}",
+  "identity": {
+    "type": "SystemAssigned"
+  }
+}

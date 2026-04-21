@@ -28,3 +28,10 @@ variable "aks_security_best_prac_parameters" {
   })
   description = "Parameter values for the AKS-Security-BestPrac initiative assignment."
 }
+
+variable "enforce_aks_private_cluster_parameters" {
+  type = object({
+    effect = string
+  })
+  description = "Parameter values for the Enforce-AKS-Private-Cluster policy assignment."
+}

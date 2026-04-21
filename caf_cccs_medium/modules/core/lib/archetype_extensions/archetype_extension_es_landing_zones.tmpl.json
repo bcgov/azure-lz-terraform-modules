@@ -12,6 +12,7 @@
       "Deny-VNet-Creation",
       "Enforce-AKS-CIDRs",
       "AKS-Security-BestPrac",
+      "AKS-Private-Cluster",
       "Deny-New-VNet-Peerings",
       "Deny-Delete-Diagnostics",
       "Deny-AMPLS-Creation",
@@ -78,6 +79,9 @@
           "deploy_image_cleaner": "SET using local.archetype_config_overrides",
           "audit_image_cleaner": "SET using local.archetype_config_overrides"
         },
+        "AKS-Private-Cluster": {
+          "effect": "SET using local.archetype_config_overrides"
+         },
         "Deny-Delete-NetworkWatch": {
           "Network-Watcher-storageId": "SET using local.archetype_config_overrides",
           "Network-Watcher-workspaceResourceId": "SET using local.archetype_config_overrides"

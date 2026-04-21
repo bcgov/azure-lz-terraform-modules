@@ -99,6 +99,13 @@ variable "aks_security_best_prac_parameters" {
   description = "Parameter values for the AKS-Security-BestPrac initiative assignment."
 }
 
+variable "enforce_private_cluster" {
+  type = object({
+    effect = string
+  })
+  description = "Parameter value for the Enforce-AKS-Private-Cluster policy assignment."
+}
+
 variable "network_watcher_storage_account_resource_group" {
   type        = string
   description = "The Resource Group of the Storage Account used for Network Watcher VNet Flow Logs."
