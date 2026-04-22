@@ -4,24 +4,37 @@ Creates Azure AD groups (Owners, Contributors, Readers) for a project set and as
 
 ## Group owners behaviour
 
-Groups are created with the **Terraform execution identity** and **admin email** user as initial owners.
+Groups always include the **Terraform execution identity** and the current **admin email** user as owners.
 
 **Key behaviour:**
 
-- **Portal-added owners are preserved** – After creation, Terraform uses `lifecycle { ignore_changes = [owners] }` so owners added in the Azure portal (e.g. Technical Leads, managed identities for CI/CD) are never removed.
+- **Current owners are preserved** - Existing owners already on the group are read and merged into the desired owner list.
+- **`admin_email` is re-added if the user exists** - If the current admin user exists in Entra ID and is removed outside Terraform, the next plan/apply adds them back.
+- **Missing `admin_email` users are ignored** - If the configured `admin_email` does not resolve to an Entra user, the module skips that owner rather than failing the user lookup.
+- **Portal-added owners are preserved** - Owners added outside Terraform remain owners because the module merges them into the desired owner set rather than replacing them.
 
-- **Admin email changes are handled automatically** – When `admin_email` changes, a `null_resource` with triggers:
-  1. Removes the **old** admin email user as owner (using the value stored in Terraform state)
-  2. Adds the **new** admin email user as owner
-
-This prevents accumulating old admins as group owners over time.
-
-**Edge case:** If the old admin is the **only** owner of a group, Azure AD will not allow removal (minimum 1 owner required). In this case, the new admin is added but the old admin remains. You may need to manually remove the old admin after ensuring other owners exist.
+**Admin change behaviour:** If `admin_email` changes, the new admin is added automatically. The previous admin may remain as an owner and can be removed manually if desired.
 
 **Requirements:**
 
 - Azure CLI (`az`) must be installed and authenticated where Terraform runs.
 - The `hashicorp/null` provider (~> 3.0) is required.
+
+## Group members behaviour
+
+Group members are managed in an **add-only** manner using Azure CLI calls from Terraform.
+
+**Key behaviour:**
+
+- **Pre-existing members are preserved** - If a desired user is already a direct member of the target group, Terraform detects that and skips the add.
+- **Missing desired members are added** - If a desired user is not yet a member, Terraform adds them during apply.
+- **Members are not removed automatically** - Removing a user from module inputs does not remove them from the Entra group.
+
+This avoids failures when memberships already exist in Entra ID but were never imported into Terraform state.
+
+**Migration note:**
+
+If you previously used the `azuread_group_member` resource version of this module, remove those membership instances from Terraform state before applying this version. Otherwise Terraform will plan to destroy the old `azuread_group_member` resources as part of the transition to `null_resource.group_members`.
 
 <!-- BEGIN_TF_DOCS -->
 ## Requirements
@@ -48,10 +61,11 @@ No modules.
 | Name | Type |
 |------|------|
 | [azuread_group.groups](https://registry.terraform.io/providers/hashicorp/azuread/latest/docs/resources/group) | resource |
-| [azuread_group_member.group_members](https://registry.terraform.io/providers/hashicorp/azuread/latest/docs/resources/group_member) | resource |
 | [azurerm_role_assignment.group_roles](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/role_assignment) | resource |
-| [null_resource.admin_owner](https://registry.terraform.io/providers/hashicorp/null/latest/docs/resources/resource) | resource |
+| [null_resource.group_members](https://registry.terraform.io/providers/hashicorp/null/latest/docs/resources/resource) | resource |
 | [azuread_client_config.current](https://registry.terraform.io/providers/hashicorp/azuread/latest/docs/data-sources/client_config) | data source |
+| [azuread_group.existing](https://registry.terraform.io/providers/hashicorp/azuread/latest/docs/data-sources/group) | data source |
+| [azuread_groups.existing](https://registry.terraform.io/providers/hashicorp/azuread/latest/docs/data-sources/groups) | data source |
 | [azuread_users.members](https://registry.terraform.io/providers/hashicorp/azuread/latest/docs/data-sources/users) | data source |
 
 ## Inputs

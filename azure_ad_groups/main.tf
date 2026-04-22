@@ -20,6 +20,8 @@ locals {
     }
   }
 
+  desired_group_names = [for _, group in local.groups : group.name]
+
   # Privileged Role IDs:
   # 8e3af657a8ff443ca75c2fe8c4bcb635 = Owner
   # b24988ac6180420aab8820f7382dd24c = Contributor
@@ -45,6 +47,19 @@ locals {
     [for upn in data.azuread_users.members.user_principal_names : lower(upn)],
     data.azuread_users.members.object_ids
   ) : {}
+
+  existing_group_object_id_by_name = length(data.azuread_groups.existing.display_names) > 0 ? zipmap(
+    data.azuread_groups.existing.display_names,
+    data.azuread_groups.existing.object_ids
+  ) : {}
+
+  existing_groups = {
+    for group_key, group in local.groups :
+    group_key => {
+      object_id = local.existing_group_object_id_by_name[group.name]
+    }
+    if contains(keys(local.existing_group_object_id_by_name), group.name)
+  }
 
   # Build raw list of all group-member pairs
   raw_group_members = flatten([
@@ -88,124 +103,76 @@ data "azuread_users" "members" {
   user_principal_names = length(local.all_members) > 0 ? local.all_members : []
 }
 
+# Read any matching pre-existing groups so required owners can be merged with
+# current owners without removing owners that were added outside Terraform.
+data "azuread_groups" "existing" {
+  display_names    = local.desired_group_names
+  ignore_missing   = true
+  security_enabled = true
+}
+
+data "azuread_group" "existing" {
+  for_each = local.existing_groups
+
+  object_id = each.value.object_id
+}
+
 # Create the groups
-# lifecycle.ignore_changes on owners prevents Terraform from overwriting owners
-# added outside Terraform (e.g. Technical Leads, managed identities in the portal).
-# Admin email changes are handled by the null_resource.admin_owner below.
+# Preserve existing owners while always ensuring the current admin_email and
+# Terraform execution identity remain owners of every group.
 resource "azuread_group" "groups" {
   for_each         = local.groups
   display_name     = each.value.name
   security_enabled = true
   description      = each.value.description
-  owners           = local.terraform_owner_ids
-
-  lifecycle {
-    ignore_changes = [owners]
-  }
+  owners = distinct(concat(
+    try(data.azuread_group.existing[each.key].owners, []),
+    local.terraform_owner_ids
+  ))
 }
 
-# Manage admin_email owner lifecycle across all groups.
-# When admin_email changes:
-#   1. DESTROY provisioner fires with OLD admin_email from state -> removes old admin as owner
-#   2. Resource is recreated with new triggers
-#   3. CREATE provisioner fires with NEW admin_email -> adds new admin as owner
-# Portal-added owners are never touched (ignore_changes on azuread_group.owners).
-resource "null_resource" "admin_owner" {
-  for_each = local.groups
+# Add users to groups in an add-only manner.
+# This avoids failures when a desired membership already exists in Entra ID
+# outside Terraform state, and it does not remove members when they are later
+# removed from Terraform inputs.
+resource "null_resource" "group_members" {
+  for_each = local.existing_group_members
 
   triggers = {
-    admin_email = var.admin_email
-    group_name  = each.value.name
+    group_key        = each.value.group_key
+    group_name       = local.groups[each.value.group_key].name
+    group_object_id  = azuread_group.groups[each.value.group_key].id
+    member           = each.value.member
+    member_object_id = each.value.member_object_id
   }
 
-  # When admin_email changes, this fires FIRST with the OLD values from state
-  provisioner "local-exec" {
-    when    = destroy
-    command = <<-EOT
-      set -e
-      echo "Removing old admin '${self.triggers.admin_email}' from group '${self.triggers.group_name}'..."
-
-      OLD_ADMIN_ID=$(az ad user show --id "${self.triggers.admin_email}" --query id -o tsv 2>/dev/null || true)
-      if [ -z "$OLD_ADMIN_ID" ] || [ "$OLD_ADMIN_ID" = "None" ]; then
-        echo "Old admin user not found in Azure AD, skipping removal."
-        exit 0
-      fi
-
-      GROUP_ID=$(az ad group list --display-name "${self.triggers.group_name}" --query "[0].id" -o tsv 2>/dev/null || true)
-      if [ -z "$GROUP_ID" ] || [ "$GROUP_ID" = "None" ]; then
-        echo "Group not found in Azure AD, skipping removal."
-        exit 0
-      fi
-
-      # Check if this user is actually an owner
-      IS_OWNER=$(az ad group owner list --group "$GROUP_ID" --query "[?id=='$OLD_ADMIN_ID'].id" -o tsv 2>/dev/null || true)
-      if [ -z "$IS_OWNER" ]; then
-        echo "Old admin is not currently an owner of this group, skipping removal."
-        exit 0
-      fi
-
-      # Check owner count - Azure requires at least 1 owner
-      OWNER_COUNT=$(az ad group owner list --group "$GROUP_ID" --query "length(@)" -o tsv 2>/dev/null || echo "0")
-      if [ "$OWNER_COUNT" -le 1 ]; then
-        echo "WARNING: Cannot remove old admin - they are the only owner. Azure requires at least 1 owner."
-        echo "The new admin will be added, then you may need to manually remove the old admin."
-        exit 0
-      fi
-
-      echo "Removing old admin (ID: $OLD_ADMIN_ID) from group (ID: $GROUP_ID)..."
-      if az ad group owner remove --group "$GROUP_ID" --owner-object-id "$OLD_ADMIN_ID"; then
-        echo "Successfully removed old admin from group."
-      else
-        echo "ERROR: Failed to remove old admin. Check permissions."
-        exit 1
-      fi
-    EOT
-  }
-
-  # Then this fires with the NEW admin_email
   provisioner "local-exec" {
     command = <<-EOT
       set -e
-      echo "Adding new admin '${self.triggers.admin_email}' to group '${self.triggers.group_name}'..."
+      echo "Ensuring member '${self.triggers.member}' is in group '${self.triggers.group_name}'..."
 
-      NEW_ADMIN_ID=$(az ad user show --id "${self.triggers.admin_email}" --query id -o tsv 2>/dev/null || true)
-      if [ -z "$NEW_ADMIN_ID" ] || [ "$NEW_ADMIN_ID" = "None" ]; then
-        echo "ERROR: New admin user '${self.triggers.admin_email}' not found in Azure AD."
-        exit 1
-      fi
+      IS_MEMBER=$(az ad group member check \
+        --group "${self.triggers.group_object_id}" \
+        --member-id "${self.triggers.member_object_id}" \
+        --query value -o tsv 2>/dev/null || echo "false")
 
-      GROUP_ID=$(az ad group list --display-name "${self.triggers.group_name}" --query "[0].id" -o tsv 2>/dev/null || true)
-      if [ -z "$GROUP_ID" ] || [ "$GROUP_ID" = "None" ]; then
-        echo "ERROR: Group '${self.triggers.group_name}' not found in Azure AD."
-        exit 1
-      fi
-
-      # Check if already an owner
-      IS_OWNER=$(az ad group owner list --group "$GROUP_ID" --query "[?id=='$NEW_ADMIN_ID'].id" -o tsv 2>/dev/null || true)
-      if [ -n "$IS_OWNER" ]; then
-        echo "New admin is already an owner of this group, skipping add."
+      if [ "$IS_MEMBER" = "true" ]; then
+        echo "Member is already in the group, skipping add."
         exit 0
       fi
 
-      echo "Adding new admin (ID: $NEW_ADMIN_ID) to group (ID: $GROUP_ID)..."
-      if az ad group owner add --group "$GROUP_ID" --owner-object-id "$NEW_ADMIN_ID"; then
-        echo "Successfully added new admin to group."
+      if az ad group member add \
+        --group "${self.triggers.group_object_id}" \
+        --member-id "${self.triggers.member_object_id}"; then
+        echo "Successfully added member to group."
       else
-        echo "ERROR: Failed to add new admin. Check permissions."
+        echo "ERROR: Failed to add member to group. Check permissions."
         exit 1
       fi
     EOT
   }
 
   depends_on = [azuread_group.groups]
-}
-
-# Add users to groups (only for users that actually exist)
-resource "azuread_group_member" "group_members" {
-  for_each = local.existing_group_members
-
-  group_object_id  = azuread_group.groups[each.value.group_key].id
-  member_object_id = each.value.member_object_id
 }
 
 # Assign roles to groups
