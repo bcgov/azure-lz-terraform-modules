@@ -8,7 +8,11 @@
     "policyDefinitionId": "/providers/Microsoft.Authorization/policyDefinitions/9dfea752-dd46-4766-aed1-c355fa93fb91",
     "metadata": {},
     "notScopes": [],
-    "parameters": {},
+    "parameters": {
+      "effect": {
+        "value": "Audit"
+      }
+    },
     "nonComplianceMessages": [
         {
           "message": "Azure SQL Managed Instance should have data access for clients outside of the connected virtual networks (public endpoint (data)) disabled. This means that the SQL Managed Instance can only be accessed from inside its virtual network or via Private Endpoints, and cannot be accessed over the internet."

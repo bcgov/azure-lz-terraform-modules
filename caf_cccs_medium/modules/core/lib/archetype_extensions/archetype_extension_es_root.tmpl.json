@@ -93,6 +93,12 @@
           "networkSecurityPerimeterResourceGroupName": "SET using local.archetype_config_overrides",
           "networkSecurityPerimeterSubscriptionId": "SET using local.archetype_config_overrides",
           "networkSecurityPerimeterProfileId": "SET using local.archetype_config_overrides"
+        },
+        "SQLMI-Disable-PublicData": {
+          "effect": "SET using local.archetype_config_overrides"
+        },
+        "SQLMI-Entra-AuthN": {
+          "effect": "SET using local.archetype_config_overrides"
         }
       },
       "access_control": {}
