@@ -27,8 +27,8 @@ resource "azurerm_management_group" "project_set" {
 }
 
 module "lz_vending" {
-  source  = "Azure/lz-vending/azurerm"
-  version = "7.0.3" # NOTE: When updating this version, please update the respective `resourceproviders_*` modules below
+  source  = "Azure/avm-ptn-alz-sub-vending/azure"
+  version = "0.2.1" # NOTE: When updating this version, please update the respective `resourceproviders_*` modules below
 
   for_each = var.subscriptions
 
@@ -67,7 +67,7 @@ module "lz_vending" {
       }
     }
   )
-  disable_telemetry = true
+  enable_telemetry = false
   virtual_networks = try(each.value.network.enabled, false) ? {
     vwan_spoke = {
       name = "${var.license_plate}-${each.value.name}-vwan-spoke"
@@ -140,8 +140,8 @@ resource "azurerm_consumption_budget_subscription" "subscription_budget" {
 
 # NOTE: This Resource Provider is required when using Azure Monitor Baseline Alerts (AMBA)
 module "resourceproviders_alerts_management" {
-  source  = "Azure/lz-vending/azurerm//modules/resourceprovider"
-  version = "7.0.3" # Should match the lz_vending module version
+  source  = "Azure/avm-ptn-alz-sub-vending/azure//modules/resource-provider"
+  version = "0.2.1" # Should match the avm-ptn-alz-sub-vending module version
 
   for_each = {
     for k, v in var.subscriptions : k => v
@@ -154,8 +154,8 @@ module "resourceproviders_alerts_management" {
 
 # NOTE: This Resource Provider is required when using Azure Monitor Baseline Alerts (AMBA)
 module "resourceproviders_insights" {
-  source  = "Azure/lz-vending/azurerm//modules/resourceprovider"
-  version = "7.0.3" # Should match the lz_vending module version
+  source  = "Azure/avm-ptn-alz-sub-vending/azure//modules/resource-provider"
+  version = "0.2.1" # Should match the avm-ptn-alz-sub-vending module version
 
   for_each = {
     for k, v in var.subscriptions : k => v

@@ -10,29 +10,29 @@ For each environment, the module will create a subscription, a network resource 
 ## Requirements
 
 | Name | Version |
-|------|---------|
+| ---- | ------- |
 | <a name="requirement_azapi"></a> [azapi](#requirement\_azapi) | 2.7.0 |
 | <a name="requirement_azurerm"></a> [azurerm](#requirement\_azurerm) | 4.54.0 |
 
 ## Providers
 
 | Name | Version |
-|------|---------|
+| ---- | ------- |
 | <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) | 4.54.0 |
 
 ## Modules
 
 | Name | Source | Version |
-|------|--------|---------|
-| <a name="module_lz_vending"></a> [lz\_vending](#module\_lz\_vending) | Azure/lz-vending/azurerm | 7.0.3 |
+| ---- | ------ | ------- |
+| <a name="module_lz_vending"></a> [lz\_vending](#module\_lz\_vending) | Azure/avm-ptn-alz-sub-vending/azure | 0.2.1 |
 | <a name="module_network_flow_logs"></a> [network\_flow\_logs](#module\_network\_flow\_logs) | Azure/avm-res-network-networkwatcher/azurerm | 0.3.0 |
-| <a name="module_resourceproviders_alerts_management"></a> [resourceproviders\_alerts\_management](#module\_resourceproviders\_alerts\_management) | Azure/lz-vending/azurerm//modules/resourceprovider | 7.0.3 |
-| <a name="module_resourceproviders_insights"></a> [resourceproviders\_insights](#module\_resourceproviders\_insights) | Azure/lz-vending/azurerm//modules/resourceprovider | 7.0.3 |
+| <a name="module_resourceproviders_alerts_management"></a> [resourceproviders\_alerts\_management](#module\_resourceproviders\_alerts\_management) | Azure/avm-ptn-alz-sub-vending/azure//modules/resource-provider | 0.2.1 |
+| <a name="module_resourceproviders_insights"></a> [resourceproviders\_insights](#module\_resourceproviders\_insights) | Azure/avm-ptn-alz-sub-vending/azure//modules/resource-provider | 0.2.1 |
 
 ## Resources
 
 | Name | Type |
-|------|------|
+| ---- | ---- |
 | [azurerm_consumption_budget_subscription.subscription_budget](https://registry.terraform.io/providers/hashicorp/azurerm/4.54.0/docs/resources/consumption_budget_subscription) | resource |
 | [azurerm_management_group.project_set](https://registry.terraform.io/providers/hashicorp/azurerm/4.54.0/docs/resources/management_group) | resource |
 | [azurerm_network_manager_ipam_pool_static_cidr.reservations](https://registry.terraform.io/providers/hashicorp/azurerm/4.54.0/docs/resources/network_manager_ipam_pool_static_cidr) | resource |
@@ -42,7 +42,7 @@ For each environment, the module will create a subscription, a network resource 
 ## Inputs
 
 | Name | Description | Type | Default | Required |
-|------|-------------|------|---------|:--------:|
+| ---- | ----------- | ---- | ------- | :------: |
 | <a name="input_common_tags"></a> [common\_tags](#input\_common\_tags) | Common tags to apply to all resources | `map(string)` | <pre>{<br/>  "deployedBy": "Terraform"<br/>}</pre> | no |
 | <a name="input_deny_vnet_address_change_policy_definition_id"></a> [deny\_vnet\_address\_change\_policy\_definition\_id](#input\_deny\_vnet\_address\_change\_policy\_definition\_id) | The ID of the policy definition to deny changes to virtual network address spaces | `string` | `null` | no |
 | <a name="input_license_plate"></a> [license\_plate](#input\_license\_plate) | The license plate identifier for the project | `string` | n/a | yes |
@@ -61,7 +61,7 @@ For each environment, the module will create a subscription, a network resource 
 ## Outputs
 
 | Name | Description |
-|------|-------------|
+| ---- | ----------- |
 | <a name="output_management_group_id"></a> [management\_group\_id](#output\_management\_group\_id) | The management group ID for the project set. |
 | <a name="output_subscription_ids"></a> [subscription\_ids](#output\_subscription\_ids) | The subscription IDs of each landing zone created. |
 <!-- END_TF_DOCS -->
