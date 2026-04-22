@@ -40,6 +40,8 @@ locals {
           networkSecurityPerimeterSubscriptionId    = var.nsp_subscription_id
           networkSecurityPerimeterProfileId         = "/subscriptions/${var.nsp_subscription_id}/resourceGroups/${var.nsp_resource_group_name}/providers/Microsoft.Network/networkSecurityPerimeters/${var.nsp_name}/profiles/${var.nsp_profile}"
         },
+        SQLMI-Disable-PublicData = var.sqlmi_disable_public_endpoint_parameters,
+        SQLMI-Entra-AuthN        = var.sqlmi_entra_authentication_parameters,
       }
       access_control = {}
     }

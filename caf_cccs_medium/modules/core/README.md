@@ -48,6 +48,8 @@
 | <a name="input_root_name"></a> [root\_name](#input\_root\_name) | Sets the value used for the "intermediate root" management group display name. | `string` | n/a | yes |
 | <a name="input_root_parent_id"></a> [root\_parent\_id](#input\_root\_parent\_id) | Sets the value for the parent management group. | `string` | n/a | yes |
 | <a name="input_secondary_location"></a> [secondary\_location](#input\_secondary\_location) | Sets the location for "secondary" resources to be created in. | `string` | n/a | yes |
+| <a name="input_sqlmi_disable_public_endpoint_parameters"></a> [sqlmi\_disable\_public\_endpoint\_parameters](#input\_sqlmi\_disable\_public\_endpoint\_parameters) | Parameter values for the SQLMI-Disable-PublicData policy assignment. | <pre>object({<br/>    effect = string<br/>  })</pre> | n/a | yes |
+| <a name="input_sqlmi_entra_authentication_parameters"></a> [sqlmi\_entra\_authentication\_parameters](#input\_sqlmi\_entra\_authentication\_parameters) | Parameter values for the SQLMI-Entra-AuthN policy assignment. | <pre>object({<br/>    effect = string<br/>  })</pre> | n/a | yes |
 | <a name="input_subscription_id_connectivity"></a> [subscription\_id\_connectivity](#input\_subscription\_id\_connectivity) | Subscription ID to use for "connectivity" resources. | `string` | n/a | yes |
 | <a name="input_subscription_id_identity"></a> [subscription\_id\_identity](#input\_subscription\_id\_identity) | Subscription ID to use for "identity" resources. | `string` | n/a | yes |
 | <a name="input_subscription_id_management"></a> [subscription\_id\_management](#input\_subscription\_id\_management) | Subscription ID to use for "management" resources. | `string` | n/a | yes |

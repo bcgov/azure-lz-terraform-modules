@@ -8,7 +8,11 @@
     "policyDefinitionId": "/providers/Microsoft.Authorization/policySetDefinitions/9b8d8228-e8cc-4c95-8d98-47f32df40b5e",
     "metadata": {},
     "notScopes": [],
-    "parameters": {},
+    "parameters": {
+      "effect": {
+        "value": "Audit"
+      }
+    },
     "nonComplianceMessages": [
         {
           "message": "Azure SQL Managed Instance does not have Microsoft Entra-only authentication enabled. Please enable Microsoft Entra-only authentication to enhance security by allowing access exclusively via Microsoft Entra identities, which supports modern authentication features such as MFA, SSO, and secret-less programmatic access with managed identities."
