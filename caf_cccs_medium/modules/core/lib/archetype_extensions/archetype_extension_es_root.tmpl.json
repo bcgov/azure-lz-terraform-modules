@@ -25,6 +25,7 @@
       "Deploy-Private-DNS-CgSrv",
       "Deploy-Private-DNS-ACA",
       "Deploy-Private-DNS-Redis",
+      "Deploy-Private-DNS-Fbrc",
       "Deny-VNet-DNS-Changes",
       "Deny-Protected-Network-Resources",
       "Deny-Deleting-Protected-Route-Resources",

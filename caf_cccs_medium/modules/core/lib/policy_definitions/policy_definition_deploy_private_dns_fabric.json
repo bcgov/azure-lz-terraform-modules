@@ -1,0 +1,121 @@
+{
+  "name": "Deploy-Private-DNS-Fbrc",
+  "type": "Microsoft.Authorization/policyDefinitions",
+  "apiVersion": "2024-05-01",
+  "properties": {
+    "displayName": "Configure private DNS zones for private endpoints connected to Microsoft Fabric",
+    "policyType": "Custom",
+    "mode": "Indexed",
+    "description": "Use private DNS zones to override the DNS resolution for a private endpoint connected to Microsoft Fabric workspace-level private link services. A private DNS zone links to your virtual network to resolve to the Fabric workspace (privatelink.fabric.microsoft.com).",
+    "metadata": {
+      "version": "1.0.0",
+      "category": "Fabric"
+    },
+    "parameters": {
+      "effect": {
+        "type": "String",
+        "metadata": {
+          "displayName": "Effect",
+          "description": "The effect of the policy.",
+          "strongType": "Effect",
+          "defaultValue": "DeployIfNotExists"
+        }
+      },
+      "fabricPrivateDnsZoneId": {
+        "type": "String",
+        "metadata": {
+          "displayName": "Fabric Private DNS Zone ID",
+          "description": "The Private DNS Zone ID for Microsoft Fabric workspace-level private links (privatelink.fabric.microsoft.com).",
+          "strongType": "Microsoft.Network/privateDnsZones"
+        }
+      }
+    },
+    "policyRule": {
+      "if": {
+        "allOf": [
+          {
+            "equals": "Microsoft.Network/privateEndpoints",
+            "field": "type"
+          },
+          {
+            "count": {
+              "field": "Microsoft.Network/privateEndpoints/privateLinkServiceConnections[*]",
+              "where": {
+                "allOf": [
+                  {
+                    "field": "Microsoft.Network/privateEndpoints/privateLinkServiceConnections[*].privateLinkServiceId",
+                    "contains": "Microsoft.Fabric/privateLinkServicesForFabric"
+                  },
+                  {
+                    "field": "Microsoft.Network/privateEndpoints/privateLinkServiceConnections[*].groupIds[*]",
+                    "equals": "workspace"
+                  }
+                ]
+              }
+            },
+            "greaterOrEquals": 1
+          }
+        ]
+      },
+      "then": {
+        "effect": "[parameters('effect')]",
+        "details": {
+          "type": "Microsoft.Network/privateEndpoints/privateDnsZoneGroups",
+          "roleDefinitionIds": [
+            "/providers/Microsoft.Authorization/roleDefinitions/4d97b98b-1d4f-4787-a291-c67834d212e7",
+            "/providers/Microsoft.Authorization/roleDefinitions/acdd72a7-3385-48ef-bd42-f606fba81ae7"
+          ],
+          "deployment": {
+            "properties": {
+              "mode": "incremental",
+              "parameters": {
+                "fabricPrivateDnsZoneId": {
+                  "value": "[parameters('fabricPrivateDnsZoneId')]"
+                },
+                "privateEndpointName": {
+                  "value": "[field('name')]"
+                },
+                "location": {
+                  "value": "[field('location')]"
+                }
+              },
+              "template": {
+                "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                "contentVersion": "1.0.0.0",
+                "parameters": {
+                  "fabricPrivateDnsZoneId": {
+                    "type": "string"
+                  },
+                  "privateEndpointName": {
+                    "type": "string"
+                  },
+                  "location": {
+                    "type": "string"
+                  }
+                },
+                "resources": [
+                  {
+                    "apiVersion": "2022-07-01",
+                    "location": "[parameters('location')]",
+                    "name": "[concat(parameters('privateEndpointName'), '/deployedByPolicy')]",
+                    "properties": {
+                      "privateDnsZoneConfigs": [
+                        {
+                          "name": "fabric-private-dns-zone",
+                          "properties": {
+                            "privateDnsZoneId": "[parameters('fabricPrivateDnsZoneId')]"
+                          }
+                        }
+                      ]
+                    },
+                    "type": "Microsoft.Network/privateEndpoints/privateDnsZoneGroups"
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
