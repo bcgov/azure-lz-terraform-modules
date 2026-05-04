@@ -215,6 +215,9 @@
         },
         "azureSiteRecoveryQueuePrivateDnsZoneId": {
           "value": "${private_dns_zone_prefix}privatelink.queue.core.windows.net"
+        },
+        "azureFabricPrivateDnsZoneId": {
+          "value": "${private_dns_zone_prefix}privatelink.fabric.microsoft.com"
         }
       },
       "scope": "${current_scope_resource_id}",

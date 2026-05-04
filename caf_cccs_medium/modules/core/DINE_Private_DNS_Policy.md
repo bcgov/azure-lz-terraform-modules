@@ -346,4 +346,5 @@ The CAF module provides these template variables for use in JSON files:
 | OpenAI | `Deploy-Private-DNS-OpenAI` | `policy_definition_deploy_private_dns_openai.json` |
 | Container Apps | `Deploy-Private-DNS-ACA` | `policy_definition_deploy_private_dns_containerapps.json` |
 | Azure Managed Redis | `Deploy-Private-DNS-Redis` | `policy_definition_deploy_private_dns_managed_redis.json` |
+| Microsoft Fabric | `Deploy-Private-DNS-Fbrc` | `policy_definition_deploy_private_dns_fabric.json` _(definition only; currently wired through the shared initiative, not a standalone assignment + `settings.core.tf` override example)_ |
 | Many built-in services | _(bundled in initiative)_ | `policy_set_definition_es_deploy_private_dns_zones_custom.json` |
