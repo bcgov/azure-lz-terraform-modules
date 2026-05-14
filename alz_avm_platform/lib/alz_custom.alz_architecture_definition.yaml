@@ -1,0 +1,44 @@
+name: alz_custom
+management_groups:
+  - id: alz
+    display_name: ALZ Root
+    parent_id: null
+    exists: false
+    archetypes:
+      - root
+  - id: platform
+    display_name: Platform
+    parent_id: alz
+    exists: false
+    archetypes:
+      - platform
+  - id: management
+    display_name: Management
+    parent_id: platform
+    exists: false
+    archetypes:
+      - management
+  - id: connectivity
+    display_name: Connectivity
+    parent_id: platform
+    exists: false
+    archetypes:
+      - connectivity
+  - id: identity
+    display_name: Identity
+    parent_id: platform
+    exists: false
+    archetypes:
+      - identity
+  - id: security
+    display_name: Security
+    parent_id: platform
+    exists: false
+    archetypes:
+      - security
+  - id: landingzones
+    display_name: Landing Zones
+    parent_id: alz
+    exists: false
+    archetypes:
+      - landing_zones

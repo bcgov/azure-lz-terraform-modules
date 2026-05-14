@@ -1,0 +1,157 @@
+subscription_ids = {
+  management   = "00000000-0000-0000-0000-000000000000"
+  connectivity = "00000000-0000-0000-0000-000000000000"
+  identity     = "00000000-0000-0000-0000-000000000000"
+  security     = "00000000-0000-0000-0000-000000000000"
+}
+
+primary_location = "canadacentral"
+
+management_group_names = {
+  root         = "alz"
+  platform     = "platform"
+  management   = "management"
+  connectivity = "connectivity"
+  identity     = "identity"
+  security     = "security"
+  landingzones = "landingzones"
+}
+
+# Optional: include additional ALZ libraries that carry custom policy definitions/initiatives.
+custom_alz_library_references = []
+
+# Example: policy default parameter wiring (jsonencoded values expected by AVM ALZ).
+policy_default_values = {
+  # allowedLocations = jsonencode({ value = ["canadacentral", "canadaeast"] })
+}
+
+enable_amba = false
+enable_express_route = true
+enable_s2s_vpn = true
+enable_centralized_logging = true
+external_base_firewall_policy_id = null
+
+management_resource_group_name          = "rg-bcgov-alz-mgmt"
+management_automation_account_name      = "aa-bcgov-alz-mgmt"
+management_log_analytics_workspace_name = "law-bcgov-alz-mgmt"
+
+virtual_wan_settings = {
+  virtual_wan = {
+    name = "vwan-bcgov-cc-001"
+  }
+}
+
+virtual_hubs = {
+  canadacentral = {
+    location = "canadacentral"
+    hub = {
+      address_prefix = "10.40.0.0/23"
+    }
+    firewall = {
+      enabled = true
+    }
+    private_dns_zones = {
+      enabled = true
+    }
+  }
+}
+
+express_route_circuit_connections_by_hub = {
+  canadacentral = {
+    er-primary = {
+      name                             = "er-primary"
+      express_route_circuit_peering_id = "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-er/providers/Microsoft.Network/expressRouteCircuits/er-cc-001/peerings/AzurePrivatePeering"
+    }
+  }
+}
+
+vpn_sites_by_hub = {
+  canadacentral = {
+    branch-a = {
+      name = "vpnsite-branch-a"
+      links = [
+        {
+          name       = "branch-a-link-1"
+          ip_address = "203.0.113.10"
+          speed_in_mbps = 1000
+          bgp = {
+            asn             = 65010
+            peering_address = "169.254.21.2"
+          }
+        }
+      ]
+      address_cidrs = ["10.101.0.0/16"]
+      device_vendor = "Cisco"
+      device_model  = "ISR"
+    }
+  }
+}
+
+vpn_site_connections_by_hub = {
+  canadacentral = {
+    branch-a-conn = {
+      name                = "conn-branch-a"
+      remote_vpn_site_key = "branch-a"
+      vpn_links = [
+        {
+          name                 = "branch-a-link-1"
+          vpn_site_link_number = 0
+          vpn_site_key         = "branch-a"
+          shared_key           = "CHANGE-ME-IPSEC-PSK"
+          protocol             = "IKEv2"
+          ipsec_policy = {
+            dh_group                 = "DHGroup14"
+            ike_encryption_algorithm = "AES256"
+            ike_integrity_algorithm  = "SHA256"
+            encryption_algorithm     = "AES256"
+            integrity_algorithm      = "SHA256"
+            pfs_group                = "PFS14"
+            sa_data_size_kb          = "102400000"
+            sa_lifetime_sec          = "27000"
+          }
+        }
+      ]
+    }
+  }
+}
+
+routing_intents_by_hub = {
+  canadacentral = {
+    internet = {
+      name = "internet"
+      routing_policies = [
+        {
+          name                  = "internet-to-firewall"
+          destinations          = ["Internet"]
+          next_hop_firewall_key = "primary"
+        }
+      ]
+    }
+  }
+}
+
+private_dns_zones_by_hub = {
+  canadacentral = {
+    enabled = true
+    virtual_network_link_resolution_policy_default = "NxDomainRedirect"
+    private_link_private_dns_zones_additional = {
+      custom_zone = {
+        zone_name = "privatelink.contoso.internal"
+      }
+    }
+  }
+}
+
+private_dns_resolver_by_hub = {
+  canadacentral = {
+    enabled = true
+  }
+}
+
+# Default behavior: include internet fallback on private DNS links.
+private_dns_enable_internet_fallback = true
+
+# Optional: link private DNS zones to resolver VNet by default per hub.
+private_dns_resolver_virtual_network_resource_id_by_hub = {
+  canadacentral = "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-dns/providers/Microsoft.Network/virtualNetworks/vnet-dns-spoke"
+}
