@@ -1,0 +1,18 @@
+{
+  "environment": {
+    "forge": {
+      "description": "FORGE environment for policy documentation",
+      "wiki": {
+        "platform": {
+          "title": "BCGOV FORGE PLATFORM POLICIES",
+          "gitRepository": "https://github.com/bcgov-c/azure-lz-core-forge.wiki.git",
+          "gitBranch": "master",
+          "gitUserName": "AzPolicyLens Pipeline",
+          "gitUserEmail": "policyDoc@gov.bc.ca",
+          "pageStyle": "detailed",
+          "childManagementGroupId": "bcgov-managed-lz-forge-platform"
+        }
+      }
+    }
+  }
+}
