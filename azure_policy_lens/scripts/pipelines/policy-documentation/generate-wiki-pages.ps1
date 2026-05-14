@@ -67,6 +67,10 @@ param (
 
 $ErrorActionPreference = 'Stop'
 
+$normalizedSubscriptionIds = if ([string]::IsNullOrWhiteSpace($SubscriptionIds)) { '' } else { $SubscriptionIds.Trim() }
+$normalizedChildManagementGroupId = if ([string]::IsNullOrWhiteSpace($childManagementGroupId)) { '' } else { $childManagementGroupId.Trim() }
+$normalizedCustomSecurityControlPath = if ([string]::IsNullOrWhiteSpace($CustomSecurityControlPath)) { '' } else { $CustomSecurityControlPath.Trim() }
+
 #region main
 if ($gitPlatform -eq 'ado') {
   Write-Verbose "Git platform is set to 'ado'." -Verbose
@@ -103,13 +107,13 @@ if ($gitPlatform -eq 'ado') {
   Write-Output "  - gitRepoPath: $gitRepoPath"
 }
 Write-Output "  - GitHub User ID: $githubUserID"
-if ($SubscriptionIds) {
-  Write-Output "  - SubscriptionIds: $SubscriptionIds"
+if (-not [string]::IsNullOrWhiteSpace($normalizedSubscriptionIds)) {
+  Write-Output "  - SubscriptionIds: $normalizedSubscriptionIds"
 } else {
   Write-Output "  - SubscriptionIds: None"
 }
-if ($childManagementGroupId) {
-  Write-Output "  - childManagementGroupId: $childManagementGroupId"
+if (-not [string]::IsNullOrWhiteSpace($normalizedChildManagementGroupId)) {
+  Write-Output "  - childManagementGroupId: $normalizedChildManagementGroupId"
 } else {
   Write-Output "  - childManagementGroupId not specified."
 }
@@ -188,7 +192,17 @@ if (-not (Test-Path -Path $gitRepoRootPath -PathType 'Container')) {
     $gitRepoFullPath = $gitRepoRootPath
   }
 } else {
-  Throw "The documentation sub directory '$gitRepoPath' already exists."
+  Write-Warning "Git repository path '$gitRepoRootPath' already exists. Reusing the existing clone."
+  $resolvedGitBranch = $gitBranch
+  if ($gitPlatform -ieq 'ado') {
+    $gitRepoFullPath = Join-Path -Path $gitRepoRootPath -ChildPath $gitRepoPath
+    if (-not (Test-Path -Path $gitRepoFullPath -PathType 'Container')) {
+      Write-Verbose "Creating the documentation sub directory '$gitRepoFullPath'." -Verbose
+      New-Item -Path $gitRepoFullPath -ItemType Directory -Force | Out-Null
+    }
+  } else {
+    $gitRepoFullPath = $gitRepoRootPath
+  }
 }
 #get the discovery data
 $param = @{
@@ -208,21 +222,21 @@ Write-Verbose "The discovery data file path is '$($DiscoveryFilePath)'." -Verbos
 Write-Verbose "The output path is '$($OutputPath)'." -Verbose
 Write-Verbose "The wiki title is '$($Title)'." -Verbose
 
-if ($SubscriptionIds.length -gt 0) {
-  $arrSubscriptionIds = $SubscriptionIds.split(',')
+if (-not [string]::IsNullOrWhiteSpace($normalizedSubscriptionIds)) {
+  $arrSubscriptionIds = $normalizedSubscriptionIds.split(',')
   $param.add('SubscriptionIds', $arrSubscriptionIds)
-  Write-Output "Creating $pageStyle style wiki pages for subscriptions '$SubscriptionIds'."
-} elseif ($childManagementGroupId.length -gt 0) {
-  $param.add('childManagementGroupId', $childManagementGroupId)
-  Write-Output "Creating $pageStyle style wiki pages for child management group '$childManagementGroupId'."
+  Write-Output "Creating $pageStyle style wiki pages for subscriptions '$normalizedSubscriptionIds'."
+} elseif (-not [string]::IsNullOrWhiteSpace($normalizedChildManagementGroupId)) {
+  $param.add('childManagementGroupId', $normalizedChildManagementGroupId)
+  Write-Output "Creating $pageStyle style wiki pages for child management group '$normalizedChildManagementGroupId'."
 } else {
   Write-Verbose "No SubscriptionIds or childManagementGroupId provided. The wiki pages will be generated based on the entire discovery data without filtering." -Verbose
   Write-Output "Creating $pageStyle style wiki pages for all subscriptions."
 }
 
-if ($CustomSecurityControlPath.length -gt 0) {
-  $param.add('CustomSecurityControlPath', $CustomSecurityControlPath)
-  Write-Verbose "Custom security control path provided: '$CustomSecurityControlPath'." -Verbose
+if (-not [string]::IsNullOrWhiteSpace($normalizedCustomSecurityControlPath)) {
+  $param.add('CustomSecurityControlPath', $normalizedCustomSecurityControlPath)
+  Write-Verbose "Custom security control path provided: '$normalizedCustomSecurityControlPath'." -Verbose
 }
 Write-Verbose "Generating wiki pages with the following parameters:" -Verbose
 foreach ($key in $param.Keys) {

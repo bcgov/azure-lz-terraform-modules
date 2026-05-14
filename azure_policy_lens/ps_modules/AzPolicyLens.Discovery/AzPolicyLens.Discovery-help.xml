@@ -228,7 +228,7 @@
         <maml:title>--------- Example 1 - Perform environment discovery and output file in plain text (no encryption). The file name is based on the Top-level Management Group name since it is not specified. ---------</maml:title>
         <maml:introduction>
           <maml:para>PS C:\&gt; $token = ConvertFrom-SecureString (Get-AzAccessToken -ResourceUrl 'https://management.azure.com/').token -AsPlainText
-PS C:\&gt; Invoke-AzplEnvironmentDiscovery -TopLevelManagementGroupName 'MyManagementGroup' -OutputFilePath 'C:\Temp\output.json' -Token $token</maml:para>
+PS C:\&gt; Invoke-AzplEnvironmentDiscovery -TopLevelManagementGroupName 'MyManagementGroup' -OutputFileDirectory 'C:\Temp\' -OutputFileBaseName 'output' -Token $token</maml:para>
         </maml:introduction>
         <dev:code />
         <dev:remarks />
@@ -246,7 +246,7 @@ PS C:\&gt; Invoke-AzplEnvironmentDiscovery -TopLevelManagementGroupName 'MyManag
         <maml:title>--------- Example 3 - Perform environment discovery output  encrypted file using the AES encryption key and AES encryption Initialization Vector. ---------</maml:title>
         <maml:introduction>
           <maml:para>PS C:\&gt; $token = ConvertFrom-SecureString (Get-AzAccessToken -ResourceUrl 'https://management.azure.com/').token -AsPlainText
-PS C:\&gt; Invoke-AzplEnvironmentDiscovery -TopLevelManagementGroupName 'MyManagementGroup' -OutputFileDirectory 'C:\Temp' -OutputFileBaseName 'output' -compressOutputFile $true -EncryptionKey 'w7naanmxtd23OMRjIhC+5YXJL40xa5lVJ/5zdrD8q3Y=' -EncryptionIV 'jaX7ALmAWVid64K45tjUQQ==' -Token $token</maml:para>
+PS C:\&gt; Invoke-AzplEnvironmentDiscovery -TopLevelManagementGroupName 'MyManagementGroup' -OutputFileDirectory 'C:\Temp' -OutputFileBaseName 'output' -EncryptionKey 'w7naanmxtd23OMRjIhC+5YXJL40xa5lVJ/5zdrD8q3Y=' -EncryptionIV 'jaX7ALmAWVid64K45tjUQQ==' -Token $token</maml:para>
         </maml:introduction>
         <dev:code />
         <dev:remarks />

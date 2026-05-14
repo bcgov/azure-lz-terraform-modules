@@ -6,26 +6,13 @@ This directory contains the BC Gov Forge implementation of [Azure/AzPolicyLens](
 
 ```
 azure_policy_lens/
-├── configurations/          # Environment config (settings.yml, github-config.jsonc, schema, metadata)
+├── configurations/          # Environment config (settings.yml, schema, metadata)
 ├── ps_modules/              # Vendored PowerShell modules
 │   ├── AzPolicyLens.Discovery/
 │   └── AzPolicyLens.Wiki/
 └── scripts/
     └── pipelines/
         └── policy-documentation/   # Pipeline PowerShell scripts
-```
-
-The workflow and composite action templates live under `.github/`:
-
-```
-.github/
-├── actions/templates/
-│   ├── initiation/
-│   ├── policyDocDiscovery/
-│   ├── policyDocParseConfig/
-│   └── policyDocGenerateWiki/
-└── workflows/
-    └── policy-documentation.yml
 ```
 
 ---
@@ -38,7 +25,7 @@ The workflow and composite action templates live under `.github/`:
 |---|---|
 | Two environments (`dev`, `prod`) with separate discovery, parse, and generate jobs for each | Single environment (`forge`) — three jobs: `job_discovery_forge`, `job_parse_config_forge`, `job_generate_wiki_forge` |
 
-The upstream workflow is parameterized for multi-environment pipelines. This implementation scopes to the `forge` landing zone only (`bcgov-managed-lz-forge` management group).
+The upstream workflow is parameterized for multi-environment pipelines. This implementation scopes to the `forge` landing zone only (`bcgov-managed-lz-forge-platform` management group).
 
 ### 2. Authentication
 
@@ -102,7 +89,7 @@ Running initiation locally in each job avoids passing outputs across job boundar
 
 | Upstream sample | This repo |
 |---|---|
-| `github-config.jsonc` contains multiple sample environments | Single `forge` environment entry targeting `bcgov-managed-lz-forge-platform` management group and the `bcgov-c/azure-lz-core-forge.wiki.git` repository |
+| `github-config.jsonc` contains multiple sample environments | Single `forge` environment entry targeting `bcgov-managed-lz-forge-platform` management group and the `bcgov-c/azure-lz-core-forge.wiki.git` repository (config file is provided by pipeline context and validated with the schema in this directory) |
 
 ---
 
@@ -166,11 +153,11 @@ Minimum checks:
 
 Start review with these files because they are the most likely to require manual overlay reconciliation:
 
-- `.github/workflows/policy-documentation.yml`
-- `.github/actions/templates/policyDocDiscovery/action.yml`
-- `.github/actions/templates/policyDocGenerateWiki/action.yml`
 - `azure_policy_lens/scripts/pipelines/policy-documentation/environment-discovery.ps1`
 - `azure_policy_lens/scripts/pipelines/policy-documentation/generate-wiki-pages.ps1`
+- `azure_policy_lens/scripts/pipelines/policy-documentation/github-policy-doc-parse-config-file.ps1`
+- `azure_policy_lens/scripts/pipelines/policy-documentation/github-set-variables.ps1`
+- `azure_policy_lens/configurations/settings.yml`
 
 ### 8. AI-Assisted Maintenance Playbook
 
@@ -197,8 +184,8 @@ The `GITHUB_TOKEN` secret is provided automatically by GitHub Actions.
 3. Optionally enable **debug logging**.
 
 The workflow will:
-1. Discover all Azure Policy assignments under the `bcgov-managed-lz-forge` management group.
-2. Parse `configurations/github-config.jsonc` to determine which wikis to generate.
+1. Discover all Azure Policy assignments under the `bcgov-managed-lz-forge-platform` management group.
+2. Parse the provided environment wiki configuration using `github-config.schema.json`.
 3. Generate and push wiki pages to the configured Git repository.
 
 <!-- BEGIN_TF_DOCS -->

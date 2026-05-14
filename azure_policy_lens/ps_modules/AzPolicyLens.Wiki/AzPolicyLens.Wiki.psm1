@@ -180,6 +180,9 @@ Function New-AzplDocumentation {
     [ValidateNotNullOrEmpty()]
     [string]$childManagementGroupId,
 
+    [parameter(Mandatory = $false, ParameterSetName = 'ImportNoEncryption', DontShow = $true, HelpMessage = 'Internal switch to represent no subscription or management group filter.')]
+    [switch]$NoFilter,
+
     [parameter(Mandatory = $true, HelpMessage = 'The output base directory.')]
     [ValidateScript({ Test-Path $_ -PathType 'Container' })]
     [string]$BaseOutputPath,

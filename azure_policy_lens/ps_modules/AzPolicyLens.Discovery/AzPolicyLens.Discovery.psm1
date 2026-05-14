@@ -38,9 +38,9 @@ Function Invoke-AzplEnvironmentDiscovery {
     [ValidateNotNullOrEmpty()]
     [string]$Token,
 
-    [parameter(Mandatory = $true, ParameterSetName = 'EncryptionViaKeyFile', HelpMessage = 'Additional builtin Policy Metadata from security control frameworks to include.')]
-    [parameter(Mandatory = $true, ParameterSetName = 'EncryptionViaKeyText', HelpMessage = 'Additional builtin Policy Metadata from security control frameworks to include.')]
-    [parameter(Mandatory = $true, ParameterSetName = 'NoEncryption', HelpMessage = 'Additional builtin Policy Metadata from security control frameworks to include.')]
+    [parameter(Mandatory = $false, ParameterSetName = 'EncryptionViaKeyFile', HelpMessage = 'Additional builtin Policy Metadata from security control frameworks to include.')]
+    [parameter(Mandatory = $false, ParameterSetName = 'EncryptionViaKeyText', HelpMessage = 'Additional builtin Policy Metadata from security control frameworks to include.')]
+    [parameter(Mandatory = $false, ParameterSetName = 'NoEncryption', HelpMessage = 'Additional builtin Policy Metadata from security control frameworks to include.')]
     [BuiltInSecurityControlConfig[]]$AdditionalBuiltInPolicyMetadataConfig,
 
     [parameter(Mandatory = $true, ParameterSetName = 'EncryptionViaKeyFile', HelpMessage = 'Export file directory')]

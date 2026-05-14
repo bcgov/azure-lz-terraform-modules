@@ -132,8 +132,8 @@
       # IconUri = ''
 
       # ReleaseNotes of this module
-      ReleaseNotes = '2.2.0 - May 2026
-Version 2.2.0 Release
+      ReleaseNotes = '2.1.2 - May 2026
+    Version 2.1.2 Release
 '
 
       # Prerelease string of this module

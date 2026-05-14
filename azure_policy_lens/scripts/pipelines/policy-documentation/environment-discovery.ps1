@@ -36,23 +36,22 @@ function isValidBuiltInPolicyMetadataConfig {
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
   "type": "array",
-  "items": [
-    {
-      "type": "object",
-      "properties": {
-        "framework": {
-          "type": "string"
-        },
-        "policyMetadataNameRegex": {
-          "type": "string"
-        }
+  "items": {
+    "type": "object",
+    "properties": {
+      "framework": {
+        "type": "string"
       },
-      "required": [
-        "framework",
-        "policyMetadataNameRegex"
-      ]
-    }
-  ]
+      "policyMetadataNameRegex": {
+        "type": "string"
+      }
+    },
+    "required": [
+      "framework",
+      "policyMetadataNameRegex"
+    ]
+  },
+  "additionalItems": false
 }
 '@
   Test-Json -json $config -Schema $schema
@@ -74,6 +73,7 @@ if ($OutputFileExtension -ne '.zip') {
 #validate the additional built-in policy metadata config files
 $additionalBuiltInPolicyMetadataConfigs = @()
 if ($AdditionalBuiltInPolicyMetadataConfigFilePath.length -gt 0) {
+if (-not [string]::IsNullOrWhiteSpace($AdditionalBuiltInPolicyMetadataConfigFilePath)) {
   Write-Output "Validating additional built-in policy metadata config file '$AdditionalBuiltInPolicyMetadataConfigFilePath'."
   if (-not (Test-Path -Path $AdditionalBuiltInPolicyMetadataConfigFilePath)) {
     Throw "The additional built-in policy metadata config file '$AdditionalBuiltInPolicyMetadataConfigFilePath' does not exist."
@@ -136,9 +136,7 @@ $DiscoveryParams = @{
   Token                       = $token
   OutputFileDirectory         = $OutputFolder
   OutputFileBaseName          = $discoveryFileBaseName
-}
-if ($additionalBuiltInPolicyMetadataConfigs.Count -gt 0) {
-  $DiscoveryParams.Add('additionalBuiltInPolicyMetadataConfig', $additionalBuiltInPolicyMetadataConfigs)
+  AdditionalBuiltInPolicyMetadataConfig = $additionalBuiltInPolicyMetadataConfigs
 }
 if ($EncryptionKey -and $EncryptionIV) {
   $DiscoveryParams.Add('EncryptionKey', $EncryptionKey)
