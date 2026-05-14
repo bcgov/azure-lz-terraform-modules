@@ -39,7 +39,7 @@ if ($validSchema -eq $true) {
 }
 
 $wikis = @()
-$config = Get-Content $configFilePath | ConvertFrom-Json -AsHashtable -Depth 10
+$config = Get-Content $configFilePath -Raw | ConvertFrom-Json -AsHashtable -Depth 10
 $environmentConfig = $config.environment[$environment]
 foreach ($key in $environmentConfig.wiki.keys) {
   $wikiConfig = @{

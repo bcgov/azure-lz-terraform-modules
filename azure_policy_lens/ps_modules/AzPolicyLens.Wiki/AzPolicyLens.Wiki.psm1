@@ -242,7 +242,6 @@ Function New-AzplDocumentation {
   #Make sure all policy resources are retrieved previously in a script scoped variable $AzplEnvironmentDetails
   if (!$AzplEnvironmentDetails) {
     Throw "[$(getCurrentUTCString)]: No environment discovery data found."
-    Exit 1
   }
   #create script scoped variables for Policy Definition and initiative syntax validation failures
   $global:failedSyntaxValidationDefinitions = @()

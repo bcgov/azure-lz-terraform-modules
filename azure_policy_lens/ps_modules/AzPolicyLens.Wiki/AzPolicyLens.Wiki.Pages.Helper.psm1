@@ -117,9 +117,9 @@ Function newMainSummaryPage {
 
   #exemptions
   if ($EnvironmentDiscoveryData.exemptions.Count -gt 0) {
-    $policyExemptionCountValue += "[$($EnvironmentDiscoveryData.exemptions.Count)]($exemptionFileRelativePath)"
+    $policyExemptionCountValue = "[$($EnvironmentDiscoveryData.exemptions.Count)]($exemptionFileRelativePath)"
   } else {
-    $policyExemptionCountValue += $EnvironmentDiscoveryData.exemptions.Count
+    $policyExemptionCountValue = $EnvironmentDiscoveryData.exemptions.Count
   }
 
   # Build category table data
