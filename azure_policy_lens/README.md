@@ -200,3 +200,29 @@ The workflow will:
 1. Discover all Azure Policy assignments under the `bcgov-managed-lz-forge` management group.
 2. Parse `configurations/github-config.jsonc` to determine which wikis to generate.
 3. Generate and push wiki pages to the configured Git repository.
+
+<!-- BEGIN_TF_DOCS -->
+## Requirements
+
+No requirements.
+
+## Providers
+
+No providers.
+
+## Modules
+
+No modules.
+
+## Resources
+
+No resources.
+
+## Inputs
+
+No inputs.
+
+## Outputs
+
+No outputs.
+<!-- END_TF_DOCS -->
