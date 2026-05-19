@@ -29,13 +29,22 @@ Unless explicitly changed by maintainers, preserve these local behaviors during 
 
 1. Identify upstream target baseline.
 2. Record candidate upstream SHA (and tag if available) before making changes.
-3. Compare local files against upstream equivalents.
+3. Compare local files against upstream equivalents, including `.github/workflows/policy-documentation.yml` and every file under `.github/actions/templates/`.
 4. Apply upstream improvements first.
 5. Re-apply required local overlays deliberately.
 6. Update `azure_policy_lens/README.md`:
    - Append a row in "Upstream Baseline Registry".
    - Update "Differences from Upstream" if behavior changed.
 7. Run validation checks (or provide exact commands if execution is not possible).
+
+## Centralized Template Syncs
+
+When upstream changes workflow orchestration or action contracts, treat the workflow and the reusable action templates as one unit:
+
+- Update the local template implementation and all call sites in the same PR.
+- If upstream adds or removes a template input, confirm the workflow defaults and script parameters still match.
+- For branch-based test runs, point `SHARED_AZPOLICYLENS_REF` at the pushed feature branch, then return it to a release tag or commit SHA after validation.
+- Refresh the README differences table if the centralized action-template model or workflow behavior changes.
 
 ## Suggested Comparison Map
 
