@@ -1,6 +1,6 @@
 # AzPolicyLens – Policy Documentation
 
-This directory contains the BC Gov Forge implementation of [Azure/AzPolicyLens](https://github.com/Azure/AzPolicyLens), an Azure policy documentation generator that discovers Azure Policy assignments and produces GitHub Wiki pages.
+This directory contains the BC Gov Forge implementation of [Azure/AzPolicyLens](https://github.com/Azure/AzPolicyLens), an Azure policy documentation generator that discovers Azure Policy assignments and produces GitHub Wiki pages. Reusable GitHub Action logic is centralized under `.github/actions/templates/` and consumed by the workflow as shared composite actions.
 
 ## Directory Structure
 
@@ -67,11 +67,13 @@ The schedule (`30 5,21 * * *`) is present but commented out to avoid unintended 
 
 Running initiation locally in each job avoids passing outputs across job boundaries and simplifies the dependency graph.
 
-### 7. No Separate `setVariables` Action Template
+### 7. Centralized Action Templates
 
 | Upstream | This repo |
 |---|---|
-| Dedicated `.github/actions/templates/setVariables/` composite action | Variable loading merged into the `initiation` action (`github-set-variables.ps1` is called directly) |
+| Workflow-specific orchestration spread across jobs and steps | Reusable policy documentation behavior is centralized in `.github/actions/templates/` composite actions and invoked by the workflow |
+
+The workflow stays intentionally thin so action-template changes can be made once and reused across discovery, parsing, and wiki generation jobs.
 
 ### 8. PowerShell Script Invocation — Bash Wrapper
 
