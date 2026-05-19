@@ -4,9 +4,6 @@ inputs:
   topLevelManagementGroupName:
     description: "Top-level management group name for discovery context."
     required: true
-  environment:
-    description: "Target environment name."
-    required: true
   buildArtifactName:
     description: "Artifact name for discovery output."
     required: true
