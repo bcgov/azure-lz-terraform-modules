@@ -27,9 +27,21 @@ locals {
         Deploy-Private-DNS-ACA = {
           defaultPrivateDnsZoneId : "/subscriptions/${var.subscription_id_connectivity}/resourceGroups/${var.root_id}-dns/providers/Microsoft.Network/privateDnsZones/privatelink.${lower(var.primary_location)}.azurecontainerapps.io"
         },
+        Deploy-Private-DNS-Redis = {
+          managedRedisPrivateDnsZoneId : "/subscriptions/${var.subscription_id_connectivity}/resourceGroups/${var.root_id}-dns/providers/Microsoft.Network/privateDnsZones/privatelink.redis.azure.net",
+          redisEnterprisePrivateDnsZoneId : "/subscriptions/${var.subscription_id_connectivity}/resourceGroups/${var.root_id}-dns/providers/Microsoft.Network/privateDnsZones/privatelink.redisenterprise.cache.azure.net",
+        },
         Audit-ZoneResiliency = {
           effect = "Disabled",
         }
+        Deploy-NSP-Association = {
+          networkSecurityPerimeterName              = var.nsp_name
+          networkSecurityPerimeterResourceGroupName = var.nsp_resource_group_name
+          networkSecurityPerimeterSubscriptionId    = var.nsp_subscription_id
+          networkSecurityPerimeterProfileId         = "/subscriptions/${var.nsp_subscription_id}/resourceGroups/${var.nsp_resource_group_name}/providers/Microsoft.Network/networkSecurityPerimeters/${var.nsp_name}/profiles/${var.nsp_profile}"
+        },
+        SQLMI-Disable-PublicData = var.sqlmi_disable_public_endpoint_parameters,
+        SQLMI-Entra-AuthN        = var.sqlmi_entra_authentication_parameters,
       }
       access_control = {}
     }
@@ -53,9 +65,16 @@ locals {
         Deploy-VMSS-Monitoring = {
           scopeToSupportedImages = true
         },
+        Deny-Protected-Network = {
+          protectedRouteTableId = ""
+          protectedSubnetId     = ""
+        },
         Deny-VNet-DNS-Changes = {
           VNet-DNS-Settings = var.VNet-DNS-Settings
         },
+        Enforce-AKS-CIDRs     = var.enforce_aks_cidrs_parameters,
+        AKS-Security-BestPrac = var.aks_security_best_prac_parameters,
+        AKS-Private-Cluster   = var.enforce_private_cluster,
         Deny-Delete-NetworkWatch = {
           Network-Watcher-storageId           = "/subscriptions/${var.subscription_id_management}/resourceGroups/${var.network_watcher_storage_account_resource_group}/providers/Microsoft.Storage/storageAccounts/${var.network_watcher_storage_account_name}"
           Network-Watcher-workspaceResourceId = "/subscriptions/${var.subscription_id_management}/resourceGroups/${var.root_id}-mgmt/providers/Microsoft.OperationalInsights/workspaces/${var.root_id}-la"

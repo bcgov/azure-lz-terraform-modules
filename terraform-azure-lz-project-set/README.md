@@ -24,10 +24,10 @@ For each environment, the module will create a subscription, a network resource 
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_lz_vending"></a> [lz\_vending](#module\_lz\_vending) | Azure/lz-vending/azurerm | 7.0.3 |
+| <a name="module_lz_vending"></a> [lz\_vending](#module\_lz\_vending) | Azure/avm-ptn-alz-sub-vending/azure | 0.2.1 |
 | <a name="module_network_flow_logs"></a> [network\_flow\_logs](#module\_network\_flow\_logs) | Azure/avm-res-network-networkwatcher/azurerm | 0.3.0 |
-| <a name="module_resourceproviders_alerts_management"></a> [resourceproviders\_alerts\_management](#module\_resourceproviders\_alerts\_management) | Azure/lz-vending/azurerm//modules/resourceprovider | 7.0.3 |
-| <a name="module_resourceproviders_insights"></a> [resourceproviders\_insights](#module\_resourceproviders\_insights) | Azure/lz-vending/azurerm//modules/resourceprovider | 7.0.3 |
+| <a name="module_resourceproviders_alerts_management"></a> [resourceproviders\_alerts\_management](#module\_resourceproviders\_alerts\_management) | Azure/avm-ptn-alz-sub-vending/azure//modules/resource-provider | 0.2.1 |
+| <a name="module_resourceproviders_insights"></a> [resourceproviders\_insights](#module\_resourceproviders\_insights) | Azure/avm-ptn-alz-sub-vending/azure//modules/resource-provider | 0.2.1 |
 
 ## Resources
 

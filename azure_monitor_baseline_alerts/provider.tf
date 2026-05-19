@@ -14,7 +14,7 @@ terraform {
 
     alz = {
       source  = "azure/alz"
-      version = "~> 0.17"
+      version = "~> 0.20"
     }
   }
 }

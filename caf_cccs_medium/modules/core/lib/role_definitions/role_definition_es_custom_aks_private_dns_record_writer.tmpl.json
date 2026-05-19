@@ -1,0 +1,25 @@
+{
+  "name": "f2c8eacc-ecfa-4d4c-a9fb-9ecb8e73ed8a",
+  "type": "Microsoft.Authorization/roleDefinitions",
+  "apiVersion": "2022-05-01-preview",
+  "properties": {
+      "roleName": "AKS Private DNS Record Writer",
+      "description": "Allows AKS to create A records in a Private DNS Zone for private cluster API server.",
+      "type": "customRole",
+      "permissions": [
+          {
+              "actions": [
+                "Microsoft.Network/privateDnsZones/read",
+                "Microsoft.Network/privateDnsZones/A/read",
+                "Microsoft.Network/privateDnsZones/A/write"
+              ],
+              "notActions": [],
+              "dataActions": [],
+              "notDataActions": []
+          }
+      ],
+      "assignableScopes": [
+          "${current_scope_resource_id}"
+      ]
+  }
+}
