@@ -1,0 +1,27 @@
+{
+  "name": "Deny-VNet-Creation",
+  "type": "Microsoft.Authorization/policyAssignments",
+  "apiVersion": "2019-09-01",
+  "properties": {
+    "displayName": "Deny Creating VNets",
+    "description": "This Policy will prevent users from creating VNets.",
+    "notScopes": [],
+    "parameters": {
+      "effect": {
+        "value": "Deny"
+      }
+    },
+    "policyDefinitionId": "/providers/Microsoft.Authorization/policyDefinitions/Deny-VNet-Creation",
+    "nonComplianceMessages": [
+      {
+        "message": "Creating VNets in the Landing Zones is not allowed."
+      }
+    ],
+    "scope": "/providers/Microsoft.Management/managementGroups/bcgov-managed-lz-forge",
+    "enforcementMode": "Default"
+  },
+  "location": "canadacentral",
+  "identity": {
+    "type": "SystemAssigned"
+  }
+}

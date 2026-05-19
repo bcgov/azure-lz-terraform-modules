@@ -1,0 +1,40 @@
+{
+  "name": "Deny-Delete-Diagnostics",
+  "type": "Microsoft.Authorization/policyDefinitions",
+  "apiVersion": "2024-05-01",
+  "scope": null,
+  "properties": {
+    "displayName": "Deny Deleting Diagnostics Settings",
+    "description": "This Policy will prevent users from deleting the specific Diagnostics Settings.",
+    "policyType": "Custom",
+    "mode": "All",
+    "metadata": {
+      "version": "1.0.0",
+      "category": "Monitoring"
+    },
+    "parameters": {},
+    "policyRule": {
+      "if": {
+        "allOf": [
+          {
+            "field": "type",
+            "equals": "microsoft.insights/diagnosticSettings"
+          },
+          {
+            "field": "name",
+            "equals": "setbypolicy"
+          }
+        ]
+      },
+      "then": {
+        "details": {
+          "actionNames": [
+            "delete"
+          ]
+        },
+        "effect": "denyAction"
+      }
+    }
+  },
+  "roleDefinitionIds": []
+}
