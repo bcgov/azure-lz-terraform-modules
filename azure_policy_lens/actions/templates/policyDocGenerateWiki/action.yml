@@ -1,0 +1,161 @@
+name: "Policy Doc Generate Wiki"
+description: "Generate policy documentation output for a wiki target."
+inputs:
+  title:
+    description: "Wiki title."
+    required: true
+  wikiAlias:
+    description: "Short wiki alias key."
+    required: true
+  pageStyle:
+    description: "Page rendering style."
+    required: true
+  gitBranch:
+    description: "Target branch in the wiki repository."
+    required: true
+  gitRepository:
+    description: "Wiki repository URL."
+    required: true
+  gitUserName:
+    description: "Git user name for wiki operations."
+    required: true
+  gitUserEmail:
+    description: "Git user email for wiki operations."
+    required: true
+  gitCommitMessage:
+    description: "Commit message for generated content."
+    required: true
+  subscriptionIds:
+    description: "Comma-delimited list of subscription IDs."
+    required: false
+    default: ""
+  childManagementGroupId:
+    description: "Child management group identifier."
+    required: false
+    default: ""
+  buildArtifactName:
+    description: "Discovery artifact name."
+    required: true
+  aesEncryptionKey:
+    description: "Encryption key."
+    required: false
+    default: ""
+  aesEncryptionIV:
+    description: "Encryption IV."
+    required: false
+    default: ""
+  githubUserId:
+    description: "GitHub user for wiki access."
+    required: false
+    default: ""
+  githubToken:
+    description: "GitHub token for wiki access."
+    required: false
+    default: ""
+runs:
+  using: composite
+  steps:
+    - name: Download discovery artifact
+      uses: actions/download-artifact@v4.1.0
+      with:
+        name: ${{ inputs.buildArtifactName }}
+        path: policy-doc-input
+
+    - name: Ensure PowerShell module dependencies
+      shell: pwsh
+      run: |
+        Set-StrictMode -Version Latest
+        $ErrorActionPreference = 'Stop'
+
+        # AzPolicyLens.Wiki declares AzPolicyTest as a required module.
+        # GitHub-hosted runners are ephemeral, so install it when missing.
+        if (-not (Get-Module -ListAvailable -Name AzPolicyTest)) {
+          Install-Module -Name AzPolicyTest -Scope CurrentUser -Repository PSGallery -Force -AllowClobber
+        }
+
+        Import-Module AzPolicyTest -ErrorAction Stop
+
+    - name: Generate documentation payload
+      shell: bash
+      run: |
+        set -euo pipefail
+
+        script_path="azure_policy_lens/shared/azure_policy_lens/scripts/pipelines/policy-documentation/generate-wiki-pages.ps1"
+        settings_file="azure_policy_lens/configurations/settings.yml"
+
+        if [[ ! -f "$script_path" ]]; then
+          echo "Required generator script was not found: $script_path" >&2
+          exit 1
+        fi
+
+        if [[ ! -f "$settings_file" ]]; then
+          echo "Required settings file was not found: $settings_file" >&2
+          exit 1
+        fi
+
+        mkdir -p policy-doc-input/extracted generated-policy-docs
+        discovery_file=""
+        shopt -s nullglob
+        zip_files=(policy-doc-input/*.zip)
+
+        if [[ ${#zip_files[@]} -gt 0 ]]; then
+          discovery_file="${zip_files[0]}"
+        else
+          echo "No discovery zip or json file found in policy-doc-input" >&2
+          exit 1
+        fi
+
+        exemption_warning_days=$(awk '/name: policyDocExemptionExpiresOnWarningDays/{flag=1;next} flag && /value:/{print $2; exit}' "$settings_file")
+        compliance_warning_threshold=$(awk '/name: policyDocComplianceWarningPercentageThreshold/{flag=1;next} flag && /value:/{print $2; exit}' "$settings_file")
+        custom_security_path=$(awk '/name: policyDocCustomSecurityControlPath/{flag=1;next} flag && /value:/{gsub(/"/,"",$2); print $2; exit}' "$settings_file")
+
+        if [[ -z "$exemption_warning_days" || -z "$compliance_warning_threshold" ]]; then
+          echo "Failed to parse required warning threshold values from $settings_file" >&2
+          exit 1
+        fi
+
+        export githubToken='${{ inputs.githubToken }}'
+        export githubUserID='${{ inputs.githubUserId }}'
+        export EncryptionKey='${{ inputs.aesEncryptionKey }}'
+        export EncryptionIV='${{ inputs.aesEncryptionIV }}'
+        export gitRepository='${{ inputs.gitRepository }}'
+        export gitUserName='${{ inputs.gitUserName }}'
+        export gitUserEmail='${{ inputs.gitUserEmail }}'
+
+        pwsh_args=(
+          -File "$script_path"
+          -DiscoveryFilePath "$discovery_file"
+          -BaseOutputPath "$PWD/generated-policy-docs"
+          -wikiAlias '${{ inputs.wikiAlias }}'
+          -pageStyle '${{ inputs.pageStyle }}'
+          -gitPlatform github
+          -gitBranch '${{ inputs.gitBranch }}'
+          -gitCommitMessage '${{ inputs.gitCommitMessage }}'
+          -ExemptionExpiresOnWarningDays "$exemption_warning_days"
+          -ComplianceWarningPercentageThreshold "$compliance_warning_threshold"
+          -Title '${{ inputs.title }}'
+        )
+
+        if [[ -n '${{ inputs.subscriptionIds }}' ]]; then
+          pwsh_args+=( -SubscriptionIds '${{ inputs.subscriptionIds }}' )
+        fi
+
+        if [[ -n '${{ inputs.childManagementGroupId }}' ]]; then
+          pwsh_args+=( -childManagementGroupId '${{ inputs.childManagementGroupId }}' )
+        fi
+
+        if [[ -n "$custom_security_path" && -d "$custom_security_path" ]]; then
+          pwsh_args+=( -CustomSecurityControlPath "$custom_security_path" )
+        fi
+
+        pwsh "${pwsh_args[@]}"
+
+        echo "Generated output files:"
+        ls -la generated-policy-docs
+
+    - name: Upload generated documentation artifact
+      uses: actions/upload-artifact@v4.4.0
+      with:
+        name: policy_doc_generated_${{ inputs.wikiAlias }}
+        path: generated-policy-docs
+        if-no-files-found: error

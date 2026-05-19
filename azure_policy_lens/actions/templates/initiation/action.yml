@@ -1,0 +1,37 @@
+name: "Initiation"
+description: "Validate policy documentation pipeline prerequisites."
+inputs:
+  variablesPath:
+    description: "Path to the settings file used by the workflow."
+    required: true
+runs:
+  using: composite
+  steps:
+    - name: Validate settings file
+      shell: bash
+      run: |
+        set -euo pipefail
+        settings_file="${{ inputs.variablesPath }}"
+
+        if [[ ! -f "$settings_file" ]]; then
+          echo "Expected settings file not found: $settings_file" >&2
+          exit 1
+        fi
+
+        echo "Initiation checks passed."
+        echo "Settings file: $settings_file"
+
+    - name: Set workflow variables from settings
+      shell: bash
+      run: |
+        set -euo pipefail
+
+        script_path="azure_policy_lens/shared/azure_policy_lens/scripts/pipelines/policy-documentation/github-set-variables.ps1"
+        settings_file="${{ inputs.variablesPath }}"
+
+        if [[ ! -f "$script_path" ]]; then
+          echo "Required script not found: $script_path" >&2
+          exit 1
+        fi
+
+        pwsh -File "$script_path" -configFilePath "$settings_file"
