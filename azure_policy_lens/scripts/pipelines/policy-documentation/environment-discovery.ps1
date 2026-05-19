@@ -72,7 +72,6 @@ if ($OutputFileExtension -ne '.zip') {
 
 #validate the additional built-in policy metadata config files
 $additionalBuiltInPolicyMetadataConfigs = @()
-if ($AdditionalBuiltInPolicyMetadataConfigFilePath.length -gt 0) {
 if (-not [string]::IsNullOrWhiteSpace($AdditionalBuiltInPolicyMetadataConfigFilePath)) {
   Write-Output "Validating additional built-in policy metadata config file '$AdditionalBuiltInPolicyMetadataConfigFilePath'."
   if (-not (Test-Path -Path $AdditionalBuiltInPolicyMetadataConfigFilePath)) {
