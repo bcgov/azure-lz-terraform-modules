@@ -1,0 +1,18 @@
+[
+  {
+    "framework": "Microsoft Cloud Security Benchmark V3.0",
+    "policyMetadataNameRegex": "^Azure_Security_Benchmark_v3\\.0"
+  },
+  {
+    "framework": "CIS Microsoft Azure Foundations Benchmark v2.0.0",
+    "policyMetadataNameRegex": "^CIS_Azure_2\\.0\\.0"
+  },
+  {
+    "framework": "NIST SP 800-53 Rev. 5",
+    "policyMetadataNameRegex": "^NIST_SP_800-53_R5"
+  },
+  {
+    "framework": "CCCS Medium (formerly Canada Federal PBMM)",
+    "policyMetadataNameRegex": "^CCCS_"
+  }
+]
