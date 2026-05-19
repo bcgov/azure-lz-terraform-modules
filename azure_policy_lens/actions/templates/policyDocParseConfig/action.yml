@@ -20,9 +20,9 @@ runs:
       run: |
         set -euo pipefail
 
-        script_path="azure_policy_lens/shared/azure_policy_lens/scripts/pipelines/policy-documentation/github-policy-doc-parse-config-file.ps1"
+        script_path="azure_policy_lens/scripts/pipelines/policy-documentation/github-policy-doc-parse-config-file.ps1"
         config_file="azure_policy_lens/configurations/github-config.jsonc"
-        schema_file="azure_policy_lens/shared/azure_policy_lens/configurations/github-config.schema.json"
+        schema_file="azure_policy_lens/configurations/github-config.schema.json"
 
         if [[ ! -f "$script_path" ]]; then
           echo "Required script not found: $script_path" >&2

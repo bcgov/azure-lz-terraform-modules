@@ -80,7 +80,7 @@ runs:
       run: |
         set -euo pipefail
 
-        script_path="azure_policy_lens/shared/azure_policy_lens/scripts/pipelines/policy-documentation/generate-wiki-pages.ps1"
+        script_path="azure_policy_lens/scripts/pipelines/policy-documentation/generate-wiki-pages.ps1"
         settings_file="azure_policy_lens/configurations/settings.yml"
 
         if [[ ! -f "$script_path" ]]; then
@@ -101,7 +101,7 @@ runs:
         if [[ ${#zip_files[@]} -gt 0 ]]; then
           discovery_file="${zip_files[0]}"
         else
-          echo "No discovery zip or json file found in policy-doc-input" >&2
+          echo "No discovery zip file found in policy-doc-input" >&2
           exit 1
         fi
 

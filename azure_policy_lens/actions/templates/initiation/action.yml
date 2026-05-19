@@ -26,7 +26,7 @@ runs:
       run: |
         set -euo pipefail
 
-        script_path="azure_policy_lens/shared/azure_policy_lens/scripts/pipelines/policy-documentation/github-set-variables.ps1"
+        script_path="azure_policy_lens/scripts/pipelines/policy-documentation/github-set-variables.ps1"
         settings_file="${{ inputs.variablesPath }}"
 
         if [[ ! -f "$script_path" ]]; then

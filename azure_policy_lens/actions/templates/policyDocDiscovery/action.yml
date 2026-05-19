@@ -18,7 +18,7 @@ runs:
       run: |
         set -euo pipefail
 
-        script_path="azure_policy_lens/shared/azure_policy_lens/scripts/pipelines/policy-documentation/environment-discovery.ps1"
+        script_path="azure_policy_lens/scripts/pipelines/policy-documentation/environment-discovery.ps1"
         settings_file="azure_policy_lens/configurations/settings.yml"
         discovery_file="${{ env.policyDocDiscoveryFileName }}"
         if [[ -z "$discovery_file" ]]; then
@@ -42,7 +42,7 @@ runs:
         mkdir -p policy-doc-discovery
         output_file="$PWD/policy-doc-discovery/$discovery_file"
 
-        additional_metadata_config=$(awk '/name: policyDocAdditionalBuiltInPolicyMetadataConfigFilePath/{flag=1;next} flag && /value:/{sub(/^\s*value:\s*/,"",$0); gsub(/"/,"",$0); print $0; exit}' "$settings_file")
+        additional_metadata_config=$(awk '/name: policyDocAdditionalBuiltInPolicyMetadataConfigFilePath/{flag=1;next} flag && /value:/{sub(/^ *value: */,"",$0); gsub(/"/,"",$0); print $0; exit}' "$settings_file")
 
         pwsh_args=(
           -File "$script_path"
