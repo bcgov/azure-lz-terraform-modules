@@ -56,7 +56,7 @@ runs:
   using: composite
   steps:
     - name: Download discovery artifact
-      uses: actions/download-artifact@v4.1.0
+      uses: actions/download-artifact@v4.1.3
       with:
         name: ${{ inputs.buildArtifactName }}
         path: policy-doc-input
