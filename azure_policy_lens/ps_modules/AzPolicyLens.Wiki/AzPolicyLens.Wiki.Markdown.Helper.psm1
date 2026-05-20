@@ -1194,9 +1194,6 @@ function buildPolicyDefinitionGroupComplianceCoverageMarkdown {
     $Markdown += "- :green_circle: Green: 100%`n"
     $Markdown += "- :orange_circle: Orange: Above $ComplianceWarningPercentageThreshold%`n"
     $Markdown += "- :red_circle: Red: Below $ComplianceWarningPercentageThreshold%`n`n"
-    $Markdown += "- 🟢 Green: 100%`n"
-    $Markdown += "- 🟠 Orange: Above $ComplianceWarningPercentageThreshold%`n"
-    $Markdown += "- 🔴 Red: Below $ComplianceWarningPercentageThreshold%`n`n"
   }
   $Markdown
 }
@@ -4151,9 +4148,6 @@ function buildComplianceRatingMarkdown {
     $PageContent += "- :green_circle: Green: = 100%`n"
     $PageContent += "- :orange_circle: Orange: >= $ComplianceWarningPercentageThreshold%`n"
     $PageContent += "- :red_circle: Red: < $ComplianceWarningPercentageThreshold%`n`n"
-    $PageContent += "- 🟢 Green: = 100%`n"
-    $PageContent += "- 🟠 Orange: >= $ComplianceWarningPercentageThreshold%`n"
-    $PageContent += "- 🔴 Red: < $ComplianceWarningPercentageThreshold%`n`n"
   }
   $PageContent
 }

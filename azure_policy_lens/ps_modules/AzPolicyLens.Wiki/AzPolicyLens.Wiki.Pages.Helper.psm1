@@ -1183,8 +1183,10 @@ function newAnalysisSummaryPage {
   } else {
     $pageContent += "This page contains analysis and recommendations for the Azure policy resources that are applicable to the following subscriptions:"
     $pageContent += "`n`n"
-    $EnvironmentDiscoveryData.subscriptions | ForEach-Object {
-      $pageContent += "- $($_.name)`n"
+    $EnvironmentDiscoveryData.subscriptions | Sort-Object name | ForEach-Object {
+      $subPageFileNameMapping = getWikiPageFileName -ResourceId $_.id -wikiFileMapping $WikiFileMapping
+      $subLink = getRelativePath -FromPath $FileParentDirectory -ToPath $(Join-Path $subPageFileNameMapping.FileParentDirectory $subPageFileNameMapping.FileBaseName) -UseUnixPath $true
+      $pageContent += "- [$($_.name)]($subLink)`n"
     }
     $pageContent += "`n`n"
   }
