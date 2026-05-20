@@ -224,22 +224,22 @@ function FormatExemptionExpiresOn {
     }
   } else {
     if ([string]::IsNullOrEmpty($InputString)) {
-      $return = '$${\color{green}Never}$$'
+      $return = '🟢 Never'
     } else {
       try {
         $date = $(Get-Date $InputString).ToUniversalTime()
         $currentDate = [DateTime]::UtcNow
         $daysDifference = ($date - $currentDate).Days
-        $strExpiryDate = $date.ToString($dateTimeFormat).replace(" ", " \space ")
+        $strExpiryDate = $date.ToString($dateTimeFormat)
         if ($daysDifference -gt $warningDays) {
           # More than $warningDays days away, green
-          $colorCodedDate = "`$\color{$green}{\textsf " + $strExpiryDate + '}$'
+          $colorCodedDate = "🟢 $strExpiryDate"
         } elseif ($daysDifference -ge 0) {
           # Less than $warningDays days away, orange
-          $colorCodedDate = "`$\color{$orange}{\textsf " + $strExpiryDate + '}$'
+          $colorCodedDate = "🟠 $strExpiryDate"
         } else {
           # Past date, red
-          $colorCodedDate = "`$\color{$red}{\textsf " + $strExpiryDate + '}$'
+          $colorCodedDate = "🔴 $strExpiryDate"
         }
         $return = $colorCodedDate
       } catch {
@@ -249,6 +249,23 @@ function FormatExemptionExpiresOn {
     }
   }
   $return
+}
+
+function GetGitHubStatusEmoji {
+  [CmdletBinding()]
+  [OutputType([string])]
+  param (
+    [Parameter(Mandatory = $true)]
+    [AllowEmptyString()]
+    [string]$ColorCode
+  )
+
+  switch ($ColorCode.ToUpperInvariant()) {
+    '#008000' { '🟢' }
+    '#FFA500' { '🟠' }
+    '#FF0000' { '🔴' }
+    default { '' }
+  }
 }
 
 # 03. function to format compliance rate for Markdown table rows
@@ -303,25 +320,18 @@ function FormatComplianceRate {
     }
   } else {
     try {
-
-      $strRate = $InputString.replace(" ", " \space ")
-      if ($format -ieq 'html') {
-        $strRate = $strRate.replace("%", "\% ")
-      } else {
-        $strRate = $strRate.replace("%", "\\% ")
-      }
-
+      $githubStatusLabel = ''
       if ($rate -eq 100) {
         # 100%
-        $colorCodedRate = "`$\color{$green}{\textsf " + $strRate + '}$'
+      $githubStatusLabel = '🟢'
       } elseif ($rate -ge $WarningPercentageThreshold -and $rate -lt 100) {
         # between warning threshold and 100%
-        $colorCodedRate = "`$\color{$orange}{\textsf " + $strRate + '}$'
+      $githubStatusLabel = '🟠'
       } else {
         # below warning threshold
-        $colorCodedRate = "`$\color{$red}{\textsf " + $strRate + '}$'
+      $githubStatusLabel = '🔴'
       }
-      $return = $colorCodedRate
+      $return = "$githubStatusLabel $InputString"
     } catch {
       Write-Warning "[$(getCurrentUTCString)]: Invalid rate '$rate'. Returning as is."
       $return = $InputString
@@ -1181,9 +1191,12 @@ function buildPolicyDefinitionGroupComplianceCoverageMarkdown {
     $Markdown += "- <span style=`"color:#FFA500`">Orange</span>: Above $ComplianceWarningPercentageThreshold%`n"
     $Markdown += "- <span style=`"color:#FF0000`">Red</span>: Below $ComplianceWarningPercentageThreshold%`n`n"
   } else {
-    $Markdown += "- `$\color{green}{\textsf{Green}}`$: 100%`n"
-    $Markdown += "- `$\color{orange}{\textsf{Orange}}`$: Above $ComplianceWarningPercentageThreshold%`n"
-    $Markdown += "- `$\color{red}{\textsf{Red}}`$: Below $ComplianceWarningPercentageThreshold%`n`n"
+    $Markdown += "- :green_circle: Green: 100%`n"
+    $Markdown += "- :orange_circle: Orange: Above $ComplianceWarningPercentageThreshold%`n"
+    $Markdown += "- :red_circle: Red: Below $ComplianceWarningPercentageThreshold%`n`n"
+    $Markdown += "- 🟢 Green: 100%`n"
+    $Markdown += "- 🟠 Orange: Above $ComplianceWarningPercentageThreshold%`n"
+    $Markdown += "- 🔴 Red: Below $ComplianceWarningPercentageThreshold%`n`n"
   }
   $Markdown
 }
@@ -4109,9 +4122,9 @@ function buildExemptionExpiresOnMarkdown {
     $PageContent += "- <span style=`"color:#FFA500`">Orange</span>: Expires in less than $expiresOnWarningDays days.`n"
     $PageContent += "- <span style=`"color:#FF0000`">Red</span>: Already expired.`n`n"
   } else {
-    $PageContent += "- `$\color{green}{\textsf{Green}}`$: Expires in more than $expiresOnWarningDays days.`n"
-    $PageContent += "- `$\color{orange}{\textsf{Orange}}`$: Expires in less than $expiresOnWarningDays days.`n"
-    $PageContent += '- $\color{red}{\textsf{Red}}$: Already expired.'
+    $PageContent += "- 🟢 Green: Expires in more than $expiresOnWarningDays days.`n"
+    $PageContent += "- 🟠 Orange: Expires in less than $expiresOnWarningDays days.`n"
+    $PageContent += '- 🔴 Red: Already expired.'
     $PageContent += "`n`n"
   }
   $PageContent
@@ -4135,9 +4148,12 @@ function buildComplianceRatingMarkdown {
     $PageContent += "- <span style=`"color:#FFA500`">Orange</span>: >= $ComplianceWarningPercentageThreshold%`n"
     $PageContent += "- <span style=`"color:#FF0000`">Red</span>: < $ComplianceWarningPercentageThreshold%`n`n"
   } else {
-    $PageContent += "- `$\color{green}{\textsf{Green}}`$: = 100%`n"
-    $PageContent += "- `$\color{orange}{\textsf{Orange}}`$: >= $ComplianceWarningPercentageThreshold%`n"
-    $PageContent += "- `$\color{red}{\textsf{Red}}`$: < $ComplianceWarningPercentageThreshold%`n`n"
+    $PageContent += "- :green_circle: Green: = 100%`n"
+    $PageContent += "- :orange_circle: Orange: >= $ComplianceWarningPercentageThreshold%`n"
+    $PageContent += "- :red_circle: Red: < $ComplianceWarningPercentageThreshold%`n`n"
+    $PageContent += "- 🟢 Green: = 100%`n"
+    $PageContent += "- 🟠 Orange: >= $ComplianceWarningPercentageThreshold%`n"
+    $PageContent += "- 🔴 Red: < $ComplianceWarningPercentageThreshold%`n`n"
   }
   $PageContent
 }
@@ -4326,7 +4342,7 @@ function newHtmlTable {
         if ($WikiStyle -ieq 'ado') {
           $tdAttrWithColor = " style=`"color:$colorCode`""
         } else {
-          $tdAttrWithColor = "`$\color{$colorCode}{\textsf "
+          $tdAttrWithColor = "$(GetGitHubStatusEmoji -ColorCode $colorCode) "
         }
       } else {
         $tdAttrWithColor = ""
@@ -4357,12 +4373,8 @@ function newHtmlTable {
       $tdOpenBracket = "<td$tdAttrWithColor>"
       $tdValue = $tdOpenBracket + $value + "</td>`n"
     } else {
-      $tdOpenBracket = "<td>$tdAttrWithColor"
-      if ($colorCode) {
-        $tdValue = $tdOpenBracket + $value + "}`$" + "</td>`n"
-      } else {
-        $tdValue = $tdOpenBracket + $value + "</td>`n"
-      }
+      $tdOpenBracket = "<td>"
+      $tdValue = $tdOpenBracket + $tdAttrWithColor + $value + "</td>`n"
     }
 
     $htmlTable += "  <tr>`n"
@@ -4912,9 +4924,9 @@ function FormatTestResult {
   } else {
     try {
       if ($result -ieq 'Passed') {
-        $colorCodedRate = "`$\color{$green}{\textsf " + $result + '}$'
+        $colorCodedRate = "🟢 $result"
       } else {
-        $colorCodedRate = "`$\color{$red}{\textsf " + $result + '}$'
+        $colorCodedRate = "🔴 $result"
       }
       $return = $colorCodedRate
     } catch {
