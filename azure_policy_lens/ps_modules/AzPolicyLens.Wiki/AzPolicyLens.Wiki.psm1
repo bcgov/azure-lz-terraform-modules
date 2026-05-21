@@ -176,12 +176,67 @@ function Invoke-AzplConcurrentPageGeneration {
     return $results
   }
 
+  $normalizedTasks = [System.Collections.Generic.List[object]]::new()
+  $taskPosition = 0
+  foreach ($task in $taskList) {
+    $taskPosition++
+
+    if ($null -eq $task) {
+      throw "Concurrent task at index $taskPosition is null."
+    }
+
+    $taskName = [string]$task.Name
+    if ([string]::IsNullOrWhiteSpace($taskName)) {
+      throw "Concurrent task at index $taskPosition is missing Name."
+    }
+
+    $functionName = [string]$task.FunctionName
+    if ([string]::IsNullOrWhiteSpace($functionName)) {
+      throw "Concurrent task '$taskName' is missing FunctionName."
+    }
+
+    $parameters = $task.Parameters
+    if ($null -eq $parameters) {
+      $parameters = @{}
+    }
+
+    if ($parameters -is [System.Collections.Specialized.OrderedDictionary]) {
+      $orderedParameters = @{}
+      foreach ($key in $parameters.Keys) {
+        $orderedParameters[$key] = $parameters[$key]
+      }
+      $parameters = $orderedParameters
+    }
+
+    if ($parameters -isnot [hashtable]) {
+      throw "Concurrent task '$taskName' has invalid Parameters type '$($parameters.GetType().FullName)'. Expected Hashtable."
+    }
+
+    $normalizedTasks.Add([pscustomobject]@{
+      Name         = $taskName
+      FunctionName = $functionName
+      Parameters   = $parameters
+      Metadata     = $task.Metadata
+    })
+  }
+
+  $taskList = @($normalizedTasks)
+
   if ($PSVersionTable.PSVersion.Major -lt 7 -or $taskList.Count -eq 1) {
+    $module = Import-Module $ModuleManifestPath -Force -PassThru -ErrorAction Stop
     foreach ($task in $taskList) {
       $stopwatch = [System.Diagnostics.Stopwatch]::StartNew()
       $functionName = $task.FunctionName
       $functionParameters = $task.Parameters
-      $result = & $functionName @functionParameters
+      $result = & $module {
+        param($resolvedFunctionName, $resolvedParameters)
+
+        if (-not (Get-Command -Name $resolvedFunctionName -ErrorAction SilentlyContinue)) {
+          throw "Function '$resolvedFunctionName' is not available in module scope."
+        }
+
+        & $resolvedFunctionName @resolvedParameters
+      } $functionName $functionParameters
       $stopwatch.Stop()
       $results[$task.Name] = [ordered]@{
         Result       = $result
@@ -213,7 +268,7 @@ function Invoke-AzplConcurrentPageGeneration {
             }
 
             & $resolvedFunctionName @resolvedParameters
-          } -ArgumentList $functionName, $parameters
+          } $functionName $parameters
         } finally {
           $stopwatch.Stop()
         }
