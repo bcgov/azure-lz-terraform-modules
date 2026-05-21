@@ -67,7 +67,7 @@ function Invoke-AzplTimedOperation {
       $Metrics[$Name] = $metric
     }
 
-    Write-Output "[$(getCurrentUTCString)]: Phase '$Name' completed in $($metric.Duration)."
+    Write-Verbose "[$(getCurrentUTCString)]: Phase '$Name' completed in $($metric.Duration)." -Verbose:($PSCmdlet.MyInvocation.BoundParameters['Verbose'].IsPresent -eq $true)
   }
 
   return $result
