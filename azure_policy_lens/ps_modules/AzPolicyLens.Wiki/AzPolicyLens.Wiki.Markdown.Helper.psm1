@@ -1220,8 +1220,8 @@ function buildPolicyDefinitionGroupComplianceCoverageMarkdown {
     $Markdown += "- <span style=`"color:#FF0000`">Red</span>: Below $ComplianceWarningPercentageThreshold%`n`n"
   } else {
     $Markdown += "- $(GetGitHubStatusLabel -ColorCode '#008000' -Text 'Green: 100%')`n"
-    $Markdown += "- $(GetGitHubStatusLabel -ColorCode '#FFA500' -Text \"Orange: Above $ComplianceWarningPercentageThreshold%\")`n"
-    $Markdown += "- $(GetGitHubStatusLabel -ColorCode '#FF0000' -Text \"Red: Below $ComplianceWarningPercentageThreshold%\")`n`n"
+    $Markdown += "- $(GetGitHubStatusLabel -ColorCode '#FFA500' -Text $('Orange: Above {0}%' -f $ComplianceWarningPercentageThreshold))`n"
+    $Markdown += "- $(GetGitHubStatusLabel -ColorCode '#FF0000' -Text $('Red: Below {0}%' -f $ComplianceWarningPercentageThreshold))`n`n"
   }
   $Markdown
 }
@@ -4157,8 +4157,8 @@ function buildExemptionExpiresOnMarkdown {
     $PageContent += "- <span style=`"color:#FFA500`">Orange</span>: Expires in less than $expiresOnWarningDays days.`n"
     $PageContent += "- <span style=`"color:#FF0000`">Red</span>: Already expired.`n`n"
   } else {
-    $PageContent += "- $(GetGitHubStatusLabel -ColorCode '#008000' -Text \"Green: Expires in more than $expiresOnWarningDays days.\")`n"
-    $PageContent += "- $(GetGitHubStatusLabel -ColorCode '#FFA500' -Text \"Orange: Expires in less than $expiresOnWarningDays days.\")`n"
+    $PageContent += "- $(GetGitHubStatusLabel -ColorCode '#008000' -Text $('Green: Expires in more than {0} days.' -f $expiresOnWarningDays))`n"
+    $PageContent += "- $(GetGitHubStatusLabel -ColorCode '#FFA500' -Text $('Orange: Expires in less than {0} days.' -f $expiresOnWarningDays))`n"
     $PageContent += "- $(GetGitHubStatusLabel -ColorCode '#FF0000' -Text 'Red: Already expired.')"
     $PageContent += "`n`n"
   }
@@ -4184,8 +4184,8 @@ function buildComplianceRatingMarkdown {
     $PageContent += "- <span style=`"color:#FF0000`">Red</span>: < $ComplianceWarningPercentageThreshold%`n`n"
   } else {
     $PageContent += "- $(GetGitHubStatusLabel -ColorCode '#008000' -Text 'Green: = 100%')`n"
-    $PageContent += "- $(GetGitHubStatusLabel -ColorCode '#FFA500' -Text \"Orange: >= $ComplianceWarningPercentageThreshold%\")`n"
-    $PageContent += "- $(GetGitHubStatusLabel -ColorCode '#FF0000' -Text \"Red: < $ComplianceWarningPercentageThreshold%\")`n`n"
+    $PageContent += "- $(GetGitHubStatusLabel -ColorCode '#FFA500' -Text $('Orange: >= {0}%' -f $ComplianceWarningPercentageThreshold))`n"
+    $PageContent += "- $(GetGitHubStatusLabel -ColorCode '#FF0000' -Text $('Red: < {0}%' -f $ComplianceWarningPercentageThreshold))`n`n"
   }
   $PageContent
 }
