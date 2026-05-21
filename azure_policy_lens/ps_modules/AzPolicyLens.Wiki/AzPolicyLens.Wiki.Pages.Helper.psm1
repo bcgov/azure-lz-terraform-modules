@@ -1429,8 +1429,13 @@ function newSubscriptionPage {
     $EnvironmentDiscoveryData
   )
 
-  $subscriptions = $EnvironmentDiscoveryData.subscriptions
-  Write-verbose "[$(getCurrentUTCString)]: Found $($subscriptions.Count) subscriptions in the management group hierarchy."
+  $allSubscriptions = @($EnvironmentDiscoveryData.subscriptions)
+  $subscriptions = @($allSubscriptions | Where-Object { -not [string]::IsNullOrWhiteSpace($_.id) -and -not [string]::IsNullOrWhiteSpace($_.subscriptionId) })
+  $invalidSubscriptionCount = $allSubscriptions.Count - $subscriptions.Count
+  Write-verbose "[$(getCurrentUTCString)]: Found $($subscriptions.Count) valid subscriptions in the management group hierarchy."
+  if ($invalidSubscriptionCount -gt 0) {
+    Write-Verbose "[$(getCurrentUTCString)]: Skipping $invalidSubscriptionCount subscription record(s) with missing id or subscriptionId." -verbose
+  }
   $WikiStyle = $WikiFileMapping.WikiStyle
   $subscriptionComplianceById = @{}
   foreach ($item in @($EnvironmentDiscoveryData.subscriptionComplianceSummary)) {
@@ -1530,9 +1535,14 @@ function newPolicyAssignmentPage {
 
   $WikiStyle = $WikiFileMapping.WikiStyle
   #get policy assignments
-  $assignments = $EnvironmentDiscoveryData.assignments
+  $allAssignments = @($EnvironmentDiscoveryData.assignments)
+  $assignments = @($allAssignments | Where-Object { -not [string]::IsNullOrWhiteSpace($_.id) -and -not [string]::IsNullOrWhiteSpace($_.properties.policyDefinitionId) })
+  $invalidAssignmentCount = $allAssignments.Count - $assignments.Count
   $topLevelManagementGroupName = $EnvironmentDiscoveryData.topLevelManagementGroupName.toupper()
-  Write-Verbose "[$(getCurrentUTCString)]: Found $($assignments.Count) policy assignments that are assigned in the management group hierarchy."
+  Write-Verbose "[$(getCurrentUTCString)]: Found $($assignments.Count) valid policy assignments that are assigned in the management group hierarchy."
+  if ($invalidAssignmentCount -gt 0) {
+    Write-Verbose "[$(getCurrentUTCString)]: Skipping $invalidAssignmentCount policy assignment record(s) with missing id or policyDefinitionId."
+  }
   $initiativeResourceIdRegex = '(?im)\/providers\/microsoft\.authorization\/policysetdefinitions\/'
   $definitionResourceIdRegex = '(?im)\/providers\/microsoft\.authorization\/policydefinitions\/'
 
@@ -1555,16 +1565,23 @@ function newPolicyAssignmentPage {
 
   $definitionsById = @{}
   foreach ($item in @($EnvironmentDiscoveryData.definitions)) {
-    $definitionsById[$item.id] = $item
+    if (-not [string]::IsNullOrWhiteSpace($item.id)) {
+      $definitionsById[$item.id] = $item
+    }
   }
 
   $initiativesById = @{}
   foreach ($item in @($EnvironmentDiscoveryData.initiatives)) {
-    $initiativesById[$item.id] = $item
+    if (-not [string]::IsNullOrWhiteSpace($item.id)) {
+      $initiativesById[$item.id] = $item
+    }
   }
 
   $exemptionsByAssignmentId = @{}
   foreach ($item in @($EnvironmentDiscoveryData.exemptions)) {
+    if ([string]::IsNullOrWhiteSpace($item.policyAssignmentId)) {
+      continue
+    }
     if (-not $exemptionsByAssignmentId.ContainsKey($item.policyAssignmentId)) {
       $exemptionsByAssignmentId[$item.policyAssignmentId] = @()
     }
@@ -1658,6 +1675,10 @@ function newPolicyAssignmentPage {
       Write-Error "Unable to detect the assigned policy type from the resource Id '$definitionId'."
       continue
     }
+    if ($null -eq $definition -or [string]::IsNullOrWhiteSpace($definition.id)) {
+      Write-Warning "[$(getCurrentUTCString)]: Skipping policy assignment '$($item.name)' because assigned $definitionType '$definitionId' could not be resolved to a resource with a valid id."
+      continue
+    }
     $DefinitionFileNameMapping = getWikiPageFileName -ResourceId $definition.id -wikiFileMapping $WikiFileMapping
     $definitionPageFileBaseName = $DefinitionFileNameMapping.FileBaseName
     $definitionFolderPath = $DefinitionFileNameMapping.FileParentDirectory
@@ -1681,7 +1702,7 @@ function newPolicyAssignmentPage {
       $parametersMarkdownTable = buildAssignmentParametersMarkdownTable -parameters $item.properties.parameters
     }
     #get related exemptions
-    $relatedExemptions = @($exemptionsByAssignmentId[$item.id])
+    $relatedExemptions = @($exemptionsByAssignmentId[$item.id] | Where-Object { -not [string]::IsNullOrWhiteSpace($_.id) })
 
     Write-Verbose "  - [$(getCurrentUTCString)]: Generating Markdown file '$fileName' for the policy assignment '$($item.name)' in the output path '$OutputPath'."
     $PageContent = ""
@@ -1824,11 +1845,17 @@ function newPolicyInitiativePage {
   $WikiStyle = $WikiFileMapping.WikiStyle
   #get policy initiatives
   #$initiatives = $EnvironmentDiscoveryData.initiatives | Where-Object { $_.properties.policyType -eq 'Custom' }
-  Write-Verbose "[$(getCurrentUTCString)]: Found $($EnvironmentDiscoveryData.initiatives.Count) policy initiatives that are assigned in the management group hierarchy."
+  $allInitiatives = @($EnvironmentDiscoveryData.initiatives)
+  $initiatives = @($allInitiatives | Where-Object { -not [string]::IsNullOrWhiteSpace($_.id) })
+  $invalidInitiativeCount = $allInitiatives.Count - $initiatives.Count
+  Write-Verbose "[$(getCurrentUTCString)]: Found $($initiatives.Count) valid policy initiatives that are assigned in the management group hierarchy."
+  if ($invalidInitiativeCount -gt 0) {
+    Write-Verbose "[$(getCurrentUTCString)]: Skipping $invalidInitiativeCount policy initiative record(s) with missing id."
+  }
   $filePaths = @()
   $pendingWrites = @()
   #assigned initiatives
-  Foreach ($item in $EnvironmentDiscoveryData.initiatives) {
+  Foreach ($item in $initiatives) {
     Write-Verbose "  - [$(getCurrentUTCString)]: Processing policy initiative '$($item.properties.displayName)'" -verbose
     $InitiativeFileNameMapping = getWikiPageFileName -ResourceId $item.id -wikiFileMapping $WikiFileMapping
     $OutputPath = $InitiativeFileNameMapping.FileParentDirectory
@@ -1921,7 +1948,13 @@ function newPolicyDefinitionPage {
       }
     }
   }
-  Write-Verbose "[$(getCurrentUTCString)]: Found $($definitions.Count) policy definitions that are directly or indirectly assigned or included in unassigned custom initiatives in the management group hierarchy." -verbose
+  $allDefinitions = @($definitions)
+  $definitions = @($allDefinitions | Where-Object { -not [string]::IsNullOrWhiteSpace($_.id) })
+  $invalidDefinitionCount = $allDefinitions.Count - $definitions.Count
+  Write-Verbose "[$(getCurrentUTCString)]: Found $($definitions.Count) valid policy definitions that are directly or indirectly assigned or included in unassigned custom initiatives in the management group hierarchy." -verbose
+  if ($invalidDefinitionCount -gt 0) {
+    Write-Verbose "[$(getCurrentUTCString)]: Skipping $invalidDefinitionCount policy definition record(s) with missing id." -verbose
+  }
   $filePaths = @()
   $pendingWrites = @()
   Foreach ($item in $definitions) {
@@ -2059,8 +2092,13 @@ function newPolicyMetadataPage {
 
   $WikiStyle = $WikiFileMapping.WikiStyle
   #get security control
-  $policyMetadata = $EnvironmentDiscoveryData.policyMetadata
-  Write-Verbose "[$(getCurrentUTCString)]: Found $($policyMetadata.Count) built-in security controls." -verbose
+  $allPolicyMetadata = @($EnvironmentDiscoveryData.policyMetadata)
+  $policyMetadata = @($allPolicyMetadata | Where-Object { -not [string]::IsNullOrWhiteSpace($_.id) })
+  $invalidPolicyMetadataCount = $allPolicyMetadata.Count - $policyMetadata.Count
+  Write-Verbose "[$(getCurrentUTCString)]: Found $($policyMetadata.Count) valid built-in security controls." -verbose
+  if ($invalidPolicyMetadataCount -gt 0) {
+    Write-Verbose "[$(getCurrentUTCString)]: Skipping $invalidPolicyMetadataCount policy metadata record(s) with missing id." -verbose
+  }
   $filePaths = [System.Collections.Generic.List[string]]::new()
   Foreach ($item in $policyMetadata) {
     #Write-Verbose "  - [$(getCurrentUTCString)]: Processing built-in security control '$($item.id)'." -verbose

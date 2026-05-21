@@ -423,6 +423,35 @@ Function New-AzplDocumentation {
     }
   }
 
+  # Sanitize discovery collections to avoid empty-id failures during wiki mapping/link generation.
+  $allSubscriptions = @($EnvironmentDiscoveryData.subscriptions)
+  $EnvironmentDiscoveryData.subscriptions = @($allSubscriptions | Where-Object { -not [string]::IsNullOrWhiteSpace($_.id) -and -not [string]::IsNullOrWhiteSpace($_.subscriptionId) })
+  $allManagementGroups = @($EnvironmentDiscoveryData.managementGroups)
+  $EnvironmentDiscoveryData.managementGroups = @($allManagementGroups | Where-Object { -not [string]::IsNullOrWhiteSpace($_.id) -and -not [string]::IsNullOrWhiteSpace($_.name) })
+  $allAssignments = @($EnvironmentDiscoveryData.assignments)
+  $EnvironmentDiscoveryData.assignments = @($allAssignments | Where-Object { -not [string]::IsNullOrWhiteSpace($_.id) })
+  $allDefinitions = @($EnvironmentDiscoveryData.definitions)
+  $EnvironmentDiscoveryData.definitions = @($allDefinitions | Where-Object { -not [string]::IsNullOrWhiteSpace($_.id) })
+  $allInitiatives = @($EnvironmentDiscoveryData.initiatives)
+  $EnvironmentDiscoveryData.initiatives = @($allInitiatives | Where-Object { -not [string]::IsNullOrWhiteSpace($_.id) })
+  $allExemptions = @($EnvironmentDiscoveryData.exemptions)
+  $EnvironmentDiscoveryData.exemptions = @($allExemptions | Where-Object { -not [string]::IsNullOrWhiteSpace($_.id) })
+  $allPolicyMetadata = @($EnvironmentDiscoveryData.policyMetadata)
+  $EnvironmentDiscoveryData.policyMetadata = @($allPolicyMetadata | Where-Object { -not [string]::IsNullOrWhiteSpace($_.id) })
+
+  $removedDiscoveryRecords = @(
+    $allSubscriptions.Count - $EnvironmentDiscoveryData.subscriptions.Count,
+    $allManagementGroups.Count - $EnvironmentDiscoveryData.managementGroups.Count,
+    $allAssignments.Count - $EnvironmentDiscoveryData.assignments.Count,
+    $allDefinitions.Count - $EnvironmentDiscoveryData.definitions.Count,
+    $allInitiatives.Count - $EnvironmentDiscoveryData.initiatives.Count,
+    $allExemptions.Count - $EnvironmentDiscoveryData.exemptions.Count,
+    $allPolicyMetadata.Count - $EnvironmentDiscoveryData.policyMetadata.Count
+  ) | Measure-Object -Sum | Select-Object -ExpandProperty Sum
+  if ($removedDiscoveryRecords -gt 0) {
+    Write-Warning "[$(getCurrentUTCString)]: Sanitized discovery data by removing $removedDiscoveryRecords record(s) with missing required ids before wiki generation."
+  }
+
 
   # generate wiki page file names
   $wikiFileMapping = Invoke-AzplTimedOperation -Name 'Generate wiki file mapping' -Metrics $phaseMetrics -Operation {

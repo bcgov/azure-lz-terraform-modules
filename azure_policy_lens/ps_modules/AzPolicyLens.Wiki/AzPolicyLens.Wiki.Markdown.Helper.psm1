@@ -1922,6 +1922,10 @@ function buildPolicyAssignmentMarkdownTableForMg {
     $Markdown += $markdownHeaderLine2
     $Markdown += "`n"
     foreach ($assignment in $mgAssignments) {
+      if ([string]::IsNullOrWhiteSpace($assignment.id)) {
+        Write-Warning "Skipping assignment row because assignment id is empty."
+        continue
+      }
       $assignmentComplianceForAssignment = $assignmentCompliance | Where-Object { $_.policyAssignmentId -ieq $assignment.id }
       $totalCompliantCount = 0
       $totalNonCompliantCount = 0
@@ -2087,6 +2091,10 @@ function buildPolicyAssignmentMarkdownTableForSub {
     $Markdown += $markdownHeaderLine2
     $Markdown += "`n"
     foreach ($assignment in $subAssignments) {
+      if ([string]::IsNullOrWhiteSpace($assignment.id)) {
+        Write-Warning "Skipping assignment row because assignment id is empty."
+        continue
+      }
       $assignmentComplianceForAssignment = $assignmentCompliance | Where-Object { $_.policyAssignmentId -ieq $assignment.id }
       $totalCompliantCount = 0
       $totalNonCompliantCount = 0
@@ -2217,7 +2225,7 @@ function buildPolicyExemptionMarkdownTableForMg {
   )
   $wikiStyle = $WikiFileMapping.WikiStyle
   $mgMatchRegex = '(?im)^\/providers\/microsoft\.management\/managementgroups\/{0}\/' -f $($managementGroup.name.tolower())
-  $mgExemptions = $exemptions | Where-Object { $_.id -match $mgMatchRegex } | sort-Object name
+  $mgExemptions = $exemptions | Where-Object { -not [string]::IsNullOrWhiteSpace($_.id) -and $_.id -match $mgMatchRegex } | sort-Object name
 
   if ($mgExemptions.count -ge 1) {
     $Markdown += "$(newMarkdownHeader -title "$($managementGroup.name)" -level 3 -caseStyle 'UpperCase')`n`n"
@@ -2231,12 +2239,20 @@ function buildPolicyExemptionMarkdownTableForMg {
     $Markdown += "| ---- | ------------ | ----------- | ----------------- | -------- | ---------------- | ------------------------ |`n"
 
     foreach ($exemption in $mgExemptions) {
-      $assignment = $assignments | Where-Object { $_.id -ieq $exemption.policyAssignmentId }
-      $AssignmentFileNameMapping = getWikiPageFileName -ResourceId $assignment.id -wikiFileMapping $wikiFileMapping
+      $assignment = $assignments | Where-Object { $_.id -ieq $exemption.policyAssignmentId } | Select-Object -First 1
+      $assignmentDisplayValue = $($exemption.policyAssignmentId ? $exemption.policyAssignmentId : '``null``')
+      if ($null -ne $assignment) {
+        if (-not [string]::IsNullOrWhiteSpace($assignment.id)) {
+          $AssignmentFileNameMapping = getWikiPageFileName -ResourceId $assignment.id -wikiFileMapping $wikiFileMapping
+          $assignmentPageFileBaseName = $AssignmentFileNameMapping.FileBaseName
+          $assignmentFolderPath = $AssignmentFileNameMapping.FileParentDirectory
+          $assignmentLink = getRelativePath -FromPath $resourceTypeFolderPath -ToPath $(Join-Path $assignmentFolderPath $assignmentPageFileBaseName) -UseUnixPath $true
+          $assignmentDisplayValue = "[$($assignment.name)]($assignmentLink)"
+        } else {
+          $assignmentDisplayValue = $($assignment.name ? $assignment.name : $assignmentDisplayValue)
+        }
+      }
       $exemptionFileNameMapping = getWikiPageFileName -ResourceId $exemption.id -wikiFileMapping $wikiFileMapping
-      $assignmentPageFileBaseName = $AssignmentFileNameMapping.FileBaseName
-      $assignmentFolderPath = $AssignmentFileNameMapping.FileParentDirectory
-      $assignmentLink = getRelativePath -FromPath $resourceTypeFolderPath -ToPath $(Join-Path $assignmentFolderPath $assignmentPageFileBaseName) -UseUnixPath $true
 
       $exemptionPageFileBaseName = $exemptionFileNameMapping.FileBaseName
       $exemptionFolderPath = $exemptionFileNameMapping.FileParentDirectory
@@ -2258,7 +2274,7 @@ function buildPolicyExemptionMarkdownTableForMg {
         $strExemptionExpiresOn = $exemption.expiresOn
       }
       $exemptionExpiresOn = FormatExemptionExpiresOn -InputString $strExemptionExpiresOn -warningDays $expiresOnWarningDays -WikiStyle $wikiStyle
-      $Markdown += "| [$($exemption.name)]($exemptionLink) | $exemptionDisplayName | $($exemption.description ? $(FormatMarkdownTableString -InputString $exemption.description) : '``null``') | [$($assignment.name)]($assignmentLink) | $($exemption.exemptionCategory) | $exemptionExpiresOn | $policyDefinitionReferenceIds |`n"
+      $Markdown += "| [$($exemption.name)]($exemptionLink) | $exemptionDisplayName | $($exemption.description ? $(FormatMarkdownTableString -InputString $exemption.description) : '``null``') | $assignmentDisplayValue | $($exemption.exemptionCategory) | $exemptionExpiresOn | $policyDefinitionReferenceIds |`n"
     }
     $Markdown += "`n`n"
     $Markdown += buildExemptionExpiresOnMarkdown -expiresOnWarningDays $expiresOnWarningDays -WikiStyle $wikiStyle
@@ -2308,7 +2324,7 @@ function buildPolicyExemptionMarkdownTableForSub {
     $includeSubWithoutExemptions = $false
   )
   $wikiStyle = $WikiFileMapping.WikiStyle
-  $subExemptions = $exemptions | Where-Object { $_.id -imatch $('{0}*' -f $subscription.id) }
+  $subExemptions = $exemptions | Where-Object { -not [string]::IsNullOrWhiteSpace($_.id) -and $_.id -imatch $('{0}*' -f $subscription.id) }
   if ($subExemptions.count -ge 1) {
     $Markdown += ":bookmark: **$($subExemptions.count)** Policy Exemptions are created on the scope of the subscription ``$($subscription.name)`` or resource groups in the subscription:`n`n"
     $Markdown += "<details>"
@@ -2318,12 +2334,20 @@ function buildPolicyExemptionMarkdownTableForSub {
     $Markdown += "| ---- | ------------ | ----------- | ----------------- | -------- | ---------------- | ------------------------ |`n"
 
     foreach ($exemption in $subExemptions) {
-      $assignment = $assignments | Where-Object { $_.id -ieq $exemption.policyAssignmentId }
-      $AssignmentFileNameMapping = getWikiPageFileName -ResourceId $assignment.id -wikiFileMapping $wikiFileMapping
+      $assignment = $assignments | Where-Object { $_.id -ieq $exemption.policyAssignmentId } | Select-Object -First 1
+      $assignmentDisplayValue = $($exemption.policyAssignmentId ? $exemption.policyAssignmentId : '``null``')
+      if ($null -ne $assignment) {
+        if (-not [string]::IsNullOrWhiteSpace($assignment.id)) {
+          $AssignmentFileNameMapping = getWikiPageFileName -ResourceId $assignment.id -wikiFileMapping $wikiFileMapping
+          $assignmentPageFileBaseName = $AssignmentFileNameMapping.FileBaseName
+          $assignmentFolderPath = $AssignmentFileNameMapping.FileParentDirectory
+          $assignmentLink = getRelativePath -FromPath $resourceTypeFolderPath -ToPath $(Join-Path $assignmentFolderPath $assignmentPageFileBaseName) -UseUnixPath $true
+          $assignmentDisplayValue = "[$($assignment.name)]($assignmentLink)"
+        } else {
+          $assignmentDisplayValue = $($assignment.name ? $assignment.name : $assignmentDisplayValue)
+        }
+      }
       $exemptionFileNameMapping = getWikiPageFileName -ResourceId $exemption.id -wikiFileMapping $wikiFileMapping
-      $assignmentPageFileBaseName = $AssignmentFileNameMapping.FileBaseName
-      $assignmentFolderPath = $AssignmentFileNameMapping.FileParentDirectory
-      $assignmentLink = getRelativePath -FromPath $resourceTypeFolderPath -ToPath $(Join-Path $assignmentFolderPath $assignmentPageFileBaseName) -UseUnixPath $true
 
       $exemptionPageFileBaseName = $exemptionFileNameMapping.FileBaseName
       $exemptionFolderPath = $exemptionFileNameMapping.FileParentDirectory
@@ -2345,7 +2369,7 @@ function buildPolicyExemptionMarkdownTableForSub {
         $strExemptionExpiresOn = $exemption.expiresOn
       }
       $exemptionExpiresOn = FormatExemptionExpiresOn -InputString $strExemptionExpiresOn -warningDays $expiresOnWarningDays -WikiStyle $wikiStyle
-      $Markdown += "| [$($exemption.name)]($exemptionLink) | $exemptionDisplayName | $($exemption.description ? $(FormatMarkdownTableString -InputString $exemption.description) : '``null``') | [$($assignment.name)]($assignmentLink) | $($exemption.exemptionCategory) | $exemptionExpiresOn | $policyDefinitionReferenceIds |`n"
+      $Markdown += "| [$($exemption.name)]($exemptionLink) | $exemptionDisplayName | $($exemption.description ? $(FormatMarkdownTableString -InputString $exemption.description) : '``null``') | $assignmentDisplayValue | $($exemption.exemptionCategory) | $exemptionExpiresOn | $policyDefinitionReferenceIds |`n"
     }
     $Markdown += "`n`n"
     $Markdown += buildExemptionExpiresOnMarkdown -expiresOnWarningDays $expiresOnWarningDays -WikiStyle $wikiStyle
