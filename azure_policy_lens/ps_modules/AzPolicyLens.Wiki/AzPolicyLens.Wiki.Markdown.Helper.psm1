@@ -2530,8 +2530,18 @@ function buildPolicySyntaxTestResultMarkdown {
     $overallStatus = ':x: Failed'
     # Add to script scoped variables for summary of Policy Definition and initiative syntax validation failures
     if ($ResourceType -ieq 'definition') {
+      if ($null -eq $global:failedSyntaxValidationDefinitions) {
+        $global:failedSyntaxValidationDefinitions = @()
+      } elseif ($global:failedSyntaxValidationDefinitions -isnot [array]) {
+        $global:failedSyntaxValidationDefinitions = @($global:failedSyntaxValidationDefinitions)
+      }
       $global:failedSyntaxValidationDefinitions += $Resource
     } elseif ($ResourceType -ieq 'initiative') {
+      if ($null -eq $global:failedSyntaxValidationInitiatives) {
+        $global:failedSyntaxValidationInitiatives = @()
+      } elseif ($global:failedSyntaxValidationInitiatives -isnot [array]) {
+        $global:failedSyntaxValidationInitiatives = @($global:failedSyntaxValidationInitiatives)
+      }
       $global:failedSyntaxValidationInitiatives += $Resource
     }
   } elseif ($passedCount -eq $totalCount) {
