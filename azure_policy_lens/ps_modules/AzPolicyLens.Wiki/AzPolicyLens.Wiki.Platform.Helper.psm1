@@ -351,6 +351,7 @@ function newWikiPageMapping {
   $config = @{
     BaseOutputPath         = $BaseOutputPath
     WikiStyle              = $WikiStyle
+    PageStyle              = $PageStyle
     AdoResourceDirectories = $adoResourceDirectories
   }
   #Process definitions
@@ -929,10 +930,14 @@ function getWikiPageFileName {
         $parent = getResourceParent -ResourceId $ResourceId
         if ($wikiFileMapping.WikiStyle -ieq 'ado') {
           $fileBaseName = encodeAdoWikiPageTitle -stringToEncode $resourceName
+          $effectivePageStyle = $wikiFileMapping.PageStyle
+          if ([string]::IsNullOrEmpty($effectivePageStyle)) {
+            $effectivePageStyle = 'detailed'
+          }
           if ($resolvedResourceType -ieq 'security_control') {
-            $fileDirectory = getPolicyResourceAdoDirectoryPath -ResourceId $ResourceId -BasePath $wikiFileMapping.BaseOutputPath -getResourceTypeRoot $true
+            $fileDirectory = getPolicyResourceAdoDirectoryPath -ResourceId $ResourceId -BasePath $wikiFileMapping.BaseOutputPath -getResourceTypeRoot $true -PageStyle $effectivePageStyle
           } else {
-            $fileDirectory = getPolicyResourceAdoDirectoryPath -ResourceId $ResourceId -BasePath $wikiFileMapping.BaseOutputPath
+            $fileDirectory = getPolicyResourceAdoDirectoryPath -ResourceId $ResourceId -BasePath $wikiFileMapping.BaseOutputPath -PageStyle $effectivePageStyle
           }
         } else {
           $fileBaseName = newGithubWikiPageBaseName -resourceName $resourceName -parent $parent -resourceType $resolvedResourceType
