@@ -4363,6 +4363,7 @@ function newHtmlTable {
   $htmlTable = "<table>`n"
   foreach ($key in $Data.Keys) {
     $value = $Data[$key]
+    $tdAttrWithColor = ""
     if ($value -is [array] -and $value.Count -gt 0) {
       #convert to a HTML list
       $value = newHTMLList -Items $value -ListType Unordered -FormatAsCode
@@ -4376,8 +4377,6 @@ function newHtmlTable {
         } else {
           $tdAttrWithColor = "$(GetGitHubStatusEmoji -ColorCode $colorCode) "
         }
-      } else {
-        $tdAttrWithColor = ""
       }
     }
     # Apply special formatting if defined for this key
