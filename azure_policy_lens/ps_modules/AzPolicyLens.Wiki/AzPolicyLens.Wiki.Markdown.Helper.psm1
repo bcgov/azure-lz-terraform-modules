@@ -224,22 +224,22 @@ function FormatExemptionExpiresOn {
     }
   } else {
     if ([string]::IsNullOrEmpty($InputString)) {
-      $return = '$${\color{green}Never}$$'
+      $return = GetGitHubStatusLabel -ColorCode $green -Text 'Never'
     } else {
       try {
         $date = $(Get-Date $InputString).ToUniversalTime()
         $currentDate = [DateTime]::UtcNow
         $daysDifference = ($date - $currentDate).Days
-        $strExpiryDate = $date.ToString($dateTimeFormat).replace(" ", " \space ")
+        $strExpiryDate = $date.ToString($dateTimeFormat)
         if ($daysDifference -gt $warningDays) {
           # More than $warningDays days away, green
-          $colorCodedDate = "`$\color{$green}{\textsf " + $strExpiryDate + '}$'
+          $colorCodedDate = GetGitHubStatusLabel -ColorCode $green -Text $strExpiryDate
         } elseif ($daysDifference -ge 0) {
           # Less than $warningDays days away, orange
-          $colorCodedDate = "`$\color{$orange}{\textsf " + $strExpiryDate + '}$'
+          $colorCodedDate = GetGitHubStatusLabel -ColorCode $orange -Text $strExpiryDate
         } else {
           # Past date, red
-          $colorCodedDate = "`$\color{$red}{\textsf " + $strExpiryDate + '}$'
+          $colorCodedDate = GetGitHubStatusLabel -ColorCode $red -Text $strExpiryDate
         }
         $return = $colorCodedDate
       } catch {
@@ -249,6 +249,52 @@ function FormatExemptionExpiresOn {
     }
   }
   $return
+}
+
+function GetGitHubStatusEmoji {
+  [CmdletBinding()]
+  [OutputType([string])]
+  param (
+    [Parameter(Mandatory = $true)]
+    [AllowEmptyString()]
+    [string]$ColorCode
+  )
+
+  switch ($ColorCode.ToUpperInvariant()) {
+    '#008000' { '🟢' }
+    '#FFA500' { '🟠' }
+    '#FF0000' { '🔴' }
+    default { '' }
+  }
+}
+
+function GetGitHubStatusLabel {
+  [CmdletBinding()]
+  [OutputType([string])]
+  param (
+    [Parameter(Mandatory = $true)]
+    [AllowEmptyString()]
+    [string]$ColorCode,
+
+    [Parameter(Mandatory = $true)]
+    [AllowEmptyString()]
+    [string]$Text
+  )
+
+  # Normalize escaped markdown/operator characters so GitHub output does not
+  # display escape slashes in status labels (for example, in compliance text).
+  $normalizedText = $Text -replace '\\/', '/' -replace '\\<', '<' -replace '\\>', '>' -replace '\\=', '='
+
+  $emoji = GetGitHubStatusEmoji -ColorCode $ColorCode
+  if ([string]::IsNullOrWhiteSpace($emoji)) {
+    return $normalizedText
+  }
+
+  if ([string]::IsNullOrWhiteSpace($normalizedText)) {
+    return $emoji
+  }
+
+  return "$emoji $normalizedText"
 }
 
 # 03. function to format compliance rate for Markdown table rows
@@ -303,25 +349,17 @@ function FormatComplianceRate {
     }
   } else {
     try {
-
-      $strRate = $InputString.replace(" ", " \space ")
-      if ($format -ieq 'html') {
-        $strRate = $strRate.replace("%", "\% ")
-      } else {
-        $strRate = $strRate.replace("%", "\\% ")
-      }
-
       if ($rate -eq 100) {
         # 100%
-        $colorCodedRate = "`$\color{$green}{\textsf " + $strRate + '}$'
+        $colorCode = $green
       } elseif ($rate -ge $WarningPercentageThreshold -and $rate -lt 100) {
         # between warning threshold and 100%
-        $colorCodedRate = "`$\color{$orange}{\textsf " + $strRate + '}$'
+        $colorCode = $orange
       } else {
         # below warning threshold
-        $colorCodedRate = "`$\color{$red}{\textsf " + $strRate + '}$'
+        $colorCode = $red
       }
-      $return = $colorCodedRate
+      $return = GetGitHubStatusLabel -ColorCode $colorCode -Text $InputString
     } catch {
       Write-Warning "[$(getCurrentUTCString)]: Invalid rate '$rate'. Returning as is."
       $return = $InputString
@@ -1181,9 +1219,9 @@ function buildPolicyDefinitionGroupComplianceCoverageMarkdown {
     $Markdown += "- <span style=`"color:#FFA500`">Orange</span>: Above $ComplianceWarningPercentageThreshold%`n"
     $Markdown += "- <span style=`"color:#FF0000`">Red</span>: Below $ComplianceWarningPercentageThreshold%`n`n"
   } else {
-    $Markdown += "- `$\color{green}{\textsf{Green}}`$: 100%`n"
-    $Markdown += "- `$\color{orange}{\textsf{Orange}}`$: Above $ComplianceWarningPercentageThreshold%`n"
-    $Markdown += "- `$\color{red}{\textsf{Red}}`$: Below $ComplianceWarningPercentageThreshold%`n`n"
+    $Markdown += "- $(GetGitHubStatusLabel -ColorCode '#008000' -Text 'Green: 100%')`n"
+    $Markdown += "- $(GetGitHubStatusLabel -ColorCode '#FFA500' -Text \"Orange: Above $ComplianceWarningPercentageThreshold%\")`n"
+    $Markdown += "- $(GetGitHubStatusLabel -ColorCode '#FF0000' -Text \"Red: Below $ComplianceWarningPercentageThreshold%\")`n`n"
   }
   $Markdown
 }
@@ -2496,8 +2534,18 @@ function buildPolicySyntaxTestResultMarkdown {
     $overallStatus = ':x: Failed'
     # Add to script scoped variables for summary of Policy Definition and initiative syntax validation failures
     if ($ResourceType -ieq 'definition') {
+      if ($null -eq $global:failedSyntaxValidationDefinitions) {
+        $global:failedSyntaxValidationDefinitions = @()
+      } elseif ($global:failedSyntaxValidationDefinitions -isnot [array]) {
+        $global:failedSyntaxValidationDefinitions = @($global:failedSyntaxValidationDefinitions)
+      }
       $global:failedSyntaxValidationDefinitions += $Resource
     } elseif ($ResourceType -ieq 'initiative') {
+      if ($null -eq $global:failedSyntaxValidationInitiatives) {
+        $global:failedSyntaxValidationInitiatives = @()
+      } elseif ($global:failedSyntaxValidationInitiatives -isnot [array]) {
+        $global:failedSyntaxValidationInitiatives = @($global:failedSyntaxValidationInitiatives)
+      }
       $global:failedSyntaxValidationInitiatives += $Resource
     }
   } elseif ($passedCount -eq $totalCount) {
@@ -4109,9 +4157,9 @@ function buildExemptionExpiresOnMarkdown {
     $PageContent += "- <span style=`"color:#FFA500`">Orange</span>: Expires in less than $expiresOnWarningDays days.`n"
     $PageContent += "- <span style=`"color:#FF0000`">Red</span>: Already expired.`n`n"
   } else {
-    $PageContent += "- `$\color{green}{\textsf{Green}}`$: Expires in more than $expiresOnWarningDays days.`n"
-    $PageContent += "- `$\color{orange}{\textsf{Orange}}`$: Expires in less than $expiresOnWarningDays days.`n"
-    $PageContent += '- $\color{red}{\textsf{Red}}$: Already expired.'
+    $PageContent += "- $(GetGitHubStatusLabel -ColorCode '#008000' -Text \"Green: Expires in more than $expiresOnWarningDays days.\")`n"
+    $PageContent += "- $(GetGitHubStatusLabel -ColorCode '#FFA500' -Text \"Orange: Expires in less than $expiresOnWarningDays days.\")`n"
+    $PageContent += "- $(GetGitHubStatusLabel -ColorCode '#FF0000' -Text 'Red: Already expired.')"
     $PageContent += "`n`n"
   }
   $PageContent
@@ -4135,9 +4183,9 @@ function buildComplianceRatingMarkdown {
     $PageContent += "- <span style=`"color:#FFA500`">Orange</span>: >= $ComplianceWarningPercentageThreshold%`n"
     $PageContent += "- <span style=`"color:#FF0000`">Red</span>: < $ComplianceWarningPercentageThreshold%`n`n"
   } else {
-    $PageContent += "- `$\color{green}{\textsf{Green}}`$: = 100%`n"
-    $PageContent += "- `$\color{orange}{\textsf{Orange}}`$: >= $ComplianceWarningPercentageThreshold%`n"
-    $PageContent += "- `$\color{red}{\textsf{Red}}`$: < $ComplianceWarningPercentageThreshold%`n`n"
+    $PageContent += "- $(GetGitHubStatusLabel -ColorCode '#008000' -Text 'Green: = 100%')`n"
+    $PageContent += "- $(GetGitHubStatusLabel -ColorCode '#FFA500' -Text \"Orange: >= $ComplianceWarningPercentageThreshold%\")`n"
+    $PageContent += "- $(GetGitHubStatusLabel -ColorCode '#FF0000' -Text \"Red: < $ComplianceWarningPercentageThreshold%\")`n`n"
   }
   $PageContent
 }
@@ -4315,6 +4363,7 @@ function newHtmlTable {
   $htmlTable = "<table>`n"
   foreach ($key in $Data.Keys) {
     $value = $Data[$key]
+    $tdAttrWithColor = ""
     if ($value -is [array] -and $value.Count -gt 0) {
       #convert to a HTML list
       $value = newHTMLList -Items $value -ListType Unordered -FormatAsCode
@@ -4326,10 +4375,8 @@ function newHtmlTable {
         if ($WikiStyle -ieq 'ado') {
           $tdAttrWithColor = " style=`"color:$colorCode`""
         } else {
-          $tdAttrWithColor = "`$\color{$colorCode}{\textsf "
+          $tdAttrWithColor = "$(GetGitHubStatusEmoji -ColorCode $colorCode) "
         }
-      } else {
-        $tdAttrWithColor = ""
       }
     }
     # Apply special formatting if defined for this key
@@ -4357,12 +4404,8 @@ function newHtmlTable {
       $tdOpenBracket = "<td$tdAttrWithColor>"
       $tdValue = $tdOpenBracket + $value + "</td>`n"
     } else {
-      $tdOpenBracket = "<td>$tdAttrWithColor"
-      if ($colorCode) {
-        $tdValue = $tdOpenBracket + $value + "}`$" + "</td>`n"
-      } else {
-        $tdValue = $tdOpenBracket + $value + "</td>`n"
-      }
+      $tdOpenBracket = "<td>"
+      $tdValue = $tdOpenBracket + $tdAttrWithColor + $value + "</td>`n"
     }
 
     $htmlTable += "  <tr>`n"
@@ -4912,9 +4955,9 @@ function FormatTestResult {
   } else {
     try {
       if ($result -ieq 'Passed') {
-        $colorCodedRate = "`$\color{$green}{\textsf " + $result + '}$'
+        $colorCodedRate = GetGitHubStatusLabel -ColorCode $green -Text $result
       } else {
-        $colorCodedRate = "`$\color{$red}{\textsf " + $result + '}$'
+        $colorCodedRate = GetGitHubStatusLabel -ColorCode $red -Text $result
       }
       $return = $colorCodedRate
     } catch {

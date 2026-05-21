@@ -76,8 +76,11 @@ Function Invoke-AzplEnvironmentDiscovery {
   $policyMetadataFilePath = Join-Path -Path $OutputFileDirectory -ChildPath 'policyMetadata.json'
   $complianceDataFilePath = Join-Path -Path $OutputFileDirectory -ChildPath 'complianceData.json'
 
-  #Get policy resources
+  #Get policy resources and hierarchy context
   $utcNow = (Get-Date).ToUniversalTime()
+  $moduleManifestPath = Join-Path -Path $PSScriptRoot -ChildPath 'AzPolicyLens.Discovery.psd1'
+  $topLevelDiscoveryTasks = @()
+
   $allPolicyResourcesParams = @{
     ManagementGroupName = $TopLevelManagementGroupName
     Token               = $Token
@@ -85,8 +88,37 @@ Function Invoke-AzplEnvironmentDiscovery {
   if ($PSBoundParameters.ContainsKey('AdditionalBuiltInPolicyMetadataConfig')) {
     $allPolicyResourcesParams.add('additionalBuiltInPolicyMetadataConfig', $AdditionalBuiltInPolicyMetadataConfig)
   }
+
   Write-Verbose "[$(getCurrentUTCString)]: Retrieving all relevant policy resources under the management group '$TopLevelManagementGroupName'." -verbose
-  $PolicyResources = getAllPolicyResources @allPolicyResourcesParams
+  $topLevelDiscoveryTasks += [pscustomobject]@{
+    Name         = 'Retrieve policy resources'
+    FunctionName = 'getAllPolicyResources'
+    Parameters   = $allPolicyResourcesParams
+  }
+
+  Write-Verbose "[$(getCurrentUTCString)]: Retrieving management group hierarchy under '$TopLevelManagementGroupName'."
+  $topLevelDiscoveryTasks += [pscustomobject]@{
+    Name         = 'Retrieve management group hierarchy'
+    FunctionName = 'getManagementGroupHierarchy'
+    Parameters   = @{
+      ManagementGroupName = $TopLevelManagementGroupName
+      Token               = $Token
+    }
+  }
+
+  Write-Verbose "[$(getCurrentUTCString)]: Retrieving subscriptions under '$TopLevelManagementGroupName'."
+  $topLevelDiscoveryTasks += [pscustomobject]@{
+    Name         = 'Retrieve subscriptions under management group'
+    FunctionName = 'getSubscriptionsUnderManagementGroup'
+    Parameters   = @{
+      ManagementGroupName = $TopLevelManagementGroupName
+      Token               = $Token
+    }
+  }
+
+  $topLevelDiscoveryResults = Invoke-AzplDiscoveryConcurrentTasks -Tasks $topLevelDiscoveryTasks -ModuleManifestPath $moduleManifestPath -ThrottleLimit 3
+
+  $PolicyResources = $topLevelDiscoveryResults['Retrieve policy resources'].Result
   Write-Verbose "[$(getCurrentUTCString)]: Found $($PolicyResources.assignments.Count) policy assignments in the management group hierarchy." -verbose
   Write-Verbose "[$(getCurrentUTCString)]: Found $($PolicyResources.initiatives.Count) policy initiatives in the management group hierarchy." -verbose
   Write-Verbose "[$(getCurrentUTCString)]: Found $($PolicyResources.definitions.Count) policy definitions in the management group hierarchy." -verbose
@@ -138,17 +170,15 @@ Function Invoke-AzplEnvironmentDiscovery {
   } else {
     Write-Warning "[$(getCurrentUTCString)]: No managed identities found in the policy assignments."
   }
-
-
   #Get management group hierarchy
-  $managementGroups = getManagementGroupHierarchy -ManagementGroupName $TopLevelManagementGroupName -token $Token
+  $managementGroups = @($topLevelDiscoveryResults['Retrieve management group hierarchy'].Result)
   if ($managementGroups.Count -eq 0) {
     Write-Warning "[$(getCurrentUTCString)]: No management group hierarchy found for '$TopLevelManagementGroupName'"
   } else {
     Write-Verbose "[$(getCurrentUTCString)]: Found $($managementGroups.Count) management groups in the hierarchy."
   }
   #Get subscriptions under the top-level management group
-  $subscriptions = getSubscriptionsUnderManagementGroup -ManagementGroupName $TopLevelManagementGroupName -token $Token
+  $subscriptions = @($topLevelDiscoveryResults['Retrieve subscriptions under management group'].Result)
   if ($subscriptions.Count -eq 0) {
     Write-Warning "[$(getCurrentUTCString)]: No subscriptions found for '$TopLevelManagementGroupName'"
   } else {
