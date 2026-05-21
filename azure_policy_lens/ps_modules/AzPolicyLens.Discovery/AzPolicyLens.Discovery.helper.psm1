@@ -391,6 +391,144 @@ function invokeARGQueryREST {
   return $allResults
 }
 
+function Invoke-AzplDiscoveryConcurrentTasks {
+  [CmdletBinding()]
+  [OutputType([hashtable])]
+  param (
+    [Parameter(Mandatory = $true)]
+    [array]$Tasks,
+
+    [Parameter(Mandatory = $true)]
+    [string]$ModuleManifestPath,
+
+    [Parameter(Mandatory = $false)]
+    [ValidateRange(1, 16)]
+    [int]$ThrottleLimit = 4
+  )
+
+  $results = [ordered]@{}
+  $taskList = @($Tasks)
+  if ($taskList.Count -eq 0) {
+    return $results
+  }
+
+  $normalizedTasks = [System.Collections.Generic.List[object]]::new()
+  $taskPosition = 0
+  foreach ($task in $taskList) {
+    $taskPosition++
+    if ($null -eq $task) {
+      throw "Discovery concurrent task at index $taskPosition is null."
+    }
+
+    $taskName = [string]$task.Name
+    if ([string]::IsNullOrWhiteSpace($taskName)) {
+      throw "Discovery concurrent task at index $taskPosition is missing Name."
+    }
+
+    $functionName = [string]$task.FunctionName
+    if ([string]::IsNullOrWhiteSpace($functionName)) {
+      throw "Discovery concurrent task '$taskName' is missing FunctionName."
+    }
+
+    $parameters = $task.Parameters
+    if ($null -eq $parameters) {
+      $parameters = @{}
+    }
+
+    if ($parameters -is [System.Collections.Specialized.OrderedDictionary]) {
+      $orderedParameters = @{}
+      foreach ($key in $parameters.Keys) {
+        $orderedParameters[$key] = $parameters[$key]
+      }
+      $parameters = $orderedParameters
+    }
+
+    if ($parameters -isnot [hashtable]) {
+      throw "Discovery concurrent task '$taskName' has invalid Parameters type '$($parameters.GetType().FullName)'. Expected Hashtable."
+    }
+
+    $normalizedTasks.Add([pscustomobject]@{
+      Name         = $taskName
+      FunctionName = $functionName
+      Parameters   = $parameters
+      Metadata     = $task.Metadata
+    })
+  }
+
+  $taskList = @($normalizedTasks)
+
+  if ($PSVersionTable.PSVersion.Major -lt 7 -or $ThrottleLimit -le 1 -or $taskList.Count -eq 1) {
+    $module = Import-Module $ModuleManifestPath -Force -PassThru -ErrorAction Stop
+    foreach ($task in $taskList) {
+      $result = & $module {
+        param($resolvedFunctionName, $resolvedParameters)
+
+        if (-not (Get-Command -Name $resolvedFunctionName -ErrorAction SilentlyContinue)) {
+          throw "Function '$resolvedFunctionName' is not available in module scope."
+        }
+
+        & $resolvedFunctionName @resolvedParameters
+      } $task.FunctionName $task.Parameters
+
+      $results[$task.Name] = [ordered]@{
+        Result   = $result
+        Metadata = $task.Metadata
+      }
+    }
+
+    return $results
+  }
+
+  $index = 0
+  while ($index -lt $taskList.Count) {
+    $batch = $taskList[$index..([Math]::Min($index + $ThrottleLimit - 1, $taskList.Count - 1))]
+    $jobs = @()
+
+    try {
+      foreach ($task in $batch) {
+        $jobs += Start-ThreadJob -Name $task.Name -ArgumentList $ModuleManifestPath, $task.FunctionName, $task.Parameters, $task.Metadata -ScriptBlock {
+          param($resolvedModuleManifestPath, $functionName, $parameters, $metadata)
+
+          $module = Import-Module $resolvedModuleManifestPath -Force -PassThru -ErrorAction Stop
+          $result = & $module {
+            param($resolvedFunctionName, $resolvedParameters)
+
+            if (-not (Get-Command -Name $resolvedFunctionName -ErrorAction SilentlyContinue)) {
+              throw "Function '$resolvedFunctionName' is not available in module scope."
+            }
+
+            & $resolvedFunctionName @resolvedParameters
+          } $functionName $parameters
+
+          [pscustomobject]@{
+            Result   = $result
+            Metadata = $metadata
+          }
+        }
+      }
+
+      Wait-Job -Job $jobs | Out-Null
+
+      foreach ($job in $jobs) {
+        if ($job.State -ne 'Completed') {
+          $failure = Receive-Job -Job $job -ErrorAction SilentlyContinue
+          throw "Discovery concurrent task '$($job.Name)' failed. $failure"
+        }
+
+        $results[$job.Name] = Receive-Job -Job $job -ErrorAction Stop
+      }
+    } finally {
+      if ($jobs.Count -gt 0) {
+        Remove-Job -Job $jobs -Force -ErrorAction SilentlyContinue
+      }
+    }
+
+    $index += $ThrottleLimit
+  }
+
+  return $results
+}
+
 #function to get Policy resources using Azure Resource Graph
 function getPolicyResources {
   [CmdletBinding()]
@@ -487,7 +625,7 @@ function getAllPolicyResources {
     }
   }
 
-  #get compliance percentage for each assignment
+  #build shared query fragments
   $assignmentResourceId = $assignmentResourceIds -join ','
   $assignmentComplianceQuery = @"
 PolicyResources
@@ -519,7 +657,6 @@ nonCompliantCount,
 conflictCount,
 exemptCount
 "@
-  $assignmentCompliance = invokeARGQueryREST -ScopeType 'managementGroup' -Scope $ManagementGroupName -Query $assignmentComplianceQuery -token $Token
 
   #Get all policy initiatives and definitions
   $initiatives = @()
@@ -663,9 +800,6 @@ exemptCount
 
   $unassignedCustomDefinitions = invokeARGQueryREST -scopeType 'managementGroup' -scope $ManagementGroupName -query $unassignedCustomDefinitionsQuery -token $Token
 
-  #find policy exemptions created for the assignments
-  $policyExemptions = getPolicyExemptions -policyAssignmentResourceIds $assignments.id -token $Token
-
   #get compliance percentage for each subscription
   $subscriptionComplianceQuery = @"
 PolicyResources
@@ -687,7 +821,6 @@ exemptCount = sumif(counts, max_stateWeight == 50) by subscriptionId
 complianceState = iff(overallStateWeight == 300, 'noncompliant', iff(overallStateWeight == 200, 'compliant', iff(overallStateWeight == 100, 'conflict', iff(overallStateWeight == 50, 'exempt', 'notstarted')))),
 compliancePercentage, compliantCount, nonCompliantCount, conflictCount, exemptCount
 "@
-  $subscriptionComplianceSummary = invokeARGQueryREST -scopeType 'managementGroup' -scope $ManagementGroupName -query $subscriptionComplianceQuery -token $Token
 
   #get compliance summary by initiative policyDefinitionGroupName
   $complianceSummaryByInitiativePolicyDefinitionGroupQuery = @"
@@ -712,7 +845,79 @@ exemptCount = sumif(counts, max_stateWeight == 50) by tostring(policyDefinitionG
 | project policyDefinitionGroupName, policyDefinitionReferenceId, policyDefinitionId, policyAssignmentId, subscriptionId, compliantCount, nonCompliantCount, conflictCount, exemptCount
 "@
 
-  $complianceSummaryByPolicyDefinitionGroup = invokeARGQueryREST  -scopeType 'managementGroup' -scope $ManagementGroupName -query $complianceSummaryByInitiativePolicyDefinitionGroupQuery -token $Token
+  # Run independent compliance/exemption queries in parallel once assignment IDs are available.
+  if ($assignmentResourceIds.Count -gt 0) {
+    $moduleManifestPath = Join-Path -Path $PSScriptRoot -ChildPath 'AzPolicyLens.Discovery.psd1'
+    $independentQueryTasks = @(
+      [pscustomobject]@{
+        Name         = 'Retrieve assignment compliance summary'
+        FunctionName = 'invokeARGQueryREST'
+        Parameters   = @{
+          ScopeType = 'managementGroup'
+          Scope     = $ManagementGroupName
+          Query     = $assignmentComplianceQuery
+          Token     = $Token
+        }
+      },
+      [pscustomobject]@{
+        Name         = 'Retrieve policy exemptions'
+        FunctionName = 'getPolicyExemptions'
+        Parameters   = @{
+          policyAssignmentResourceIds = @($assignments.id)
+          Token                       = $Token
+        }
+      },
+      [pscustomobject]@{
+        Name         = 'Retrieve subscription compliance summary'
+        FunctionName = 'invokeARGQueryREST'
+        Parameters   = @{
+          ScopeType = 'managementGroup'
+          Scope     = $ManagementGroupName
+          Query     = $subscriptionComplianceQuery
+          Token     = $Token
+        }
+      },
+      [pscustomobject]@{
+        Name         = 'Retrieve policy definition group compliance summary'
+        FunctionName = 'invokeARGQueryREST'
+        Parameters   = @{
+          ScopeType = 'managementGroup'
+          Scope     = $ManagementGroupName
+          Query     = $complianceSummaryByInitiativePolicyDefinitionGroupQuery
+          Token     = $Token
+        }
+      }
+    )
+
+    $independentQueryResults = Invoke-AzplDiscoveryConcurrentTasks -Tasks $independentQueryTasks -ModuleManifestPath $moduleManifestPath -ThrottleLimit 4
+
+    $assignmentCompliance = @($independentQueryResults['Retrieve assignment compliance summary'].Result)
+    if ($assignmentCompliance.Count -eq 1 -and $null -eq $assignmentCompliance[0]) {
+      $assignmentCompliance = @()
+    }
+
+    $policyExemptions = @($independentQueryResults['Retrieve policy exemptions'].Result)
+    if ($policyExemptions.Count -eq 1 -and $null -eq $policyExemptions[0]) {
+      $policyExemptions = @()
+    }
+
+    $subscriptionComplianceSummary = @($independentQueryResults['Retrieve subscription compliance summary'].Result)
+    if ($subscriptionComplianceSummary.Count -eq 1 -and $null -eq $subscriptionComplianceSummary[0]) {
+      $subscriptionComplianceSummary = @()
+    }
+
+    $complianceSummaryByPolicyDefinitionGroup = @($independentQueryResults['Retrieve policy definition group compliance summary'].Result)
+    if ($complianceSummaryByPolicyDefinitionGroup.Count -eq 1 -and $null -eq $complianceSummaryByPolicyDefinitionGroup[0]) {
+      $complianceSummaryByPolicyDefinitionGroup = @()
+    }
+  } else {
+    Write-Verbose "[$(getCurrentUTCString)]: No policy assignments found. Skipping assignment-scoped compliance and exemption queries."
+    $assignmentCompliance = @()
+    $policyExemptions = @()
+    $subscriptionComplianceSummary = @()
+    $complianceSummaryByPolicyDefinitionGroup = @()
+  }
+
   $allInitiatives = $($initiatives; $unassignedCustomInitiatives)
   $allDefinitions = $($definitions; $unassignedCustomDefinitions)
   #look up policy metadata resource id for each item in $complianceSummaryByPolicyDefinitionGroup
