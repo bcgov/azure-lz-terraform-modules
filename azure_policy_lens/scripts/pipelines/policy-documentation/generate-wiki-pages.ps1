@@ -56,6 +56,10 @@ param (
   [ValidateRange(1, 99)]
   [int]$ComplianceWarningPercentageThreshold,
 
+  [parameter(Mandatory = $false, HelpMessage = 'The maximum number of concurrent wiki page writes to use during generation.')]
+  [ValidateRange(1, 64)]
+  [int]$WriteThrottleLimit = 8,
+
   [parameter(Mandatory = $false, HelpMessage = 'The directory contains custom security control definitions.')]
   [ValidateScript({ Test-Path $_ -PathType 'Container' })]
   [string]$CustomSecurityControlPath,
@@ -70,6 +74,62 @@ $ErrorActionPreference = 'Stop'
 $normalizedSubscriptionIds = if ([string]::IsNullOrWhiteSpace($SubscriptionIds)) { '' } else { $SubscriptionIds.Trim() }
 $normalizedChildManagementGroupId = if ([string]::IsNullOrWhiteSpace($childManagementGroupId)) { '' } else { $childManagementGroupId.Trim() }
 $normalizedCustomSecurityControlPath = if ([string]::IsNullOrWhiteSpace($CustomSecurityControlPath)) { '' } else { $CustomSecurityControlPath.Trim() }
+
+function Format-GenerateWikiElapsedTime {
+  param (
+    [Parameter(Mandatory = $true)]
+    [TimeSpan]$Duration
+  )
+
+  if ($Duration.TotalHours -ge 1) {
+    return [string]::Format('{0:hh\:mm\:ss\.fff}', $Duration)
+  }
+
+  return [string]::Format('{0:mm\:ss\.fff}', $Duration)
+}
+
+function Invoke-GenerateWikiTimedOperation {
+  param (
+    [Parameter(Mandatory = $true)]
+    [string]$Name,
+
+    [Parameter(Mandatory = $true)]
+    [scriptblock]$Operation,
+
+    [Parameter(Mandatory = $true)]
+    [hashtable]$Metrics
+  )
+
+  $stopwatch = [System.Diagnostics.Stopwatch]::StartNew()
+  try {
+    $result = & $Operation
+  } finally {
+    $stopwatch.Stop()
+    $Metrics[$Name] = [ordered]@{
+      Duration     = Format-GenerateWikiElapsedTime -Duration $stopwatch.Elapsed
+      Seconds      = [Math]::Round($stopwatch.Elapsed.TotalSeconds, 2)
+      Milliseconds = [Math]::Round($stopwatch.Elapsed.TotalMilliseconds, 2)
+    }
+    Write-Output "Phase '$Name' completed in $($Metrics[$Name].Duration)."
+  }
+
+  return $result
+}
+
+function Write-GenerateWikiTimingSummary {
+  param (
+    [Parameter(Mandatory = $true)]
+    [hashtable]$Metrics
+  )
+
+  Write-Output 'Timing summary for Generate Wiki script:'
+  foreach ($name in $Metrics.Keys) {
+    Write-Output ("  - {0}: duration={1}" -f $name, $Metrics[$name].Duration)
+  }
+}
+
+$scriptPhaseMetrics = [ordered]@{}
+$scriptStopwatch = [System.Diagnostics.Stopwatch]::StartNew()
 
 #region main
 if ($gitPlatform -eq 'ado') {
@@ -106,6 +166,7 @@ Write-Output "  - gitBranch: $gitBranch"
 if ($gitPlatform -eq 'ado') {
   Write-Output "  - gitRepoPath: $gitRepoPath"
 }
+Write-Output "  - WriteThrottleLimit: $WriteThrottleLimit"
 Write-Output "  - GitHub User ID: $githubUserID"
 if (-not [string]::IsNullOrWhiteSpace($normalizedSubscriptionIds)) {
   Write-Output "  - SubscriptionIds: $normalizedSubscriptionIds"
@@ -212,6 +273,7 @@ $param = @{
   PageStyle                            = $pageStyle
   ExemptionExpiresOnWarningDays        = $ExemptionExpiresOnWarningDays
   ComplianceWarningPercentageThreshold = $ComplianceWarningPercentageThreshold
+  WriteThrottleLimit                   = $WriteThrottleLimit
   WikiStyle                            = $gitPlatform
 }
 if (-not [string]::IsNullOrEmpty($EncryptionKey) -and -not [string]::IsNullOrEmpty($EncryptionIV)) {
@@ -246,7 +308,9 @@ foreach ($key in $param.Keys) {
     Write-Verbose "  - $key`: $($param[$key])" -Verbose
   }
 }
-New-AzplDocumentation @param -ErrorAction Stop
+Invoke-GenerateWikiTimedOperation -Name 'Generate wiki documentation' -Metrics $scriptPhaseMetrics -Operation {
+  New-AzplDocumentation @param -ErrorAction Stop
+} | Out-Null
 
 #Push the changes to the git repository
 Write-Verbose "Preparing to push changes to the git repository." -Verbose
@@ -257,33 +321,39 @@ Write-Output "Files and folders contained in the '$gitRepoRootPath':"
 Get-ChildItem $gitRepoRootPath -force | format-table Mode, LastWriteTIme, Length, Name
 $gitStatus = git status --porcelain
 if ($gitStatus) {
-  Write-Verbose "Changes detected in the git repository. Preparing to commit and push." -Verbose
-  Write-Verbose "Configure git user name using command 'git config user.name `"$gitUserName`"" -Verbose
-  git config user.name "$gitUserName"
+  Invoke-GenerateWikiTimedOperation -Name 'Commit and push wiki changes' -Metrics $scriptPhaseMetrics -Operation {
+    Write-Verbose "Changes detected in the git repository. Preparing to commit and push." -Verbose
+    Write-Verbose "Configure git user name using command 'git config user.name `"$gitUserName`"'" -Verbose
+    git config user.name "$gitUserName"
 
-  Write-Verbose "Configure git user email using command 'git config user.email `"$gitUserEmail`"" -Verbose
-  git config user.email "$gitUserEmail"
+    Write-Verbose "Configure git user email using command 'git config user.email `"$gitUserEmail`"'" -Verbose
+    git config user.email "$gitUserEmail"
 
-  Write-Verbose "Configure git rebase" -Verbose
-  git config pull.rebase false
+    Write-Verbose "Configure git rebase" -Verbose
+    git config pull.rebase false
 
-  Write-Verbose "Adding changes to git staging area." -Verbose
-  git add .
-  git commit -m "$gitCommitMessage"
-  if ($gitPlatform -eq 'ado') {
-    Write-Output "Pushing changes to the $gitBranch branch of the repository '$gitRepository' using http.extraheader for authentication with $tokenType token."
-    git @gitNetworkArgs -c http.extraheader="AUTHORIZATION: bearer $gitToken" push origin $gitBranch --porcelain
-  } else {
-    Write-Output "Pushing changes to the $gitBranch branch of the repository '$gitRepository' using http.extraheader for authentication."
-    git @gitNetworkArgs -c http.extraheader="AUTHORIZATION: basic $gitToken" push origin $gitBranch --porcelain
-  }
+    Write-Verbose "Adding changes to git staging area." -Verbose
+    git add .
+    git commit -m "$gitCommitMessage"
+    if ($gitPlatform -eq 'ado') {
+      Write-Output "Pushing changes to the $gitBranch branch of the repository '$gitRepository' using http.extraheader for authentication with $tokenType token."
+      git @gitNetworkArgs -c http.extraheader="AUTHORIZATION: bearer $gitToken" push origin $gitBranch --porcelain
+    } else {
+      Write-Output "Pushing changes to the $gitBranch branch of the repository '$gitRepository' using http.extraheader for authentication."
+      git @gitNetworkArgs -c http.extraheader="AUTHORIZATION: basic $gitToken" push origin $gitBranch --porcelain
+    }
 
-  if ($LASTEXITCODE -ne 0) {
-    Write-Error "Failed to push to the $gitBranch branch of the repository '$gitRepository'."
-    exit 1
-  }
+    if ($LASTEXITCODE -ne 0) {
+      Write-Error "Failed to push to the $gitBranch branch of the repository '$gitRepository'."
+      exit 1
+    }
+  } | Out-Null
 } else {
   Write-Verbose "No changes detected in the git repository. No commit or push needed." -Verbose
 }
+
+$scriptStopwatch.Stop()
+Write-Output "Generate Wiki script completed in $(Format-GenerateWikiElapsedTime -Duration $scriptStopwatch.Elapsed)."
+Write-GenerateWikiTimingSummary -Metrics $scriptPhaseMetrics
 
 #endregion
