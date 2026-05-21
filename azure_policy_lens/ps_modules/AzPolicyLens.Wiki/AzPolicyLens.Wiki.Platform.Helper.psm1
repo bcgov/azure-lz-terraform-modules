@@ -910,7 +910,56 @@ function getWikiPageFileName {
   } elseif ($PSCmdlet.ParameterSetName -eq 'individual_azure_resource') {
     $mapping = $wikiFileMapping._resourceIdIndex[$ResourceId.ToLower()]
     if (!$mapping) {
-      Write-Error "No wiki page file name mapping found for resource '$ResourceId'."
+      $normalizedResourceId = $ResourceId.ToLower()
+      $resolvedResourceType = $null
+      if ($normalizedResourceId -match '/providers/microsoft\.authorization/policydefinitions/') {
+        $resolvedResourceType = 'definition'
+      } elseif ($normalizedResourceId -match '/providers/microsoft\.authorization/policysetdefinitions/') {
+        $resolvedResourceType = 'initiative'
+      } elseif ($normalizedResourceId -match '/providers/microsoft\.authorization/policyassignments/') {
+        $resolvedResourceType = 'assignment'
+      } elseif ($normalizedResourceId -match '/providers/microsoft\.authorization/policyexemptions/') {
+        $resolvedResourceType = 'exemption'
+      } elseif ($normalizedResourceId -match '/providers/microsoft\.policyinsights/policymetadata/') {
+        $resolvedResourceType = 'security_control'
+      }
+
+      if ($resolvedResourceType) {
+        $resourceName = ($ResourceId -split '/')[-1]
+        $parent = getResourceParent -ResourceId $ResourceId
+        if ($wikiFileMapping.WikiStyle -ieq 'ado') {
+          $fileBaseName = encodeAdoWikiPageTitle -stringToEncode $resourceName
+          if ($resolvedResourceType -ieq 'security_control') {
+            $fileDirectory = getPolicyResourceAdoDirectoryPath -ResourceId $ResourceId -BasePath $wikiFileMapping.BaseOutputPath -getResourceTypeRoot $true
+          } else {
+            $fileDirectory = getPolicyResourceAdoDirectoryPath -ResourceId $ResourceId -BasePath $wikiFileMapping.BaseOutputPath
+          }
+        } else {
+          $fileBaseName = newGithubWikiPageBaseName -resourceName $resourceName -parent $parent -resourceType $resolvedResourceType
+          $fileDirectory = $wikiFileMapping.BaseOutputPath
+        }
+
+        $fileName = '{0}.md' -f $fileBaseName
+        $mapping = @{
+          FileBaseName        = $fileBaseName
+          FileName            = $fileName
+          FileParentDirectory = $fileDirectory
+          FilePath            = Join-Path $fileDirectory $fileName
+          ResourceName        = $resourceName
+          ResourceId          = $ResourceId
+          ResourceType        = $resolvedResourceType
+          PageType            = 'individual'
+          Parent              = $parent
+        }
+
+        # Cache fallback mapping to avoid repeated regeneration for the same resource id.
+        $wikiFileMapping.FileMapping += $mapping
+        $wikiFileMapping._resourceIdIndex[$normalizedResourceId] = $mapping
+
+        Write-Warning "No pre-generated wiki page file name mapping found for resource '$ResourceId'. Generated fallback mapping using detected resource type '$resolvedResourceType'."
+      } else {
+        Write-Error "No wiki page file name mapping found for resource '$ResourceId'."
+      }
     }
   } elseif ($PSCmdlet.ParameterSetName -eq 'policy_category') {
     $mapping = $wikiFileMapping.FileMapping | Where-Object { $_.ResourceType -ieq 'policy_category' -and $_.PageType -ieq 'individual' }
