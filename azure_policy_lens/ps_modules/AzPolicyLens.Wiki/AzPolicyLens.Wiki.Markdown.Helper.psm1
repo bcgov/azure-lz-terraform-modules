@@ -4913,7 +4913,7 @@ function getComplianceRatingSummaryForFramework {
   $nonCompliantCount = 0
   $exemptCount = 0
   $conflictCount = 0
-  if ($EnvironmentDiscoveryData.policyMetadata) {
+  if ($null -ne $EnvironmentDiscoveryData.policyMetadata) {
     Write-Verbose "Collecting compliance summary for framework '$framework' for built-in policy metadata." -Verbose:($PSCmdlet.MyInvocation.BoundParameters["Verbose"].IsPresent -eq $true)
     $policyMetadata = $EnvironmentDiscoveryData.policyMetadata | Where-Object { $_.framework -ieq $framework -and $_.isInUse -eq $true }
     foreach ($pm in $policyMetadata) {
@@ -4932,7 +4932,7 @@ function getComplianceRatingSummaryForFramework {
     $customControl = $CustomSecurityControlFileConfig | Where-Object { $_.framework -ieq $framework }
     foreach ($control in $customControl) {
       Write-Verbose "  - Processing custom security control '$($control.controlId)'." -Verbose:($PSCmdlet.MyInvocation.BoundParameters["Verbose"].IsPresent -eq $true)
-      $complianceSummary = $EnvironmentDiscoveryData.complianceSummaryByPolicyDefinitionGroup | where-object { $_.policyDefinitionGroupName -ieq $control.controlId -and $_.policyMetadataId -eq $null }
+      $complianceSummary = $EnvironmentDiscoveryData.complianceSummaryByPolicyDefinitionGroup | where-object { $_.policyDefinitionGroupName -ieq $control.controlId -and $null -eq $_.policyMetadataId }
       foreach ($cs in $complianceSummary) {
         $compliantCount = $compliantCount + $cs.compliantCount
         $nonCompliantCount = $nonCompliantCount + $cs.nonCompliantCount
