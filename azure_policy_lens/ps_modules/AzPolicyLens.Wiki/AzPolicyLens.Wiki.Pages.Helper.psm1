@@ -5,6 +5,41 @@ using module ./AzPolicyLens.Wiki.Markdown.Helper.psm1
 using module ./AzPolicyLens.Wiki.Platform.Helper.psm1
 using module ./AzPolicyLens.Wiki.Utility.Helper.psm1
 
+function WriteWikiPageBatch {
+  [CmdletBinding()]
+  param (
+    [Parameter(Mandatory = $true)]
+    [array]$FileWrites,
+
+    [Parameter(Mandatory = $false)]
+    [int]$ThrottleLimit = 8
+  )
+
+  if (@($FileWrites).Count -eq 0) {
+    return
+  }
+
+  if ($PSVersionTable.PSVersion.Major -lt 7 -or $ThrottleLimit -le 1 -or @($FileWrites).Count -eq 1) {
+    foreach ($fileWrite in $FileWrites) {
+      if (-not (Test-Path -Path $fileWrite.DirectoryPath)) {
+        New-Item -ItemType Directory -Path $fileWrite.DirectoryPath -Force | Out-Null
+      }
+
+      Set-Content -Value $fileWrite.Content -Path $fileWrite.FilePath -Force -Encoding $fileWrite.Encoding
+    }
+
+    return
+  }
+
+  $FileWrites | ForEach-Object -Parallel {
+    if (-not (Test-Path -Path $_.DirectoryPath)) {
+      New-Item -ItemType Directory -Path $_.DirectoryPath -Force | Out-Null
+    }
+
+    Set-Content -Value $_.Content -Path $_.FilePath -Force -Encoding $_.Encoding
+  } -ThrottleLimit $ThrottleLimit
+}
+
 #region function to generate the top level summary Markdown file
 Function newMainSummaryPage {
   [CmdletBinding(SupportsShouldProcess)]
@@ -1385,6 +1420,10 @@ function newSubscriptionPage {
     [ValidateRange(1, 99)]
     [int]$ComplianceWarningPercentageThreshold,
 
+    [parameter(Mandatory = $false, HelpMessage = 'The maximum number of concurrent file writes to use when persisting generated pages.')]
+    [ValidateRange(1, 64)]
+    [int]$WriteThrottleLimit = 8,
+
     [parameter(Mandatory = $true, HelpMessage = 'Required. The environment discovery data.')]
     [system.object]
     $EnvironmentDiscoveryData
@@ -1393,7 +1432,24 @@ function newSubscriptionPage {
   $subscriptions = $EnvironmentDiscoveryData.subscriptions
   Write-verbose "[$(getCurrentUTCString)]: Found $($subscriptions.Count) subscriptions in the management group hierarchy."
   $WikiStyle = $WikiFileMapping.WikiStyle
+  $subscriptionComplianceById = @{}
+  foreach ($item in @($EnvironmentDiscoveryData.subscriptionComplianceSummary)) {
+    if (-not $subscriptionComplianceById.ContainsKey($item.subscriptionId)) {
+      $subscriptionComplianceById[$item.subscriptionId] = @()
+    }
+    $subscriptionComplianceById[$item.subscriptionId] += $item
+  }
+
+  $assignmentComplianceBySubscriptionId = @{}
+  foreach ($item in @($EnvironmentDiscoveryData.assignmentCompliance)) {
+    if (-not $assignmentComplianceBySubscriptionId.ContainsKey($item.subscriptionId)) {
+      $assignmentComplianceBySubscriptionId[$item.subscriptionId] = @()
+    }
+    $assignmentComplianceBySubscriptionId[$item.subscriptionId] += $item
+  }
+
   $filePaths = @()
+  $pendingWrites = @()
   $i = 0
   foreach ($sub in $subscriptions) {
     $i++
@@ -1401,7 +1457,7 @@ function newSubscriptionPage {
     $markdownFilePath = $subPageFileNameMapping.FilePath
     $FileParentDirectory = $subPageFileNameMapping.FileParentDirectory
     #Build the Markdown content
-    $subscriptionComplianceSummary = $EnvironmentDiscoveryData.subscriptionComplianceSummary | Where-Object { $_.subscriptionId -ieq $sub.subscriptionId }
+    $subscriptionComplianceSummary = @($subscriptionComplianceById[$sub.subscriptionId])
     $buildMarkdownParams = @{
       subscription                         = $sub
       managementGroups                     = $EnvironmentDiscoveryData.managementGroups
@@ -1414,7 +1470,7 @@ function newSubscriptionPage {
       complianceSummary                    = $subscriptionComplianceSummary
       ComplianceWarningPercentageThreshold = $ComplianceWarningPercentageThreshold
     }
-    $subAssignmentCompliance = $EnvironmentDiscoveryData.assignmentCompliance | Where-Object { $_.subscriptionId -ieq $sub.subscriptionId }
+    $subAssignmentCompliance = @($assignmentComplianceBySubscriptionId[$sub.subscriptionId])
     if ($subAssignmentCompliance.count -gt 0) {
       $buildMarkdownParams.Add('assignmentCompliance', $subAssignmentCompliance)
     }
@@ -1427,15 +1483,21 @@ function newSubscriptionPage {
       $pageContent += buildAdoFooter -WikiFileMapping $WikiFileMapping -CurrentPageParentDirectory $FileParentDirectory -TimeStamp $EnvironmentDiscoveryData.TimeStamp
     }
     $filePaths += $markdownFilePath
-    #save the Markdown content to file, create the file if not exists and overwrite it if already exists
-    #Write-Verbose "[$(getCurrentUTCString)]: Saving Markdown file '$markdownFilePath'" -Verbose
-    #create the directory if not exists
     $markdownFileDirectory = $subPageFileNameMapping.FileParentDirectory
-    if (-not (Test-Path -Path $markdownFileDirectory)) {
-      New-Item -ItemType Directory -Path $markdownFileDirectory -Force | Out-Null
+    $pendingWrites += [pscustomobject]@{
+      DirectoryPath = $markdownFileDirectory
+      FilePath      = $markdownFilePath
+      Content       = $PageContent
+      Encoding      = 'utf8'
     }
-    Set-Content -Value $PageContent -Path $markdownFilePath -Force -Encoding 'utf8'
+
+    if ($pendingWrites.Count -ge 16) {
+      WriteWikiPageBatch -FileWrites $pendingWrites -ThrottleLimit $WriteThrottleLimit
+      $pendingWrites = @()
+    }
   }
+
+  WriteWikiPageBatch -FileWrites $pendingWrites -ThrottleLimit $WriteThrottleLimit
   Write-Verbose "[$(getCurrentUTCString)]: Markdown files created for $($subscriptions.Count) subscriptions in '$OutputPath'."
   $filePaths
 }
@@ -1459,7 +1521,11 @@ function newPolicyAssignmentPage {
 
     [parameter(Mandatory = $true, HelpMessage = 'The page style (detailed for engineers or basic for customers).')]
     [ValidateSet('detailed', 'basic')]
-    [string]$PageStyle
+    [string]$PageStyle,
+
+    [parameter(Mandatory = $false, HelpMessage = 'The maximum number of concurrent file writes to use when persisting generated pages.')]
+    [ValidateRange(1, 64)]
+    [int]$WriteThrottleLimit = 8
   )
 
   $WikiStyle = $WikiFileMapping.WikiStyle
@@ -1470,7 +1536,43 @@ function newPolicyAssignmentPage {
   $initiativeResourceIdRegex = '(?im)\/providers\/microsoft\.authorization\/policysetdefinitions\/'
   $definitionResourceIdRegex = '(?im)\/providers\/microsoft\.authorization\/policydefinitions\/'
 
+  $assignmentComplianceTotalsByAssignmentId = @{}
+  foreach ($item in @($EnvironmentDiscoveryData.assignmentCompliance)) {
+    if (-not $assignmentComplianceTotalsByAssignmentId.ContainsKey($item.policyAssignmentId)) {
+      $assignmentComplianceTotalsByAssignmentId[$item.policyAssignmentId] = [ordered]@{
+        compliantCount    = 0
+        nonCompliantCount = 0
+        conflictCount     = 0
+        exemptCount       = 0
+      }
+    }
+
+    $assignmentComplianceTotalsByAssignmentId[$item.policyAssignmentId].compliantCount += $item.compliantCount
+    $assignmentComplianceTotalsByAssignmentId[$item.policyAssignmentId].nonCompliantCount += $item.nonCompliantCount
+    $assignmentComplianceTotalsByAssignmentId[$item.policyAssignmentId].conflictCount += $item.conflictCount
+    $assignmentComplianceTotalsByAssignmentId[$item.policyAssignmentId].exemptCount += $item.exemptCount
+  }
+
+  $definitionsById = @{}
+  foreach ($item in @($EnvironmentDiscoveryData.definitions)) {
+    $definitionsById[$item.id] = $item
+  }
+
+  $initiativesById = @{}
+  foreach ($item in @($EnvironmentDiscoveryData.initiatives)) {
+    $initiativesById[$item.id] = $item
+  }
+
+  $exemptionsByAssignmentId = @{}
+  foreach ($item in @($EnvironmentDiscoveryData.exemptions)) {
+    if (-not $exemptionsByAssignmentId.ContainsKey($item.policyAssignmentId)) {
+      $exemptionsByAssignmentId[$item.policyAssignmentId] = @()
+    }
+    $exemptionsByAssignmentId[$item.policyAssignmentId] += $item
+  }
+
   $filePaths = @()
+  $pendingWrites = @()
   $i = 0
   foreach ($item in $assignments) {
     $i++
@@ -1505,17 +1607,19 @@ function newPolicyAssignmentPage {
     }
 
     #Compliance summary
-    $complianceSummary = $EnvironmentDiscoveryData.assignmentCompliance | Where-Object { $_.policyAssignmentId -ieq $item.id }
-    $totalCompliantCount = 0
-    $totalNonCompliantCount = 0
-    $totalConflictCount = 0
-    $totalExemptCount = 0
-    foreach ($cs in $complianceSummary) {
-      $totalCompliantCount += $cs.compliantCount
-      $totalNonCompliantCount += $cs.nonCompliantCount
-      $totalExemptCount += $cs.exemptCount
-      $totalConflictCount += $cs.conflictCount
+    $complianceSummary = $assignmentComplianceTotalsByAssignmentId[$item.id]
+    if ($null -eq $complianceSummary) {
+      $complianceSummary = [ordered]@{
+        compliantCount    = 0
+        nonCompliantCount = 0
+        conflictCount     = 0
+        exemptCount       = 0
+      }
     }
+    $totalCompliantCount = $complianceSummary.compliantCount
+    $totalNonCompliantCount = $complianceSummary.nonCompliantCount
+    $totalConflictCount = $complianceSummary.conflictCount
+    $totalExemptCount = $complianceSummary.exemptCount
     if ($PageStyle -ieq 'detailed') {
       $complianceSummaryDescription = ":memo: This section provides the overall policy compliance overview for the policy assignment ``$($item.name)`` for the ``$($topLevelManagementGroupName)`` Management Group."
     } else {
@@ -1537,7 +1641,7 @@ function newPolicyAssignmentPage {
     if ($definitionId -match $initiativeResourceIdRegex) {
       #an initiative is assigned
       Write-Verbose "  - [$(getCurrentUTCString)]: Assigned definition '$definitionId' is a policy initiative."
-      $definition = $EnvironmentDiscoveryData.initiatives | where-object { $_.id -ieq $definitionId }
+      $definition = $initiativesById[$definitionId]
       Write-Verbose "  - [$(getCurrentUTCString)]: Display name for the assigned initiative '$($definition.properties.displayName)'"
       $overViewTableKeyPrefix = 'assignedInitiative'
       $definitionType = 'initiative'
@@ -1545,7 +1649,7 @@ function newPolicyAssignmentPage {
     } elseif ($definitionId -match $definitionResourceIdRegex) {
       #a policy is assigned
       Write-Verbose "  - [$(getCurrentUTCString)]: Assigned definition '$definitionId' is a policy definition."
-      $definition = $EnvironmentDiscoveryData.definitions | where-object { $_.id -ieq $definitionId }
+      $definition = $definitionsById[$definitionId]
       Write-Verbose "  - [$(getCurrentUTCString)]: Display name for the assigned definition '$($definition.properties.displayName)'"
       $definitionType = 'definition'
       $overViewTableKeyPrefix = 'assignedPolicy'
@@ -1577,7 +1681,7 @@ function newPolicyAssignmentPage {
       $parametersMarkdownTable = buildAssignmentParametersMarkdownTable -parameters $item.properties.parameters
     }
     #get related exemptions
-    $relatedExemptions = $EnvironmentDiscoveryData.exemptions | Where-Object { $_.policyAssignmentId -ieq $item.id }
+    $relatedExemptions = @($exemptionsByAssignmentId[$item.id])
 
     Write-Verbose "  - [$(getCurrentUTCString)]: Generating Markdown file '$fileName' for the policy assignment '$($item.name)' in the output path '$OutputPath'."
     $PageContent = ""
@@ -1674,10 +1778,20 @@ function newPolicyAssignmentPage {
     }
 
     $filePaths += $markdownFilePath
-    #save the Markdown content to file, create the file if not exists and overwrite it if already exists
-    #Write-Verbose "[$(getCurrentUTCString)]: Saving Markdown file '$markdownFilePath'"
-    Set-Content -Value $PageContent -Path $markdownFilePath -Force -Encoding 'utf8BOM'
+    $pendingWrites += [pscustomobject]@{
+      DirectoryPath = $OutputPath
+      FilePath      = $markdownFilePath
+      Content       = $PageContent
+      Encoding      = 'utf8BOM'
+    }
+
+    if ($pendingWrites.Count -ge 16) {
+      WriteWikiPageBatch -FileWrites $pendingWrites -ThrottleLimit $WriteThrottleLimit
+      $pendingWrites = @()
+    }
   }
+
+  WriteWikiPageBatch -FileWrites $pendingWrites -ThrottleLimit $WriteThrottleLimit
   #Write-Verbose "[$(getCurrentUTCString)]: Markdown files created for $($assignments.Count) policy assignments in '$OutputPath'."
   $filePaths
 }
@@ -1700,7 +1814,11 @@ function newPolicyInitiativePage {
 
     [parameter(Mandatory = $true, HelpMessage = 'The page style (detailed for engineers or basic for customers).')]
     [ValidateSet('detailed', 'basic')]
-    [string]$PageStyle
+    [string]$PageStyle,
+
+    [parameter(Mandatory = $false, HelpMessage = 'The maximum number of concurrent file writes to use when persisting generated pages.')]
+    [ValidateRange(1, 64)]
+    [int]$WriteThrottleLimit = 8
   )
 
   $WikiStyle = $WikiFileMapping.WikiStyle
@@ -1708,6 +1826,7 @@ function newPolicyInitiativePage {
   #$initiatives = $EnvironmentDiscoveryData.initiatives | Where-Object { $_.properties.policyType -eq 'Custom' }
   Write-Verbose "[$(getCurrentUTCString)]: Found $($EnvironmentDiscoveryData.initiatives.Count) policy initiatives that are assigned in the management group hierarchy."
   $filePaths = @()
+  $pendingWrites = @()
   #assigned initiatives
   Foreach ($item in $EnvironmentDiscoveryData.initiatives) {
     Write-Verbose "  - [$(getCurrentUTCString)]: Processing policy initiative '$($item.properties.displayName)'" -verbose
@@ -1746,10 +1865,19 @@ function newPolicyInitiativePage {
     }
 
     $filePaths += $markdownFilePath
-    #save the Markdown content to file, create the file if not exists and overwrite it if already exists
-    #Write-Verbose "[$(getCurrentUTCString)]: Saving Markdown file '$markdownFilePath'"
-    Set-Content -Value $PageContent -Path $markdownFilePath -Force -Encoding 'utf8'
+    $pendingWrites += [pscustomobject]@{
+      DirectoryPath = $OutputPath
+      FilePath      = $markdownFilePath
+      Content       = $PageContent
+      Encoding      = 'utf8'
+    }
+
+    if ($pendingWrites.Count -ge 16) {
+      WriteWikiPageBatch -FileWrites $pendingWrites -ThrottleLimit $WriteThrottleLimit
+      $pendingWrites = @()
+    }
   }
+  WriteWikiPageBatch -FileWrites $pendingWrites -ThrottleLimit $WriteThrottleLimit
   #Write-Verbose "[$(getCurrentUTCString)]: Markdown files created for $($initiatives.Count) custom policy initiatives in '$OutputPath'."
 
   $filePaths
@@ -1770,7 +1898,11 @@ function newPolicyDefinitionPage {
 
     [parameter(Mandatory = $true, HelpMessage = 'The page style (detailed for engineers or basic for customers).')]
     [ValidateSet('detailed', 'basic')]
-    [string]$PageStyle
+    [string]$PageStyle,
+
+    [parameter(Mandatory = $false, HelpMessage = 'The maximum number of concurrent file writes to use when persisting generated pages.')]
+    [ValidateRange(1, 64)]
+    [int]$WriteThrottleLimit = 8
   )
 
   $WikiStyle = $WikiFileMapping.WikiStyle
@@ -1791,6 +1923,7 @@ function newPolicyDefinitionPage {
   }
   Write-Verbose "[$(getCurrentUTCString)]: Found $($definitions.Count) policy definitions that are directly or indirectly assigned or included in unassigned custom initiatives in the management group hierarchy." -verbose
   $filePaths = @()
+  $pendingWrites = @()
   Foreach ($item in $definitions) {
     #Write-Verbose "  - [$(getCurrentUTCString)]: Processing policy definition '$($item.properties.displayName)'" -verbose
     $DefinitionFileNameMapping = getWikiPageFileName -ResourceId $item.id -wikiFileMapping $WikiFileMapping
@@ -1817,10 +1950,20 @@ function newPolicyDefinitionPage {
     }
     $markdownFilePath = $DefinitionFileNameMapping.FilePath
     $filePaths += $markdownFilePath
-    #save the Markdown content to file, create the file if not exists and overwrite it if already exists
-    #Write-Verbose "[$(getCurrentUTCString)]: Saving Markdown file '$markdownFilePath'"
-    Set-Content -Value $PageContent -Path $markdownFilePath -Force -Encoding 'utf8'
+    $pendingWrites += [pscustomobject]@{
+      DirectoryPath = $OutputPath
+      FilePath      = $markdownFilePath
+      Content       = $PageContent
+      Encoding      = 'utf8'
+    }
+
+    if ($pendingWrites.Count -ge 16) {
+      WriteWikiPageBatch -FileWrites $pendingWrites -ThrottleLimit $WriteThrottleLimit
+      $pendingWrites = @()
+    }
   }
+
+  WriteWikiPageBatch -FileWrites $pendingWrites -ThrottleLimit $WriteThrottleLimit
 
   #Write-Verbose "[$(getCurrentUTCString)]: Markdown files created for $($EnvironmentDiscoveryData.definitions.Count) custom policy definitions in '$OutputPath'."
   $filePaths
@@ -1845,7 +1988,11 @@ function newPolicyExemptionPage {
 
     [parameter(Mandatory = $true, HelpMessage = 'The page style (detailed for engineers or basic for customers).')]
     [ValidateSet('detailed', 'basic')]
-    [string]$PageStyle
+    [string]$PageStyle,
+
+    [parameter(Mandatory = $false, HelpMessage = 'The maximum number of concurrent file writes to use when persisting generated pages.')]
+    [ValidateRange(1, 64)]
+    [int]$WriteThrottleLimit = 8
   )
 
   $WikiStyle = $WikiFileMapping.WikiStyle
@@ -1853,6 +2000,7 @@ function newPolicyExemptionPage {
   $exemptions = $EnvironmentDiscoveryData.exemptions
   Write-Verbose "[$(getCurrentUTCString)]: Found $($exemptions.Count) policy exemptions for the policy assignments." -verbose
   $filePaths = @()
+  $pendingWrites = @()
   Foreach ($item in $exemptions) {
     $ExemptionFileNameMapping = getWikiPageFileName -ResourceId $item.id -wikiFileMapping $WikiFileMapping
     $fileName = $ExemptionFileNameMapping.FileName
@@ -1869,10 +2017,20 @@ function newPolicyExemptionPage {
     }
     $markdownFilePath = Join-Path -Path $OutputPath -ChildPath $fileName
     $filePaths += $markdownFilePath
-    #save the Markdown content to file, create the file if not exists and overwrite it if already exists
-    #Write-Verbose "[$(getCurrentUTCString)]: Saving Markdown file '$markdownFilePath'"
-    Set-Content -Value $PageContent -Path $markdownFilePath -Force -Encoding 'utf8'
+    $pendingWrites += [pscustomobject]@{
+      DirectoryPath = $OutputPath
+      FilePath      = $markdownFilePath
+      Content       = $PageContent
+      Encoding      = 'utf8'
+    }
+
+    if ($pendingWrites.Count -ge 16) {
+      WriteWikiPageBatch -FileWrites $pendingWrites -ThrottleLimit $WriteThrottleLimit
+      $pendingWrites = @()
+    }
   }
+
+  WriteWikiPageBatch -FileWrites $pendingWrites -ThrottleLimit $WriteThrottleLimit
   $filePaths
 }
 #endregion

@@ -13,6 +13,93 @@ function getCurrentUTCString {
   "$([DateTime]::UtcNow.ToString('u')) UTC"
 }
 
+function Format-AzplElapsedTime {
+  [CmdletBinding()]
+  [OutputType([string])]
+  param (
+    [Parameter(Mandatory = $true)]
+    [TimeSpan]$Duration
+  )
+
+  if ($Duration.TotalHours -ge 1) {
+    return [string]::Format('{0:hh\:mm\:ss\.fff}', $Duration)
+  }
+
+  return [string]::Format('{0:mm\:ss\.fff}', $Duration)
+}
+
+function Invoke-AzplTimedOperation {
+  [CmdletBinding()]
+  param (
+    [Parameter(Mandatory = $true)]
+    [ValidateNotNullOrEmpty()]
+    [string]$Name,
+
+    [Parameter(Mandatory = $true)]
+    [scriptblock]$Operation,
+
+    [Parameter(Mandatory = $false)]
+    [hashtable]$Metrics,
+
+    [Parameter(Mandatory = $false)]
+    [hashtable]$Metadata
+  )
+
+  $stopwatch = [System.Diagnostics.Stopwatch]::StartNew()
+  try {
+    $result = & $Operation
+  } finally {
+    $stopwatch.Stop()
+
+    $metric = [ordered]@{
+      Duration     = Format-AzplElapsedTime -Duration $stopwatch.Elapsed
+      Seconds      = [Math]::Round($stopwatch.Elapsed.TotalSeconds, 2)
+      Milliseconds = [Math]::Round($stopwatch.Elapsed.TotalMilliseconds, 2)
+    }
+
+    if ($Metadata) {
+      foreach ($key in $Metadata.Keys) {
+        $metric[$key] = $Metadata[$key]
+      }
+    }
+
+    if ($Metrics) {
+      $Metrics[$Name] = $metric
+    }
+
+    Write-Output "[$(getCurrentUTCString)]: Phase '$Name' completed in $($metric.Duration)."
+  }
+
+  return $result
+}
+
+function Write-AzplTimingSummary {
+  [CmdletBinding()]
+  param (
+    [Parameter(Mandatory = $true)]
+    [hashtable]$Metrics,
+
+    [Parameter(Mandatory = $false)]
+    [string]$OperationName = 'Operation'
+  )
+
+  Write-Output "[$(getCurrentUTCString)]: Timing summary for ${OperationName}:"
+  foreach ($name in $Metrics.Keys) {
+    $metric = $Metrics[$name]
+    $details = @("duration=$($metric.Duration)")
+
+    foreach ($key in $metric.Keys) {
+      if ($key -in @('Duration', 'Seconds', 'Milliseconds')) {
+        continue
+      }
+
+      $details += ("{0}={1}" -f $key, $metric[$key])
+    }
+
+    Write-Output ("  - {0}: {1}" -f $name, ($details -join '; '))
+  }
+}
+
 #function to clean JSON string by removing null properties
 function RemoveNullPropertiesFromJson {
   [CmdletBinding()]

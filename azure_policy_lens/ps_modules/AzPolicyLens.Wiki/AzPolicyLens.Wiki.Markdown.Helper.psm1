@@ -224,7 +224,7 @@ function FormatExemptionExpiresOn {
     }
   } else {
     if ([string]::IsNullOrEmpty($InputString)) {
-      $return = '🟢 Never'
+      $return = GetGitHubStatusLabel -ColorCode $green -Text 'Never'
     } else {
       try {
         $date = $(Get-Date $InputString).ToUniversalTime()
@@ -233,13 +233,13 @@ function FormatExemptionExpiresOn {
         $strExpiryDate = $date.ToString($dateTimeFormat)
         if ($daysDifference -gt $warningDays) {
           # More than $warningDays days away, green
-          $colorCodedDate = "🟢 $strExpiryDate"
+          $colorCodedDate = GetGitHubStatusLabel -ColorCode $green -Text $strExpiryDate
         } elseif ($daysDifference -ge 0) {
           # Less than $warningDays days away, orange
-          $colorCodedDate = "🟠 $strExpiryDate"
+          $colorCodedDate = GetGitHubStatusLabel -ColorCode $orange -Text $strExpiryDate
         } else {
           # Past date, red
-          $colorCodedDate = "🔴 $strExpiryDate"
+          $colorCodedDate = GetGitHubStatusLabel -ColorCode $red -Text $strExpiryDate
         }
         $return = $colorCodedDate
       } catch {
@@ -266,6 +266,31 @@ function GetGitHubStatusEmoji {
     '#FF0000' { '🔴' }
     default { '' }
   }
+}
+
+function GetGitHubStatusLabel {
+  [CmdletBinding()]
+  [OutputType([string])]
+  param (
+    [Parameter(Mandatory = $true)]
+    [AllowEmptyString()]
+    [string]$ColorCode,
+
+    [Parameter(Mandatory = $true)]
+    [AllowEmptyString()]
+    [string]$Text
+  )
+
+  $emoji = GetGitHubStatusEmoji -ColorCode $ColorCode
+  if ([string]::IsNullOrWhiteSpace($emoji)) {
+    return $Text
+  }
+
+  if ([string]::IsNullOrWhiteSpace($Text)) {
+    return $emoji
+  }
+
+  return "$emoji $Text"
 }
 
 # 03. function to format compliance rate for Markdown table rows
@@ -320,18 +345,17 @@ function FormatComplianceRate {
     }
   } else {
     try {
-      $githubStatusLabel = ''
       if ($rate -eq 100) {
         # 100%
-      $githubStatusLabel = '🟢'
+        $colorCode = $green
       } elseif ($rate -ge $WarningPercentageThreshold -and $rate -lt 100) {
         # between warning threshold and 100%
-      $githubStatusLabel = '🟠'
+        $colorCode = $orange
       } else {
         # below warning threshold
-      $githubStatusLabel = '🔴'
+        $colorCode = $red
       }
-      $return = "$githubStatusLabel $InputString"
+      $return = GetGitHubStatusLabel -ColorCode $colorCode -Text $InputString
     } catch {
       Write-Warning "[$(getCurrentUTCString)]: Invalid rate '$rate'. Returning as is."
       $return = $InputString
@@ -1191,9 +1215,9 @@ function buildPolicyDefinitionGroupComplianceCoverageMarkdown {
     $Markdown += "- <span style=`"color:#FFA500`">Orange</span>: Above $ComplianceWarningPercentageThreshold%`n"
     $Markdown += "- <span style=`"color:#FF0000`">Red</span>: Below $ComplianceWarningPercentageThreshold%`n`n"
   } else {
-    $Markdown += "- :green_circle: Green: 100%`n"
-    $Markdown += "- :orange_circle: Orange: Above $ComplianceWarningPercentageThreshold%`n"
-    $Markdown += "- :red_circle: Red: Below $ComplianceWarningPercentageThreshold%`n`n"
+    $Markdown += "- $(GetGitHubStatusLabel -ColorCode '#008000' -Text 'Green: 100%')`n"
+    $Markdown += "- $(GetGitHubStatusLabel -ColorCode '#FFA500' -Text \"Orange: Above $ComplianceWarningPercentageThreshold%\")`n"
+    $Markdown += "- $(GetGitHubStatusLabel -ColorCode '#FF0000' -Text \"Red: Below $ComplianceWarningPercentageThreshold%\")`n`n"
   }
   $Markdown
 }
@@ -4119,9 +4143,9 @@ function buildExemptionExpiresOnMarkdown {
     $PageContent += "- <span style=`"color:#FFA500`">Orange</span>: Expires in less than $expiresOnWarningDays days.`n"
     $PageContent += "- <span style=`"color:#FF0000`">Red</span>: Already expired.`n`n"
   } else {
-    $PageContent += "- 🟢 Green: Expires in more than $expiresOnWarningDays days.`n"
-    $PageContent += "- 🟠 Orange: Expires in less than $expiresOnWarningDays days.`n"
-    $PageContent += '- 🔴 Red: Already expired.'
+    $PageContent += "- $(GetGitHubStatusLabel -ColorCode '#008000' -Text \"Green: Expires in more than $expiresOnWarningDays days.\")`n"
+    $PageContent += "- $(GetGitHubStatusLabel -ColorCode '#FFA500' -Text \"Orange: Expires in less than $expiresOnWarningDays days.\")`n"
+    $PageContent += "- $(GetGitHubStatusLabel -ColorCode '#FF0000' -Text 'Red: Already expired.')"
     $PageContent += "`n`n"
   }
   $PageContent
@@ -4145,9 +4169,9 @@ function buildComplianceRatingMarkdown {
     $PageContent += "- <span style=`"color:#FFA500`">Orange</span>: >= $ComplianceWarningPercentageThreshold%`n"
     $PageContent += "- <span style=`"color:#FF0000`">Red</span>: < $ComplianceWarningPercentageThreshold%`n`n"
   } else {
-    $PageContent += "- :green_circle: Green: = 100%`n"
-    $PageContent += "- :orange_circle: Orange: >= $ComplianceWarningPercentageThreshold%`n"
-    $PageContent += "- :red_circle: Red: < $ComplianceWarningPercentageThreshold%`n`n"
+    $PageContent += "- $(GetGitHubStatusLabel -ColorCode '#008000' -Text 'Green: = 100%')`n"
+    $PageContent += "- $(GetGitHubStatusLabel -ColorCode '#FFA500' -Text \"Orange: >= $ComplianceWarningPercentageThreshold%\")`n"
+    $PageContent += "- $(GetGitHubStatusLabel -ColorCode '#FF0000' -Text \"Red: < $ComplianceWarningPercentageThreshold%\")`n`n"
   }
   $PageContent
 }
@@ -4918,9 +4942,9 @@ function FormatTestResult {
   } else {
     try {
       if ($result -ieq 'Passed') {
-        $colorCodedRate = "🟢 $result"
+        $colorCodedRate = GetGitHubStatusLabel -ColorCode $green -Text $result
       } else {
-        $colorCodedRate = "🔴 $result"
+        $colorCodedRate = GetGitHubStatusLabel -ColorCode $red -Text $result
       }
       $return = $colorCodedRate
     } catch {

@@ -159,6 +159,86 @@ Function Import-AzplEnvironmentDiscovery {
 }
 #endregion
 
+function Invoke-AzplConcurrentPageGeneration {
+  [CmdletBinding()]
+  [OutputType([hashtable])]
+  param (
+    [Parameter(Mandatory = $true)]
+    [array]$Tasks,
+
+    [Parameter(Mandatory = $true)]
+    [string]$ModuleManifestPath
+  )
+
+  $results = [ordered]@{}
+  $taskList = @($Tasks)
+  if ($taskList.Count -eq 0) {
+    return $results
+  }
+
+  if ($PSVersionTable.PSVersion.Major -lt 7 -or $taskList.Count -eq 1) {
+    foreach ($task in $taskList) {
+      $stopwatch = [System.Diagnostics.Stopwatch]::StartNew()
+      $functionName = $task.FunctionName
+      $functionParameters = $task.Parameters
+      $result = & $functionName @functionParameters
+      $stopwatch.Stop()
+      $results[$task.Name] = [ordered]@{
+        Result       = $result
+        Duration     = Format-AzplElapsedTime -Duration $stopwatch.Elapsed
+        Seconds      = [Math]::Round($stopwatch.Elapsed.TotalSeconds, 2)
+        Milliseconds = [Math]::Round($stopwatch.Elapsed.TotalMilliseconds, 2)
+        Metadata     = $task.Metadata
+      }
+    }
+
+    return $results
+  }
+
+  $jobs = @()
+  try {
+    foreach ($task in $taskList) {
+      $jobs += Start-ThreadJob -Name $task.Name -ArgumentList $ModuleManifestPath, $task.FunctionName, $task.Parameters, $task.Metadata -ScriptBlock {
+        param($resolvedModuleManifestPath, $functionName, $parameters, $metadata)
+
+        Import-Module $resolvedModuleManifestPath -Force -ErrorAction Stop
+
+        $stopwatch = [System.Diagnostics.Stopwatch]::StartNew()
+        try {
+          $result = & $functionName @parameters
+        } finally {
+          $stopwatch.Stop()
+        }
+
+        [pscustomobject]@{
+          Result       = $result
+          Duration     = [string]::Format(($stopwatch.Elapsed.TotalHours -ge 1 ? '{0:hh\:mm\:ss\.fff}' : '{0:mm\:ss\.fff}'), $stopwatch.Elapsed)
+          Seconds      = [Math]::Round($stopwatch.Elapsed.TotalSeconds, 2)
+          Milliseconds = [Math]::Round($stopwatch.Elapsed.TotalMilliseconds, 2)
+          Metadata     = $metadata
+        }
+      }
+    }
+
+    Wait-Job -Job $jobs | Out-Null
+
+    foreach ($job in $jobs) {
+      if ($job.State -ne 'Completed') {
+        $failure = Receive-Job -Job $job -ErrorAction SilentlyContinue
+        throw "Concurrent page generation task '$($job.Name)' failed. $failure"
+      }
+
+      $results[$job.Name] = Receive-Job -Job $job -ErrorAction Stop
+    }
+  } finally {
+    if ($jobs.Count -gt 0) {
+      Remove-Job -Job $jobs -Force -ErrorAction SilentlyContinue
+    }
+  }
+
+  return $results
+}
+
 #region function to generate either basic or detailed documentation for the entire environment or a subset of subscriptions
 Function New-AzplDocumentation {
   [CmdletBinding(SupportsShouldProcess, DefaultParameterSetName = 'ImportNoEncryption')]
@@ -203,6 +283,10 @@ Function New-AzplDocumentation {
     [ValidateRange(1, 99)]
     [int]$ComplianceWarningPercentageThreshold = 80,
 
+    [parameter(Mandatory = $false, HelpMessage = 'The maximum number of concurrent wiki page writes to use during generation.')]
+    [ValidateRange(1, 64)]
+    [int]$WriteThrottleLimit = 8,
+
     [parameter(Mandatory = $false, HelpMessage = 'The directory contains custom security control definitions.')]
     [ValidateScript({ Test-Path $_ -PathType 'Container' })]
     [string]$CustomSecurityControlPath,
@@ -230,6 +314,9 @@ Function New-AzplDocumentation {
     [string]$EncryptionIV
   )
 
+  $documentationStopwatch = [System.Diagnostics.Stopwatch]::StartNew()
+  $phaseMetrics = [ordered]@{}
+
   Write-Verbose "Environment Data will be imported from '$DiscoveryDataImportFilePath'."
   $importParams = @{
     FilePath = $DiscoveryDataImportFilePath
@@ -240,7 +327,9 @@ Function New-AzplDocumentation {
     $importParams.Add('EncryptionKey', $EncryptionKey)
     $importParams.Add('EncryptionIV', $EncryptionIV)
   }
-  $AzplEnvironmentDetails = Import-AzplEnvironmentDiscovery @importParams
+  $AzplEnvironmentDetails = Invoke-AzplTimedOperation -Name 'Import environment discovery data' -Metrics $phaseMetrics -Operation {
+    Import-AzplEnvironmentDiscovery @importParams
+  }
 
   #Make sure all policy resources are retrieved previously in a script scoped variable $AzplEnvironmentDetails
   if (!$AzplEnvironmentDetails) {
@@ -252,74 +341,232 @@ Function New-AzplDocumentation {
 
   if ($subscriptionIds.count -gt 0) {
     Write-Verbose "[$(getCurrentUTCString)]: subscription Ids are provided. Filtering documentation for the specified subscriptions only." -Verbose
-    $EnvironmentDiscoveryData = filterDiscoveryData -SubscriptionIds $subscriptionIds -environmentDetails $AzplEnvironmentDetails
+    $EnvironmentDiscoveryData = Invoke-AzplTimedOperation -Name 'Filter discovery data by subscriptions' -Metrics $phaseMetrics -Metadata @{ SubscriptionCount = $subscriptionIds.Count } -Operation {
+      filterDiscoveryData -SubscriptionIds $subscriptionIds -environmentDetails $AzplEnvironmentDetails
+    }
   } elseif ($childManagementGroupId.length -gt 0) {
     Write-Verbose "[$(getCurrentUTCString)]: Child management group ID is provided. Filtering documentation for the specified child management group and its descendants." -Verbose
-    $EnvironmentDiscoveryData = filterDiscoveryData -ChildManagementGroupId $childManagementGroupId -environmentDetails $AzplEnvironmentDetails
+    $EnvironmentDiscoveryData = Invoke-AzplTimedOperation -Name 'Filter discovery data by child management group' -Metrics $phaseMetrics -Metadata @{ ManagementGroupId = $childManagementGroupId } -Operation {
+      filterDiscoveryData -ChildManagementGroupId $childManagementGroupId -environmentDetails $AzplEnvironmentDetails
+    }
   } else {
     Write-Verbose "[$(getCurrentUTCString)]: No subscription Ids or child management group ID provided. Generating documentation for all subscriptions in the environment." -Verbose
     $EnvironmentDiscoveryData = $AzplEnvironmentDetails
+    $phaseMetrics['Use unfiltered discovery data'] = [ordered]@{
+      Duration     = '00:00.000'
+      Seconds      = 0
+      Milliseconds = 0
+      SubscriptionCount = @($AzplEnvironmentDetails.subscriptions).Count
+    }
   }
 
 
   # generate wiki page file names
-  $wikiFileMapping = newWikiPageMapping -discoveryData $EnvironmentDiscoveryData -BaseOutputPath $BaseOutputPath -WikiStyle $WikiStyle -Title $Title -PageStyle $PageStyle -Verbose:($PSCmdlet.MyInvocation.BoundParameters["Verbose"].IsPresent -eq $true)
+  $wikiFileMapping = Invoke-AzplTimedOperation -Name 'Generate wiki file mapping' -Metrics $phaseMetrics -Operation {
+    newWikiPageMapping -discoveryData $EnvironmentDiscoveryData -BaseOutputPath $BaseOutputPath -WikiStyle $WikiStyle -Title $Title -PageStyle $PageStyle -Verbose:($PSCmdlet.MyInvocation.BoundParameters["Verbose"].IsPresent -eq $true)
+  }
 
   #Delete existing wiki content (so there are no orphaned pages for resources no longer exist)
   Write-Verbose "[$(getCurrentUTCString)]: Deleting existing wiki content in '$BaseOutputPath'." -Verbose
-  removeExistingWikiFiles -WikiDirectory $BaseOutputPath -Verbose:($PSCmdlet.MyInvocation.BoundParameters["Verbose"].IsPresent -eq $true)
+  Invoke-AzplTimedOperation -Name 'Remove existing wiki files' -Metrics $phaseMetrics -Operation {
+    removeExistingWikiFiles -WikiDirectory $BaseOutputPath -Verbose:($PSCmdlet.MyInvocation.BoundParameters["Verbose"].IsPresent -eq $true)
+  } | Out-Null
 
   $detailedPagesCommonParams = @{
     WikiFileMapping          = $wikiFileMapping
     EnvironmentDiscoveryData = $EnvironmentDiscoveryData
     PageStyle                = $PageStyle
+    WriteThrottleLimit       = $WriteThrottleLimit
     Verbose                  = ($PSCmdlet.MyInvocation.BoundParameters["Verbose"].IsPresent -eq $true)
   }
 
   #Get unique policy categories from assigned initiatives
-  $uniqueAssignedPolicyInitiativeCategories = getUniqueCategoriesFromAssignedInitiatives -EnvironmentDiscoveryData $EnvironmentDiscoveryData
+  $uniqueAssignedPolicyInitiativeCategories = Invoke-AzplTimedOperation -Name 'Build assigned policy categories' -Metrics $phaseMetrics -Operation {
+    getUniqueCategoriesFromAssignedInitiatives -EnvironmentDiscoveryData $EnvironmentDiscoveryData
+  }
 
-  #Generate Markdown page for custom security controls
+  #Get list of custom security control files (if provided)
   if ($PSBoundParameters.ContainsKey('CustomSecurityControlPath')) {
-    #Get list of custom security control files
     $CustomSecurityControlFileSchemaFilePath = Join-Path -Path $PSScriptRoot -ChildPath 'AzPolicyLens.Wiki.Custom.Security.Control.schema.json'
-    $CustomSecurityControlFileConfig = getCustomSecurityControlFileConfig -FilePath $CustomSecurityControlPath -schemaFilePath $CustomSecurityControlFileSchemaFilePath
-    Write-Verbose "[$(getCurrentUTCString)]: Start Generating Markdown files for the custom security controls defined in '$CustomSecurityControlPath'." -Verbose
-    $customSecurityControlPages = newCustomSecurityControlPage @detailedPagesCommonParams -CustomSecurityControlFileConfig $CustomSecurityControlFileConfig -ComplianceWarningPercentageThreshold $ComplianceWarningPercentageThreshold
+    $CustomSecurityControlFileConfig = Invoke-AzplTimedOperation -Name 'Load custom security controls' -Metrics $phaseMetrics -Operation {
+      getCustomSecurityControlFileConfig -FilePath $CustomSecurityControlPath -schemaFilePath $CustomSecurityControlFileSchemaFilePath
+    }
   }
 
-  #Generate Markdown pages for built-in security controls
+  $moduleManifestPath = Join-Path -Path $PSScriptRoot -ChildPath 'AzPolicyLens.Wiki.psd1'
+  $independentPageTasks = @()
+
   Write-Verbose "[$(getCurrentUTCString)]: Start Generating Markdown files for the $($EnvironmentDiscoveryData.policyMetadata.count) built-in security controls (policy metadata) that have been discovered." -Verbose
-  $policyMetadataPages = newPolicyMetadataPage -WikiFileMapping $wikiFileMapping -EnvironmentDiscoveryData $EnvironmentDiscoveryData -ComplianceWarningPercentageThreshold $ComplianceWarningPercentageThreshold
-
-  #Generate Markdown pages for policy definitions
-  Write-Verbose "[$(getCurrentUTCString)]: Start Generating Markdown files for the $($EnvironmentDiscoveryData.definitions.count) policy definitions that have been discovered." -Verbose
-  $definitionPages = newPolicyDefinitionPage @detailedPagesCommonParams
-
-  #Generate Markdown pages for policy initiatives
-  Write-Verbose "[$(getCurrentUTCString)]: Start Generating Markdown files for the $($EnvironmentDiscoveryData.initiatives.count) policy initiatives that have been discovered." -Verbose
-  if ($PSBoundParameters.ContainsKey('CustomSecurityControlPath')) {
-    $initiativePages = newPolicyInitiativePage @detailedPagesCommonParams -CustomSecurityControlFileConfig $CustomSecurityControlFileConfig
-  } else {
-    $initiativePages = newPolicyInitiativePage @detailedPagesCommonParams
+  $independentPageTasks += [pscustomobject]@{
+    Name         = 'Generate policy metadata pages'
+    FunctionName = 'newPolicyMetadataPage'
+    Parameters   = @{
+      WikiFileMapping                      = $wikiFileMapping
+      EnvironmentDiscoveryData             = $EnvironmentDiscoveryData
+      ComplianceWarningPercentageThreshold = $ComplianceWarningPercentageThreshold
+    }
+    Metadata     = @{ ItemCount = @($EnvironmentDiscoveryData.policyMetadata).Count }
   }
 
-  #Generate Markdown pages for policy assignments
+  Write-Verbose "[$(getCurrentUTCString)]: Start Generating Markdown files for the $($EnvironmentDiscoveryData.definitions.count) policy definitions that have been discovered." -Verbose
+  $independentPageTasks += [pscustomobject]@{
+    Name         = 'Generate policy definition pages'
+    FunctionName = 'newPolicyDefinitionPage'
+    Parameters   = @{
+      WikiFileMapping          = $wikiFileMapping
+      EnvironmentDiscoveryData = $EnvironmentDiscoveryData
+      PageStyle                = $PageStyle
+      WriteThrottleLimit       = $WriteThrottleLimit
+    }
+    Metadata     = @{ ItemCount = @($EnvironmentDiscoveryData.definitions).Count }
+  }
+
+  Write-Verbose "[$(getCurrentUTCString)]: Start Generating Markdown files for the $($EnvironmentDiscoveryData.initiatives.count) policy initiatives that have been discovered." -Verbose
+  $initiativeTaskParameters = @{
+    WikiFileMapping          = $wikiFileMapping
+    EnvironmentDiscoveryData = $EnvironmentDiscoveryData
+    PageStyle                = $PageStyle
+    WriteThrottleLimit       = $WriteThrottleLimit
+  }
+  if ($PSBoundParameters.ContainsKey('CustomSecurityControlPath')) {
+    $initiativeTaskParameters.CustomSecurityControlFileConfig = $CustomSecurityControlFileConfig
+  }
+  $independentPageTasks += [pscustomobject]@{
+    Name         = 'Generate policy initiative pages'
+    FunctionName = 'newPolicyInitiativePage'
+    Parameters   = $initiativeTaskParameters
+    Metadata     = @{ ItemCount = @($EnvironmentDiscoveryData.initiatives).Count }
+  }
+
+  if ($PSBoundParameters.ContainsKey('CustomSecurityControlPath')) {
+    Write-Verbose "[$(getCurrentUTCString)]: Start Generating Markdown files for the custom security controls defined in '$CustomSecurityControlPath'." -Verbose
+    $independentPageTasks += [pscustomobject]@{
+      Name         = 'Generate custom security control pages'
+      FunctionName = 'newCustomSecurityControlPage'
+      Parameters   = @{
+        WikiFileMapping                      = $wikiFileMapping
+        EnvironmentDiscoveryData             = $EnvironmentDiscoveryData
+        PageStyle                            = $PageStyle
+        CustomSecurityControlFileConfig      = $CustomSecurityControlFileConfig
+        ComplianceWarningPercentageThreshold = $ComplianceWarningPercentageThreshold
+      }
+      Metadata     = @{ ItemCount = @($CustomSecurityControlFileConfig).Count }
+    }
+  } else {
+    $customSecurityControlPages = @()
+  }
+
   Write-Verbose "[$(getCurrentUTCString)]: Start Generating Markdown files for the $($EnvironmentDiscoveryData.assignments.count) policy assignments that have been discovered." -Verbose
-  $assignmentPages = newPolicyAssignmentPage @detailedPagesCommonParams -ComplianceWarningPercentageThreshold $ComplianceWarningPercentageThreshold
+  $independentPageTasks += [pscustomobject]@{
+    Name         = 'Generate policy assignment pages'
+    FunctionName = 'newPolicyAssignmentPage'
+    Parameters   = @{
+      EnvironmentDiscoveryData                 = $EnvironmentDiscoveryData
+      ComplianceWarningPercentageThreshold     = $ComplianceWarningPercentageThreshold
+      WikiFileMapping                          = $wikiFileMapping
+      PageStyle                                = $PageStyle
+      WriteThrottleLimit                       = $WriteThrottleLimit
+    }
+    Metadata     = @{ ItemCount = @($EnvironmentDiscoveryData.assignments).Count }
+  }
 
   if ($EnvironmentDiscoveryData.exemptions.Count -gt 0) {
-    #Generate Markdown pages for policy exemptions
     Write-Verbose "[$(getCurrentUTCString)]: Start Generating Markdown files for the $($EnvironmentDiscoveryData.exemptions.count) policy exemptions that have been discovered." -Verbose
-    $exemptionPages = newPolicyExemptionPage @detailedPagesCommonParams -ExpiresOnWarningDays $ExemptionExpiresOnWarningDays
+    $independentPageTasks += [pscustomobject]@{
+      Name         = 'Generate policy exemption pages'
+      FunctionName = 'newPolicyExemptionPage'
+      Parameters   = @{
+        EnvironmentDiscoveryData = $EnvironmentDiscoveryData
+        ExpiresOnWarningDays     = $ExemptionExpiresOnWarningDays
+        WikiFileMapping          = $wikiFileMapping
+        PageStyle                = $PageStyle
+        WriteThrottleLimit       = $WriteThrottleLimit
+      }
+      Metadata     = @{ ItemCount = @($EnvironmentDiscoveryData.exemptions).Count }
+    }
   } else {
     Write-Verbose "[$(getCurrentUTCString)]: No policy exemptions found in the environment. Skipping individual exemption page generation."
     $exemptionPages = @()
   }
 
-  #Generate Markdown pages for subscriptions
   Write-Verbose "[$(getCurrentUTCString)]: Start Generating Markdown files for the $($EnvironmentDiscoveryData.subscriptions.count) subscriptions that have been discovered." -Verbose
-  $subscriptionPages = newSubscriptionPage @detailedPagesCommonParams -ExemptionExpiresOnWarningDays $ExemptionExpiresOnWarningDays -ComplianceWarningPercentageThreshold $ComplianceWarningPercentageThreshold
+  $independentPageTasks += [pscustomobject]@{
+    Name         = 'Generate subscription pages'
+    FunctionName = 'newSubscriptionPage'
+    Parameters   = @{
+      WikiFileMapping                          = $wikiFileMapping
+      PageStyle                                = $PageStyle
+      ExemptionExpiresOnWarningDays            = $ExemptionExpiresOnWarningDays
+      ComplianceWarningPercentageThreshold     = $ComplianceWarningPercentageThreshold
+      EnvironmentDiscoveryData                 = $EnvironmentDiscoveryData
+      WriteThrottleLimit                       = $WriteThrottleLimit
+    }
+    Metadata     = @{ ItemCount = @($EnvironmentDiscoveryData.subscriptions).Count }
+  }
+
+  $independentPageResults = Invoke-AzplTimedOperation -Name 'Generate independent detailed page sets' -Metrics $phaseMetrics -Metadata @{ TaskCount = $independentPageTasks.Count } -Operation {
+    Invoke-AzplConcurrentPageGeneration -Tasks $independentPageTasks -ModuleManifestPath $moduleManifestPath
+  }
+
+  $policyMetadataPages = @($independentPageResults['Generate policy metadata pages'].Result)
+  $phaseMetrics['Generate policy metadata pages'] = [ordered]@{
+    Duration     = $independentPageResults['Generate policy metadata pages'].Duration
+    Seconds      = $independentPageResults['Generate policy metadata pages'].Seconds
+    Milliseconds = $independentPageResults['Generate policy metadata pages'].Milliseconds
+    ItemCount    = $independentPageResults['Generate policy metadata pages'].Metadata.ItemCount
+  }
+
+  $definitionPages = @($independentPageResults['Generate policy definition pages'].Result)
+  $phaseMetrics['Generate policy definition pages'] = [ordered]@{
+    Duration     = $independentPageResults['Generate policy definition pages'].Duration
+    Seconds      = $independentPageResults['Generate policy definition pages'].Seconds
+    Milliseconds = $independentPageResults['Generate policy definition pages'].Milliseconds
+    ItemCount    = $independentPageResults['Generate policy definition pages'].Metadata.ItemCount
+  }
+
+  $initiativePages = @($independentPageResults['Generate policy initiative pages'].Result)
+  $phaseMetrics['Generate policy initiative pages'] = [ordered]@{
+    Duration     = $independentPageResults['Generate policy initiative pages'].Duration
+    Seconds      = $independentPageResults['Generate policy initiative pages'].Seconds
+    Milliseconds = $independentPageResults['Generate policy initiative pages'].Milliseconds
+    ItemCount    = $independentPageResults['Generate policy initiative pages'].Metadata.ItemCount
+  }
+
+  if ($independentPageResults.Contains('Generate custom security control pages')) {
+    $customSecurityControlPages = @($independentPageResults['Generate custom security control pages'].Result)
+    $phaseMetrics['Generate custom security control pages'] = [ordered]@{
+      Duration     = $independentPageResults['Generate custom security control pages'].Duration
+      Seconds      = $independentPageResults['Generate custom security control pages'].Seconds
+      Milliseconds = $independentPageResults['Generate custom security control pages'].Milliseconds
+      ItemCount    = $independentPageResults['Generate custom security control pages'].Metadata.ItemCount
+    }
+  }
+
+  $assignmentPages = @($independentPageResults['Generate policy assignment pages'].Result)
+  $phaseMetrics['Generate policy assignment pages'] = [ordered]@{
+    Duration     = $independentPageResults['Generate policy assignment pages'].Duration
+    Seconds      = $independentPageResults['Generate policy assignment pages'].Seconds
+    Milliseconds = $independentPageResults['Generate policy assignment pages'].Milliseconds
+    ItemCount    = $independentPageResults['Generate policy assignment pages'].Metadata.ItemCount
+  }
+
+  if ($independentPageResults.Contains('Generate policy exemption pages')) {
+    $exemptionPages = @($independentPageResults['Generate policy exemption pages'].Result)
+    $phaseMetrics['Generate policy exemption pages'] = [ordered]@{
+      Duration     = $independentPageResults['Generate policy exemption pages'].Duration
+      Seconds      = $independentPageResults['Generate policy exemption pages'].Seconds
+      Milliseconds = $independentPageResults['Generate policy exemption pages'].Milliseconds
+      ItemCount    = $independentPageResults['Generate policy exemption pages'].Metadata.ItemCount
+    }
+  }
+
+  $subscriptionPages = @($independentPageResults['Generate subscription pages'].Result)
+  $phaseMetrics['Generate subscription pages'] = [ordered]@{
+    Duration     = $independentPageResults['Generate subscription pages'].Duration
+    Seconds      = $independentPageResults['Generate subscription pages'].Seconds
+    Milliseconds = $independentPageResults['Generate subscription pages'].Milliseconds
+    ItemCount    = $independentPageResults['Generate subscription pages'].Metadata.ItemCount
+  }
 
   #Generate Markdown pages for policy categories
   Write-Verbose "[$(getCurrentUTCString)]: Start Generating Markdown files for the $($uniqueAssignedPolicyInitiativeCategories.count) unique policy categories from assigned initiatives." -Verbose
@@ -333,7 +580,9 @@ Function New-AzplDocumentation {
   if ($PSBoundParameters.ContainsKey('CustomSecurityControlPath')) {
     $policyCategoryPageParams.Add('CustomSecurityControlFileConfig', $CustomSecurityControlFileConfig)
   }
-  $policyCategoryPages = newPolicyCategoryPage @policyCategoryPageParams
+  $policyCategoryPages = Invoke-AzplTimedOperation -Name 'Generate policy category pages' -Metrics $phaseMetrics -Metadata @{ ItemCount = @($uniqueAssignedPolicyInitiativeCategories.Keys).Count } -Operation {
+    newPolicyCategoryPage @policyCategoryPageParams
+  }
 
   $summaryPagesCommonParams = @{
     wikiFileMapping          = $wikiFileMapping
@@ -417,6 +666,10 @@ Function New-AzplDocumentation {
   } else {
     Write-Verbose "[$(getCurrentUTCString)]: Skipping GitHub wiki sidebar generation as WikiStyle is not 'github'." -Verbose
   }
+
+  $documentationStopwatch.Stop()
+  Write-Output "[$(getCurrentUTCString)]: Wiki documentation generation completed in $(Format-AzplElapsedTime -Duration $documentationStopwatch.Elapsed)."
+  Write-AzplTimingSummary -Metrics $phaseMetrics -OperationName 'Wiki documentation generation'
 
   #Tidy up - Remove global variables
   Remove-Variable -Name failedSyntaxValidationDefinitions -Scope Global -ErrorAction SilentlyContinue
