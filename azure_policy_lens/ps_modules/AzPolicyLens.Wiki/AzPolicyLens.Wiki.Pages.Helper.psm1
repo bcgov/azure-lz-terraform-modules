@@ -1997,8 +1997,13 @@ function newPolicyExemptionPage {
 
   $WikiStyle = $WikiFileMapping.WikiStyle
   #get policy exemptions
-  $exemptions = $EnvironmentDiscoveryData.exemptions
-  Write-Verbose "[$(getCurrentUTCString)]: Found $($exemptions.Count) policy exemptions for the policy assignments." -verbose
+  $allExemptions = @($EnvironmentDiscoveryData.exemptions)
+  $exemptions = @($allExemptions | Where-Object { -not [string]::IsNullOrWhiteSpace($_.id) })
+  $invalidExemptionsCount = $allExemptions.Count - $exemptions.Count
+  Write-Verbose "[$(getCurrentUTCString)]: Found $($exemptions.Count) valid policy exemptions for the policy assignments." -verbose
+  if ($invalidExemptionsCount -gt 0) {
+    Write-Verbose "[$(getCurrentUTCString)]: Skipping $invalidExemptionsCount policy exemption record(s) with empty id." -verbose
+  }
   $filePaths = @()
   $pendingWrites = @()
   Foreach ($item in $exemptions) {

@@ -3176,12 +3176,20 @@ function buildPolicyExemptionDetailedPageContent {
     $strExemptionExpiresOn = $exemption.expiresOn
   }
   $exemptionExpiresOn = FormatExemptionExpiresOn -InputString $strExemptionExpiresOn -warningDays $expiresOnWarningDays -WikiStyle $wikiStyle
-  $assignment = $assignments | Where-Object { $_.id -ieq $exemption.policyAssignmentId }
-  $AssignmentFileNameMapping = getWikiPageFileName -ResourceId $assignment.id -wikiFileMapping $WikiFileMapping
-  $assignmentPageFileBaseName = $AssignmentFileNameMapping.FileBaseName
-  $assignmentFolderPath = $AssignmentFileNameMapping.FileParentDirectory
-  $assignmentLink = getRelativePath -FromPath $FromPath -ToPath $(Join-Path $assignmentFolderPath $assignmentPageFileBaseName) -UseUnixPath $true
-  if ($exemption.subscriptionId) {
+  $assignment = $assignments | Where-Object { $_.id -ieq $exemption.policyAssignmentId } | Select-Object -First 1
+  $assignmentDisplayValue = $($exemption.policyAssignmentId ? $exemption.policyAssignmentId : $null)
+  if ($null -ne $assignment) {
+    if (-not [string]::IsNullOrWhiteSpace($assignment.id)) {
+      $AssignmentFileNameMapping = getWikiPageFileName -ResourceId $assignment.id -wikiFileMapping $WikiFileMapping
+      $assignmentPageFileBaseName = $AssignmentFileNameMapping.FileBaseName
+      $assignmentFolderPath = $AssignmentFileNameMapping.FileParentDirectory
+      $assignmentLink = getRelativePath -FromPath $FromPath -ToPath $(Join-Path $assignmentFolderPath $assignmentPageFileBaseName) -UseUnixPath $true
+      $assignmentDisplayValue = "[$($assignment.name)]($assignmentLink)"
+    } else {
+      $assignmentDisplayValue = $($assignment.name ? $assignment.name : $assignmentDisplayValue)
+    }
+  }
+  if (-not [string]::IsNullOrWhiteSpace($exemption.subscriptionId)) {
     $subResourceId = '/subscriptions/{0}' -f $exemption.subscriptionId
     $SubscriptionPageFileNameMapping = getWikiPageFileName -ResourceId $subResourceId -wikiFileMapping $WikiFileMapping
     $subscriptionLink = getRelativePath -FromPath $FromPath -ToPath $(Join-Path $SubscriptionPageFileNameMapping.FileParentDirectory $SubscriptionPageFileNameMapping.FileBaseName) -UseUnixPath $true
@@ -3190,9 +3198,9 @@ function buildPolicyExemptionDetailedPageContent {
     DisplayName                  = "**$($exemption.displayName)**"
     Name                         = $exemption.name
     Id                           = $exemption.id
-    PolicyAssignment             = "[$($assignment.name)]($assignmentLink)"
+    PolicyAssignment             = $assignmentDisplayValue
     Description                  = $($exemption.description ? $($exemption.description) : $null)
-    SubscriptionId               = $($exemption.subscriptionId ? "[$($exemption.subscriptionId)]($subscriptionLink)" : $null)
+    SubscriptionId               = $($subscriptionLink ? "[$($exemption.subscriptionId)]($subscriptionLink)" : $($exemption.subscriptionId ? $exemption.subscriptionId : $null))
     ResourceGroup                = $($exemption.resourceGroup ? $($exemption.resourceGroup) : $null)
     PolicyDefinitionReferenceIds = $exemption.PolicyDefinitionReferenceIds
     ExemptionCategory            = $exemption.exemptionCategory
