@@ -201,11 +201,19 @@ function Invoke-AzplConcurrentPageGeneration {
       $jobs += Start-ThreadJob -Name $task.Name -ArgumentList $ModuleManifestPath, $task.FunctionName, $task.Parameters, $task.Metadata -ScriptBlock {
         param($resolvedModuleManifestPath, $functionName, $parameters, $metadata)
 
-        Import-Module $resolvedModuleManifestPath -Force -ErrorAction Stop
+        $module = Import-Module $resolvedModuleManifestPath -Force -PassThru -ErrorAction Stop
 
         $stopwatch = [System.Diagnostics.Stopwatch]::StartNew()
         try {
-          $result = & $functionName @parameters
+          $result = & $module {
+            param($resolvedFunctionName, $resolvedParameters)
+
+            if (-not (Get-Command -Name $resolvedFunctionName -ErrorAction SilentlyContinue)) {
+              throw "Function '$resolvedFunctionName' is not available in module scope."
+            }
+
+            & $resolvedFunctionName @resolvedParameters
+          } -ArgumentList $functionName, $parameters
         } finally {
           $stopwatch.Stop()
         }
