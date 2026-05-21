@@ -281,16 +281,20 @@ function GetGitHubStatusLabel {
     [string]$Text
   )
 
+  # Normalize escaped markdown/operator characters so GitHub output does not
+  # display escape slashes in status labels (for example, in compliance text).
+  $normalizedText = $Text -replace '\\/', '/' -replace '\\<', '<' -replace '\\>', '>' -replace '\\=', '='
+
   $emoji = GetGitHubStatusEmoji -ColorCode $ColorCode
   if ([string]::IsNullOrWhiteSpace($emoji)) {
-    return $Text
+    return $normalizedText
   }
 
-  if ([string]::IsNullOrWhiteSpace($Text)) {
+  if ([string]::IsNullOrWhiteSpace($normalizedText)) {
     return $emoji
   }
 
-  return "$emoji $Text"
+  return "$emoji $normalizedText"
 }
 
 # 03. function to format compliance rate for Markdown table rows
