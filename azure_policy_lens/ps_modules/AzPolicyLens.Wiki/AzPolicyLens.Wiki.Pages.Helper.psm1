@@ -9,6 +9,7 @@ function WriteWikiPageBatch {
   [CmdletBinding()]
   param (
     [Parameter(Mandatory = $true)]
+    [AllowEmptyCollection()]
     [array]$FileWrites,
 
     [Parameter(Mandatory = $false)]
