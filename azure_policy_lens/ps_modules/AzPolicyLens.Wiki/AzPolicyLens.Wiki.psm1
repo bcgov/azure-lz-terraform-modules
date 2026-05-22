@@ -439,15 +439,14 @@ Function New-AzplDocumentation {
   $allPolicyMetadata = @($EnvironmentDiscoveryData.policyMetadata)
   $EnvironmentDiscoveryData.policyMetadata = @($allPolicyMetadata | Where-Object { -not [string]::IsNullOrWhiteSpace($_.id) })
 
-  $removedDiscoveryRecords = @(
-    $allSubscriptions.Count - $EnvironmentDiscoveryData.subscriptions.Count,
-    $allManagementGroups.Count - $EnvironmentDiscoveryData.managementGroups.Count,
-    $allAssignments.Count - $EnvironmentDiscoveryData.assignments.Count,
-    $allDefinitions.Count - $EnvironmentDiscoveryData.definitions.Count,
-    $allInitiatives.Count - $EnvironmentDiscoveryData.initiatives.Count,
-    $allExemptions.Count - $EnvironmentDiscoveryData.exemptions.Count,
-    $allPolicyMetadata.Count - $EnvironmentDiscoveryData.policyMetadata.Count
-  ) | Measure-Object -Sum | Select-Object -ExpandProperty Sum
+  $removedDiscoveryRecords =
+    ([int](@($allSubscriptions).Count) - [int](@($EnvironmentDiscoveryData.subscriptions).Count)) +
+    ([int](@($allManagementGroups).Count) - [int](@($EnvironmentDiscoveryData.managementGroups).Count)) +
+    ([int](@($allAssignments).Count) - [int](@($EnvironmentDiscoveryData.assignments).Count)) +
+    ([int](@($allDefinitions).Count) - [int](@($EnvironmentDiscoveryData.definitions).Count)) +
+    ([int](@($allInitiatives).Count) - [int](@($EnvironmentDiscoveryData.initiatives).Count)) +
+    ([int](@($allExemptions).Count) - [int](@($EnvironmentDiscoveryData.exemptions).Count)) +
+    ([int](@($allPolicyMetadata).Count) - [int](@($EnvironmentDiscoveryData.policyMetadata).Count))
   if ($removedDiscoveryRecords -gt 0) {
     Write-Warning "[$(getCurrentUTCString)]: Sanitized discovery data by removing $removedDiscoveryRecords record(s) with missing required ids before wiki generation."
   }
