@@ -289,7 +289,7 @@ function getRoleAssignmentDetailsForPolicyAssignment {
         $identityType = 'UserAssigned'
       }
       $assignmentRoleAssignments += $roleAssignments | Where-Object { $_.principalId -ieq $principalId }
-      Write-verbose "[$(getCurrentUTCString)]: Found $($assignmentRoleAssignments.Count) role assignments for principal ID '$principalId'." -Verbose:($PSCmdlet.MyInvocation.BoundParameters["Verbose"].IsPresent -eq $true)
+      Write-Verbose "[$(getCurrentUTCString)]: Found $($assignmentRoleAssignments.Count) role assignments for principal ID '$principalId'." -Verbose:($PSCmdlet.MyInvocation.BoundParameters["Verbose"].IsPresent -eq $true)
       foreach ($roleAssignment in $assignmentRoleAssignments) {
         #Get the definition
         $roleDefinition = $roleDefinitions | Where-Object { $_.id -ieq $roleAssignment.roleDefinitionId }
@@ -358,7 +358,7 @@ function getSecFrameworkForPolicyMetadata {
     [string]$policyMetadataId
   )
   $policyMetadataName = $policyMetadataId.Split('/')[-1]
-  #Write-Verbose "[$(getCurrentUTCString)]: Looking up security framework for policy metadata name '$policyMetadataName'." -Verbose
+  #Write-Verbose "[$(getCurrentUTCString)]: Looking up security framework for policy metadata name '$policyMetadataName'."
   $framework = "Uncategorized" #default value if no match found
   foreach ($mapping in $mappings) {
     $regex = $mapping.policyMetadataNameRegex
@@ -367,7 +367,7 @@ function getSecFrameworkForPolicyMetadata {
       break
     }
   }
-  #Write-Verbose "  - Mapped policy metadata name '$policyMetadataName' to security framework '$framework'." -Verbose
+  #Write-Verbose "  - Mapped policy metadata name '$policyMetadataName' to security framework '$framework'."
   $framework
 }
 

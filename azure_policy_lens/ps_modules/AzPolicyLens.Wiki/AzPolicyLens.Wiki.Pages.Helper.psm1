@@ -9,6 +9,7 @@ function WriteWikiPageBatch {
   [CmdletBinding()]
   param (
     [Parameter(Mandatory = $true)]
+    [AllowEmptyCollection()]
     [array]$FileWrites,
 
     [Parameter(Mandatory = $false)]
@@ -93,13 +94,13 @@ Function newMainSummaryPage {
 
   #$MainFileName = encodeAdoWikiPageTitle -stringToEncode $($Title.toupper())
   if ($PageStyle -ieq 'detailed') {
-    Write-Verbose "[$(getCurrentUTCString)]: Generating the detailed summary page." -Verbose
+    Write-Verbose "[$(getCurrentUTCString)]: Generating the detailed summary page."
   } else {
-    Write-Verbose "[$(getCurrentUTCString)]: Generating the basic summary page." -Verbose
+    Write-Verbose "[$(getCurrentUTCString)]: Generating the basic summary page."
   }
-  Write-Verbose "[$(getCurrentUTCString)]: Main page file name: '$($MainFileMapping.FileName)'." -verbose
+  Write-Verbose "[$(getCurrentUTCString)]: Main page file name: '$($MainFileMapping.FileName)'."
   $mainFilePath = $MainFileMapping.FilePath
-  Write-Verbose "[$(getCurrentUTCString)]: Generating the main summary Markdown file '$mainFilePath'." -Verbose
+  Write-Verbose "[$(getCurrentUTCString)]: Generating the main summary Markdown file '$mainFilePath'."
 
   $assignmentFileRelativePath = getRelativePath -FromPath $MainFileMapping.FileParentDirectory -ToPath $(Join-path $AssignmentSummaryFileMapping.FileParentDirectory $AssignmentSummaryFileMapping.FileBaseName) -UseUnixPath $true
   $initiativeFileRelativePath = getRelativePath -FromPath $MainFileMapping.FileParentDirectory -ToPath $(Join-path $InitiativeSummaryFileMapping.FileParentDirectory $InitiativeSummaryFileMapping.FileBaseName) -UseUnixPath $true
@@ -196,13 +197,13 @@ Function newMainSummaryPage {
 
   $policyResourceMarkdownTable = $(newMarkdownTableFromArray -Data $resourceSummaryTableRows -FormatTableHeader $true -Alignment 'Left')
 
-  Write-Verbose "[$(getCurrentUTCString)]: Found top-level management group '$($topLevelMg.name)' with Id '$($topLevelMg.id)' in the hierarchy." -verbose
+  Write-Verbose "[$(getCurrentUTCString)]: Found top-level management group '$($topLevelMg.name)' with Id '$($topLevelMg.id)' in the hierarchy."
 
   If ($PageStyle -ieq 'detailed') {
-    Write-Verbose "[$(getCurrentUTCString)]: Generating the management group hierarchy Mermaid diagram." -Verbose
+    Write-Verbose "[$(getCurrentUTCString)]: Generating the management group hierarchy Mermaid diagram."
     $mgHierarchyMermaidDiagram = $(buildMgHierarchyMermaidDiagram -EnvironmentDetails $EnvironmentDiscoveryData -IncludeSubscriptions $true -WikiFileMapping $WikiFileMapping -DiagramVersion 'mainPage')
 
-    Write-Verbose "[$(getCurrentUTCString)]: Generating the Management Group summary Markdown section." -Verbose
+    Write-Verbose "[$(getCurrentUTCString)]: Generating the Management Group summary Markdown section."
     $mgSummaryParams = @{
       managementGroups                     = $EnvironmentDiscoveryData.managementGroups
       assignments                          = $EnvironmentDiscoveryData.assignments
@@ -215,7 +216,7 @@ Function newMainSummaryPage {
   }
 
   #subscriptions compliance summary
-  Write-Verbose "[$(getCurrentUTCString)]: Generating the Overall compliance summary section for all subscriptions." -Verbose
+  Write-Verbose "[$(getCurrentUTCString)]: Generating the Overall compliance summary section for all subscriptions."
   $subscriptionComplianceSummaryHeader = "Overall policy compliance summary"
   if ($EnvironmentDiscoveryData.subscriptionComplianceSummary.count -gt 0) {
     $totalSubCompliantCount = ($EnvironmentDiscoveryData.subscriptionComplianceSummary | Measure-Object -Property 'compliantCount' -Sum).Sum
@@ -443,7 +444,7 @@ function newAssignmentSummaryPage {
   $FilePath = $AssignmentFileNameMapping.FilePath
   $filePaths = @()
 
-  Write-Verbose "[$(getCurrentUTCString)]: Generating the policy assignment summary Markdown file '$FilePath'." -verbose
+  Write-Verbose "[$(getCurrentUTCString)]: Generating the policy assignment summary Markdown file '$FilePath'."
   $assignmentPageContent = ""
   $assignmentPageContent += $(newMarkdownHeader -title "$Title Assignments" -level 1 -caseStyle 'UpperCase')
   $assignmentPageContent += "`n`n"
@@ -544,7 +545,7 @@ function newInitiativeSummaryPage {
 
   $builtInInitiatives = $EnvironmentDiscoveryData.initiatives | Where-Object { $_.properties.policyType -ieq 'builtin' }
   #policy initiative summary page
-  Write-Verbose "[$(getCurrentUTCString)]: Generating the policy initiative summary Markdown file '$FilePath'." -verbose
+  Write-Verbose "[$(getCurrentUTCString)]: Generating the policy initiative summary Markdown file '$FilePath'."
   $initiativePageContent = ""
   $initiativePageContent += $(newMarkdownHeader -title "$Title Initiatives" -level 1 -caseStyle 'UpperCase')
   $initiativePageContent += "`n`n"
@@ -656,7 +657,7 @@ function newDefinitionSummaryPage {
   }
 
   #policy definition summary page
-  Write-Verbose "[$(getCurrentUTCString)]: Generating the policy definition summary Markdown file in '$FilePath'." -verbose
+  Write-Verbose "[$(getCurrentUTCString)]: Generating the policy definition summary Markdown file in '$FilePath'."
   $definitionPageContent = ""
   $definitionPageContent += $(newMarkdownHeader -title "$Title Definitions" -level 1 -caseStyle 'UpperCase')
   $definitionPageContent += "`n`n"
@@ -699,7 +700,7 @@ function newDefinitionSummaryPage {
   $definitionPageContent += $(newMarkdownHeader -title "Assigned Built-in Policy Definitions" -level 3 -caseStyle 'UpperCase')
   $definitionPageContent += "`n`n"
   if ($builtInDefinitions.Count -gt 0) {
-    Write-Verbose "[$(getCurrentUTCString)]: Found $($builtInDefinitions.Count) built-in policy definitions." -Verbose
+    Write-Verbose "[$(getCurrentUTCString)]: Found $($builtInDefinitions.Count) built-in policy definitions."
     $definitionPageContent += ":bookmark: **$($builtInDefinitions.Count)** built-in policy definitions are currently being assigned."
     $definitionPageContent += "`n`n"
     $definitionPageContent += buildPolicyDefinitionInitiativeMarkdownTable -policyResources $builtInDefinitions -WikiFileMapping $WikiFileMapping -policyResourceType 'definition'
@@ -713,7 +714,7 @@ function newDefinitionSummaryPage {
     $definitionPageContent += $(newMarkdownHeader -title "Unassigned Built-in Policy Definitions" -level 3 -caseStyle 'UpperCase')
     $definitionPageContent += "`n`n"
     if ($unassignedBuiltInDefinitions.Count -gt 0) {
-      Write-Verbose "[$(getCurrentUTCString)]: Found $($unassignedBuiltInDefinitions.Count) unassigned built-in policy definitions." -Verbose
+      Write-Verbose "[$(getCurrentUTCString)]: Found $($unassignedBuiltInDefinitions.Count) unassigned built-in policy definitions."
       $definitionPageContent += ":bookmark: **$($unassignedBuiltInDefinitions.Count)** built-in policy definitions are referenced in unassigned custom initiatives."
       $definitionPageContent += "`n`n"
       $definitionPageContent += buildPolicyDefinitionInitiativeMarkdownTable -policyResources $unassignedBuiltInDefinitions -WikiFileMapping $WikiFileMapping -policyResourceType 'definition'
@@ -773,7 +774,7 @@ function newExemptionSummaryPage {
   $filePaths = @()
 
   #policy exemption summary page
-  Write-Verbose "[$(getCurrentUTCString)]: Generating the policy exemption summary Markdown file in '$FilePath'." -verbose
+  Write-Verbose "[$(getCurrentUTCString)]: Generating the policy exemption summary Markdown file in '$FilePath'."
   $exemptionPageContent = ""
   $exemptionPageContent += $(newMarkdownHeader -title "$Title Exemptions" -level 1 -caseStyle 'UpperCase')
   $exemptionPageContent += "`n`n"
@@ -899,11 +900,11 @@ function newSubscriptionSummaryPage {
   $subscriptionMarkdownTable = $(newMarkdownTableFromArray -Data $subscriptionTableData -FormatTableHeader $true -KeyFormatting @{ 'subscriptionId' = 'code' })
 
   If ($PageStyle -ieq 'detailed') {
-    Write-Verbose "[$(getCurrentUTCString)]: Generating the management group hierarchy Mermaid diagram in Mermaid." -Verbose
+    Write-Verbose "[$(getCurrentUTCString)]: Generating the management group hierarchy Mermaid diagram in Mermaid."
     $mgHierarchyMermaidDiagram = $(buildMgHierarchyMermaidDiagram -EnvironmentDetails $EnvironmentDiscoveryData -IncludeSubscriptions $true -WikiFileMapping $WikiFileMapping -DiagramVersion 'subscriptionPage')
   }
   #subscription summary page
-  Write-Verbose "[$(getCurrentUTCString)]: Generating the subscription summary Markdown file in '$FilePath'." -verbose
+  Write-Verbose "[$(getCurrentUTCString)]: Generating the subscription summary Markdown file in '$FilePath'."
   $pageContent = ""
   $pageContent += $(newMarkdownHeader -title "$($Title) Subscriptions" -level 1 -caseStyle 'UpperCase')
   $pageContent += "`n`n"
@@ -947,7 +948,7 @@ function newSubscriptionSummaryPage {
     $orderFileContent = $SubscriptionSummaryFileNameMapping.FileBaseName
     $orderFileContent += "`n"
     $orderFileContent += $FileNames -join "`n"
-    Write-Verbose "[$(getCurrentUTCString)]: Creating ADO wiki order file for subscriptions pages in '$orderFileDirectory' directory." -Verbose
+    Write-Verbose "[$(getCurrentUTCString)]: Creating ADO wiki order file for subscriptions pages in '$orderFileDirectory' directory."
     $filePaths += newAdoWikiOrderFile -FileDirectory $orderFileDirectory -content "$orderFileContent"
   }
 
@@ -989,7 +990,7 @@ function newSecurityControlSummaryPage {
   $FileBaseNames = @()
 
   #security control summary page
-  Write-Verbose "[$(getCurrentUTCString)]: Generating the security control summary Markdown file in '$FilePath'." -verbose
+  Write-Verbose "[$(getCurrentUTCString)]: Generating the security control summary Markdown file in '$FilePath'."
   $pageContent = ""
   $pageContent += $(newMarkdownHeader -title "$($Title) Security Controls" -level 1 -caseStyle 'UpperCase')
   $pageContent += "`n`n"
@@ -1058,7 +1059,7 @@ function newSecurityControlSummaryPage {
 
   #custom security control definitions
   if ($CustomSecurityControlFileConfig.count -gt 0) {
-    Write-Verbose "[$(getCurrentUTCString)]: Processing custom security control files." -verbose
+    Write-Verbose "[$(getCurrentUTCString)]: Processing custom security control files."
     $customSecurityControlTableData = @()
     #get the custom policy definition group from initiatives that are in use
     $customDefinitionGroups = getCustomPolicyDefinitionGroups -initiatives $EnvironmentDiscoveryData.initiatives
@@ -1083,7 +1084,7 @@ function newSecurityControlSummaryPage {
     }
   }
   if ($customSecurityControlTableData.count -gt 0) {
-    Write-Verbose "[$(getCurrentUTCString)]: Found $($customSecurityControlTableData.count) custom security controls for processing." -verbose
+    Write-Verbose "[$(getCurrentUTCString)]: Found $($customSecurityControlTableData.count) custom security controls for processing."
     $pageContent += $(newMarkdownHeader -title "Custom Security Controls" -level 2 -caseStyle 'UpperCase')
     $pageContent += "`n`n"
     $notes = @()
@@ -1097,7 +1098,7 @@ function newSecurityControlSummaryPage {
     #group custom security controls by framework
     $frameworkNames = $customSecurityControlTableData.framework.toupper() | Get-Unique
     foreach ($framework in $frameworkNames) {
-      Write-Verbose "[$(getCurrentUTCString)]: Processing custom security controls for framework '$framework'." -verbose
+      Write-Verbose "[$(getCurrentUTCString)]: Processing custom security controls for framework '$framework'."
       $filteredCustomSecurityControlTableData = @()
       $frameworkTableData = $customSecurityControlTableData | Where-Object { $_.Framework -ieq $framework }
       foreach ($item in $frameworkTableData) {
@@ -1140,7 +1141,7 @@ function newSecurityControlSummaryPage {
     $orderFileContent = $SecurityControlSummaryFileNameMapping.FileBaseName
     $orderFileContent += "`n"
     $orderFileContent += $FileNames -join "`n"
-    Write-Verbose "[$(getCurrentUTCString)]: Creating ADO wiki order file for security control pages in '$orderFileDirectory' directory." -Verbose
+    Write-Verbose "[$(getCurrentUTCString)]: Creating ADO wiki order file for security control pages in '$orderFileDirectory' directory."
     $filePaths += newAdoWikiOrderFile -FileDirectory $orderFileDirectory -content "$orderFileContent"
   }
 
@@ -1184,13 +1185,13 @@ function newAnalysisSummaryPage {
   $filePaths = @()
 
   if ($PageStyle -ieq 'detailed') {
-    Write-Verbose "[$(getCurrentUTCString)]: Generating the detailed Analysis page." -Verbose
+    Write-Verbose "[$(getCurrentUTCString)]: Generating the detailed Analysis page."
   } else {
-    Write-Verbose "[$(getCurrentUTCString)]: Generating the basic Analysis page." -Verbose
+    Write-Verbose "[$(getCurrentUTCString)]: Generating the basic Analysis page."
   }
 
   #control id compliance coverage Markdown
-  Write-Verbose "[$(getCurrentUTCString)]: Generating the control ID compliance coverage section." -Verbose
+  Write-Verbose "[$(getCurrentUTCString)]: Generating the control ID compliance coverage section."
   $controlIdComplianceCoverageParams = @{
     EnvironmentDiscoveryData             = $EnvironmentDiscoveryData
     ComplianceWarningPercentageThreshold = $ComplianceWarningPercentageThreshold
@@ -1205,7 +1206,7 @@ function newAnalysisSummaryPage {
   $controlIdComplianceCoverageMarkdown = buildPolicyDefinitionGroupComplianceCoverageMarkdown @controlIdComplianceCoverageParams
 
   #Build the summary Markdown content
-  Write-Verbose "[$(getCurrentUTCString)]: Generating the analysis summary Markdown file in '$FilePath'." -verbose
+  Write-Verbose "[$(getCurrentUTCString)]: Generating the analysis summary Markdown file in '$FilePath'."
   $pageContent = ""
   $pageContent += $(newMarkdownHeader -title "$title analysis" -level 1 -caseStyle 'UpperCase')
   $pageContent += "`n`n"
@@ -1304,7 +1305,7 @@ function newPolicyCategorySummaryPage {
   $FileBaseNames = @()
 
   #policy category summary page
-  Write-Verbose "[$(getCurrentUTCString)]: Generating the policy category summary Markdown file in '$FilePath'." -verbose
+  Write-Verbose "[$(getCurrentUTCString)]: Generating the policy category summary Markdown file in '$FilePath'."
   $pageContent = ""
   $pageContent += $(newMarkdownHeader -title "$($Title) Policy Categories" -level 1 -caseStyle 'UpperCase')
   $pageContent += "`n`n"
@@ -1328,7 +1329,7 @@ function newPolicyCategorySummaryPage {
   $pageContent += "`n`n"
   $policyCategoryTableData = @()
   foreach ($category in $uniqueAssignedPolicyInitiativeCategories.Keys) {
-    Write-Verbose "  - Processing policy category '$category'." -verbose
+    Write-Verbose "  - Processing policy category '$category'."
     $policyCategoryPageFileNameMapping = getWikiPageFileName -PolicyCategory $category -wikiFileMapping $wikiFileMapping
     Write-Verbose "    - Policy Category page file name: '$($policyCategoryPageFileNameMapping.FileName)'."
     $policyCategoryPagesRelativePath = getRelativePath -FromPath $PolicyCategorySummaryFileNameMapping.FileParentDirectory -ToPath $(Join-Path $policyCategoryPageFileNameMapping.FileParentDirectory $policyCategoryPageFileNameMapping.FileBaseName) -UseUnixPath $true
@@ -1392,7 +1393,7 @@ function newPolicyCategorySummaryPage {
     $orderFileContent = $PolicyCategorySummaryFileNameMapping.FileBaseName
     $orderFileContent += "`n"
     $orderFileContent += $FileNames -join "`n"
-    Write-Verbose "[$(getCurrentUTCString)]: Creating ADO wiki order file for policy category pages in '$orderFileDirectory' directory." -Verbose
+    Write-Verbose "[$(getCurrentUTCString)]: Creating ADO wiki order file for policy category pages in '$orderFileDirectory' directory."
     $filePaths += newAdoWikiOrderFile -FileDirectory $orderFileDirectory -content "$orderFileContent"
   }
 
@@ -1429,8 +1430,13 @@ function newSubscriptionPage {
     $EnvironmentDiscoveryData
   )
 
-  $subscriptions = $EnvironmentDiscoveryData.subscriptions
-  Write-verbose "[$(getCurrentUTCString)]: Found $($subscriptions.Count) subscriptions in the management group hierarchy."
+  $allSubscriptions = @($EnvironmentDiscoveryData.subscriptions)
+  $subscriptions = @($allSubscriptions | Where-Object { -not [string]::IsNullOrWhiteSpace($_.id) -and -not [string]::IsNullOrWhiteSpace($_.subscriptionId) })
+  $invalidSubscriptionCount = $allSubscriptions.Count - $subscriptions.Count
+  Write-Verbose "[$(getCurrentUTCString)]: Found $($subscriptions.Count) valid subscriptions in the management group hierarchy."
+  if ($invalidSubscriptionCount -gt 0) {
+    Write-Verbose "[$(getCurrentUTCString)]: Skipping $invalidSubscriptionCount subscription record(s) with missing id or subscriptionId."
+  }
   $WikiStyle = $WikiFileMapping.WikiStyle
   $subscriptionComplianceById = @{}
   foreach ($item in @($EnvironmentDiscoveryData.subscriptionComplianceSummary)) {
@@ -1530,9 +1536,14 @@ function newPolicyAssignmentPage {
 
   $WikiStyle = $WikiFileMapping.WikiStyle
   #get policy assignments
-  $assignments = $EnvironmentDiscoveryData.assignments
+  $allAssignments = @($EnvironmentDiscoveryData.assignments)
+  $assignments = @($allAssignments | Where-Object { -not [string]::IsNullOrWhiteSpace($_.id) -and -not [string]::IsNullOrWhiteSpace($_.properties.policyDefinitionId) })
+  $invalidAssignmentCount = $allAssignments.Count - $assignments.Count
   $topLevelManagementGroupName = $EnvironmentDiscoveryData.topLevelManagementGroupName.toupper()
-  Write-Verbose "[$(getCurrentUTCString)]: Found $($assignments.Count) policy assignments that are assigned in the management group hierarchy."
+  Write-Verbose "[$(getCurrentUTCString)]: Found $($assignments.Count) valid policy assignments that are assigned in the management group hierarchy."
+  if ($invalidAssignmentCount -gt 0) {
+    Write-Verbose "[$(getCurrentUTCString)]: Skipping $invalidAssignmentCount policy assignment record(s) with missing id or policyDefinitionId."
+  }
   $initiativeResourceIdRegex = '(?im)\/providers\/microsoft\.authorization\/policysetdefinitions\/'
   $definitionResourceIdRegex = '(?im)\/providers\/microsoft\.authorization\/policydefinitions\/'
 
@@ -1555,16 +1566,23 @@ function newPolicyAssignmentPage {
 
   $definitionsById = @{}
   foreach ($item in @($EnvironmentDiscoveryData.definitions)) {
-    $definitionsById[$item.id] = $item
+    if (-not [string]::IsNullOrWhiteSpace($item.id)) {
+      $definitionsById[$item.id] = $item
+    }
   }
 
   $initiativesById = @{}
   foreach ($item in @($EnvironmentDiscoveryData.initiatives)) {
-    $initiativesById[$item.id] = $item
+    if (-not [string]::IsNullOrWhiteSpace($item.id)) {
+      $initiativesById[$item.id] = $item
+    }
   }
 
   $exemptionsByAssignmentId = @{}
   foreach ($item in @($EnvironmentDiscoveryData.exemptions)) {
+    if ([string]::IsNullOrWhiteSpace($item.policyAssignmentId)) {
+      continue
+    }
     if (-not $exemptionsByAssignmentId.ContainsKey($item.policyAssignmentId)) {
       $exemptionsByAssignmentId[$item.policyAssignmentId] = @()
     }
@@ -1577,7 +1595,7 @@ function newPolicyAssignmentPage {
   foreach ($item in $assignments) {
     $i++
     $AssignmentFileNameMapping = getWikiPageFileName -ResourceId $item.id -wikiFileMapping $WikiFileMapping
-    Write-Verbose "[$(getCurrentUTCString)]: [$i/$($assignments.count)] Processing policy assignment '$($item.name)'" -verbose
+    Write-Verbose "[$(getCurrentUTCString)]: [$i/$($assignments.count)] Processing policy assignment '$($item.name)'"
     $fileName = $AssignmentFileNameMapping.FileName
     $OutputPath = $AssignmentFileNameMapping.FileParentDirectory
     if (-not (Test-Path -Path $OutputPath -PathType Container)) {
@@ -1658,6 +1676,10 @@ function newPolicyAssignmentPage {
       Write-Error "Unable to detect the assigned policy type from the resource Id '$definitionId'."
       continue
     }
+    if ($null -eq $definition -or [string]::IsNullOrWhiteSpace($definition.id)) {
+      Write-Warning "[$(getCurrentUTCString)]: Skipping policy assignment '$($item.name)' because assigned $definitionType '$definitionId' could not be resolved to a resource with a valid id."
+      continue
+    }
     $DefinitionFileNameMapping = getWikiPageFileName -ResourceId $definition.id -wikiFileMapping $WikiFileMapping
     $definitionPageFileBaseName = $DefinitionFileNameMapping.FileBaseName
     $definitionFolderPath = $DefinitionFileNameMapping.FileParentDirectory
@@ -1681,7 +1703,7 @@ function newPolicyAssignmentPage {
       $parametersMarkdownTable = buildAssignmentParametersMarkdownTable -parameters $item.properties.parameters
     }
     #get related exemptions
-    $relatedExemptions = @($exemptionsByAssignmentId[$item.id])
+    $relatedExemptions = @($exemptionsByAssignmentId[$item.id] | Where-Object { -not [string]::IsNullOrWhiteSpace($_.id) })
 
     Write-Verbose "  - [$(getCurrentUTCString)]: Generating Markdown file '$fileName' for the policy assignment '$($item.name)' in the output path '$OutputPath'."
     $PageContent = ""
@@ -1824,12 +1846,18 @@ function newPolicyInitiativePage {
   $WikiStyle = $WikiFileMapping.WikiStyle
   #get policy initiatives
   #$initiatives = $EnvironmentDiscoveryData.initiatives | Where-Object { $_.properties.policyType -eq 'Custom' }
-  Write-Verbose "[$(getCurrentUTCString)]: Found $($EnvironmentDiscoveryData.initiatives.Count) policy initiatives that are assigned in the management group hierarchy."
+  $allInitiatives = @($EnvironmentDiscoveryData.initiatives)
+  $initiatives = @($allInitiatives | Where-Object { -not [string]::IsNullOrWhiteSpace($_.id) })
+  $invalidInitiativeCount = $allInitiatives.Count - $initiatives.Count
+  Write-Verbose "[$(getCurrentUTCString)]: Found $($initiatives.Count) valid policy initiatives that are assigned in the management group hierarchy."
+  if ($invalidInitiativeCount -gt 0) {
+    Write-Verbose "[$(getCurrentUTCString)]: Skipping $invalidInitiativeCount policy initiative record(s) with missing id."
+  }
   $filePaths = @()
   $pendingWrites = @()
   #assigned initiatives
-  Foreach ($item in $EnvironmentDiscoveryData.initiatives) {
-    Write-Verbose "  - [$(getCurrentUTCString)]: Processing policy initiative '$($item.properties.displayName)'" -verbose
+  Foreach ($item in $initiatives) {
+    Write-Verbose "  - [$(getCurrentUTCString)]: Processing policy initiative '$($item.properties.displayName)'"
     $InitiativeFileNameMapping = getWikiPageFileName -ResourceId $item.id -wikiFileMapping $WikiFileMapping
     $OutputPath = $InitiativeFileNameMapping.FileParentDirectory
     if (-not (Test-Path -Path $OutputPath -PathType Container)) {
@@ -1921,11 +1949,17 @@ function newPolicyDefinitionPage {
       }
     }
   }
-  Write-Verbose "[$(getCurrentUTCString)]: Found $($definitions.Count) policy definitions that are directly or indirectly assigned or included in unassigned custom initiatives in the management group hierarchy." -verbose
+  $allDefinitions = @($definitions)
+  $definitions = @($allDefinitions | Where-Object { -not [string]::IsNullOrWhiteSpace($_.id) })
+  $invalidDefinitionCount = $allDefinitions.Count - $definitions.Count
+  Write-Verbose "[$(getCurrentUTCString)]: Found $($definitions.Count) valid policy definitions that are directly or indirectly assigned or included in unassigned custom initiatives in the management group hierarchy."
+  if ($invalidDefinitionCount -gt 0) {
+    Write-Verbose "[$(getCurrentUTCString)]: Skipping $invalidDefinitionCount policy definition record(s) with missing id."
+  }
   $filePaths = @()
   $pendingWrites = @()
   Foreach ($item in $definitions) {
-    #Write-Verbose "  - [$(getCurrentUTCString)]: Processing policy definition '$($item.properties.displayName)'" -verbose
+    #Write-Verbose "  - [$(getCurrentUTCString)]: Processing policy definition '$($item.properties.displayName)'"
     $DefinitionFileNameMapping = getWikiPageFileName -ResourceId $item.id -wikiFileMapping $WikiFileMapping
     $OutputPath = $DefinitionFileNameMapping.FileParentDirectory
     $definitionPageContentParams = @{
@@ -1997,8 +2031,13 @@ function newPolicyExemptionPage {
 
   $WikiStyle = $WikiFileMapping.WikiStyle
   #get policy exemptions
-  $exemptions = $EnvironmentDiscoveryData.exemptions
-  Write-Verbose "[$(getCurrentUTCString)]: Found $($exemptions.Count) policy exemptions for the policy assignments." -verbose
+  $allExemptions = @($EnvironmentDiscoveryData.exemptions)
+  $exemptions = @($allExemptions | Where-Object { -not [string]::IsNullOrWhiteSpace($_.id) })
+  $invalidExemptionsCount = $allExemptions.Count - $exemptions.Count
+  Write-Verbose "[$(getCurrentUTCString)]: Found $($exemptions.Count) valid policy exemptions for the policy assignments."
+  if ($invalidExemptionsCount -gt 0) {
+    Write-Verbose "[$(getCurrentUTCString)]: Skipping $invalidExemptionsCount policy exemption record(s) with empty id."
+  }
   $filePaths = @()
   $pendingWrites = @()
   Foreach ($item in $exemptions) {
@@ -2054,11 +2093,16 @@ function newPolicyMetadataPage {
 
   $WikiStyle = $WikiFileMapping.WikiStyle
   #get security control
-  $policyMetadata = $EnvironmentDiscoveryData.policyMetadata
-  Write-Verbose "[$(getCurrentUTCString)]: Found $($policyMetadata.Count) built-in security controls." -verbose
+  $allPolicyMetadata = @($EnvironmentDiscoveryData.policyMetadata)
+  $policyMetadata = @($allPolicyMetadata | Where-Object { -not [string]::IsNullOrWhiteSpace($_.id) })
+  $invalidPolicyMetadataCount = $allPolicyMetadata.Count - $policyMetadata.Count
+  Write-Verbose "[$(getCurrentUTCString)]: Found $($policyMetadata.Count) valid built-in security controls."
+  if ($invalidPolicyMetadataCount -gt 0) {
+    Write-Verbose "[$(getCurrentUTCString)]: Skipping $invalidPolicyMetadataCount policy metadata record(s) with missing id."
+  }
   $filePaths = [System.Collections.Generic.List[string]]::new()
   Foreach ($item in $policyMetadata) {
-    #Write-Verbose "  - [$(getCurrentUTCString)]: Processing built-in security control '$($item.id)'." -verbose
+    #Write-Verbose "  - [$(getCurrentUTCString)]: Processing built-in security control '$($item.id)'."
     $PolicyMetadataFileNameMapping = getWikiPageFileName -ResourceId $item.id -wikiFileMapping $WikiFileMapping
     $fileName = $PolicyMetadataFileNameMapping.FileName
     $OutputPath = $PolicyMetadataFileNameMapping.FileParentDirectory
@@ -2215,12 +2259,12 @@ function newPolicyCategoryPage {
 
     #Create the output directory if not exists
     if (-not (Test-Path -Path $OutputPath -PathType Container)) {
-      Write-Verbose "[$(getCurrentUTCString)]: Creating output directory '$OutputPath'" -Verbose
+      Write-Verbose "[$(getCurrentUTCString)]: Creating output directory '$OutputPath'"
       New-Item -Path $OutputPath -ItemType Directory | Out-Null
     }
     $markdownFilePath = Join-Path -Path $OutputPath -ChildPath $fileName
     #save the Markdown content to file, create the file if not exists and overwrite it if already exists
-    #Write-Verbose "  - Saving Markdown file '$markdownFilePath'" -Verbose
+    #Write-Verbose "  - Saving Markdown file '$markdownFilePath'"
     Set-Content -Value $PageContent -Path $markdownFilePath -Force -Encoding 'utf8'
   }
 }
@@ -2248,9 +2292,9 @@ Function newGitHubWikiSidebar {
   )
 
   $GitHubSidebarFileNameMapping = getWikiPageFileName -summaryPageType 'github_sidebar' -wikiFileMapping $WikiFileMapping
-  Write-Verbose "[$(getCurrentUTCString)]: Generating the GitHub Sidebar page." -Verbose
+  Write-Verbose "[$(getCurrentUTCString)]: Generating the GitHub Sidebar page."
 
-  Write-Verbose "[$(getCurrentUTCString)]: GitHub Sidebar file name: '$($GitHubSidebarFileNameMapping.FileName)'." -verbose
+  Write-Verbose "[$(getCurrentUTCString)]: GitHub Sidebar file name: '$($GitHubSidebarFileNameMapping.FileName)'."
   $sidebarParams = @{
     EnvironmentDiscoveryData = $EnvironmentDiscoveryData
     Title                    = $Title

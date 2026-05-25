@@ -1095,12 +1095,12 @@ function buildPolicyDefinitionGroupComplianceCoverageMarkdown {
         $securityControlLink = getRelativePath -FromPath $FromPath -ToPath $(Join-Path $PolicyMetadataFolderPath $PolicyMetadataPageFileBaseName) -UseUnixPath $true
         $title = "[$($policyMetadata.properties.title)]($securityControlLink)"
         $category = $policyMetadata.properties.category
-        #Write-Verbose "Looking up security framework for policy metadata '$($policyMetadata.id)'." -Verbose
+        #Write-Verbose "Looking up security framework for policy metadata '$($policyMetadata.id)'."
         #$framework = getSecFrameworkForPolicyMetadata -mappings $EnvironmentDiscoveryData.additionalBuiltInPolicyMetadataConfig -policyMetadataId $item.additionalMetadataId
         $framework = $policyMetadata.framework
-        #Write-Verbose "Security framework for policy metadata '$($policyMetadata.id)' is '$framework'." -Verbose
+        #Write-Verbose "Security framework for policy metadata '$($policyMetadata.id)' is '$framework'."
         if ($allFrameworks -notcontains $framework) {
-          #Write-Verbose "Adding framework '$framework' to the list of all frameworks." -Verbose
+          #Write-Verbose "Adding framework '$framework' to the list of all frameworks."
           $allFrameworks += $framework.toupper()
         }
         if ($policyMetadata.properties.metadataId) {
@@ -1116,9 +1116,9 @@ function buildPolicyDefinitionGroupComplianceCoverageMarkdown {
         $title = "[$($customControl.name)]($customSecurityControlPagesRelativePath)"
         $category = $customControl.category
         $framework = $customControl.framework
-        #Write-Verbose "Security framework for custom control '$($customControl.controlId)' is '$framework'." -Verbose
+        #Write-Verbose "Security framework for custom control '$($customControl.controlId)' is '$framework'."
         if ($allFrameworks -notcontains $framework) {
-          #Write-Verbose "Adding framework '$framework' to the list of all frameworks." -Verbose
+          #Write-Verbose "Adding framework '$framework' to the list of all frameworks."
           $allFrameworks += $framework.toupper()
         }
         $name = $customControl.controlId
@@ -1127,14 +1127,14 @@ function buildPolicyDefinitionGroupComplianceCoverageMarkdown {
     #Get mapped policy count
     if ($policyMetadata) {
       if ($processedPolicyMetadataIds -contains $policyMetadata.id.tolower()) {
-        Write-Verbose "[$(getCurrentUTCString)]: Skipping policy definition group '$($item.name)' as its policy metadata '$($policyMetadata.id)' has already been processed." -Verbose
+        Write-Verbose "[$(getCurrentUTCString)]: Skipping policy definition group '$($item.name)' as its policy metadata '$($policyMetadata.id)' has already been processed."
         continue
       }
-      #Write-Verbose "Looking up mapped policies for policy metadata data '$($policyMetadata.id)'." -Verbose
+      #Write-Verbose "Looking up mapped policies for policy metadata data '$($policyMetadata.id)'."
       $mappedDefinitions = getMappedPoliciesForPolicyDefinitionGroup -policyMetadataId $policyMetadata.id -initiatives $assignedInitiatives
       $processedPolicyMetadataIds += $policyMetadata.id.tolower()
     } else {
-      #Write-Verbose "Looking up mapped policies for policy definition group '$($item.name)'." -Verbose
+      #Write-Verbose "Looking up mapped policies for policy definition group '$($item.name)'."
       $mappedDefinitions = getMappedPoliciesForPolicyDefinitionGroup -policyDefinitionGroupName $item.name -initiatives $assignedInitiatives
     }
     $policyCount = $mappedDefinitions.mappedPolicies.count
@@ -1203,7 +1203,7 @@ function buildPolicyDefinitionGroupComplianceCoverageMarkdown {
     $Markdown += $frameworkComplianceSummary
     $Markdown += "`n`n"
     $filteredArr = $arrPolicyDefinitionGroupNamesComplianceSummary | Where-Object { $_.Framework.toupper() -ieq $framework.toupper() } | Sort-Object { [int]$_.CompliancePercentage }, { $_.Name }
-    Write-Verbose "[$(getCurrentUTCString)]: Building compliance summary for framework '$framework' with $($filteredArr.Count) items." -Verbose
+    Write-Verbose "[$(getCurrentUTCString)]: Building compliance summary for framework '$framework' with $($filteredArr.Count) items."
     $Markdown += newMarkdownTableFromArray -Data $filteredArr -keyFormatting @{'Name' = 'code'; 'Category' = 'code' } -Alignment 'Left' -Properties @('Name', 'Title', 'SecurityControlCategory', 'PolicyCount', 'ComplianceRating', 'InitiativeCategories')
     $Markdown += "`n`n"
     $Markdown += "[:arrow_up: Back to Top](#$titleAnchor)"
@@ -1922,6 +1922,10 @@ function buildPolicyAssignmentMarkdownTableForMg {
     $Markdown += $markdownHeaderLine2
     $Markdown += "`n"
     foreach ($assignment in $mgAssignments) {
+      if ([string]::IsNullOrWhiteSpace($assignment.id)) {
+        Write-Warning "Skipping assignment row because assignment id is empty."
+        continue
+      }
       $assignmentComplianceForAssignment = $assignmentCompliance | Where-Object { $_.policyAssignmentId -ieq $assignment.id }
       $totalCompliantCount = 0
       $totalNonCompliantCount = 0
@@ -2087,6 +2091,10 @@ function buildPolicyAssignmentMarkdownTableForSub {
     $Markdown += $markdownHeaderLine2
     $Markdown += "`n"
     foreach ($assignment in $subAssignments) {
+      if ([string]::IsNullOrWhiteSpace($assignment.id)) {
+        Write-Warning "Skipping assignment row because assignment id is empty."
+        continue
+      }
       $assignmentComplianceForAssignment = $assignmentCompliance | Where-Object { $_.policyAssignmentId -ieq $assignment.id }
       $totalCompliantCount = 0
       $totalNonCompliantCount = 0
@@ -2217,7 +2225,7 @@ function buildPolicyExemptionMarkdownTableForMg {
   )
   $wikiStyle = $WikiFileMapping.WikiStyle
   $mgMatchRegex = '(?im)^\/providers\/microsoft\.management\/managementgroups\/{0}\/' -f $($managementGroup.name.tolower())
-  $mgExemptions = $exemptions | Where-Object { $_.id -match $mgMatchRegex } | sort-Object name
+  $mgExemptions = $exemptions | Where-Object { -not [string]::IsNullOrWhiteSpace($_.id) -and $_.id -match $mgMatchRegex } | sort-Object name
 
   if ($mgExemptions.count -ge 1) {
     $Markdown += "$(newMarkdownHeader -title "$($managementGroup.name)" -level 3 -caseStyle 'UpperCase')`n`n"
@@ -2231,12 +2239,20 @@ function buildPolicyExemptionMarkdownTableForMg {
     $Markdown += "| ---- | ------------ | ----------- | ----------------- | -------- | ---------------- | ------------------------ |`n"
 
     foreach ($exemption in $mgExemptions) {
-      $assignment = $assignments | Where-Object { $_.id -ieq $exemption.policyAssignmentId }
-      $AssignmentFileNameMapping = getWikiPageFileName -ResourceId $assignment.id -wikiFileMapping $wikiFileMapping
+      $assignment = $assignments | Where-Object { $_.id -ieq $exemption.policyAssignmentId } | Select-Object -First 1
+      $assignmentDisplayValue = $($exemption.policyAssignmentId ? $exemption.policyAssignmentId : '``null``')
+      if ($null -ne $assignment) {
+        if (-not [string]::IsNullOrWhiteSpace($assignment.id)) {
+          $AssignmentFileNameMapping = getWikiPageFileName -ResourceId $assignment.id -wikiFileMapping $wikiFileMapping
+          $assignmentPageFileBaseName = $AssignmentFileNameMapping.FileBaseName
+          $assignmentFolderPath = $AssignmentFileNameMapping.FileParentDirectory
+          $assignmentLink = getRelativePath -FromPath $resourceTypeFolderPath -ToPath $(Join-Path $assignmentFolderPath $assignmentPageFileBaseName) -UseUnixPath $true
+          $assignmentDisplayValue = "[$($assignment.name)]($assignmentLink)"
+        } else {
+          $assignmentDisplayValue = $($assignment.name ? $assignment.name : $assignmentDisplayValue)
+        }
+      }
       $exemptionFileNameMapping = getWikiPageFileName -ResourceId $exemption.id -wikiFileMapping $wikiFileMapping
-      $assignmentPageFileBaseName = $AssignmentFileNameMapping.FileBaseName
-      $assignmentFolderPath = $AssignmentFileNameMapping.FileParentDirectory
-      $assignmentLink = getRelativePath -FromPath $resourceTypeFolderPath -ToPath $(Join-Path $assignmentFolderPath $assignmentPageFileBaseName) -UseUnixPath $true
 
       $exemptionPageFileBaseName = $exemptionFileNameMapping.FileBaseName
       $exemptionFolderPath = $exemptionFileNameMapping.FileParentDirectory
@@ -2258,7 +2274,7 @@ function buildPolicyExemptionMarkdownTableForMg {
         $strExemptionExpiresOn = $exemption.expiresOn
       }
       $exemptionExpiresOn = FormatExemptionExpiresOn -InputString $strExemptionExpiresOn -warningDays $expiresOnWarningDays -WikiStyle $wikiStyle
-      $Markdown += "| [$($exemption.name)]($exemptionLink) | $exemptionDisplayName | $($exemption.description ? $(FormatMarkdownTableString -InputString $exemption.description) : '``null``') | [$($assignment.name)]($assignmentLink) | $($exemption.exemptionCategory) | $exemptionExpiresOn | $policyDefinitionReferenceIds |`n"
+      $Markdown += "| [$($exemption.name)]($exemptionLink) | $exemptionDisplayName | $($exemption.description ? $(FormatMarkdownTableString -InputString $exemption.description) : '``null``') | $assignmentDisplayValue | $($exemption.exemptionCategory) | $exemptionExpiresOn | $policyDefinitionReferenceIds |`n"
     }
     $Markdown += "`n`n"
     $Markdown += buildExemptionExpiresOnMarkdown -expiresOnWarningDays $expiresOnWarningDays -WikiStyle $wikiStyle
@@ -2308,7 +2324,7 @@ function buildPolicyExemptionMarkdownTableForSub {
     $includeSubWithoutExemptions = $false
   )
   $wikiStyle = $WikiFileMapping.WikiStyle
-  $subExemptions = $exemptions | Where-Object { $_.id -imatch $('{0}*' -f $subscription.id) }
+  $subExemptions = $exemptions | Where-Object { -not [string]::IsNullOrWhiteSpace($_.id) -and $_.id -imatch $('{0}*' -f $subscription.id) }
   if ($subExemptions.count -ge 1) {
     $Markdown += ":bookmark: **$($subExemptions.count)** Policy Exemptions are created on the scope of the subscription ``$($subscription.name)`` or resource groups in the subscription:`n`n"
     $Markdown += "<details>"
@@ -2318,12 +2334,20 @@ function buildPolicyExemptionMarkdownTableForSub {
     $Markdown += "| ---- | ------------ | ----------- | ----------------- | -------- | ---------------- | ------------------------ |`n"
 
     foreach ($exemption in $subExemptions) {
-      $assignment = $assignments | Where-Object { $_.id -ieq $exemption.policyAssignmentId }
-      $AssignmentFileNameMapping = getWikiPageFileName -ResourceId $assignment.id -wikiFileMapping $wikiFileMapping
+      $assignment = $assignments | Where-Object { $_.id -ieq $exemption.policyAssignmentId } | Select-Object -First 1
+      $assignmentDisplayValue = $($exemption.policyAssignmentId ? $exemption.policyAssignmentId : '``null``')
+      if ($null -ne $assignment) {
+        if (-not [string]::IsNullOrWhiteSpace($assignment.id)) {
+          $AssignmentFileNameMapping = getWikiPageFileName -ResourceId $assignment.id -wikiFileMapping $wikiFileMapping
+          $assignmentPageFileBaseName = $AssignmentFileNameMapping.FileBaseName
+          $assignmentFolderPath = $AssignmentFileNameMapping.FileParentDirectory
+          $assignmentLink = getRelativePath -FromPath $resourceTypeFolderPath -ToPath $(Join-Path $assignmentFolderPath $assignmentPageFileBaseName) -UseUnixPath $true
+          $assignmentDisplayValue = "[$($assignment.name)]($assignmentLink)"
+        } else {
+          $assignmentDisplayValue = $($assignment.name ? $assignment.name : $assignmentDisplayValue)
+        }
+      }
       $exemptionFileNameMapping = getWikiPageFileName -ResourceId $exemption.id -wikiFileMapping $wikiFileMapping
-      $assignmentPageFileBaseName = $AssignmentFileNameMapping.FileBaseName
-      $assignmentFolderPath = $AssignmentFileNameMapping.FileParentDirectory
-      $assignmentLink = getRelativePath -FromPath $resourceTypeFolderPath -ToPath $(Join-Path $assignmentFolderPath $assignmentPageFileBaseName) -UseUnixPath $true
 
       $exemptionPageFileBaseName = $exemptionFileNameMapping.FileBaseName
       $exemptionFolderPath = $exemptionFileNameMapping.FileParentDirectory
@@ -2345,7 +2369,7 @@ function buildPolicyExemptionMarkdownTableForSub {
         $strExemptionExpiresOn = $exemption.expiresOn
       }
       $exemptionExpiresOn = FormatExemptionExpiresOn -InputString $strExemptionExpiresOn -warningDays $expiresOnWarningDays -WikiStyle $wikiStyle
-      $Markdown += "| [$($exemption.name)]($exemptionLink) | $exemptionDisplayName | $($exemption.description ? $(FormatMarkdownTableString -InputString $exemption.description) : '``null``') | [$($assignment.name)]($assignmentLink) | $($exemption.exemptionCategory) | $exemptionExpiresOn | $policyDefinitionReferenceIds |`n"
+      $Markdown += "| [$($exemption.name)]($exemptionLink) | $exemptionDisplayName | $($exemption.description ? $(FormatMarkdownTableString -InputString $exemption.description) : '``null``') | $assignmentDisplayValue | $($exemption.exemptionCategory) | $exemptionExpiresOn | $policyDefinitionReferenceIds |`n"
     }
     $Markdown += "`n`n"
     $Markdown += buildExemptionExpiresOnMarkdown -expiresOnWarningDays $expiresOnWarningDays -WikiStyle $wikiStyle
@@ -3176,12 +3200,20 @@ function buildPolicyExemptionDetailedPageContent {
     $strExemptionExpiresOn = $exemption.expiresOn
   }
   $exemptionExpiresOn = FormatExemptionExpiresOn -InputString $strExemptionExpiresOn -warningDays $expiresOnWarningDays -WikiStyle $wikiStyle
-  $assignment = $assignments | Where-Object { $_.id -ieq $exemption.policyAssignmentId }
-  $AssignmentFileNameMapping = getWikiPageFileName -ResourceId $assignment.id -wikiFileMapping $WikiFileMapping
-  $assignmentPageFileBaseName = $AssignmentFileNameMapping.FileBaseName
-  $assignmentFolderPath = $AssignmentFileNameMapping.FileParentDirectory
-  $assignmentLink = getRelativePath -FromPath $FromPath -ToPath $(Join-Path $assignmentFolderPath $assignmentPageFileBaseName) -UseUnixPath $true
-  if ($exemption.subscriptionId) {
+  $assignment = $assignments | Where-Object { $_.id -ieq $exemption.policyAssignmentId } | Select-Object -First 1
+  $assignmentDisplayValue = $($exemption.policyAssignmentId ? $exemption.policyAssignmentId : $null)
+  if ($null -ne $assignment) {
+    if (-not [string]::IsNullOrWhiteSpace($assignment.id)) {
+      $AssignmentFileNameMapping = getWikiPageFileName -ResourceId $assignment.id -wikiFileMapping $WikiFileMapping
+      $assignmentPageFileBaseName = $AssignmentFileNameMapping.FileBaseName
+      $assignmentFolderPath = $AssignmentFileNameMapping.FileParentDirectory
+      $assignmentLink = getRelativePath -FromPath $FromPath -ToPath $(Join-Path $assignmentFolderPath $assignmentPageFileBaseName) -UseUnixPath $true
+      $assignmentDisplayValue = "[$($assignment.name)]($assignmentLink)"
+    } else {
+      $assignmentDisplayValue = $($assignment.name ? $assignment.name : $assignmentDisplayValue)
+    }
+  }
+  if (-not [string]::IsNullOrWhiteSpace($exemption.subscriptionId)) {
     $subResourceId = '/subscriptions/{0}' -f $exemption.subscriptionId
     $SubscriptionPageFileNameMapping = getWikiPageFileName -ResourceId $subResourceId -wikiFileMapping $WikiFileMapping
     $subscriptionLink = getRelativePath -FromPath $FromPath -ToPath $(Join-Path $SubscriptionPageFileNameMapping.FileParentDirectory $SubscriptionPageFileNameMapping.FileBaseName) -UseUnixPath $true
@@ -3190,9 +3222,9 @@ function buildPolicyExemptionDetailedPageContent {
     DisplayName                  = "**$($exemption.displayName)**"
     Name                         = $exemption.name
     Id                           = $exemption.id
-    PolicyAssignment             = "[$($assignment.name)]($assignmentLink)"
+    PolicyAssignment             = $assignmentDisplayValue
     Description                  = $($exemption.description ? $($exemption.description) : $null)
-    SubscriptionId               = $($exemption.subscriptionId ? "[$($exemption.subscriptionId)]($subscriptionLink)" : $null)
+    SubscriptionId               = $($subscriptionLink ? "[$($exemption.subscriptionId)]($subscriptionLink)" : $($exemption.subscriptionId ? $exemption.subscriptionId : $null))
     ResourceGroup                = $($exemption.resourceGroup ? $($exemption.resourceGroup) : $null)
     PolicyDefinitionReferenceIds = $exemption.PolicyDefinitionReferenceIds
     ExemptionCategory            = $exemption.exemptionCategory
@@ -4328,7 +4360,7 @@ function newMarkdownHeader {
     'LowerCase' { $formattedTitle = $title.ToLower() }
     'Original' { $formattedTitle = $title }
   }
-  Write-verbose "Formatted title: $formattedTitle" -Verbose:($PSCmdlet.MyInvocation.BoundParameters["Verbose"].IsPresent -eq $true)
+  Write-Verbose "Formatted title: $formattedTitle" -Verbose:($PSCmdlet.MyInvocation.BoundParameters["Verbose"].IsPresent -eq $true)
   $headerCharacter = '#'
   $header = "{0} {1}" -f ($headerCharacter * $Level), $formattedTitle
   Write-Verbose "Markdown header: '$header'." -Verbose:($PSCmdlet.MyInvocation.BoundParameters["Verbose"].IsPresent -eq $true)
@@ -4881,7 +4913,7 @@ function getComplianceRatingSummaryForFramework {
   $nonCompliantCount = 0
   $exemptCount = 0
   $conflictCount = 0
-  if ($EnvironmentDiscoveryData.policyMetadata) {
+  if ($null -ne $EnvironmentDiscoveryData.policyMetadata) {
     Write-Verbose "Collecting compliance summary for framework '$framework' for built-in policy metadata." -Verbose:($PSCmdlet.MyInvocation.BoundParameters["Verbose"].IsPresent -eq $true)
     $policyMetadata = $EnvironmentDiscoveryData.policyMetadata | Where-Object { $_.framework -ieq $framework -and $_.isInUse -eq $true }
     foreach ($pm in $policyMetadata) {
@@ -4900,7 +4932,7 @@ function getComplianceRatingSummaryForFramework {
     $customControl = $CustomSecurityControlFileConfig | Where-Object { $_.framework -ieq $framework }
     foreach ($control in $customControl) {
       Write-Verbose "  - Processing custom security control '$($control.controlId)'." -Verbose:($PSCmdlet.MyInvocation.BoundParameters["Verbose"].IsPresent -eq $true)
-      $complianceSummary = $EnvironmentDiscoveryData.complianceSummaryByPolicyDefinitionGroup | where-object { $_.policyDefinitionGroupName -ieq $control.controlId -and $_.policyMetadataId -eq $null }
+      $complianceSummary = $EnvironmentDiscoveryData.complianceSummaryByPolicyDefinitionGroup | where-object { $_.policyDefinitionGroupName -ieq $control.controlId -and $null -eq $_.policyMetadataId }
       foreach ($cs in $complianceSummary) {
         $compliantCount = $compliantCount + $cs.compliantCount
         $nonCompliantCount = $nonCompliantCount + $cs.nonCompliantCount
