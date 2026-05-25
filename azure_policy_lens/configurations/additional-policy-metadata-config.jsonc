@@ -3,7 +3,7 @@
     "framework": "Microsoft Cloud Security Benchmark V3.0",
     "policyMetadataNameRegex": "^Azure_Security_Benchmark_v3\\.0"
   },
-   {
+  {
     "framework": "CIS Microsoft Azure Foundations Benchmark v1.0.0",
     "policyMetadataNameRegex": "^CIS_Azure_1.3.0_"
   },

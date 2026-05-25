@@ -56,7 +56,7 @@ Function Import-AzplEnvironmentDiscovery {
 
   try {
     if ($($PSCmdlet.ParameterSetName) -eq 'EncryptionViaKeyFile') {
-      Write-Verbose "[$(getCurrentUTCString)]: Decrypting the environment details using the encryption key file '$EncryptionKeyFilePath'." -Verbose
+      Write-Verbose "[$(getCurrentUTCString)]: Decrypting the environment details using the encryption key file '$EncryptionKeyFilePath'."
       $hierarchyDetails = decryptStuff -InputFilePath $hierarchyFileFullPath -KeyFilePath $EncryptionKeyFilePath | ConvertFrom-Json -depth 100
       $policyAssignmentDetails = decryptStuff -InputFilePath $policyAssignmentFileFullPath -KeyFilePath $EncryptionKeyFilePath | ConvertFrom-Json -depth 100
       $policyInitiativeDetails = decryptStuff -InputFilePath $policyInitiativeFileFullPath -KeyFilePath $EncryptionKeyFilePath | ConvertFrom-Json -depth 100
@@ -66,7 +66,7 @@ Function Import-AzplEnvironmentDiscovery {
       $complianceDataDetails = decryptStuff -InputFilePath $complianceDataFileFullPath -KeyFilePath $EncryptionKeyFilePath | ConvertFrom-Json -depth 100
 
     } elseif ($($PSCmdlet.ParameterSetName) -ieq 'EncryptionViaKeyText') {
-      Write-Verbose "[$(getCurrentUTCString)]: Decrypting the environment details using the encryption key and IV text." -Verbose
+      Write-Verbose "[$(getCurrentUTCString)]: Decrypting the environment details using the encryption key and IV text."
       $hierarchyDetails = decryptStuff -InputFilePath $hierarchyFileFullPath -AESKey $EncryptionKey -AESIV $EncryptionIV | ConvertFrom-Json -depth 100
       $policyAssignmentDetails = decryptStuff -InputFilePath $policyAssignmentFileFullPath -AESKey $EncryptionKey -AESIV $EncryptionIV | ConvertFrom-Json -depth 100
       $policyInitiativeDetails = decryptStuff -InputFilePath $policyInitiativeFileFullPath -AESKey $EncryptionKey -AESIV $EncryptionIV | ConvertFrom-Json -depth 100
@@ -75,7 +75,7 @@ Function Import-AzplEnvironmentDiscovery {
       $policyMetadataDetails = decryptStuff -InputFilePath $policyMetadataFileFullPath -AESKey $EncryptionKey -AESIV $EncryptionIV | ConvertFrom-Json -depth 100
       $complianceDataDetails = decryptStuff -InputFilePath $complianceDataFileFullPath -AESKey $EncryptionKey -AESIV $EncryptionIV | ConvertFrom-Json -depth 100
     } else {
-      Write-Verbose "[$(getCurrentUTCString)]: Importing the environment details from the file '$FilePath' as plain-text." -Verbose
+      Write-Verbose "[$(getCurrentUTCString)]: Importing the environment details from the file '$FilePath' as plain-text."
       $hierarchyDetails = Get-Content $hierarchyFileFullPath -Raw | ConvertFrom-Json -depth 100
       $policyAssignmentDetails = Get-Content $policyAssignmentFileFullPath -Raw | ConvertFrom-Json -depth 100
       $policyInitiativeDetails = Get-Content $policyInitiativeFileFullPath -Raw | ConvertFrom-Json -depth 100
@@ -94,7 +94,7 @@ Function Import-AzplEnvironmentDiscovery {
     $policyMetadataData = $policyMetadataDetails
     $complianceData = $complianceDataDetails
 
-    Write-Verbose "[$(getCurrentUTCString)]: Environment Discovery Data Import." -verbose
+    Write-Verbose "[$(getCurrentUTCString)]: Environment Discovery Data Import."
     $AzplEnvironmentDetails = [ordered]@{
       timeStamp                                     = $hierarchyData.timeStamp
       topLevelManagementGroupName                   = $hierarchyData.topLevelManagementGroupName
@@ -115,19 +115,19 @@ Function Import-AzplEnvironmentDiscovery {
     }
 
 
-    Write-Verbose "[$(getCurrentUTCString)]: Imported environment details summary:" -Verbose
-    Write-Verbose "  - Time Stamp (UTC): $($AzplEnvironmentDetails.timeStamp)" -Verbose
-    Write-Verbose "  - Top Level Management Group Name: $($AzplEnvironmentDetails.topLevelManagementGroupName)" -Verbose
-    Write-Verbose "  - Management Groups Count: $($AzplEnvironmentDetails.managementGroups.Count)" -Verbose
-    Write-Verbose "  - Subscriptions Count: $($AzplEnvironmentDetails.subscriptions.Count)" -Verbose
-    Write-Verbose "  - Assignments Count: $($AzplEnvironmentDetails.assignments.Count)" -Verbose
-    Write-Verbose "  - Initiatives Count: $($AzplEnvironmentDetails.initiatives.Count)" -Verbose
-    Write-Verbose "  - Definitions Count: $($AzplEnvironmentDetails.definitions.Count)" -Verbose
-    Write-Verbose "  - Exemptions Count: $($AzplEnvironmentDetails.exemptions.Count)" -Verbose
-    Write-Verbose "  - Policy Metadata Count: $($AzplEnvironmentDetails.policyMetadata.Count)" -Verbose
-    Write-Verbose "  - Built-in Definition in Unassigned Custom Initiative Count: $($AzplEnvironmentDetails.builtInDefinitionInUnAssignedCustomInitiative.Count)" -Verbose
-    Write-Verbose "  - Role Assignments Count: $($AzplEnvironmentDetails.roleAssignments.Count)" -Verbose
-    Write-Verbose "  - Role Definitions Count: $($AzplEnvironmentDetails.roleDefinitions.Count)" -Verbose
+    Write-Verbose "[$(getCurrentUTCString)]: Imported environment details summary:"
+    Write-Verbose "  - Time Stamp (UTC): $($AzplEnvironmentDetails.timeStamp)"
+    Write-Verbose "  - Top Level Management Group Name: $($AzplEnvironmentDetails.topLevelManagementGroupName)"
+    Write-Verbose "  - Management Groups Count: $($AzplEnvironmentDetails.managementGroups.Count)"
+    Write-Verbose "  - Subscriptions Count: $($AzplEnvironmentDetails.subscriptions.Count)"
+    Write-Verbose "  - Assignments Count: $($AzplEnvironmentDetails.assignments.Count)"
+    Write-Verbose "  - Initiatives Count: $($AzplEnvironmentDetails.initiatives.Count)"
+    Write-Verbose "  - Definitions Count: $($AzplEnvironmentDetails.definitions.Count)"
+    Write-Verbose "  - Exemptions Count: $($AzplEnvironmentDetails.exemptions.Count)"
+    Write-Verbose "  - Policy Metadata Count: $($AzplEnvironmentDetails.policyMetadata.Count)"
+    Write-Verbose "  - Built-in Definition in Unassigned Custom Initiative Count: $($AzplEnvironmentDetails.builtInDefinitionInUnAssignedCustomInitiative.Count)"
+    Write-Verbose "  - Role Assignments Count: $($AzplEnvironmentDetails.roleAssignments.Count)"
+    Write-Verbose "  - Role Definitions Count: $($AzplEnvironmentDetails.roleDefinitions.Count)"
 
   } catch {
     $ExceptionDetails = $_.Exception.Response.GetResponseStream()
@@ -139,19 +139,19 @@ Function Import-AzplEnvironmentDiscovery {
     $AzplEnvironmentDetails = [ordered]@{}
   }
   if ($removeExtractedFile) {
-    Write-Verbose "[$(getCurrentUTCString)]: Removing the extracted file '$($hierarchyFileFullPath)'." -Verbose
+    Write-Verbose "[$(getCurrentUTCString)]: Removing the extracted file '$($hierarchyFileFullPath)'."
     Remove-Item -Path $hierarchyFileFullPath -Force
-    Write-Verbose "[$(getCurrentUTCString)]: Removing the extracted file '$($policyAssignmentFileFullPath)'." -Verbose
+    Write-Verbose "[$(getCurrentUTCString)]: Removing the extracted file '$($policyAssignmentFileFullPath)'."
     Remove-Item -Path $policyAssignmentFileFullPath -Force
-    Write-Verbose "[$(getCurrentUTCString)]: Removing the extracted file '$($policyInitiativeFileFullPath)'." -Verbose
+    Write-Verbose "[$(getCurrentUTCString)]: Removing the extracted file '$($policyInitiativeFileFullPath)'."
     Remove-Item -Path $policyInitiativeFileFullPath -Force
-    Write-Verbose "[$(getCurrentUTCString)]: Removing the extracted file '$($policyDefinitionFileFullPath)'." -Verbose
+    Write-Verbose "[$(getCurrentUTCString)]: Removing the extracted file '$($policyDefinitionFileFullPath)'."
     Remove-Item -Path $policyDefinitionFileFullPath -Force
-    Write-Verbose "[$(getCurrentUTCString)]: Removing the extracted file '$($policyExemptionFileFullPath)'." -Verbose
+    Write-Verbose "[$(getCurrentUTCString)]: Removing the extracted file '$($policyExemptionFileFullPath)'."
     Remove-Item -Path $policyExemptionFileFullPath -Force
-    Write-Verbose "[$(getCurrentUTCString)]: Removing the extracted file '$($policyMetadataFileFullPath)'." -Verbose
+    Write-Verbose "[$(getCurrentUTCString)]: Removing the extracted file '$($policyMetadataFileFullPath)'."
     Remove-Item -Path $policyMetadataFileFullPath -Force
-    Write-Verbose "[$(getCurrentUTCString)]: Removing the extracted file '$($complianceDataFileFullPath)'." -Verbose
+    Write-Verbose "[$(getCurrentUTCString)]: Removing the extracted file '$($complianceDataFileFullPath)'."
     Remove-Item -Path $complianceDataFileFullPath -Force
   }
 
@@ -403,17 +403,17 @@ Function New-AzplDocumentation {
   $global:failedSyntaxValidationInitiatives = @()
 
   if ($subscriptionIds.count -gt 0) {
-    Write-Verbose "[$(getCurrentUTCString)]: subscription Ids are provided. Filtering documentation for the specified subscriptions only." -Verbose
+    Write-Verbose "[$(getCurrentUTCString)]: subscription Ids are provided. Filtering documentation for the specified subscriptions only."
     $EnvironmentDiscoveryData = Invoke-AzplTimedOperation -Name 'Filter discovery data by subscriptions' -Metrics $phaseMetrics -Metadata @{ SubscriptionCount = $subscriptionIds.Count } -Operation {
       filterDiscoveryData -SubscriptionIds $subscriptionIds -environmentDetails $AzplEnvironmentDetails
     }
   } elseif ($childManagementGroupId.length -gt 0) {
-    Write-Verbose "[$(getCurrentUTCString)]: Child management group ID is provided. Filtering documentation for the specified child management group and its descendants." -Verbose
+    Write-Verbose "[$(getCurrentUTCString)]: Child management group ID is provided. Filtering documentation for the specified child management group and its descendants."
     $EnvironmentDiscoveryData = Invoke-AzplTimedOperation -Name 'Filter discovery data by child management group' -Metrics $phaseMetrics -Metadata @{ ManagementGroupId = $childManagementGroupId } -Operation {
       filterDiscoveryData -ChildManagementGroupId $childManagementGroupId -environmentDetails $AzplEnvironmentDetails
     }
   } else {
-    Write-Verbose "[$(getCurrentUTCString)]: No subscription Ids or child management group ID provided. Generating documentation for all subscriptions in the environment." -Verbose
+    Write-Verbose "[$(getCurrentUTCString)]: No subscription Ids or child management group ID provided. Generating documentation for all subscriptions in the environment."
     $EnvironmentDiscoveryData = $AzplEnvironmentDetails
     $phaseMetrics['Use unfiltered discovery data'] = [ordered]@{
       Duration     = '00:00.000'
@@ -458,7 +458,7 @@ Function New-AzplDocumentation {
   }
 
   #Delete existing wiki content (so there are no orphaned pages for resources no longer exist)
-  Write-Verbose "[$(getCurrentUTCString)]: Deleting existing wiki content in '$BaseOutputPath'." -Verbose
+  Write-Verbose "[$(getCurrentUTCString)]: Deleting existing wiki content in '$BaseOutputPath'."
   Invoke-AzplTimedOperation -Name 'Remove existing wiki files' -Metrics $phaseMetrics -Operation {
     removeExistingWikiFiles -WikiDirectory $BaseOutputPath -Verbose:($PSCmdlet.MyInvocation.BoundParameters["Verbose"].IsPresent -eq $true)
   } | Out-Null
@@ -487,7 +487,7 @@ Function New-AzplDocumentation {
   $moduleManifestPath = Join-Path -Path $PSScriptRoot -ChildPath 'AzPolicyLens.Wiki.psd1'
   $independentPageTasks = @()
 
-  Write-Verbose "[$(getCurrentUTCString)]: Start Generating Markdown files for the $($EnvironmentDiscoveryData.policyMetadata.count) built-in security controls (policy metadata) that have been discovered." -Verbose
+  Write-Verbose "[$(getCurrentUTCString)]: Start Generating Markdown files for the $($EnvironmentDiscoveryData.policyMetadata.count) built-in security controls (policy metadata) that have been discovered."
   $independentPageTasks += [pscustomobject]@{
     Name         = 'Generate policy metadata pages'
     FunctionName = 'newPolicyMetadataPage'
@@ -499,7 +499,7 @@ Function New-AzplDocumentation {
     Metadata     = @{ ItemCount = @($EnvironmentDiscoveryData.policyMetadata).Count }
   }
 
-  Write-Verbose "[$(getCurrentUTCString)]: Start Generating Markdown files for the $($EnvironmentDiscoveryData.definitions.count) policy definitions that have been discovered." -Verbose
+  Write-Verbose "[$(getCurrentUTCString)]: Start Generating Markdown files for the $($EnvironmentDiscoveryData.definitions.count) policy definitions that have been discovered."
   $independentPageTasks += [pscustomobject]@{
     Name         = 'Generate policy definition pages'
     FunctionName = 'newPolicyDefinitionPage'
@@ -512,7 +512,7 @@ Function New-AzplDocumentation {
     Metadata     = @{ ItemCount = @($EnvironmentDiscoveryData.definitions).Count }
   }
 
-  Write-Verbose "[$(getCurrentUTCString)]: Start Generating Markdown files for the $($EnvironmentDiscoveryData.initiatives.count) policy initiatives that have been discovered." -Verbose
+  Write-Verbose "[$(getCurrentUTCString)]: Start Generating Markdown files for the $($EnvironmentDiscoveryData.initiatives.count) policy initiatives that have been discovered."
   $initiativeTaskParameters = @{
     WikiFileMapping          = $wikiFileMapping
     EnvironmentDiscoveryData = $EnvironmentDiscoveryData
@@ -530,7 +530,7 @@ Function New-AzplDocumentation {
   }
 
   if ($PSBoundParameters.ContainsKey('CustomSecurityControlPath')) {
-    Write-Verbose "[$(getCurrentUTCString)]: Start Generating Markdown files for the custom security controls defined in '$CustomSecurityControlPath'." -Verbose
+    Write-Verbose "[$(getCurrentUTCString)]: Start Generating Markdown files for the custom security controls defined in '$CustomSecurityControlPath'."
     $independentPageTasks += [pscustomobject]@{
       Name         = 'Generate custom security control pages'
       FunctionName = 'newCustomSecurityControlPage'
@@ -547,7 +547,7 @@ Function New-AzplDocumentation {
     $customSecurityControlPages = @()
   }
 
-  Write-Verbose "[$(getCurrentUTCString)]: Start Generating Markdown files for the $($EnvironmentDiscoveryData.assignments.count) policy assignments that have been discovered." -Verbose
+  Write-Verbose "[$(getCurrentUTCString)]: Start Generating Markdown files for the $($EnvironmentDiscoveryData.assignments.count) policy assignments that have been discovered."
   $independentPageTasks += [pscustomobject]@{
     Name         = 'Generate policy assignment pages'
     FunctionName = 'newPolicyAssignmentPage'
@@ -562,7 +562,7 @@ Function New-AzplDocumentation {
   }
 
   if ($EnvironmentDiscoveryData.exemptions.Count -gt 0) {
-    Write-Verbose "[$(getCurrentUTCString)]: Start Generating Markdown files for the $($EnvironmentDiscoveryData.exemptions.count) policy exemptions that have been discovered." -Verbose
+    Write-Verbose "[$(getCurrentUTCString)]: Start Generating Markdown files for the $($EnvironmentDiscoveryData.exemptions.count) policy exemptions that have been discovered."
     $independentPageTasks += [pscustomobject]@{
       Name         = 'Generate policy exemption pages'
       FunctionName = 'newPolicyExemptionPage'
@@ -580,7 +580,7 @@ Function New-AzplDocumentation {
     $exemptionPages = @()
   }
 
-  Write-Verbose "[$(getCurrentUTCString)]: Start Generating Markdown files for the $($EnvironmentDiscoveryData.subscriptions.count) subscriptions that have been discovered." -Verbose
+  Write-Verbose "[$(getCurrentUTCString)]: Start Generating Markdown files for the $($EnvironmentDiscoveryData.subscriptions.count) subscriptions that have been discovered."
   $independentPageTasks += [pscustomobject]@{
     Name         = 'Generate subscription pages'
     FunctionName = 'newSubscriptionPage'
@@ -660,7 +660,7 @@ Function New-AzplDocumentation {
   }
 
   #Generate Markdown pages for policy categories
-  Write-Verbose "[$(getCurrentUTCString)]: Start Generating Markdown files for the $($uniqueAssignedPolicyInitiativeCategories.count) unique policy categories from assigned initiatives." -Verbose
+  Write-Verbose "[$(getCurrentUTCString)]: Start Generating Markdown files for the $($uniqueAssignedPolicyInitiativeCategories.count) unique policy categories from assigned initiatives."
   $policyCategoryPageParams = @{
     WikiFileMapping                          = $wikiFileMapping
     EnvironmentDiscoveryData                 = $EnvironmentDiscoveryData
@@ -684,7 +684,7 @@ Function New-AzplDocumentation {
   }
 
   #Generate detailed main summary Markdown page
-  Write-Verbose "[$(getCurrentUTCString)]: Start Generating main $PageStyle summary Markdown file." -Verbose
+  Write-Verbose "[$(getCurrentUTCString)]: Start Generating main $PageStyle summary Markdown file."
   if ($SubscriptionIds.count -gt 0) {
     $mainSummaryPage = newMainSummaryPage @summaryPagesCommonParams -ComplianceWarningPercentageThreshold $ComplianceWarningPercentageThreshold -uniqueAssignedPolicyInitiativeCategories $uniqueAssignedPolicyInitiativeCategories -SubscriptionIds $SubscriptionIds
   } elseif ($null -ne $childManagementGroupId) {
@@ -694,20 +694,20 @@ Function New-AzplDocumentation {
   }
 
   #Generate assignment summary Markdown page
-  Write-Verbose "[$(getCurrentUTCString)]: Start Generating Policy Assignment summary Markdown file." -Verbose
+  Write-Verbose "[$(getCurrentUTCString)]: Start Generating Policy Assignment summary Markdown file."
   $assignmentSummaryPage = newAssignmentSummaryPage @summaryPagesCommonParams -ComplianceWarningPercentageThreshold $ComplianceWarningPercentageThreshold
 
   #Generate assignment initiative Markdown page
-  Write-Verbose "[$(getCurrentUTCString)]: Start Generating Policy Initiative summary Markdown file." -Verbose
+  Write-Verbose "[$(getCurrentUTCString)]: Start Generating Policy Initiative summary Markdown file."
   $initiativeSummaryPage = newInitiativeSummaryPage @summaryPagesCommonParams
 
   #Generate assignment definition Markdown page
-  Write-Verbose "[$(getCurrentUTCString)]: Start Generating Policy Definition summary Markdown file." -Verbose
+  Write-Verbose "[$(getCurrentUTCString)]: Start Generating Policy Definition summary Markdown file."
   $definitionSummaryPage = newDefinitionSummaryPage @summaryPagesCommonParams
 
   if ($PageStyle -ieq 'detailed') {
     #Generate security control summary Markdown page
-    Write-Verbose "[$(getCurrentUTCString)]: Start Generating Security Control summary Markdown file." -Verbose
+    Write-Verbose "[$(getCurrentUTCString)]: Start Generating Security Control summary Markdown file."
     if ($PSBoundParameters.ContainsKey('CustomSecurityControlPath')) {
       $securityControlSummaryPage = newSecurityControlSummaryPage @summaryPagesCommonParams -CustomSecurityControlFileConfig $CustomSecurityControlFileConfig
     } else {
@@ -716,16 +716,16 @@ Function New-AzplDocumentation {
   }
 
   #Generate policy category summary Markdown page
-  Write-Verbose "[$(getCurrentUTCString)]: Start Generating Policy Category summary Markdown file." -Verbose
+  Write-Verbose "[$(getCurrentUTCString)]: Start Generating Policy Category summary Markdown file."
   $policyCategorySummaryPage = newPolicyCategorySummaryPage @summaryPagesCommonParams -ComplianceWarningPercentageThreshold $ComplianceWarningPercentageThreshold -uniqueAssignedPolicyInitiativeCategories $uniqueAssignedPolicyInitiativeCategories
 
   #Generate subscription Markdown page
-  Write-Verbose "[$(getCurrentUTCString)]: Start Generating Subscription summary Markdown file." -Verbose
+  Write-Verbose "[$(getCurrentUTCString)]: Start Generating Subscription summary Markdown file."
   $subscriptionSummaryPage = newSubscriptionSummaryPage @summaryPagesCommonParams -ComplianceWarningPercentageThreshold $ComplianceWarningPercentageThreshold
 
   #Generate analysis Markdown page
   #This page must be generated after the policy definition and initiative detailed pages because it needs the summary data for definition and initiative syntax validation results.
-  Write-Verbose "[$(getCurrentUTCString)]: Start Generating Policy Analysis summary Markdown file." -Verbose
+  Write-Verbose "[$(getCurrentUTCString)]: Start Generating Policy Analysis summary Markdown file."
   if ($PSBoundParameters.ContainsKey('CustomSecurityControlPath')) {
     $analysisSummaryPage = newAnalysisSummaryPage @summaryPagesCommonParams -ComplianceWarningPercentageThreshold $ComplianceWarningPercentageThreshold -CustomSecurityControlFileConfig $CustomSecurityControlFileConfig
   } else {
@@ -734,7 +734,7 @@ Function New-AzplDocumentation {
 
   if ($EnvironmentDiscoveryData.exemptions.Count -gt 0) {
     #Generate exemption Markdown page
-    Write-Verbose "[$(getCurrentUTCString)]: Start Generating Policy Exemption summary Markdown file." -Verbose
+    Write-Verbose "[$(getCurrentUTCString)]: Start Generating Policy Exemption summary Markdown file."
     $exemptionSummaryPage = newExemptionSummaryPage @summaryPagesCommonParams -ExpiresOnWarningDays $ExemptionExpiresOnWarningDays
   } else {
     Write-Verbose "[$(getCurrentUTCString)]: No policy exemptions found in the environment. Skipping exemption summary page generation."
@@ -743,7 +743,7 @@ Function New-AzplDocumentation {
 
   if ($WikiStyle -ieq 'github') {
     #Generate GitHub wiki sidebar
-    Write-Verbose "[$(getCurrentUTCString)]: Start Generating GitHub wiki sidebar and footer Markdown files." -Verbose
+    Write-Verbose "[$(getCurrentUTCString)]: Start Generating GitHub wiki sidebar and footer Markdown files."
     $githubSidebarParams = @{
       WikiFileMapping                 = $wikiFileMapping
       Title                           = $Title
@@ -755,7 +755,7 @@ Function New-AzplDocumentation {
     $sidebarFilePath = newGitHubWikiSidebar @githubSidebarParams
     $footerFilePath = newGitHubWikiFooter -WikiFileMapping $wikiFileMapping -TimeStamp $EnvironmentDiscoveryData.TimeStamp
   } else {
-    Write-Verbose "[$(getCurrentUTCString)]: Skipping GitHub wiki sidebar generation as WikiStyle is not 'github'." -Verbose
+    Write-Verbose "[$(getCurrentUTCString)]: Skipping GitHub wiki sidebar generation as WikiStyle is not 'github'."
   }
 
   $documentationStopwatch.Stop()

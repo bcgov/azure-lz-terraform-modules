@@ -1095,12 +1095,12 @@ function buildPolicyDefinitionGroupComplianceCoverageMarkdown {
         $securityControlLink = getRelativePath -FromPath $FromPath -ToPath $(Join-Path $PolicyMetadataFolderPath $PolicyMetadataPageFileBaseName) -UseUnixPath $true
         $title = "[$($policyMetadata.properties.title)]($securityControlLink)"
         $category = $policyMetadata.properties.category
-        #Write-Verbose "Looking up security framework for policy metadata '$($policyMetadata.id)'." -Verbose
+        #Write-Verbose "Looking up security framework for policy metadata '$($policyMetadata.id)'."
         #$framework = getSecFrameworkForPolicyMetadata -mappings $EnvironmentDiscoveryData.additionalBuiltInPolicyMetadataConfig -policyMetadataId $item.additionalMetadataId
         $framework = $policyMetadata.framework
-        #Write-Verbose "Security framework for policy metadata '$($policyMetadata.id)' is '$framework'." -Verbose
+        #Write-Verbose "Security framework for policy metadata '$($policyMetadata.id)' is '$framework'."
         if ($allFrameworks -notcontains $framework) {
-          #Write-Verbose "Adding framework '$framework' to the list of all frameworks." -Verbose
+          #Write-Verbose "Adding framework '$framework' to the list of all frameworks."
           $allFrameworks += $framework.toupper()
         }
         if ($policyMetadata.properties.metadataId) {
@@ -1116,9 +1116,9 @@ function buildPolicyDefinitionGroupComplianceCoverageMarkdown {
         $title = "[$($customControl.name)]($customSecurityControlPagesRelativePath)"
         $category = $customControl.category
         $framework = $customControl.framework
-        #Write-Verbose "Security framework for custom control '$($customControl.controlId)' is '$framework'." -Verbose
+        #Write-Verbose "Security framework for custom control '$($customControl.controlId)' is '$framework'."
         if ($allFrameworks -notcontains $framework) {
-          #Write-Verbose "Adding framework '$framework' to the list of all frameworks." -Verbose
+          #Write-Verbose "Adding framework '$framework' to the list of all frameworks."
           $allFrameworks += $framework.toupper()
         }
         $name = $customControl.controlId
@@ -1127,14 +1127,14 @@ function buildPolicyDefinitionGroupComplianceCoverageMarkdown {
     #Get mapped policy count
     if ($policyMetadata) {
       if ($processedPolicyMetadataIds -contains $policyMetadata.id.tolower()) {
-        Write-Verbose "[$(getCurrentUTCString)]: Skipping policy definition group '$($item.name)' as its policy metadata '$($policyMetadata.id)' has already been processed." -Verbose
+        Write-Verbose "[$(getCurrentUTCString)]: Skipping policy definition group '$($item.name)' as its policy metadata '$($policyMetadata.id)' has already been processed."
         continue
       }
-      #Write-Verbose "Looking up mapped policies for policy metadata data '$($policyMetadata.id)'." -Verbose
+      #Write-Verbose "Looking up mapped policies for policy metadata data '$($policyMetadata.id)'."
       $mappedDefinitions = getMappedPoliciesForPolicyDefinitionGroup -policyMetadataId $policyMetadata.id -initiatives $assignedInitiatives
       $processedPolicyMetadataIds += $policyMetadata.id.tolower()
     } else {
-      #Write-Verbose "Looking up mapped policies for policy definition group '$($item.name)'." -Verbose
+      #Write-Verbose "Looking up mapped policies for policy definition group '$($item.name)'."
       $mappedDefinitions = getMappedPoliciesForPolicyDefinitionGroup -policyDefinitionGroupName $item.name -initiatives $assignedInitiatives
     }
     $policyCount = $mappedDefinitions.mappedPolicies.count
@@ -1203,7 +1203,7 @@ function buildPolicyDefinitionGroupComplianceCoverageMarkdown {
     $Markdown += $frameworkComplianceSummary
     $Markdown += "`n`n"
     $filteredArr = $arrPolicyDefinitionGroupNamesComplianceSummary | Where-Object { $_.Framework.toupper() -ieq $framework.toupper() } | Sort-Object { [int]$_.CompliancePercentage }, { $_.Name }
-    Write-Verbose "[$(getCurrentUTCString)]: Building compliance summary for framework '$framework' with $($filteredArr.Count) items." -Verbose
+    Write-Verbose "[$(getCurrentUTCString)]: Building compliance summary for framework '$framework' with $($filteredArr.Count) items."
     $Markdown += newMarkdownTableFromArray -Data $filteredArr -keyFormatting @{'Name' = 'code'; 'Category' = 'code' } -Alignment 'Left' -Properties @('Name', 'Title', 'SecurityControlCategory', 'PolicyCount', 'ComplianceRating', 'InitiativeCategories')
     $Markdown += "`n`n"
     $Markdown += "[:arrow_up: Back to Top](#$titleAnchor)"
@@ -4360,7 +4360,7 @@ function newMarkdownHeader {
     'LowerCase' { $formattedTitle = $title.ToLower() }
     'Original' { $formattedTitle = $title }
   }
-  Write-verbose "Formatted title: $formattedTitle" -Verbose:($PSCmdlet.MyInvocation.BoundParameters["Verbose"].IsPresent -eq $true)
+  Write-Verbose "Formatted title: $formattedTitle" -Verbose:($PSCmdlet.MyInvocation.BoundParameters["Verbose"].IsPresent -eq $true)
   $headerCharacter = '#'
   $header = "{0} {1}" -f ($headerCharacter * $Level), $formattedTitle
   Write-Verbose "Markdown header: '$header'." -Verbose:($PSCmdlet.MyInvocation.BoundParameters["Verbose"].IsPresent -eq $true)
