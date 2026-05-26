@@ -1,0 +1,234 @@
+{
+  "name": "Deploy-NSP-Resource-Association",
+  "type": "Microsoft.Authorization/policyDefinitions",
+  "apiVersion": "2024-05-01",
+  "scope": null,
+  "properties": {
+    "displayName": "Deploy Network Security Perimeter (NSP) resource association",
+    "description": "Creates a Microsoft.Network/networkSecurityPerimeters/resourceAssociations entry for tagged resources. For Microsoft.CognitiveServices/accounts, only kind OpenAI and AIServices are targeted.",
+    "policyType": "Custom",
+    "mode": "All",
+    "metadata": {
+      "version": "1.0.7",
+      "category": "Networking"
+    },
+    "parameters": {
+      "tagName": {
+        "type": "String",
+        "metadata": {
+          "displayName": "Tag Name",
+          "description": "Name of the tag used to mark resources that must be associated to an NSP profile. Enter the exact tag name as a string. Example: 'SecuredByPerimeter'"
+        },
+        "defaultValue": "SecuredByPerimeter"
+      },
+      "tagValue": {
+        "type": "String",
+        "metadata": {
+          "displayName": "Tag Value",
+          "description": "Tag value that triggers association creation. Enter the exact value to match. Format: string. Example: 'true'"
+        },
+        "defaultValue": "true"
+      },
+      "networkSecurityPerimeterName": {
+        "type": "String",
+        "metadata": {
+          "displayName": "Network Security Perimeter Name",
+          "description": "Name ONLY of the target NSP (not the full resource ID). Format: string. Example: 'my-nsp' or 'bcgov-nsp-prod'"
+        },
+        "defaultValue": ""
+      },
+      "networkSecurityPerimeterResourceGroupName": {
+        "type": "String",
+        "metadata": {
+          "displayName": "Network Security Perimeter Resource Group Name",
+          "description": "Resource group NAME ONLY where the NSP exists (not the full resource ID). Format: string. Example: 'nsp-test' or 'bcgov-managed-lz-live-nsp'"
+        },
+        "defaultValue": ""
+      },
+      "networkSecurityPerimeterSubscriptionId": {
+        "type": "String",
+        "metadata": {
+          "displayName": "Network Security Perimeter Subscription ID",
+          "description": "Subscription ID where the NSP exists. Format: GUID. Example: '12345678-1234-1234-1234-123456789012'"
+        },
+        "defaultValue": ""
+      },
+      "networkSecurityPerimeterProfileId": {
+        "type": "String",
+        "metadata": {
+          "displayName": "Network Security Perimeter Profile Resource ID",
+          "description": "FULL RESOURCE ID of the target NSP profile. Format: /subscriptions/<subscriptionId>/resourceGroups/<resourceGroupName>/providers/Microsoft.Network/networkSecurityPerimeters/<nspName>/profiles/<profileName>. Example: /subscriptions/12345678-1234-1234-1234-123456789012/resourceGroups/nsp-test/providers/Microsoft.Network/networkSecurityPerimeters/my-nsp/profiles/default"
+        },
+        "defaultValue": ""
+      },
+      "accessMode": {
+        "type": "String",
+        "metadata": {
+          "displayName": "Association Access Mode",
+          "description": "Access mode for the NSP resource association. Select from dropdown: 'Enforced' (recommended, blocks unapproved traffic), 'Audit' (log only), or 'Learning' (baseline mode)."
+        },
+        "allowedValues": [
+          "Enforced",
+          "Audit",
+          "Learning"
+        ],
+        "defaultValue": "Enforced"
+      },
+      "effect": {
+        "type": "String",
+        "metadata": {
+          "displayName": "Effect",
+          "description": "Enable or disable policy enforcement."
+        },
+        "allowedValues": [
+          "DeployIfNotExists",
+          "Disabled"
+        ],
+        "defaultValue": "DeployIfNotExists"
+      }
+    },
+    "policyRule": {
+      "if": {
+        "allOf": [
+          {
+            "anyOf": [
+              {
+                "field": "type",
+                "in": [
+                  "Microsoft.Insights/dataCollectionEndpoints",
+                  "Microsoft.Insights/ScheduledQueryRules",
+                  "Microsoft.Insights/actionGroups",
+                  "Microsoft.OperationalInsights/workspaces",
+                  "Microsoft.Search/searchServices",
+                  "Microsoft.DocumentDB/databaseAccounts",
+                  "Microsoft.EventHub/namespaces",
+                  "Microsoft.KeyVault/vaults",
+                  "Microsoft.Sql/servers",
+                  "Microsoft.Storage/storageAccounts"
+                ]
+              },
+              {
+                "allOf": [
+                  {
+                    "field": "type",
+                    "equals": "Microsoft.CognitiveServices/accounts"
+                  },
+                  {
+                    "field": "kind",
+                    "in": [
+                      "OpenAI",
+                      "AIServices"
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "field": "[concat('tags[', parameters('tagName'), ']')]",
+            "equals": "[parameters('tagValue')]"
+          }
+        ]
+      },
+      "then": {
+        "effect": "[parameters('effect')]",
+        "details": {
+          "type": "Microsoft.Resources/deployments",
+          "name": "[concat('nspAssocDeploy-', uniqueString(field('id'), parameters('networkSecurityPerimeterProfileId')))]",
+          "existenceScope": "Subscription",
+          "deploymentScope": "Subscription",
+          "roleDefinitionIds": [
+            "/providers/Microsoft.Authorization/roleDefinitions/b24988ac-6180-42a0-ab88-20f7382dd24c"
+          ],
+          "deployment": {
+            "location": "canadacentral",
+            "properties": {
+              "mode": "incremental",
+              "parameters": {
+                "networkSecurityPerimeterName": {
+                  "value": "[parameters('networkSecurityPerimeterName')]"
+                },
+                "networkSecurityPerimeterResourceGroupName": {
+                  "value": "[parameters('networkSecurityPerimeterResourceGroupName')]"
+                },
+                "networkSecurityPerimeterSubscriptionId": {
+                  "value": "[parameters('networkSecurityPerimeterSubscriptionId')]"
+                },
+                "networkSecurityPerimeterProfileId": {
+                  "value": "[parameters('networkSecurityPerimeterProfileId')]"
+                },
+                "accessMode": {
+                  "value": "[parameters('accessMode')]"
+                },
+                "evaluatedResourceId": {
+                  "value": "[field('id')]"
+                }
+              },
+              "template": {
+                "$schema": "https://schema.management.azure.com/schemas/2018-05-01/subscriptionDeploymentTemplate.json#",
+                "contentVersion": "1.0.0.0",
+                "parameters": {
+                  "networkSecurityPerimeterName": {
+                    "type": "string"
+                  },
+                  "networkSecurityPerimeterResourceGroupName": {
+                    "type": "string"
+                  },
+                  "networkSecurityPerimeterSubscriptionId": {
+                    "type": "string"
+                  },
+                  "networkSecurityPerimeterProfileId": {
+                    "type": "string"
+                  },
+                  "accessMode": {
+                    "type": "string"
+                  },
+                  "evaluatedResourceId": {
+                    "type": "string"
+                  }
+                },
+                "variables": {
+                  "profileName": "[toLower(last(split(parameters('networkSecurityPerimeterProfileId'), '/')))]",
+                  "associationName": "[concat('assoc-', variables('profileName'), '-', substring(uniqueString(parameters('evaluatedResourceId'), parameters('networkSecurityPerimeterProfileId')), 0, 8))]",
+                  "profileDeploymentName": "[concat('nspAssoc-', variables('profileName'), '-', substring(uniqueString(parameters('evaluatedResourceId'), parameters('networkSecurityPerimeterProfileId')), 0, 8))]"
+                },
+                "resources": [
+                  {
+                    "type": "Microsoft.Resources/deployments",
+                    "apiVersion": "2025-04-01",
+                    "name": "[variables('profileDeploymentName')]",
+                    "subscriptionId": "[parameters('networkSecurityPerimeterSubscriptionId')]",
+                    "resourceGroup": "[parameters('networkSecurityPerimeterResourceGroupName')]",
+                    "properties": {
+                      "mode": "incremental",
+                      "template": {
+                        "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                        "contentVersion": "1.0.0.0",
+                        "resources": [
+                          {
+                            "type": "Microsoft.Network/networkSecurityPerimeters/resourceAssociations",
+                            "apiVersion": "2025-05-01",
+                            "name": "[concat(parameters('networkSecurityPerimeterName'), '/', variables('associationName'))]",
+                            "properties": {
+                              "accessMode": "[parameters('accessMode')]",
+                              "privateLinkResource": {
+                                "id": "[parameters('evaluatedResourceId')]"
+                              },
+                              "profile": {
+                                "id": "[parameters('networkSecurityPerimeterProfileId')]"
+                              }
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

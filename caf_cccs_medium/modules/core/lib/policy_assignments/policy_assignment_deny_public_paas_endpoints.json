@@ -25,6 +25,9 @@
       "AsPublicIpDenyEffect": {
         "value": "Disabled"
       },
+      "appSlotsPublicNetworkAccess":{
+        "value": "Disabled"
+      },
       "AsePublicIpDenyEffect": {
         "value": "Disabled"
       },
