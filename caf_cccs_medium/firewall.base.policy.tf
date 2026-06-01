@@ -155,6 +155,7 @@ resource "azurerm_firewall_policy" "base_firewall_policy" {
     ignore_changes = [
       private_ip_ranges,
       insights,
+      intrusion_detection,
       threat_intelligence_allowlist,
       tags
     ]
