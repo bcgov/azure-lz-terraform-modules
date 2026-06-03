@@ -153,3 +153,10 @@ variable "sqlmi_entra_authentication_parameters" {
   })
   description = "Parameter values for the SQLMI-Entra-AuthN policy assignment."
 }
+
+variable "deny_azure_sre_agent_parameters" {
+  type = object({
+    effect = string
+  })
+  description = "Parameter values for the Deny-Azure-SRE-Agent policy assignment."
+}
