@@ -11,7 +11,7 @@
         "value": "Deny"
       }
     },
-    "policyDefinitionId": "${root_scope_resource_id}/providers/Microsoft.Authorization/policyDefinitions/Deny-Azure-SRE-Agent",
+    "policyDefinitionId": "${current_scope_resource_id}/providers/Microsoft.Authorization/policyDefinitions/Deny-Azure-SRE-Agent",
     "nonComplianceMessages": [
       {
         "message": "Deploying the Azure SRE Agent in the Landing Zones is not currently allowed."

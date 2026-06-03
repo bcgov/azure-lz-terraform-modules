@@ -2,7 +2,6 @@
   "name": "Deny-Azure-SRE-Agent",
   "type": "Microsoft.Authorization/policyDefinitions",
   "apiVersion": "2026-06-01",
-  "scope": null,
   "properties": {
     "displayName": "Deny Creating an Azure SRE Agent",
     "description": "This policy prevents users from creating an Azure SRE Agent.",
@@ -10,7 +9,7 @@
     "mode": "All",
     "metadata": {
       "version": "1.0.0",
-      "category": "Networking"
+      "category": "Container Apps"
     },
     "parameters": {
       "effect": {
