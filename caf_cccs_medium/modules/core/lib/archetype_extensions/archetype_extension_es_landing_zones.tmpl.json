@@ -16,10 +16,12 @@
       "Deny-New-VNet-Peerings",
       "Deny-Delete-Diagnostics",
       "Deny-AMPLS-Creation",
-      "Deny-Delete-NetworkWatch"
+      "Deny-Delete-NetworkWatch",
+      "Deny-Azure-SRE-Agent"
     ],
     "policy_definitions": [
-      "Deny-VNet-Address-Changes"
+      "Deny-VNet-Address-Changes",
+      "Deny-Azure-SRE-Agent"
     ],
     "policy_set_definitions": [],
     "role_definitions": [],
@@ -85,6 +87,9 @@
         "Deny-Delete-NetworkWatch": {
           "Network-Watcher-storageId": "SET using local.archetype_config_overrides",
           "Network-Watcher-workspaceResourceId": "SET using local.archetype_config_overrides"
+        },
+        "Deny-Azure-SRE-Agent": {
+          "effect": "SET using local.archetype_config_overrides"
         }
       },
       "access_control": {}

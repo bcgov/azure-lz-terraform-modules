@@ -114,4 +114,6 @@ module "core" {
 
   sqlmi_disable_public_endpoint_parameters = var.sqlmi_disable_public_endpoint_parameters
   sqlmi_entra_authentication_parameters    = var.sqlmi_entra_authentication_parameters
+
+  deny_azure_sre_agent_parameters = var.deny_azure_sre_agent_parameters
 }
