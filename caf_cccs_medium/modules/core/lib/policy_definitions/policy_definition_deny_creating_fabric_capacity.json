@@ -16,7 +16,7 @@
         "type": "String",
         "metadata": {
           "displayName": "Effect",
-          "description": "Deny, Audit or Disabled the execution of the Policy"
+          "description": "Select whether the policy is enforced (Deny), evaluated (Audit), or turned off (Disabled)."
         },
         "allowedValues": [
           "Deny",
