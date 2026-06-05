@@ -21,7 +21,8 @@
     ],
     "policy_definitions": [
       "Deny-VNet-Address-Changes",
-      "Deny-Azure-SRE-Agent"
+      "Deny-Azure-SRE-Agent",
+      "Deny-Fabric-Capacity"
     ],
     "policy_set_definitions": [],
     "role_definitions": [],
@@ -89,6 +90,9 @@
           "Network-Watcher-workspaceResourceId": "SET using local.archetype_config_overrides"
         },
         "Deny-Azure-SRE-Agent": {
+          "effect": "SET using local.archetype_config_overrides"
+        },
+        "Deny-Fabric-Capacity": {
           "effect": "SET using local.archetype_config_overrides"
         }
       },

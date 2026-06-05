@@ -160,3 +160,10 @@ variable "deny_azure_sre_agent_parameters" {
   })
   description = "Parameter values for the Deny-Azure-SRE-Agent policy assignment."
 }
+
+variable "deny_fabric_capacity_parameters" {
+  type = object({
+    effect = string
+  })
+  description = "Parameter values for the Deny-Fabric-Capacity policy assignment."
+}

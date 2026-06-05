@@ -116,4 +116,5 @@ module "core" {
   sqlmi_entra_authentication_parameters    = var.sqlmi_entra_authentication_parameters
 
   deny_azure_sre_agent_parameters = var.deny_azure_sre_agent_parameters
+  deny_fabric_capacity_parameters = var.deny_fabric_capacity_parameters
 }
