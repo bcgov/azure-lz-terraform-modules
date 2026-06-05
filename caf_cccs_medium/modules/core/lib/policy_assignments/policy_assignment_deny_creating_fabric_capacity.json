@@ -14,7 +14,7 @@
     "policyDefinitionId": "${current_scope_resource_id}/providers/Microsoft.Authorization/policyDefinitions/Deny-Fabric-Capacity",
     "nonComplianceMessages": [
       {
-        "message": "Deploying a Microsoft Fabric Capacity in the Landing Zones is not currently allowed."
+        "message": "Deploying a Microsoft Fabric Capacity in the Landing Zones is managed by the Data Foundations team. See TechDocs for more information: https://developer.gov.bc.ca/docs/default/component/public-cloud-techdocs/azure/azure-services/external-fabric/"
       }
     ],
     "scope": "${current_scope_resource_id}",
