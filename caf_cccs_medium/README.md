@@ -19,7 +19,7 @@ Policies are applied in the "Default" mode. It should be possible to provide [ov
 ## Requirements
 
 | Name | Version |
-| ---- | ------- |
+|------|---------|
 | <a name="requirement_assert"></a> [assert](#requirement\_assert) | ~> 0.16.0 |
 | <a name="requirement_azapi"></a> [azapi](#requirement\_azapi) | ~> 1.13, != 1.13.0 |
 | <a name="requirement_azurerm"></a> [azurerm](#requirement\_azurerm) | 3.116.0 |
@@ -27,14 +27,14 @@ Policies are applied in the "Default" mode. It should be possible to provide [ov
 ## Providers
 
 | Name | Version |
-| ---- | ------- |
+|------|---------|
 | <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) | 3.116.0 |
 | <a name="provider_azurerm.connectivity"></a> [azurerm.connectivity](#provider\_azurerm.connectivity) | 3.116.0 |
 
 ## Modules
 
 | Name | Source | Version |
-| ---- | ------ | ------- |
+|------|--------|---------|
 | <a name="module_base_firewall_policy_key_vault"></a> [base\_firewall\_policy\_key\_vault](#module\_base\_firewall\_policy\_key\_vault) | ../azure_key_vault/key_vault | n/a |
 | <a name="module_base_firewall_policy_key_vault_access_policy"></a> [base\_firewall\_policy\_key\_vault\_access\_policy](#module\_base\_firewall\_policy\_key\_vault\_access\_policy) | ../azure_key_vault/key_vault_access_policy | n/a |
 | <a name="module_base_firewall_policy_key_vault_certificate"></a> [base\_firewall\_policy\_key\_vault\_certificate](#module\_base\_firewall\_policy\_key\_vault\_certificate) | ../azure_key_vault/key_vault_certificate | n/a |
@@ -51,7 +51,7 @@ Policies are applied in the "Default" mode. It should be possible to provide [ov
 ## Resources
 
 | Name | Type |
-| ---- | ---- |
+|------|------|
 | [azurerm_firewall_policy.base_firewall_policy](https://registry.terraform.io/providers/hashicorp/azurerm/3.116.0/docs/resources/firewall_policy) | resource |
 | [azurerm_resource_group.base_firewall_policy](https://registry.terraform.io/providers/hashicorp/azurerm/3.116.0/docs/resources/resource_group) | resource |
 | [azurerm_client_config.current](https://registry.terraform.io/providers/hashicorp/azurerm/3.116.0/docs/data-sources/client_config) | data source |
@@ -59,7 +59,7 @@ Policies are applied in the "Default" mode. It should be possible to provide [ov
 ## Inputs
 
 | Name | Description | Type | Default | Required |
-| ---- | ----------- | ---- | ------- | :------: |
+|------|-------------|------|---------|:--------:|
 | <a name="input_VNet-DNS-Settings"></a> [VNet-DNS-Settings](#input\_VNet-DNS-Settings) | Sets the VNet DNS settings for the policy assignment. | `list(any)` | n/a | yes |
 | <a name="input_aks_security_best_prac_parameters"></a> [aks\_security\_best\_prac\_parameters](#input\_aks\_security\_best\_prac\_parameters) | Parameter values for the AKS-Security-BestPrac initiative assignment. | <pre>object({<br/>    enforce_azure_cni_overlay    = string<br/>    enforce_entra_id_integration = string<br/>    enforce_kubernetes_rbac      = string<br/>    enforce_azure_rbac           = string<br/>    enforce_disable_local_auth   = string<br/>    enforce_workload_identity    = string<br/>    enforce_managed_identity     = string<br/>    enforce_oidc_issuer          = string<br/>    enforce_secrets_store_csi    = string<br/>    enforce_acns_security        = string<br/>    enforce_cilium_dataplane     = string<br/>    audit_azure_policy_addon     = string<br/>    deploy_azure_policy_addon    = string<br/>    deploy_image_cleaner         = string<br/>    audit_image_cleaner          = string<br/>  })</pre> | n/a | yes |
 | <a name="input_application_id"></a> [application\_id](#input\_application\_id) | (Optional) The object ID of an Application in Azure Active Directory. | `string` | `null` | no |
@@ -136,7 +136,7 @@ Policies are applied in the "Default" mode. It should be possible to provide [ov
 ## Outputs
 
 | Name | Description |
-| ---- | ----------- |
+|------|-------------|
 | <a name="output_base_firewall_policy"></a> [base\_firewall\_policy](#output\_base\_firewall\_policy) | The base Azure Firewall Policy object. |
 | <a name="output_firewall_policy_id"></a> [firewall\_policy\_id](#output\_firewall\_policy\_id) | The Azure Firewall Policy ID. |
 | <a name="output_identity_id"></a> [identity\_id](#output\_identity\_id) | The ID of the User Assigned Identity. |
