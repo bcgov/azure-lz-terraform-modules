@@ -227,10 +227,10 @@ python3 scripts/local_module_sources.py disable azure_private_dns
 
 Without root arguments, `enable` and `disable` apply to every root that references `bcgov/azure-lz-terraform-modules`. Generated `local_modules_override.tf` files are temporary and should be ignored/removed before finishing.
 
-For real backend plans in forge, ensure the backend can find the state storage account in the forge management subscription. If backend blocks lack it, use or add:
+For real backend plans in forge, ensure the backend can find the state storage account in the forge management subscription. If backend blocks lack it, use or add it in the private consumer repo only; do not commit real subscription IDs to this public modules repo:
 
 ```hcl
-subscription_id = "69946426-ca72-4a14-a79f-1cf558067722"
+subscription_id = "<forge-management-subscription-id>"
 ```
 
 Also set the Azure CLI or environment to the intended deployment subscription before planning. A wrong default subscription can produce false-positive changes in provider data lookups.
@@ -251,10 +251,10 @@ For forge projects, active roots have historically been `projects/abc123` and `p
 
 If project roots point at a module branch or new release that updates provider constraints, align the root provider constraints too. For example, an `azure_ad_groups` update to AzureAD v3 requires the root to move from `azuread = "2.x"` to a compatible `~> 3.x` constraint.
 
-For real backend plans in vending forge, ensure the backend can find the state storage account in the forge management subscription:
+For real backend plans in vending forge, ensure the backend can find the state storage account in the forge management subscription. Use a placeholder in public docs and commit the real value only in private consumer repos:
 
 ```hcl
-subscription_id = "69946426-ca72-4a14-a79f-1cf558067722"
+subscription_id = "<forge-management-subscription-id>"
 ```
 
 Vending project plans can require `Microsoft.Subscription/aliases/write` or equivalent subscription alias permissions even for reads. If local plans fail with `401 UserNotAuthorized` on `/providers/Microsoft.Subscription/aliases/<project-env>`, report the blocker and include any partial plan summary; CI/service principals may have the required permission.

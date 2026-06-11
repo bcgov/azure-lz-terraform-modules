@@ -13,7 +13,7 @@ RESPONSE 400: 400 Bad Request │ ERROR CODE: CannotModifyRoutingPolicyInternalR
 {
   "error": {
     "code": "CannotModifyRoutingPolicyInternalRoutes",
-    "message": "Cannot add, update or delete route /subscriptions/09bd024b-fbda-417d-b8db-694680c2b44e/resourceGroups/bcgov-managed-lz-forge-connectivity/providers/Microsoft.Network/virtualHubs/bcgov-managed-lz-forge-hub-canadacentral/hubRouteTables/defaultRouteTable created by Routing Intent.",
+    "message": "Cannot add, update or delete route /subscriptions/<subscription-id>/resourceGroups/<resource-group-name>/providers/Microsoft.Network/virtualHubs/<virtual-hub-name>/hubRouteTables/defaultRouteTable created by Routing Intent.",
     "details": []
   }
 }
