@@ -11,14 +11,14 @@ For each environment, the module will create a subscription, a network resource 
 
 | Name | Version |
 |------|---------|
-| <a name="requirement_azapi"></a> [azapi](#requirement\_azapi) | 2.7.0 |
-| <a name="requirement_azurerm"></a> [azurerm](#requirement\_azurerm) | 4.54.0 |
+| <a name="requirement_azapi"></a> [azapi](#requirement\_azapi) | ~> 2.10 |
+| <a name="requirement_azurerm"></a> [azurerm](#requirement\_azurerm) | ~> 4.76 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
-| <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) | 4.54.0 |
+| <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) | ~> 4.76 |
 
 ## Modules
 
@@ -33,11 +33,11 @@ For each environment, the module will create a subscription, a network resource 
 
 | Name | Type |
 |------|------|
-| [azurerm_consumption_budget_subscription.subscription_budget](https://registry.terraform.io/providers/hashicorp/azurerm/4.54.0/docs/resources/consumption_budget_subscription) | resource |
-| [azurerm_management_group.project_set](https://registry.terraform.io/providers/hashicorp/azurerm/4.54.0/docs/resources/management_group) | resource |
-| [azurerm_network_manager_ipam_pool_static_cidr.reservations](https://registry.terraform.io/providers/hashicorp/azurerm/4.54.0/docs/resources/network_manager_ipam_pool_static_cidr) | resource |
-| [azurerm_subscription_policy_assignment.this](https://registry.terraform.io/providers/hashicorp/azurerm/4.54.0/docs/resources/subscription_policy_assignment) | resource |
-| [azurerm_management_group.landing_zones](https://registry.terraform.io/providers/hashicorp/azurerm/4.54.0/docs/data-sources/management_group) | data source |
+| [azurerm_consumption_budget_subscription.subscription_budget](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/consumption_budget_subscription) | resource |
+| [azurerm_management_group.project_set](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/management_group) | resource |
+| [azurerm_network_manager_ipam_pool_static_cidr.reservations](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/network_manager_ipam_pool_static_cidr) | resource |
+| [azurerm_subscription_policy_assignment.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/subscription_policy_assignment) | resource |
+| [azurerm_management_group.landing_zones](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/data-sources/management_group) | data source |
 
 ## Inputs
 

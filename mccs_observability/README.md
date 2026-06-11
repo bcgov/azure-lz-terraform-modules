@@ -346,8 +346,8 @@ This will enable:
 | Name | Version |
 |------|---------|
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >=1.9.0, < 2.0.0 |
-| <a name="requirement_azuread"></a> [azuread](#requirement\_azuread) | ~> 3.0 |
-| <a name="requirement_azurerm"></a> [azurerm](#requirement\_azurerm) | ~> 4.0 |
+| <a name="requirement_azuread"></a> [azuread](#requirement\_azuread) | ~> 3.8 |
+| <a name="requirement_azurerm"></a> [azurerm](#requirement\_azurerm) | ~> 4.76 |
 | <a name="requirement_grafana"></a> [grafana](#requirement\_grafana) | ~> 3.0 |
 | <a name="requirement_local"></a> [local](#requirement\_local) | ~> 2.0 |
 | <a name="requirement_random"></a> [random](#requirement\_random) | ~> 3.0 |
@@ -357,9 +357,9 @@ This will enable:
 
 | Name | Version |
 |------|---------|
-| <a name="provider_azuread"></a> [azuread](#provider\_azuread) | ~> 3.0 |
-| <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) | ~> 4.0 |
-| <a name="provider_azurerm.management"></a> [azurerm.management](#provider\_azurerm.management) | ~> 4.0 |
+| <a name="provider_azuread"></a> [azuread](#provider\_azuread) | ~> 3.8 |
+| <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) | ~> 4.76 |
+| <a name="provider_azurerm.management"></a> [azurerm.management](#provider\_azurerm.management) | ~> 4.76 |
 | <a name="provider_grafana"></a> [grafana](#provider\_grafana) | ~> 3.0 |
 | <a name="provider_local"></a> [local](#provider\_local) | ~> 2.0 |
 | <a name="provider_random"></a> [random](#provider\_random) | ~> 3.0 |
