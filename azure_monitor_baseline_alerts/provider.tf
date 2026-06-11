@@ -4,17 +4,17 @@ terraform {
   required_providers {
     azurerm = {
       source  = "hashicorp/azurerm"
-      version = "~> 4.0"
+      version = "~> 4.76"
     }
 
     azapi = {
       source  = "azure/azapi"
-      version = "~> 2.2"
+      version = "~> 2.10"
     }
 
     alz = {
       source  = "azure/alz"
-      version = "~> 0.20"
+      version = "~> 0.21"
     }
   }
 }

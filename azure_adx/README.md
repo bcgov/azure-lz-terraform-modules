@@ -46,16 +46,16 @@ The ADX cluster is designed with the following components:
 ## Requirements
 
 | Name | Version |
-|------|---------|
-| <a name="requirement_azapi"></a> [azapi](#requirement\_azapi) | ~> 1.12.0 |
-| <a name="requirement_azurerm"></a> [azurerm](#requirement\_azurerm) | 4.14.0 |
+| ---- | ------- |
+| <a name="requirement_azapi"></a> [azapi](#requirement\_azapi) | ~> 2.10 |
+| <a name="requirement_azurerm"></a> [azurerm](#requirement\_azurerm) | ~> 4.76 |
 
 ## Providers
 
 | Name | Version |
-|------|---------|
-| <a name="provider_azapi"></a> [azapi](#provider\_azapi) | ~> 1.12.0 |
-| <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) | 4.14.0 |
+| ---- | ------- |
+| <a name="provider_azapi"></a> [azapi](#provider\_azapi) | ~> 2.10 |
+| <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) | ~> 4.76 |
 
 ## Modules
 
@@ -64,24 +64,24 @@ No modules.
 ## Resources
 
 | Name | Type |
-|------|------|
+| ---- | ---- |
 | [azapi_resource.create_mapping_script](https://registry.terraform.io/providers/azure/azapi/latest/docs/resources/resource) | resource |
 | [azapi_resource.create_table_script](https://registry.terraform.io/providers/azure/azapi/latest/docs/resources/resource) | resource |
-| [azurerm_eventhub.adx](https://registry.terraform.io/providers/hashicorp/azurerm/4.14.0/docs/resources/eventhub) | resource |
-| [azurerm_eventhub_consumer_group.adx](https://registry.terraform.io/providers/hashicorp/azurerm/4.14.0/docs/resources/eventhub_consumer_group) | resource |
-| [azurerm_eventhub_namespace.adx](https://registry.terraform.io/providers/hashicorp/azurerm/4.14.0/docs/resources/eventhub_namespace) | resource |
-| [azurerm_kusto_cluster.adx](https://registry.terraform.io/providers/hashicorp/azurerm/4.14.0/docs/resources/kusto_cluster) | resource |
-| [azurerm_kusto_database.adx](https://registry.terraform.io/providers/hashicorp/azurerm/4.14.0/docs/resources/kusto_database) | resource |
-| [azurerm_kusto_eventhub_data_connection.adx](https://registry.terraform.io/providers/hashicorp/azurerm/4.14.0/docs/resources/kusto_eventhub_data_connection) | resource |
-| [azurerm_resource_group.adx](https://registry.terraform.io/providers/hashicorp/azurerm/4.14.0/docs/resources/resource_group) | resource |
-| [azurerm_role_assignment.adx_eventhub_reader](https://registry.terraform.io/providers/hashicorp/azurerm/4.14.0/docs/resources/role_assignment) | resource |
-| [azurerm_role_assignment.adx_users](https://registry.terraform.io/providers/hashicorp/azurerm/4.14.0/docs/resources/role_assignment) | resource |
-| [azurerm_subscription.current](https://registry.terraform.io/providers/hashicorp/azurerm/4.14.0/docs/data-sources/subscription) | data source |
+| [azurerm_eventhub.adx](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/eventhub) | resource |
+| [azurerm_eventhub_consumer_group.adx](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/eventhub_consumer_group) | resource |
+| [azurerm_eventhub_namespace.adx](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/eventhub_namespace) | resource |
+| [azurerm_kusto_cluster.adx](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/kusto_cluster) | resource |
+| [azurerm_kusto_database.adx](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/kusto_database) | resource |
+| [azurerm_kusto_eventhub_data_connection.adx](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/kusto_eventhub_data_connection) | resource |
+| [azurerm_resource_group.adx](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/resource_group) | resource |
+| [azurerm_role_assignment.adx_eventhub_reader](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/role_assignment) | resource |
+| [azurerm_role_assignment.adx_users](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/role_assignment) | resource |
+| [azurerm_subscription.current](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/data-sources/subscription) | data source |
 
 ## Inputs
 
 | Name | Description | Type | Default | Required |
-|------|-------------|------|---------|:--------:|
+| ---- | ----------- | ---- | ------- | :------: |
 | <a name="input_adx_capacity"></a> [adx\_capacity](#input\_adx\_capacity) | Capapcity for the ADX cluster | `number` | `2` | no |
 | <a name="input_adx_cluster_name"></a> [adx\_cluster\_name](#input\_adx\_cluster\_name) | Name of the ADX cluster | `string` | `"adx-cluster"` | no |
 | <a name="input_adx_data_connection_name"></a> [adx\_data\_connection\_name](#input\_adx\_data\_connection\_name) | Name of the data connection | `string` | `"adx-data-connection"` | no |
@@ -122,7 +122,7 @@ No modules.
 ## Outputs
 
 | Name | Description |
-|------|-------------|
+| ---- | ----------- |
 | <a name="output_advanced_hunting_endpoint"></a> [advanced\_hunting\_endpoint](#output\_advanced\_hunting\_endpoint) | Endpoint for Advanced Hunting queries |
 | <a name="output_adx_cluster_id"></a> [adx\_cluster\_id](#output\_adx\_cluster\_id) | ADX cluster resource ID |
 | <a name="output_adx_cluster_uri"></a> [adx\_cluster\_uri](#output\_adx\_cluster\_uri) | ADX cluster URL |
