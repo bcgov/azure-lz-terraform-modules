@@ -109,12 +109,16 @@ Be careful with `caf_cccs_medium/`.
 
 `Azure/caf-enterprise-scale/azurerm` v6.3.1 is tied to older provider expectations. Do not force `caf_cccs_medium` and its internal CAF wrapper modules from azurerm 3.x to azurerm 4.x unless the user explicitly approves a larger CAF module upgrade.
 
-When CAF is out of scope, leave these pins unchanged:
+`caf_cccs_medium` must remain self-contained: modules inside this repo should use local relative sources such as `../azure_key_vault/key_vault`, not `git::https://github.com/bcgov/azure-lz-terraform-modules.git//...?ref=...`. If a provider update introduces same-repo git sources, replace them with local paths and validate through `azure-lz-core-forge/caf`.
+
+When CAF itself is out of scope, leave these provider pins unchanged:
 
 - `caf_cccs_medium/main.tf`
 - `caf_cccs_medium/modules/core/main.tf`
 - `caf_cccs_medium/modules/connectivity/main.tf`
 - `caf_cccs_medium/modules/management/main.tf`
+
+Child modules consumed by `caf_cccs_medium` may need a wider AzureRM range, such as `>= 3.112.0, < 5.0.0`, so CAF can use AzureRM 3.116 while non-CAF roots can still select AzureRM 4.x. Do not narrow those back to `~> 4.x` without checking the CAF root plan.
 
 Also preserve comments that warn a submodule cannot be called from CAF when it requires azapi v2.
 
