@@ -1,22 +1,10 @@
 # Repository Agent Guidance
 
-This is a public Terraform modules repository.
+This is a public Terraform modules repo.
 
-Do not commit real environment-specific identifiers or operational details, including:
-
-- Azure subscription IDs, tenant IDs, client IDs, or object IDs.
-- Backend resource group names, storage account names, container names, or state keys.
-- Resource IDs copied from Terraform plans, Azure CLI output, or Azure API errors.
-- Internal resource group, virtual hub, network, or project names from forge/live environments.
-
-Use placeholders in public files, for example:
-
-- `<subscription-id>`
-- `<tenant-id>`
-- `<resource-group-name>`
-- `<storage-account-name>`
-- `<virtual-hub-name>`
-
-Real backend values belong in private consumer repositories or local-only configuration, not in this modules repository. Before committing, scan new docs, skills, examples, and comments for copied command output that may contain concrete Azure resource IDs.
-
-Modules inside this repository should not source other modules from this same repository using `git::https://github.com/bcgov/azure-lz-terraform-modules.git//...?ref=...`. Use local relative module sources so branch testing remains self-contained.
+- Do not commit real environment identifiers: subscription IDs, tenant IDs, client IDs, object IDs, backend storage details, state keys, resource IDs, or forge/live resource names. Use placeholders like `<subscription-id>` and `<resource-group-name>`.
+- Do not paste raw Terraform, Azure CLI, or Azure API output into committed docs unless environment-specific values are redacted.
+- Modules in this repo must not source this same repo with `git::https://github.com/bcgov/azure-lz-terraform-modules.git//...?ref=...`; use local relative paths instead.
+- Be careful with `caf_cccs_medium`: keep CAF provider pins compatible with `Azure/caf-enterprise-scale/azurerm` unless a CAF upgrade is explicitly requested. Validate CAF-impacting changes through a real consumer root.
+- Run `terraform fmt -recursive` after Terraform edits. For changed standalone modules, prefer `terraform init -backend=false -upgrade` and `terraform validate` when practical.
+- Keep private backend values and live/forge rollout changes in the private consumer repos, not in this public module repo.
