@@ -274,6 +274,8 @@ gh run list --repo bcgov/azure-lz-terraform-modules --limit 20
 gh run view <run-id> --repo bcgov/azure-lz-terraform-modules --log-failed
 ```
 
+When a forge/vending consumer PR points at a modules branch and only the modules branch changes, GitHub will not automatically rerun the consumer PR workflows because the consumer PR branch SHA did not change. Rerun the latest PR-triggered workflow runs with `gh run rerun <run-id> --repo <consumer-repo>` after pushing module branch fixes.
+
 ## Review Output
 
 When done, summarize:
