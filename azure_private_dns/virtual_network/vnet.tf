@@ -4,7 +4,7 @@ resource "azurerm_network_security_group" "inbound_endpoint" {
   resource_group_name = azurerm_resource_group.this.name
 
   # Per the Microsoft documentation (https://learn.microsoft.com/en-us/azure/architecture/networking/guide/private-link-virtual-wan-dns-single-region-workload#azure-dns-private-resolver)
-  # The Network Security Group in the subnet for the DNS Private Resolver's inbound endpoint should only allow UDP traffic from its regional hub to port 53. You should block all other inbound and outbound traffic.
+  # The Network Security Group in the subnet for the DNS Private Resolver's inbound endpoint should only allow DNS traffic from its regional hub to port 53. You should block all other inbound and outbound traffic.
   security_rule {
     name                       = "AllowUdpFromRegionalHubVNet"
     description                = "Allow inbound UDP traffic from the regional hub to port 53"
@@ -12,6 +12,19 @@ resource "azurerm_network_security_group" "inbound_endpoint" {
     direction                  = "Inbound"
     access                     = "Allow"
     protocol                   = "Udp"
+    source_port_range          = "*"
+    destination_port_range     = "53"
+    source_address_prefix      = data.azurerm_virtual_hub.vwan_hub.address_prefix
+    destination_address_prefix = "VirtualNetwork"
+  }
+
+  security_rule {
+    name                       = "AllowTcpFromRegionalHubVNet"
+    description                = "Allow inbound TCP DNS traffic from the regional hub to port 53"
+    priority                   = 111
+    direction                  = "Inbound"
+    access                     = "Allow"
+    protocol                   = "Tcp"
     source_port_range          = "*"
     destination_port_range     = "53"
     source_address_prefix      = data.azurerm_virtual_hub.vwan_hub.address_prefix
