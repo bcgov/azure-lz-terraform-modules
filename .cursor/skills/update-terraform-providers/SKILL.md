@@ -30,12 +30,13 @@ Typical files:
 - root consumer modules such as `terraform-azure-lz-project-set/main.tf`
 - CAF composition files under `caf_cccs_medium/`
 
-Do not update `bcgov/azure-lz-vending-live` or `bcgov/azure-lz-core-live` provider pins as part of this skill unless the user explicitly asks for the rollout. If rollout is requested, clone those repos with `gh repo clone` into the `/tmp` `LZ_WORKDIR` and create PRs with `gh pr create`.
+Do not update `bcgov-c/azure-lz-vending-forge`, `bcgov/azure-lz-vending-live`, `bcgov-c/azure-lz-core-forge`, or `bcgov/azure-lz-core-live` provider pins as part of this skill unless the user explicitly asks for the rollout or test PRs. If rollout is requested, clone those repos with `gh repo clone` into the `/tmp` `LZ_WORKDIR` and create PRs with `gh pr create`.
 
 Provider-only changes in this repo often need real plans in sibling live/forge repos. Prefer existing local checkouts when present:
 
 ```bash
 export CORE_FORGE="${CORE_FORGE:-../azure-lz-core-forge}"
+export VENDING_FORGE="${VENDING_FORGE:-../azure-lz-vending-forge}"
 export VENDING_LIVE="${VENDING_LIVE:-../azure-lz-vending-live}"
 ```
 
@@ -165,7 +166,7 @@ Known active `azure-lz-core-forge` top-level roots:
 
 `caf` only calls `caf_cccs_medium`; it is not the parent for the separate roots above.
 
-If `terraform-azure-lz-project-set` or `azure_ad_groups` changes, plan `azure-lz-vending-live/projects/*` roots, because those modules are consumed by each project root. Do not plan the reusable module directories directly as a substitute.
+If `terraform-azure-lz-project-set` or `azure_ad_groups` changes, plan active `projects/*` roots in `azure-lz-vending-forge` and `azure-lz-vending-live`, because those modules are consumed by each project root. Do not plan the reusable module directories directly as a substitute.
 
 ## Compatibility Checklist
 
@@ -173,7 +174,7 @@ Before accepting a major bump:
 
 - For `azurerm` 3.x to 4.x, confirm `subscription_id` is provided in provider config or by `ARM_SUBSCRIPTION_ID`.
 - For `azapi` 1.x to 2.x, inspect `azapi_resource`, `azapi_update_resource`, and `azapi_resource_action` bodies for v2 schema expectations.
-- For `azuread` 2.x to 3.x, inspect `azuread_*` resources and data sources.
+- For `azuread` 2.x to 3.x, inspect `azuread_*` resources and data sources. If IDs are stored in state or `null_resource` triggers, prefer stable `object_id` values over provider `id` values because AzureAD v3 can return path-style IDs such as `/groups/<uuid>`.
 - For `azureipam` 1.x to 2.x, treat as breaking until tested against the live IPAM service.
 - Do not update generated README provider tables by hand unless the repo already uses a docs generation workflow for that module.
 
@@ -230,14 +231,29 @@ subscription_id = "69946426-ca72-4a14-a79f-1cf558067722"
 
 Also set the Azure CLI or environment to the intended deployment subscription before planning. A wrong default subscription can produce false-positive changes in provider data lookups.
 
-### Vending Live Plans
+### Vending Forge and Live Plans
 
-When `terraform-azure-lz-project-set` or `azure_ad_groups` changes, identify active project roots in `azure-lz-vending-live/projects/*` and plan those roots. The workflows plan changed projects, and a `config.json` change causes all projects to run:
+When `terraform-azure-lz-project-set` or `azure_ad_groups` changes, identify active project roots in `azure-lz-vending-forge/projects/*` and `azure-lz-vending-live/projects/*` and plan those roots. The workflows plan changed projects, and a `config.json` change causes all projects to run:
 
 ```bash
+cd "$VENDING_FORGE"
+rg 'module "(project_set|azure_ad_groups)"|terraform plan|cd "projects/' -g '*.tf' -g '*.yaml'
+
 cd "$VENDING_LIVE"
 rg 'module "(project_set|azure_ad_groups)"|terraform plan|cd "projects/' -g '*.tf' -g '*.yaml'
 ```
+
+For forge projects, active roots have historically been `projects/abc123` and `projects/e833c2`; confirm with `rg` and workflows rather than assuming. Do not update `projects-to-close` or `projects-closed` unless the user explicitly asks for closeout/destroy validation.
+
+If project roots point at a module branch or new release that updates provider constraints, align the root provider constraints too. For example, an `azure_ad_groups` update to AzureAD v3 requires the root to move from `azuread = "2.x"` to a compatible `~> 3.x` constraint.
+
+For real backend plans in vending forge, ensure the backend can find the state storage account in the forge management subscription:
+
+```hcl
+subscription_id = "69946426-ca72-4a14-a79f-1cf558067722"
+```
+
+Vending project plans can require `Microsoft.Subscription/aliases/write` or equivalent subscription alias permissions even for reads. If local plans fail with `401 UserNotAuthorized` on `/providers/Microsoft.Subscription/aliases/<project-env>`, report the blocker and include any partial plan summary; CI/service principals may have the required permission.
 
 If many projects are affected, sample only with explicit user approval; otherwise report that all project roots need CI or batch local plans.
 
