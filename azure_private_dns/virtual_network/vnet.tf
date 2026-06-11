@@ -20,7 +20,7 @@ resource "azurerm_network_security_group" "inbound_endpoint" {
 
   security_rule {
     name                       = "AllowTcpFromRegionalHubVNet"
-    description                = "Allow inbound TCP DNS traffic from the regional hub to port 53"
+    description                = "TESTING FOR PCS-2395: Allow inbound TCP DNS traffic from the regional hub to port 53"
     priority                   = 111
     direction                  = "Inbound"
     access                     = "Allow"
