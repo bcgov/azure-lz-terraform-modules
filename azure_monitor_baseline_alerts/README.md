@@ -4,7 +4,7 @@
 ## Requirements
 
 | Name | Version |
-| ---- | ------- |
+|------|---------|
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.9, < 2.0 |
 | <a name="requirement_alz"></a> [alz](#requirement\_alz) | ~> 0.21 |
 | <a name="requirement_azapi"></a> [azapi](#requirement\_azapi) | ~> 2.10 |
@@ -13,26 +13,26 @@
 ## Providers
 
 | Name | Version |
-| ---- | ------- |
+|------|---------|
 | <a name="provider_azapi"></a> [azapi](#provider\_azapi) | ~> 2.10 |
 
 ## Modules
 
 | Name | Source | Version |
-| ---- | ------ | ------- |
+|------|--------|---------|
 | <a name="module_amba_alz"></a> [amba\_alz](#module\_amba\_alz) | Azure/avm-ptn-monitoring-amba-alz/azurerm | 0.3.0 |
 | <a name="module_amba_policy"></a> [amba\_policy](#module\_amba\_policy) | Azure/avm-ptn-alz/azurerm | 0.19.1 |
 
 ## Resources
 
 | Name | Type |
-| ---- | ---- |
+|------|------|
 | [azapi_client_config.current](https://registry.terraform.io/providers/azure/azapi/latest/docs/data-sources/client_config) | data source |
 
 ## Inputs
 
 | Name | Description | Type | Default | Required |
-| ---- | ----------- | ---- | ------- | :------: |
+|------|-------------|------|---------|:--------:|
 | <a name="input_action_group_arm_role_id"></a> [action\_group\_arm\_role\_id](#input\_action\_group\_arm\_role\_id) | Action group ARM role ID | `list(string)` | `[]` | no |
 | <a name="input_action_group_email"></a> [action\_group\_email](#input\_action\_group\_email) | Action group email | `list(string)` | `[]` | no |
 | <a name="input_amba_disable_tag_name"></a> [amba\_disable\_tag\_name](#input\_amba\_disable\_tag\_name) | Tag name used to disable monitoring at the resource level. | `string` | `"MonitorDisable"` | no |
@@ -59,7 +59,7 @@
 ## Outputs
 
 | Name | Description |
-| ---- | ----------- |
+|------|-------------|
 | <a name="output_amba_alz"></a> [amba\_alz](#output\_amba\_alz) | Outputs from the AMBA ALZ module |
 | <a name="output_amba_policy"></a> [amba\_policy](#output\_amba\_policy) | Outputs from the AMBA Policy module |
 <!-- END_TF_DOCS -->
