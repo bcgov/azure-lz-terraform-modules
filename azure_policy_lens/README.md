@@ -23,9 +23,9 @@ azure_policy_lens/
 
 | Upstream | This repo |
 |---|---|
-| Two environments (`dev`, `prod`) with separate discovery, parse, and generate jobs for each | Single environment (`forge`) — three jobs: `job_discovery_forge`, `job_parse_config_forge`, `job_generate_wiki_forge` |
+| Two environments (`dev`, `prod`) with separate discovery, parse, and generate jobs for each | Single environment (`<environment>`) with environment-specific discovery, parse, and generate jobs |
 
-The upstream workflow is parameterized for multi-environment pipelines. This implementation scopes to the `forge` landing zone only (`bcgov-managed-lz-forge-platform` management group).
+The upstream workflow is parameterized for multi-environment pipelines. This implementation scopes to one landing zone only (`<landing-zone-management-group>` management group).
 
 ### 2. Authentication
 
@@ -41,7 +41,7 @@ OIDC is preferred as it avoids long-lived credentials. The workflow sets `ARM_US
 |---|---|
 | Dedicated `GITHUBUSERID_PROD` / `GITHUBTOKEN_PROD` secrets (static PAT) | `github.actor` + built-in `GITHUB_TOKEN` |
 
-> **Note:** `GITHUB_TOKEN` is scoped to the current repository. If the wiki lives in a separate repository (e.g., `bcgov-c/azure-lz-core-forge.wiki.git`), a PAT with `repo` scope will need to be substituted.
+> **Note:** `GITHUB_TOKEN` is scoped to the current repository. If the wiki lives in a separate repository (e.g., `<policy-wiki-repo-url>`), a PAT with `repo` scope will need to be substituted.
 
 ### 4. Encryption Removed
 
@@ -91,7 +91,7 @@ The workflow stays intentionally thin so action-template changes can be made onc
 
 | Upstream sample | This repo |
 |---|---|
-| `github-config.jsonc` contains multiple sample environments | Single `forge` environment entry targeting `bcgov-managed-lz-forge-platform` management group and the `bcgov-c/azure-lz-core-forge.wiki.git` repository (config file is provided by pipeline context and validated with the schema in this directory) |
+| `github-config.jsonc` contains multiple sample environments | Single `<environment>` entry targeting `<landing-zone-management-group>` and the `<policy-wiki-repo-url>` repository (config file is provided by pipeline context and validated with the schema in this directory) |
 
 ---
 
@@ -186,7 +186,7 @@ The `GITHUB_TOKEN` secret is provided automatically by GitHub Actions.
 3. Optionally enable **debug logging**.
 
 The workflow will:
-1. Discover all Azure Policy assignments under the `bcgov-managed-lz-forge-platform` management group.
+1. Discover all Azure Policy assignments under the `<landing-zone-management-group>` management group.
 2. Parse the provided environment wiki configuration using `github-config.schema.json`.
 3. Generate and push wiki pages to the configured Git repository.
 

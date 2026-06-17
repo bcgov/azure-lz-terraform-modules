@@ -1,0 +1,27 @@
+{
+  "name": "Deny-Azure-SRE-Agent",
+  "type": "Microsoft.Authorization/policyAssignments",
+  "apiVersion": "2026-06-01",
+  "properties": {
+    "displayName": "Deny Creating an Azure SRE Agent",
+    "description": "This policy prevents users from creating an Azure SRE Agent.",
+    "notScopes": [],
+    "parameters": {
+      "effect": {
+        "value": "Deny"
+      }
+    },
+    "policyDefinitionId": "${current_scope_resource_id}/providers/Microsoft.Authorization/policyDefinitions/Deny-Azure-SRE-Agent",
+    "nonComplianceMessages": [
+      {
+        "message": "Deploying the Azure SRE Agent in the Landing Zones is not currently allowed."
+      }
+    ],
+    "scope": "${current_scope_resource_id}",
+    "enforcementMode": "Default"
+  },
+  "location": "${default_location}",
+  "identity": {
+    "type": "SystemAssigned"
+  }
+}

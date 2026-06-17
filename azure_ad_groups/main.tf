@@ -141,7 +141,7 @@ resource "null_resource" "group_members" {
   triggers = {
     group_key        = each.value.group_key
     group_name       = local.groups[each.value.group_key].name
-    group_object_id  = azuread_group.groups[each.value.group_key].id
+    group_object_id  = azuread_group.groups[each.value.group_key].object_id
     member           = each.value.member
     member_object_id = each.value.member_object_id
   }

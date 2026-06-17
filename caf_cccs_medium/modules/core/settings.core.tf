@@ -82,7 +82,9 @@ locals {
         Deny-PublicPaaSEndpoints = {
           ContainerAppsEnvironmentDenyEffect = "Audit",
           containerAppsPublicNetworkAccess   = "Audit",
-        }
+        },
+        Deny-Azure-SRE-Agent = var.deny_azure_sre_agent_parameters,
+        Deny-Fabric-Capacity = var.deny_fabric_capacity_parameters
       }
       access_control = {}
     }
