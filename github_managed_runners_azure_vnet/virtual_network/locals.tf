@@ -24,4 +24,6 @@ locals {
     ),
     "" # NOTE: Cannot be null (though empty string is allowed). Terraform throws an err about "null value found in list"
   )]
+
+  NetworkWatcherRGName = "NetworkWatcherRG"
 }

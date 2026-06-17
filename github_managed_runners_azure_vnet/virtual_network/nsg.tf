@@ -10,7 +10,7 @@ resource "azurerm_network_security_group" "github_hosted_runners_nsg" {
   security_rule {
     name                         = "AllowVnetOutBoundOverwrite"
     priority                     = 200
-    direction                    = "Inbound"
+    direction                    = "Outbound"
     access                       = "Allow"
     protocol                     = "Tcp"
     source_port_range            = "*"

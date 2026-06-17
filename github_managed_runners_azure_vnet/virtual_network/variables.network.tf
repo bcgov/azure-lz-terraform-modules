@@ -49,3 +49,18 @@ variable "virtual_wan_hub_resource_group" {
   description = "(Required) Resource Group of the Virtual WAN hub."
   type        = string
 }
+
+variable "vnet_flow_logs_storage_account_id" {
+  description = "Storage account ID for storing VNet flow logs"
+  type        = string
+}
+
+variable "workspace_id" {
+  description = "Log Analytics workspace ID for traffic analytics"
+  type        = string
+}
+
+variable "workspace_resource_id" {
+  description = "Log Analytics workspace resource ID for traffic analytics"
+  type        = string
+}

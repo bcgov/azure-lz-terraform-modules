@@ -8,6 +8,18 @@ variable "subscription_id_management" {
   description = "Subscription ID to use for \"management\" resources."
 }
 
+variable "primary_location" {
+  description = "The primary location for resources"
+  type        = string
+  default     = "canadacentral"
+}
+
+variable "secondary_location" {
+  description = "The secondary location for resources"
+  type        = string
+  default     = "canadaeast"
+}
+
 variable "environment" {
   description = "(Optional) Which Azure environment to deploy to. Options are: forge, or live."
   type        = string
