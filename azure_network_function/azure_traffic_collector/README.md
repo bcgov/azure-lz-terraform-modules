@@ -4,14 +4,14 @@
 ## Requirements
 
 | Name | Version |
-| ---- | ------- |
+|------|---------|
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >=1.9.0, < 2.0.0 |
 | <a name="requirement_azurerm"></a> [azurerm](#requirement\_azurerm) | ~> 4.76 |
 
 ## Providers
 
 | Name | Version |
-| ---- | ------- |
+|------|---------|
 | <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) | ~> 4.76 |
 
 ## Modules
@@ -21,7 +21,7 @@ No modules.
 ## Resources
 
 | Name | Type |
-| ---- | ---- |
+|------|------|
 | [azurerm_network_function_azure_traffic_collector.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/network_function_azure_traffic_collector) | resource |
 | [azurerm_resource_group.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/resource_group) | resource |
 | [azurerm_client_config.current](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/data-sources/client_config) | data source |
@@ -29,7 +29,7 @@ No modules.
 ## Inputs
 
 | Name | Description | Type | Default | Required |
-| ---- | ----------- | ---- | ------- | :------: |
+|------|-------------|------|---------|:--------:|
 | <a name="input_collector_name"></a> [collector\_name](#input\_collector\_name) | (Required) Specifies the name which should be used for this Network Function Azure Traffic Collector. | `string` | n/a | yes |
 | <a name="input_location"></a> [location](#input\_location) | (Required) Specifies the Azure Region where the Network Function Azure Traffic Collector should exist. | `string` | n/a | yes |
 | <a name="input_resource_group_name"></a> [resource\_group\_name](#input\_resource\_group\_name) | (Required) Specifies the name of the Resource Group where the Network Function Azure Traffic Collector should exist. | `string` | n/a | yes |
@@ -40,7 +40,7 @@ No modules.
 ## Outputs
 
 | Name | Description |
-| ---- | ----------- |
+|------|-------------|
 | <a name="output_collector_id"></a> [collector\_id](#output\_collector\_id) | The ID of the Network Function Azure Traffic Collector. |
 | <a name="output_collector_name"></a> [collector\_name](#output\_collector\_name) | The name of the Network Function Azure Traffic Collector. |
 | <a name="output_collector_policy_ids"></a> [collector\_policy\_ids](#output\_collector\_policy\_ids) | The IDs of the Network Function Azure Traffic Collector Policies associated with this Network Function Azure Traffic Collector. |

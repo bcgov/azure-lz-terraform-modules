@@ -4,14 +4,14 @@
 ## Requirements
 
 | Name | Version |
-| ---- | ------- |
+|------|---------|
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >=1.9.0, < 2.0.0 |
 | <a name="requirement_azurerm"></a> [azurerm](#requirement\_azurerm) | ~> 4.76 |
 
 ## Providers
 
 | Name | Version |
-| ---- | ------- |
+|------|---------|
 | <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) | ~> 4.76 |
 
 ## Modules
@@ -21,14 +21,14 @@ No modules.
 ## Resources
 
 | Name | Type |
-| ---- | ---- |
+|------|------|
 | [azurerm_express_route_connection.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/express_route_connection) | resource |
 | [azurerm_client_config.current](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/data-sources/client_config) | data source |
 
 ## Inputs
 
 | Name | Description | Type | Default | Required |
-| ---- | ----------- | ---- | ------- | :------: |
+|------|-------------|------|---------|:--------:|
 | <a name="input_authorization_key"></a> [authorization\_key](#input\_authorization\_key) | (Optional) The authorization key to establish the Express Route Connection. | `string` | `null` | no |
 | <a name="input_circuit_peering_type"></a> [circuit\_peering\_type](#input\_circuit\_peering\_type) | (Required) The type of the Express Route Circuit Peering. | `string` | n/a | yes |
 | <a name="input_enable_internet_security"></a> [enable\_internet\_security](#input\_enable\_internet\_security) | (Optional) Is Internet security enabled for this Express Route Connection? | `bool` | `null` | no |
@@ -48,6 +48,6 @@ No modules.
 ## Outputs
 
 | Name | Description |
-| ---- | ----------- |
+|------|-------------|
 | <a name="output_express_route_connection_id"></a> [express\_route\_connection\_id](#output\_express\_route\_connection\_id) | The ID of the ExpressRoute Connection. |
 <!-- END_TF_DOCS -->
