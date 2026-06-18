@@ -10,7 +10,7 @@ module "network_flow_logs" {
   flow_logs = {
     (var.virtual_network_name) = {
       enabled              = true
-      name                 = "${var.virtual_network_name}-vwan-spoke-networking-flowlog"
+      name                 = "${var.virtual_network_name}-vwan-spoke-network-flowlog" # The name can be up to 80 characters long
       target_resource_id   = azurerm_virtual_network.ghrunners_vnet.id
       network_watcher_name = format("NetworkWatcher_%s", lower(var.primary_location))
       storage_account_id   = var.vnet_flow_logs_storage_account_id
