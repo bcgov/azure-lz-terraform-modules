@@ -10,7 +10,7 @@ This includes:
 ## Requirements
 
 | Name | Version |
-| ---- | ------- |
+|------|---------|
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >=1.9.0, < 2.0.0 |
 | <a name="requirement_azapi"></a> [azapi](#requirement\_azapi) | ~> 2.10 |
 | <a name="requirement_azureipam"></a> [azureipam](#requirement\_azureipam) | ~> 2.0 |
@@ -20,7 +20,7 @@ This includes:
 ## Providers
 
 | Name | Version |
-| ---- | ------- |
+|------|---------|
 | <a name="provider_azapi"></a> [azapi](#provider\_azapi) | ~> 2.10 |
 | <a name="provider_azureipam"></a> [azureipam](#provider\_azureipam) | ~> 2.0 |
 | <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) | ~> 4.76 |
@@ -32,7 +32,7 @@ No modules.
 ## Resources
 
 | Name | Type |
-| ---- | ---- |
+|------|------|
 | [azapi_resource.powerbi_data_gateway_subnet](https://registry.terraform.io/providers/azure/azapi/latest/docs/resources/resource) | resource |
 | [azureipam_reservation.finops_toolkit](https://registry.terraform.io/providers/XtratusCloud/azureipam/latest/docs/resources/reservation) | resource |
 | [azurerm_fabric_capacity.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/fabric_capacity) | resource |
@@ -43,7 +43,7 @@ No modules.
 ## Inputs
 
 | Name | Description | Type | Default | Required |
-| ---- | ----------- | ---- | ------- | :------: |
+|------|-------------|------|---------|:--------:|
 | <a name="input_IPAM_TOKEN"></a> [IPAM\_TOKEN](#input\_IPAM\_TOKEN) | (Required) The IPAM token to use for IP address management. | `string` | n/a | yes |
 | <a name="input_administration_members"></a> [administration\_members](#input\_administration\_members) | (Optional) An array of administrator user identities. | `list(string)` | `null` | no |
 | <a name="input_data_gateway_subnet_address_prefix"></a> [data\_gateway\_subnet\_address\_prefix](#input\_data\_gateway\_subnet\_address\_prefix) | (Required) The address prefix for the Virtual Network Data Gateway subnet | `string` | n/a | yes |
@@ -61,7 +61,7 @@ No modules.
 ## Outputs
 
 | Name | Description |
-| ---- | ----------- |
+|------|-------------|
 | <a name="output_azureipam_reservation"></a> [azureipam\_reservation](#output\_azureipam\_reservation) | The IPAM reservation object |
 | <a name="output_data_gateway_subnet"></a> [data\_gateway\_subnet](#output\_data\_gateway\_subnet) | The subnet for the Power BI Data Gateway |
 | <a name="output_fabric_id"></a> [fabric\_id](#output\_fabric\_id) | The ID of the Fabric Capacity. |

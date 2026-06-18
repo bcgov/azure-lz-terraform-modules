@@ -18,7 +18,7 @@ Additionally, there is some other (incomplete) code that reads the `SampleThreat
 ## Requirements
 
 | Name | Version |
-| ---- | ------- |
+|------|---------|
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >=1.9.0, < 2.0.0 |
 | <a name="requirement_azapi"></a> [azapi](#requirement\_azapi) | ~> 2.10 |
 | <a name="requirement_azurerm"></a> [azurerm](#requirement\_azurerm) | ~> 4.76 |
@@ -26,7 +26,7 @@ Additionally, there is some other (incomplete) code that reads the `SampleThreat
 ## Providers
 
 | Name | Version |
-| ---- | ------- |
+|------|---------|
 | <a name="provider_azapi"></a> [azapi](#provider\_azapi) | ~> 2.10 |
 | <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) | ~> 4.76 |
 
@@ -37,7 +37,7 @@ No modules.
 ## Resources
 
 | Name | Type |
-| ---- | ---- |
+|------|------|
 | [azapi_update_resource.fwpolicy_idps](https://registry.terraform.io/providers/azure/azapi/latest/docs/resources/update_resource) | resource |
 | [azapi_update_resource.fwpolicy_threat_intel_allow_list](https://registry.terraform.io/providers/azure/azapi/latest/docs/resources/update_resource) | resource |
 | [azurerm_client_config.current](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/data-sources/client_config) | data source |
@@ -47,7 +47,7 @@ No modules.
 ## Inputs
 
 | Name | Description | Type | Default | Required |
-| ---- | ----------- | ---- | ------- | :------: |
+|------|-------------|------|---------|:--------:|
 | <a name="input_firewall_policy_name"></a> [firewall\_policy\_name](#input\_firewall\_policy\_name) | The name of the Azure Firewall Policy. | `string` | n/a | yes |
 | <a name="input_firewall_policy_resource_group_name"></a> [firewall\_policy\_resource\_group\_name](#input\_firewall\_policy\_resource\_group\_name) | The name of the resource group in which the Azure Firewall Policy exists. | `string` | n/a | yes |
 | <a name="input_idps_private_ip_ranges"></a> [idps\_private\_ip\_ranges](#input\_idps\_private\_ip\_ranges) | (Optional) A list of Private IP address ranges to identify traffic direction. By default, only ranges defined by IANA RFC 1918 are considered private IP addresses. | `list(string)` | `[]` | no |
@@ -56,7 +56,7 @@ No modules.
 ## Outputs
 
 | Name | Description |
-| ---- | ----------- |
+|------|-------------|
 | <a name="output_firewall_policy_id"></a> [firewall\_policy\_id](#output\_firewall\_policy\_id) | n/a |
 | <a name="output_fqdn_names"></a> [fqdn\_names](#output\_fqdn\_names) | n/a |
 | <a name="output_ip_addresses"></a> [ip\_addresses](#output\_ip\_addresses) | n/a |

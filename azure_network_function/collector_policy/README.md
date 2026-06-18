@@ -4,14 +4,14 @@
 ## Requirements
 
 | Name | Version |
-| ---- | ------- |
+|------|---------|
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >=1.9.0, < 2.0.0 |
 | <a name="requirement_azurerm"></a> [azurerm](#requirement\_azurerm) | ~> 4.76 |
 
 ## Providers
 
 | Name | Version |
-| ---- | ------- |
+|------|---------|
 | <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) | ~> 4.76 |
 
 ## Modules
@@ -21,7 +21,7 @@ No modules.
 ## Resources
 
 | Name | Type |
-| ---- | ---- |
+|------|------|
 | [azurerm_monitor_diagnostic_setting.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/monitor_diagnostic_setting) | resource |
 | [azurerm_network_function_collector_policy.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/network_function_collector_policy) | resource |
 | [azurerm_client_config.current](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/data-sources/client_config) | data source |
@@ -29,7 +29,7 @@ No modules.
 ## Inputs
 
 | Name | Description | Type | Default | Required |
-| ---- | ----------- | ---- | ------- | :------: |
+|------|-------------|------|---------|:--------:|
 | <a name="input_collector_policy_name"></a> [collector\_policy\_name](#input\_collector\_policy\_name) | (Required) Specifies the name which should be used for this Network Function Collector Policy. | `string` | n/a | yes |
 | <a name="input_ipfx_emission_destination_types"></a> [ipfx\_emission\_destination\_types](#input\_ipfx\_emission\_destination\_types) | (Required) A list of emission destination types. The only possible value is AzureMonitor. | `list(string)` | <pre>[<br/>  "AzureMonitor"<br/>]</pre> | no |
 | <a name="input_ipfx_ingestion_source_resource_ids"></a> [ipfx\_ingestion\_source\_resource\_ids](#input\_ipfx\_ingestion\_source\_resource\_ids) | (Required) A list of ingestion source resource IDs. | `list(string)` | n/a | yes |
@@ -43,7 +43,7 @@ No modules.
 ## Outputs
 
 | Name | Description |
-| ---- | ----------- |
+|------|-------------|
 | <a name="output_collector_policy_id"></a> [collector\_policy\_id](#output\_collector\_policy\_id) | The ID of the Network Function Collector Policy. |
 | <a name="output_collector_policy_name"></a> [collector\_policy\_name](#output\_collector\_policy\_name) | The name of the Network Function Collector Policy. |
 | <a name="output_ipfx_emission"></a> [ipfx\_emission](#output\_ipfx\_emission) | The Emission configuration of the Network Function Collector Policy. |
