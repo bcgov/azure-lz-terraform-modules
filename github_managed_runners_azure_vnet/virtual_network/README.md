@@ -38,7 +38,7 @@
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| <a name="input_environment"></a> [environment](#input\_environment) | (Optional) Which Azure environment to deploy to. Options are: forge, or live. | `string` | n/a | yes |
+| <a name="input_environment"></a> [environment](#input\_environment) | (Required) Which Azure environment to deploy to. Options are: LIVE or FORGE. | `string` | n/a | yes |
 | <a name="input_github_hosted_runners_subnet_address_prefix"></a> [github\_hosted\_runners\_subnet\_address\_prefix](#input\_github\_hosted\_runners\_subnet\_address\_prefix) | (Required) The address prefix for the GitHub hosted runners subnet (ie. 28). No slash needed. | `number` | n/a | yes |
 | <a name="input_github_hosted_runners_subnet_name"></a> [github\_hosted\_runners\_subnet\_name](#input\_github\_hosted\_runners\_subnet\_name) | (Required) The name of the subnet to use for the GitHub hosted runners (which will be VNet injected) | `string` | `"github-runners"` | no |
 | <a name="input_location"></a> [location](#input\_location) | (Required) Azure region to deploy to. Changing this forces a new resource to be created. | `string` | n/a | yes |

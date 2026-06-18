@@ -10,7 +10,7 @@ output "virtual_network" {
 
 output "subnet_id" {
   description = "The subnet ID for GitHub Runners delegated subnet. This is used by the GitHub Network Settings object for Service Association Links."
-  value       = [for subnet in azurerm_virtual_network.ghrunners_vnet.subnet : subnet.id if subnet.name == var.github_hosted_runners_subnet_name][0]
+  value       = one([for subnet in azurerm_virtual_network.ghrunners_vnet.subnet : subnet.id if subnet.name == var.github_hosted_runners_subnet_name])
 }
 
 output "ip_reservation" {

@@ -8,16 +8,15 @@ resource "azurerm_network_security_group" "github_hosted_runners_nsg" {
   # Note: The Security Rules are based on the following official documentation: https://docs.github.com/en/organizations/managing-organization-settings/configuring-private-networking-for-github-hosted-runners-in-your-organization
 
   security_rule {
-    name                         = "AllowVnetOutBoundOverwrite"
-    priority                     = 200
-    direction                    = "Outbound"
-    access                       = "Allow"
-    protocol                     = "Tcp"
-    source_port_range            = "*"
-    destination_port_range       = "443"
-    source_address_prefix        = "*"
-    destination_address_prefix   = "VirtualNetwork"
-    destination_address_prefixes = []
+    name                       = "AllowVnetOutBoundOverwrite"
+    priority                   = 200
+    direction                  = "Outbound"
+    access                     = "Allow"
+    protocol                   = "Tcp"
+    source_port_range          = "*"
+    destination_port_range     = "443"
+    source_address_prefix      = "*"
+    destination_address_prefix = "VirtualNetwork"
   }
 
   security_rule {
@@ -175,16 +174,15 @@ resource "azurerm_network_security_group" "github_hosted_runners_nsg" {
   }
 
   security_rule {
-    name                         = "AllowStorageOutbound"
-    priority                     = 230
-    direction                    = "Outbound"
-    access                       = "Allow"
-    protocol                     = "*"
-    source_port_range            = "*"
-    destination_port_range       = "443"
-    source_address_prefix        = "*"
-    destination_address_prefix   = "Storage"
-    destination_address_prefixes = []
+    name                       = "AllowStorageOutbound"
+    priority                   = 230
+    direction                  = "Outbound"
+    access                     = "Allow"
+    protocol                   = "*"
+    source_port_range          = "*"
+    destination_port_range     = "443"
+    source_address_prefix      = "*"
+    destination_address_prefix = "Storage"
   }
 
   lifecycle {

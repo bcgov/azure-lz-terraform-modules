@@ -3,7 +3,7 @@ locals {
   dns_servers = upper(var.environment) == "FORGE" ? ["10.41.253.4"] : ["10.53.244.4"]
 
   # Default address space as Terraform plan will fail since the IPAM reservation is not created yet
-  default_address_space = ["192.168.0.0/30"]
+  default_address_space = [format("192.168.0.0/%d", var.virtual_network_address_space)]
 
   # Use IPAM if available, fall back to default
   vnet_address_space = (
@@ -16,14 +16,13 @@ locals {
   newBits = (var.github_hosted_runners_subnet_address_prefix - var.virtual_network_address_space)
 
   # Derive subnet from vnet address space
-  subnet_address_prefix = [try(
+  subnet_address_prefix = [
     cidrsubnet(
       local.vnet_address_space[0], # Use first vnet prefix
       local.newBits,
       0 # First subnet
-    ),
-    "" # NOTE: Cannot be null (though empty string is allowed). Terraform throws an err about "null value found in list"
-  )]
+    )
+  ]
 
   NetworkWatcherRGName = "NetworkWatcherRG"
 }

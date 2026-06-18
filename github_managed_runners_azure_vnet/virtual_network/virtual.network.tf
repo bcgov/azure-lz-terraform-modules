@@ -7,7 +7,7 @@ resource "azurerm_virtual_network" "ghrunners_vnet" {
   private_endpoint_vnet_policies = "Basic"
 
   dynamic "subnet" {
-    for_each = local.subnet_address_prefix != null && local.subnet_address_prefix[0] != "" ? [local.subnet_address_prefix] : []
+    for_each = [local.subnet_address_prefix]
     content {
       name                                          = var.github_hosted_runners_subnet_name
       address_prefixes                              = local.subnet_address_prefix

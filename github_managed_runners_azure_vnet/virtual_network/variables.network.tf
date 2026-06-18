@@ -35,8 +35,13 @@ variable "github_hosted_runners_subnet_address_prefix" {
   type        = number
 
   validation {
-    condition     = var.github_hosted_runners_subnet_address_prefix >= 0 && var.github_hosted_runners_subnet_address_prefix <= 32 && floor(var.github_hosted_runners_subnet_address_prefix) == var.github_hosted_runners_subnet_address_prefix
-    error_message = "The github_hosted_runners_subnet_address_prefix must be a whole number between 0 and 32 (valid CIDR prefix)."
+    condition = (
+      var.github_hosted_runners_subnet_address_prefix >= 0 &&
+      var.github_hosted_runners_subnet_address_prefix <= 32 &&
+      floor(var.github_hosted_runners_subnet_address_prefix) == var.github_hosted_runners_subnet_address_prefix &&
+      var.github_hosted_runners_subnet_address_prefix >= var.virtual_network_address_space
+    )
+    error_message = "The github_hosted_runners_subnet_address_prefix must be a whole number between 0 and 32 and must be >= virtual_network_address_space."
   }
 }
 

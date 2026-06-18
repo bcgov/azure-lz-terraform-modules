@@ -21,8 +21,13 @@ variable "secondary_location" {
 }
 
 variable "environment" {
-  description = "(Optional) Which Azure environment to deploy to. Options are: forge, or live."
+  description = "(Required) Which Azure environment to deploy to. Options are: LIVE or FORGE."
   type        = string
+
+  validation {
+    condition     = contains(["LIVE", "FORGE"], upper(var.environment))
+    error_message = "ERROR: Only LIVE or FORGE are allowed for the variable \"environment\"."
+  }
 }
 
 variable "location" {
