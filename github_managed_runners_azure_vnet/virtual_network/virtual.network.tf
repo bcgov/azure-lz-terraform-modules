@@ -1,4 +1,6 @@
 resource "azurerm_virtual_network" "ghrunners_vnet" {
+  provider = azurerm.connectivity
+
   name                           = var.virtual_network_name
   location                       = var.location
   resource_group_name            = azurerm_resource_group.ghrunners.name
