@@ -1,5 +1,17 @@
 # gh_network_settings
 
+IMPORTANT: This module is created to be used in a centralized deployment within the Connectivity subscription. It has not been coded in a reusable way for other subscriptions.
+
+If, in the future, this module needs to be used in other Landing Zone subscriptions, certain assumptions would be made, including:
+
+- The target Virtual Network (VNet) already exists, and therefore no new IPAM reservations are needed
+- The VNet is already connected to the Virtual WAN Hub, and therefore no new Virtual Hub connections are needed
+- VNet flow logs are already configured
+- A Network Security Group (NSG) already exists and is associated with the target subnet (though additional rules will be required)
+- The target subnet already exists and is delegated to Microsoft.GitHub/hostedRunners
+
+Modification of this module would be required to support these assumptions, and the module would need to be refactored to support a more generic use case.
+
 <!-- BEGIN_TF_DOCS -->
 ## Requirements
 
