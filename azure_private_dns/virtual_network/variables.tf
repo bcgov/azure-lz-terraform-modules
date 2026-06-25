@@ -23,6 +23,18 @@ variable "location" {
   }
 }
 
+variable "primary_location" {
+  description = "The primary location for resources"
+  type        = string
+  default     = "canadacentral"
+}
+
+variable "secondary_location" {
+  description = "The secondary location for resources"
+  type        = string
+  default     = "canadaeast"
+}
+
 variable "private_dns_resource_group_name" {
   description = "(Required) Name of the Resource Group to deploy the Private DNS Resolver into."
   type        = string
@@ -51,4 +63,20 @@ variable "private_dns_resolver_virtual_network_name" {
 variable "network_manager_ipam_pool_id" {
   type        = string
   description = "IPAM Pool id"
+}
+
+
+variable "vnet_flow_logs_storage_account_id" {
+  description = "Storage account ID for storing VNet flow logs"
+  type        = string
+}
+
+variable "workspace_id" {
+  description = "Log Analytics workspace ID for traffic analytics"
+  type        = string
+}
+
+variable "workspace_resource_id" {
+  description = "Log Analytics workspace resource ID for traffic analytics"
+  type        = string
 }
