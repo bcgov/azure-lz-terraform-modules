@@ -1,6 +1,6 @@
 module "network_flow_logs" {
   source  = "Azure/avm-res-network-networkwatcher/azurerm"
-  version = "0.3.0"
+  version = "0.3.2"
 
   location             = var.primary_location
   network_watcher_id   = format("/subscriptions/%s/resourceGroups/%s/providers/Microsoft.Network/networkWatchers/NetworkWatcher_%s", var.subscription_id_connectivity, local.NetworkWatcherRGName, lower(var.primary_location))
