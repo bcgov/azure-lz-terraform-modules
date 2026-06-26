@@ -1,4 +1,6 @@
 module "network_flow_logs" {
+  # IMPORTANT: Traffic Analytics does not support Management Group permissions inheritance! Therefore, direct assignment on the target Subscription is required.
+  # See: https://learn.microsoft.com/en-us/azure/network-watcher/secure-network-watcher#identity-and-access-management and https://learn.microsoft.com/en-us/azure/network-watcher/required-rbac-permissions#traffic-analytics
   source  = "Azure/avm-res-network-networkwatcher/azurerm"
   version = "0.3.2"
 
