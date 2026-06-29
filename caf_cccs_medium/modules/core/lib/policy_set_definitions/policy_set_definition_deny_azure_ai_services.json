@@ -5,8 +5,8 @@
   "scope": null,
   "properties": {
     "policyType": "Custom",
-    "displayName": "Deny deployment of selected Azure AI services",
-    "description": "This initiative denies deployment of selected Azure AI services and supports per-policy exemptions through stable policy definition reference IDs.",
+    "displayName": "Deny deployment of selected Azure AI Services",
+    "description": "This initiative denies deployment of selected Azure AI Services and supports per-policy exemptions through stable policy definition reference IDs.",
     "metadata": {
       "version": "1.0.0",
       "category": "AI"
@@ -144,7 +144,7 @@
     "policyDefinitions": [
       {
         "policyDefinitionReferenceId": "Deny-AI-Foundry",
-        "policyDefinitionId": "${root_scope_resource_id}/providers/Microsoft.Authorization/policyDefinitions/Deny-AI-Foundry",
+        "policyDefinitionId": "${current_scope_resource_id}/providers/Microsoft.Authorization/policyDefinitions/Deny-AI-Foundry",
         "parameters": {
           "effect": {
             "value": "[parameters('deny_ai_foundry')]"
@@ -154,7 +154,7 @@
       },
       {
         "policyDefinitionReferenceId": "Deny-AI-Hubs",
-        "policyDefinitionId": "${root_scope_resource_id}/providers/Microsoft.Authorization/policyDefinitions/Deny-AI-Hubs",
+        "policyDefinitionId": "${current_scope_resource_id}/providers/Microsoft.Authorization/policyDefinitions/Deny-AI-Hubs",
         "parameters": {
           "effect": {
             "value": "[parameters('deny_ai_hubs')]"
@@ -164,7 +164,7 @@
       },
       {
         "policyDefinitionReferenceId": "Deny-Azure-OpenAI",
-        "policyDefinitionId": "${root_scope_resource_id}/providers/Microsoft.Authorization/policyDefinitions/Deny-Azure-OpenAI",
+        "policyDefinitionId": "${current_scope_resource_id}/providers/Microsoft.Authorization/policyDefinitions/Deny-Azure-OpenAI",
         "parameters": {
           "effect": {
             "value": "[parameters('deny_azure_openai')]"
@@ -174,7 +174,7 @@
       },
       {
         "policyDefinitionReferenceId": "Deny-AI-Search",
-        "policyDefinitionId": "${root_scope_resource_id}/providers/Microsoft.Authorization/policyDefinitions/Deny-AI-Search",
+        "policyDefinitionId": "${current_scope_resource_id}/providers/Microsoft.Authorization/policyDefinitions/Deny-AI-Search",
         "parameters": {
           "effect": {
             "value": "[parameters('deny_ai_search')]"
@@ -184,7 +184,7 @@
       },
       {
         "policyDefinitionReferenceId": "Deny-Bot-Services",
-        "policyDefinitionId": "${root_scope_resource_id}/providers/Microsoft.Authorization/policyDefinitions/Deny-Bot-Services",
+        "policyDefinitionId": "${current_scope_resource_id}/providers/Microsoft.Authorization/policyDefinitions/Deny-Bot-Services",
         "parameters": {
           "effect": {
             "value": "[parameters('deny_bot_services')]"
@@ -194,7 +194,7 @@
       },
       {
         "policyDefinitionReferenceId": "Deny-Computer-Vision",
-        "policyDefinitionId": "${root_scope_resource_id}/providers/Microsoft.Authorization/policyDefinitions/Deny-Computer-Vision",
+        "policyDefinitionId": "${current_scope_resource_id}/providers/Microsoft.Authorization/policyDefinitions/Deny-Computer-Vision",
         "parameters": {
           "effect": {
             "value": "[parameters('deny_computer_vision')]"
@@ -204,7 +204,7 @@
       },
       {
         "policyDefinitionReferenceId": "Deny-Custom-Vision",
-        "policyDefinitionId": "${root_scope_resource_id}/providers/Microsoft.Authorization/policyDefinitions/Deny-Custom-Vision",
+        "policyDefinitionId": "${current_scope_resource_id}/providers/Microsoft.Authorization/policyDefinitions/Deny-Custom-Vision",
         "parameters": {
           "effect": {
             "value": "[parameters('deny_custom_vision')]"
@@ -214,7 +214,7 @@
       },
       {
         "policyDefinitionReferenceId": "Deny-Content-Safety",
-        "policyDefinitionId": "${root_scope_resource_id}/providers/Microsoft.Authorization/policyDefinitions/Deny-Content-Safety",
+        "policyDefinitionId": "${current_scope_resource_id}/providers/Microsoft.Authorization/policyDefinitions/Deny-Content-Safety",
         "parameters": {
           "effect": {
             "value": "[parameters('deny_content_safety')]"
@@ -224,7 +224,7 @@
       },
       {
         "policyDefinitionReferenceId": "Deny-Document-Intelligence",
-        "policyDefinitionId": "${root_scope_resource_id}/providers/Microsoft.Authorization/policyDefinitions/Deny-Document-Intelligence",
+        "policyDefinitionId": "${current_scope_resource_id}/providers/Microsoft.Authorization/policyDefinitions/Deny-Document-Intelligence",
         "parameters": {
           "effect": {
             "value": "[parameters('deny_document_intelligence')]"
@@ -234,7 +234,7 @@
       },
       {
         "policyDefinitionReferenceId": "Deny-Face-API",
-        "policyDefinitionId": "${root_scope_resource_id}/providers/Microsoft.Authorization/policyDefinitions/Deny-Face-API",
+        "policyDefinitionId": "${current_scope_resource_id}/providers/Microsoft.Authorization/policyDefinitions/Deny-Face-API",
         "parameters": {
           "effect": {
             "value": "[parameters('deny_face_api')]"
@@ -244,7 +244,7 @@
       },
       {
         "policyDefinitionReferenceId": "Deny-Health-Insights",
-        "policyDefinitionId": "${root_scope_resource_id}/providers/Microsoft.Authorization/policyDefinitions/Deny-Health-Insights",
+        "policyDefinitionId": "${current_scope_resource_id}/providers/Microsoft.Authorization/policyDefinitions/Deny-Health-Insights",
         "parameters": {
           "effect": {
             "value": "[parameters('deny_health_insights')]"
@@ -254,7 +254,7 @@
       },
       {
         "policyDefinitionReferenceId": "Deny-Machine-Learning",
-        "policyDefinitionId": "${root_scope_resource_id}/providers/Microsoft.Authorization/policyDefinitions/Deny-Machine-Learning",
+        "policyDefinitionId": "${current_scope_resource_id}/providers/Microsoft.Authorization/policyDefinitions/Deny-Machine-Learning",
         "parameters": {
           "effect": {
             "value": "[parameters('deny_machine_learning')]"
@@ -264,7 +264,7 @@
       },
       {
         "policyDefinitionReferenceId": "Deny-Immersive-Reader",
-        "policyDefinitionId": "${root_scope_resource_id}/providers/Microsoft.Authorization/policyDefinitions/Deny-Immersive-Reader",
+        "policyDefinitionId": "${current_scope_resource_id}/providers/Microsoft.Authorization/policyDefinitions/Deny-Immersive-Reader",
         "parameters": {
           "effect": {
             "value": "[parameters('deny_immersive_reader')]"
@@ -274,7 +274,7 @@
       },
       {
         "policyDefinitionReferenceId": "Deny-Language-Service",
-        "policyDefinitionId": "${root_scope_resource_id}/providers/Microsoft.Authorization/policyDefinitions/Deny-Language-Service",
+        "policyDefinitionId": "${current_scope_resource_id}/providers/Microsoft.Authorization/policyDefinitions/Deny-Language-Service",
         "parameters": {
           "effect": {
             "value": "[parameters('deny_language_service')]"
@@ -284,7 +284,7 @@
       },
       {
         "policyDefinitionReferenceId": "Deny-Speech-Service",
-        "policyDefinitionId": "${root_scope_resource_id}/providers/Microsoft.Authorization/policyDefinitions/Deny-Speech-Service",
+        "policyDefinitionId": "${current_scope_resource_id}/providers/Microsoft.Authorization/policyDefinitions/Deny-Speech-Service",
         "parameters": {
           "effect": {
             "value": "[parameters('deny_speech_service')]"
@@ -294,7 +294,7 @@
       },
       {
         "policyDefinitionReferenceId": "Deny-Translator",
-        "policyDefinitionId": "${root_scope_resource_id}/providers/Microsoft.Authorization/policyDefinitions/Deny-Translator",
+        "policyDefinitionId": "${current_scope_resource_id}/providers/Microsoft.Authorization/policyDefinitions/Deny-Translator",
         "parameters": {
           "effect": {
             "value": "[parameters('deny_translator')]"

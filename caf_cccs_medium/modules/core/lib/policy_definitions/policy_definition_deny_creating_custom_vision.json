@@ -4,12 +4,12 @@
   "apiVersion": "2026-06-01",
   "properties": {
     "displayName": "Deny Creating Custom Vision Services",
-    "description": "This policy prevents users from creating Custom Vision services.",
+    "description": "This policy prevents users from creating Custom Vision Services.",
     "policyType": "Custom",
     "mode": "All",
     "metadata": {
       "version": "1.0.0",
-      "category": "AI"
+      "category": "Azure Ai Services"
     },
     "parameters": {
       "effect": {

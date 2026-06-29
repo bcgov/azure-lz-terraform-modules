@@ -4,12 +4,12 @@
   "apiVersion": "2026-06-01",
   "properties": {
     "displayName": "Deny Creating Document Intelligence Services",
-    "description": "This policy prevents users from creating Document Intelligence services.",
+    "description": "This policy prevents users from creating Document Intelligence Services.",
     "policyType": "Custom",
     "mode": "All",
     "metadata": {
       "version": "1.0.0",
-      "category": "AI"
+      "category": "Azure Ai Services"
     },
     "parameters": {
       "effect": {

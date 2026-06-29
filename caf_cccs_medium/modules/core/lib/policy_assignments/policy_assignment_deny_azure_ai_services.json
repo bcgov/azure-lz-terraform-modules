@@ -3,8 +3,8 @@
   "type": "Microsoft.Authorization/policyAssignments",
   "apiVersion": "2026-06-01",
   "properties": {
-    "displayName": "Deny deployment of selected Azure AI services",
-    "description": "This initiative denies deployment of selected Azure AI services. Individual policy exemptions can be targeted using policy definition reference IDs.",
+    "displayName": "Deny deployment of selected Azure AI Services",
+    "description": "This initiative denies deployment of selected Azure AI Services. Individual policy exemptions can be targeted using policy definition reference IDs.",
     "notScopes": [],
     "parameters": {
       "deny_ai_foundry": {
@@ -56,74 +56,10 @@
         "value": "Audit"
       }
     },
-    "policyDefinitionId": "${root_scope_resource_id}/providers/Microsoft.Authorization/policySetDefinitions/Deny-Azure-AI-Services-Initiative",
+    "policyDefinitionId": "${current_scope_resource_id}/providers/Microsoft.Authorization/policySetDefinitions/Deny-Azure-AI-Services-Initiative",
     "nonComplianceMessages": [
       {
-        "message": "Creation of selected Azure AI services is restricted in this landing zone. See guidance: https://learn.microsoft.com/azure/ai-services/what-are-ai-services"
-      },
-      {
-        "message": "Azure AI Foundry services are restricted in this landing zone.",
-        "policyDefinitionReferenceId": "Deny-AI-Foundry"
-      },
-      {
-        "message": "Azure AI Hubs are restricted in this landing zone.",
-        "policyDefinitionReferenceId": "Deny-AI-Hubs"
-      },
-      {
-        "message": "Azure OpenAI services are restricted in this landing zone.",
-        "policyDefinitionReferenceId": "Deny-Azure-OpenAI"
-      },
-      {
-        "message": "Azure AI Search services are restricted in this landing zone.",
-        "policyDefinitionReferenceId": "Deny-AI-Search"
-      },
-      {
-        "message": "Azure Bot Services resources are restricted in this landing zone.",
-        "policyDefinitionReferenceId": "Deny-Bot-Services"
-      },
-      {
-        "message": "Computer Vision services are restricted in this landing zone.",
-        "policyDefinitionReferenceId": "Deny-Computer-Vision"
-      },
-      {
-        "message": "Custom Vision services are restricted in this landing zone.",
-        "policyDefinitionReferenceId": "Deny-Custom-Vision"
-      },
-      {
-        "message": "Content Safety services are restricted in this landing zone.",
-        "policyDefinitionReferenceId": "Deny-Content-Safety"
-      },
-      {
-        "message": "Document Intelligence services are restricted in this landing zone.",
-        "policyDefinitionReferenceId": "Deny-Document-Intelligence"
-      },
-      {
-        "message": "Face API services are restricted in this landing zone.",
-        "policyDefinitionReferenceId": "Deny-Face-API"
-      },
-      {
-        "message": "Health Insights services are restricted in this landing zone.",
-        "policyDefinitionReferenceId": "Deny-Health-Insights"
-      },
-      {
-        "message": "Machine Learning workspaces are restricted in this landing zone.",
-        "policyDefinitionReferenceId": "Deny-Machine-Learning"
-      },
-      {
-        "message": "Immersive Reader services are restricted in this landing zone.",
-        "policyDefinitionReferenceId": "Deny-Immersive-Reader"
-      },
-      {
-        "message": "Language services are restricted in this landing zone.",
-        "policyDefinitionReferenceId": "Deny-Language-Service"
-      },
-      {
-        "message": "Speech services are restricted in this landing zone.",
-        "policyDefinitionReferenceId": "Deny-Speech-Service"
-      },
-      {
-        "message": "Translator services are restricted in this landing zone.",
-        "policyDefinitionReferenceId": "Deny-Translator"
+        "message": "Provisioning Azure AI Services in the Landing Zones is restricted to the AI Services Hub. Please see TechDocs for more information on how to request use of the AI Services Hub: https://developer.gov.bc.ca/docs/default/component/public-cloud-techdocs/azure/azure-services/azure-ai/"
       }
     ],
     "scope": "${current_scope_resource_id}",

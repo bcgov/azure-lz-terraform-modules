@@ -4,12 +4,12 @@
   "apiVersion": "2026-06-01",
   "properties": {
     "displayName": "Deny Creating Translator Services",
-    "description": "This policy prevents users from creating Translator services.",
+    "description": "This policy prevents users from creating Translator Services.",
     "policyType": "Custom",
     "mode": "All",
     "metadata": {
       "version": "1.0.0",
-      "category": "AI"
+      "category": "Azure Ai Services"
     },
     "parameters": {
       "effect": {
