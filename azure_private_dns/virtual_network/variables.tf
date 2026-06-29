@@ -24,15 +24,30 @@ variable "location" {
 }
 
 variable "primary_location" {
-  description = "The primary location for resources"
+  description = "Primary Azure region short name for Network Watcher and traffic analytics resources. Must align with location."
   type        = string
   default     = "canadacentral"
+
+  validation {
+    condition     = contains(["canadacentral", "canadaeast"], var.primary_location)
+    error_message = "ERROR: Valid values for primary_location are: \"canadaeast\", \"canadacentral\"."
+  }
+
+  validation {
+    condition     = var.primary_location == replace(lower(var.location), " ", "")
+    error_message = "ERROR: primary_location must match location using the Azure region short name without spaces."
+  }
 }
 
 variable "secondary_location" {
-  description = "The secondary location for resources"
+  description = "Secondary Azure region short name reserved for future region expansion."
   type        = string
   default     = "canadaeast"
+
+  validation {
+    condition     = contains(["canadacentral", "canadaeast"], var.secondary_location)
+    error_message = "ERROR: Valid values for secondary_location are: \"canadaeast\", \"canadacentral\"."
+  }
 }
 
 variable "private_dns_resource_group_name" {
