@@ -7,7 +7,6 @@
 |------|---------|
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >=1.9.0, < 2.0.0 |
 | <a name="requirement_azapi"></a> [azapi](#requirement\_azapi) | ~> 2.10 |
-| <a name="requirement_azureipam"></a> [azureipam](#requirement\_azureipam) | ~> 2.0 |
 | <a name="requirement_azurerm"></a> [azurerm](#requirement\_azurerm) | ~> 4.76 |
 
 ## Providers
@@ -18,7 +17,9 @@
 
 ## Modules
 
-No modules.
+| Name | Source | Version |
+|------|--------|---------|
+| <a name="module_network_flow_logs"></a> [network\_flow\_logs](#module\_network\_flow\_logs) | Azure/avm-res-network-networkwatcher/azurerm | 0.3.2 |
 
 ## Resources
 
@@ -41,11 +42,16 @@ No modules.
 | <a name="input_firewall_private_ip_address"></a> [firewall\_private\_ip\_address](#input\_firewall\_private\_ip\_address) | (Required) Private IP address of the Azure Firewall to connect to. | `list(string)` | n/a | yes |
 | <a name="input_location"></a> [location](#input\_location) | (Required) Azure region to deploy to. Changing this forces a new resource to be created. | `string` | n/a | yes |
 | <a name="input_network_manager_ipam_pool_id"></a> [network\_manager\_ipam\_pool\_id](#input\_network\_manager\_ipam\_pool\_id) | IPAM Pool id | `string` | n/a | yes |
+| <a name="input_primary_location"></a> [primary\_location](#input\_primary\_location) | Primary Azure region short name for Network Watcher and traffic analytics resources. Must align with location. | `string` | `"canadacentral"` | no |
 | <a name="input_private_dns_resolver_virtual_network_name"></a> [private\_dns\_resolver\_virtual\_network\_name](#input\_private\_dns\_resolver\_virtual\_network\_name) | (Required) Name of the Virtual Network to deploy the Private DNS Resolver into. | `string` | n/a | yes |
 | <a name="input_private_dns_resource_group_name"></a> [private\_dns\_resource\_group\_name](#input\_private\_dns\_resource\_group\_name) | (Required) Name of the Resource Group to deploy the Private DNS Resolver into. | `string` | n/a | yes |
+| <a name="input_secondary_location"></a> [secondary\_location](#input\_secondary\_location) | Secondary Azure region short name reserved for future region expansion. | `string` | `"canadaeast"` | no |
 | <a name="input_subscription_id_connectivity"></a> [subscription\_id\_connectivity](#input\_subscription\_id\_connectivity) | (Required) Subscription ID to use for "connectivity" resources. | `string` | n/a | yes |
 | <a name="input_virtual_wan_hub_name"></a> [virtual\_wan\_hub\_name](#input\_virtual\_wan\_hub\_name) | (Required) Name of the Virtual WAN Hub to connect to. | `string` | n/a | yes |
 | <a name="input_virtual_wan_hub_resource_group"></a> [virtual\_wan\_hub\_resource\_group](#input\_virtual\_wan\_hub\_resource\_group) | (Required) Resource Group of the Virtual WAN hub. | `string` | n/a | yes |
+| <a name="input_vnet_flow_logs_storage_account_id"></a> [vnet\_flow\_logs\_storage\_account\_id](#input\_vnet\_flow\_logs\_storage\_account\_id) | Storage account ID for storing VNet flow logs | `string` | n/a | yes |
+| <a name="input_workspace_id"></a> [workspace\_id](#input\_workspace\_id) | Log Analytics workspace ID for traffic analytics | `string` | n/a | yes |
+| <a name="input_workspace_resource_id"></a> [workspace\_resource\_id](#input\_workspace\_resource\_id) | Log Analytics workspace resource ID for traffic analytics | `string` | n/a | yes |
 
 ## Outputs
 

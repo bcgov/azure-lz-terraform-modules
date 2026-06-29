@@ -11,11 +11,6 @@ terraform {
       source  = "azure/azapi"
       version = "~> 2.10"
     }
-
-    azureipam = {
-      source  = "XtratusCloud/azureipam"
-      version = "~> 2.0"
-    }
   }
 }
 
