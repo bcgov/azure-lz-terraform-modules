@@ -1,0 +1,308 @@
+{
+  "name": "Deny-Azure-AI-Services-Initiative",
+  "type": "Microsoft.Authorization/policySetDefinitions",
+  "apiVersion": "2026-01-01-preview",
+  "scope": null,
+  "properties": {
+    "policyType": "Custom",
+    "displayName": "Deny deployment of selected Azure AI services",
+    "description": "This initiative denies deployment of selected Azure AI services and supports per-policy exemptions through stable policy definition reference IDs.",
+    "metadata": {
+      "version": "1.0.0",
+      "category": "AI"
+    },
+    "parameters": {
+      "deny_ai_foundry": {
+        "type": "String",
+        "metadata": {
+          "displayName": "Deny Azure AI Foundry services",
+          "description": "Controls whether creation of Azure AI Foundry services is denied, audited, or disabled."
+        },
+        "defaultValue": "Audit"
+      },
+      "deny_ai_hubs": {
+        "type": "String",
+        "metadata": {
+          "displayName": "Deny Azure AI Hubs",
+          "description": "Controls whether creation of Azure AI Hubs is denied, audited, or disabled."
+        },
+        "defaultValue": "Audit"
+      },
+      "deny_azure_openai": {
+        "type": "String",
+        "metadata": {
+          "displayName": "Deny Azure OpenAI services",
+          "description": "Controls whether creation of Azure OpenAI services is denied, audited, or disabled."
+        },
+        "defaultValue": "Audit"
+      },
+      "deny_ai_search": {
+        "type": "String",
+        "metadata": {
+          "displayName": "Deny Azure AI Search services",
+          "description": "Controls whether creation of Azure AI Search services is denied, audited, or disabled."
+        },
+        "defaultValue": "Audit"
+      },
+      "deny_bot_services": {
+        "type": "String",
+        "metadata": {
+          "displayName": "Deny Azure Bot Services",
+          "description": "Controls whether creation of Azure Bot Services is denied, audited, or disabled."
+        },
+        "defaultValue": "Audit"
+      },
+      "deny_computer_vision": {
+        "type": "String",
+        "metadata": {
+          "displayName": "Deny Computer Vision services",
+          "description": "Controls whether creation of Computer Vision services is denied, audited, or disabled."
+        },
+        "defaultValue": "Audit"
+      },
+      "deny_custom_vision": {
+        "type": "String",
+        "metadata": {
+          "displayName": "Deny Custom Vision services",
+          "description": "Controls whether creation of Custom Vision services is denied, audited, or disabled."
+        },
+        "defaultValue": "Audit"
+      },
+      "deny_content_safety": {
+        "type": "String",
+        "metadata": {
+          "displayName": "Deny Content Safety services",
+          "description": "Controls whether creation of Content Safety services is denied, audited, or disabled."
+        },
+        "defaultValue": "Audit"
+      },
+      "deny_document_intelligence": {
+        "type": "String",
+        "metadata": {
+          "displayName": "Deny Document Intelligence services",
+          "description": "Controls whether creation of Document Intelligence services is denied, audited, or disabled."
+        },
+        "defaultValue": "Audit"
+      },
+      "deny_face_api": {
+        "type": "String",
+        "metadata": {
+          "displayName": "Deny Face API services",
+          "description": "Controls whether creation of Face API services is denied, audited, or disabled."
+        },
+        "defaultValue": "Audit"
+      },
+      "deny_health_insights": {
+        "type": "String",
+        "metadata": {
+          "displayName": "Deny Health Insights services",
+          "description": "Controls whether creation of Health Insights services is denied, audited, or disabled."
+        },
+        "defaultValue": "Audit"
+      },
+      "deny_machine_learning": {
+        "type": "String",
+        "metadata": {
+          "displayName": "Deny Machine Learning workspaces",
+          "description": "Controls whether creation of Machine Learning workspaces is denied, audited, or disabled."
+        },
+        "defaultValue": "Audit"
+      },
+      "deny_immersive_reader": {
+        "type": "String",
+        "metadata": {
+          "displayName": "Deny Immersive Reader services",
+          "description": "Controls whether creation of Immersive Reader services is denied, audited, or disabled."
+        },
+        "defaultValue": "Audit"
+      },
+      "deny_language_service": {
+        "type": "String",
+        "metadata": {
+          "displayName": "Deny Language services",
+          "description": "Controls whether creation of Language services is denied, audited, or disabled."
+        },
+        "defaultValue": "Audit"
+      },
+      "deny_speech_service": {
+        "type": "String",
+        "metadata": {
+          "displayName": "Deny Speech services",
+          "description": "Controls whether creation of Speech services is denied, audited, or disabled."
+        },
+        "defaultValue": "Audit"
+      },
+      "deny_translator": {
+        "type": "String",
+        "metadata": {
+          "displayName": "Deny Translator services",
+          "description": "Controls whether creation of Translator services is denied, audited, or disabled."
+        },
+        "defaultValue": "Audit"
+      }
+    },
+    "policyDefinitions": [
+      {
+        "policyDefinitionReferenceId": "Deny-AI-Foundry",
+        "policyDefinitionId": "${root_scope_resource_id}/providers/Microsoft.Authorization/policyDefinitions/Deny-AI-Foundry",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('deny_ai_foundry')]"
+          }
+        },
+        "groupNames": []
+      },
+      {
+        "policyDefinitionReferenceId": "Deny-AI-Hubs",
+        "policyDefinitionId": "${root_scope_resource_id}/providers/Microsoft.Authorization/policyDefinitions/Deny-AI-Hubs",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('deny_ai_hubs')]"
+          }
+        },
+        "groupNames": []
+      },
+      {
+        "policyDefinitionReferenceId": "Deny-Azure-OpenAI",
+        "policyDefinitionId": "${root_scope_resource_id}/providers/Microsoft.Authorization/policyDefinitions/Deny-Azure-OpenAI",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('deny_azure_openai')]"
+          }
+        },
+        "groupNames": []
+      },
+      {
+        "policyDefinitionReferenceId": "Deny-AI-Search",
+        "policyDefinitionId": "${root_scope_resource_id}/providers/Microsoft.Authorization/policyDefinitions/Deny-AI-Search",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('deny_ai_search')]"
+          }
+        },
+        "groupNames": []
+      },
+      {
+        "policyDefinitionReferenceId": "Deny-Bot-Services",
+        "policyDefinitionId": "${root_scope_resource_id}/providers/Microsoft.Authorization/policyDefinitions/Deny-Bot-Services",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('deny_bot_services')]"
+          }
+        },
+        "groupNames": []
+      },
+      {
+        "policyDefinitionReferenceId": "Deny-Computer-Vision",
+        "policyDefinitionId": "${root_scope_resource_id}/providers/Microsoft.Authorization/policyDefinitions/Deny-Computer-Vision",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('deny_computer_vision')]"
+          }
+        },
+        "groupNames": []
+      },
+      {
+        "policyDefinitionReferenceId": "Deny-Custom-Vision",
+        "policyDefinitionId": "${root_scope_resource_id}/providers/Microsoft.Authorization/policyDefinitions/Deny-Custom-Vision",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('deny_custom_vision')]"
+          }
+        },
+        "groupNames": []
+      },
+      {
+        "policyDefinitionReferenceId": "Deny-Content-Safety",
+        "policyDefinitionId": "${root_scope_resource_id}/providers/Microsoft.Authorization/policyDefinitions/Deny-Content-Safety",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('deny_content_safety')]"
+          }
+        },
+        "groupNames": []
+      },
+      {
+        "policyDefinitionReferenceId": "Deny-Document-Intelligence",
+        "policyDefinitionId": "${root_scope_resource_id}/providers/Microsoft.Authorization/policyDefinitions/Deny-Document-Intelligence",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('deny_document_intelligence')]"
+          }
+        },
+        "groupNames": []
+      },
+      {
+        "policyDefinitionReferenceId": "Deny-Face-API",
+        "policyDefinitionId": "${root_scope_resource_id}/providers/Microsoft.Authorization/policyDefinitions/Deny-Face-API",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('deny_face_api')]"
+          }
+        },
+        "groupNames": []
+      },
+      {
+        "policyDefinitionReferenceId": "Deny-Health-Insights",
+        "policyDefinitionId": "${root_scope_resource_id}/providers/Microsoft.Authorization/policyDefinitions/Deny-Health-Insights",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('deny_health_insights')]"
+          }
+        },
+        "groupNames": []
+      },
+      {
+        "policyDefinitionReferenceId": "Deny-Machine-Learning",
+        "policyDefinitionId": "${root_scope_resource_id}/providers/Microsoft.Authorization/policyDefinitions/Deny-Machine-Learning",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('deny_machine_learning')]"
+          }
+        },
+        "groupNames": []
+      },
+      {
+        "policyDefinitionReferenceId": "Deny-Immersive-Reader",
+        "policyDefinitionId": "${root_scope_resource_id}/providers/Microsoft.Authorization/policyDefinitions/Deny-Immersive-Reader",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('deny_immersive_reader')]"
+          }
+        },
+        "groupNames": []
+      },
+      {
+        "policyDefinitionReferenceId": "Deny-Language-Service",
+        "policyDefinitionId": "${root_scope_resource_id}/providers/Microsoft.Authorization/policyDefinitions/Deny-Language-Service",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('deny_language_service')]"
+          }
+        },
+        "groupNames": []
+      },
+      {
+        "policyDefinitionReferenceId": "Deny-Speech-Service",
+        "policyDefinitionId": "${root_scope_resource_id}/providers/Microsoft.Authorization/policyDefinitions/Deny-Speech-Service",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('deny_speech_service')]"
+          }
+        },
+        "groupNames": []
+      },
+      {
+        "policyDefinitionReferenceId": "Deny-Translator",
+        "policyDefinitionId": "${root_scope_resource_id}/providers/Microsoft.Authorization/policyDefinitions/Deny-Translator",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('deny_translator')]"
+          }
+        },
+        "groupNames": []
+      }
+    ],
+    "policyDefinitionGroups": null
+  }
+}

@@ -1,0 +1,47 @@
+{
+  "name": "Deny-Bot-Services",
+  "type": "Microsoft.Authorization/policyDefinitions",
+  "apiVersion": "2026-06-01",
+  "properties": {
+    "displayName": "Deny Creating Azure Bot Services",
+    "description": "This policy prevents users from creating Azure Bot Services resources.",
+    "policyType": "Custom",
+    "mode": "All",
+    "metadata": {
+      "version": "1.0.0",
+      "category": "AI"
+    },
+    "parameters": {
+      "effect": {
+        "type": "String",
+        "metadata": {
+          "displayName": "Effect",
+          "description": "Select whether the policy is enforced (Deny), evaluated (Audit), or turned off (Disabled)."
+        },
+        "allowedValues": [
+          "Deny",
+          "Audit",
+          "Disabled"
+        ],
+        "defaultValue": "Audit"
+      }
+    },
+    "policyRule": {
+      "if": {
+        "allOf": [
+          {
+            "field": "type",
+            "equals": "Microsoft.BotService/botServices"
+          },
+          {
+            "field": "kind",
+            "equals": "sdk"
+          }
+        ]
+      },
+      "then": {
+        "effect": "[parameters('effect')]"
+      }
+    }
+  }
+}

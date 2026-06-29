@@ -1,0 +1,47 @@
+{
+  "name": "Deny-Document-Intelligence",
+  "type": "Microsoft.Authorization/policyDefinitions",
+  "apiVersion": "2026-06-01",
+  "properties": {
+    "displayName": "Deny Creating Document Intelligence Services",
+    "description": "This policy prevents users from creating Document Intelligence services.",
+    "policyType": "Custom",
+    "mode": "All",
+    "metadata": {
+      "version": "1.0.0",
+      "category": "AI"
+    },
+    "parameters": {
+      "effect": {
+        "type": "String",
+        "metadata": {
+          "displayName": "Effect",
+          "description": "Select whether the policy is enforced (Deny), evaluated (Audit), or turned off (Disabled)."
+        },
+        "allowedValues": [
+          "Deny",
+          "Audit",
+          "Disabled"
+        ],
+        "defaultValue": "Audit"
+      }
+    },
+    "policyRule": {
+      "if": {
+        "allOf": [
+          {
+            "field": "type",
+            "equals": "Microsoft.CognitiveServices/accounts"
+          },
+          {
+            "field": "kind",
+            "equals": "FormRecognizer"
+          }
+        ]
+      },
+      "then": {
+        "effect": "[parameters('effect')]"
+      }
+    }
+  }
+}

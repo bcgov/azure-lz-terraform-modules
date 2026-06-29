@@ -18,14 +18,33 @@
       "Deny-AMPLS-Creation",
       "Deny-Delete-NetworkWatch",
       "Deny-Azure-SRE-Agent",
-      "Deny-Fabric-Capacity"
+      "Deny-Fabric-Capacity",
+      "Deny-Azure-AI-Services"
     ],
     "policy_definitions": [
       "Deny-VNet-Address-Changes",
       "Deny-Azure-SRE-Agent",
-      "Deny-Fabric-Capacity"
+      "Deny-Fabric-Capacity",
+      "Deny-AI-Foundry",
+      "Deny-AI-Hubs",
+      "Deny-Azure-OpenAI",
+      "Deny-AI-Search",
+      "Deny-Bot-Services",
+      "Deny-Computer-Vision",
+      "Deny-Custom-Vision",
+      "Deny-Content-Safety",
+      "Deny-Document-Intelligence",
+      "Deny-Face-API",
+      "Deny-Health-Insights",
+      "Deny-Machine-Learning",
+      "Deny-Immersive-Reader",
+      "Deny-Language-Service",
+      "Deny-Speech-Service",
+      "Deny-Translator"
     ],
-    "policy_set_definitions": [],
+    "policy_set_definitions": [
+      "Deny-Azure-AI-Services-Initiative"
+    ],
     "role_definitions": [],
     "archetype_config": {
       "parameters": {
@@ -95,6 +114,24 @@
         },
         "Deny-Fabric-Capacity": {
           "effect": "SET using local.archetype_config_overrides"
+        },
+        "Deny-Azure-AI-Services": {
+          "deny_ai_foundry": "SET using local.archetype_config_overrides",
+          "deny_ai_hubs": "SET using local.archetype_config_overrides",
+          "deny_azure_openai": "SET using local.archetype_config_overrides",
+          "deny_ai_search": "SET using local.archetype_config_overrides",
+          "deny_bot_services": "SET using local.archetype_config_overrides",
+          "deny_computer_vision": "SET using local.archetype_config_overrides",
+          "deny_custom_vision": "SET using local.archetype_config_overrides",
+          "deny_content_safety": "SET using local.archetype_config_overrides",
+          "deny_document_intelligence": "SET using local.archetype_config_overrides",
+          "deny_face_api": "SET using local.archetype_config_overrides",
+          "deny_health_insights": "SET using local.archetype_config_overrides",
+          "deny_machine_learning": "SET using local.archetype_config_overrides",
+          "deny_immersive_reader": "SET using local.archetype_config_overrides",
+          "deny_language_service": "SET using local.archetype_config_overrides",
+          "deny_speech_service": "SET using local.archetype_config_overrides",
+          "deny_translator": "SET using local.archetype_config_overrides"
         }
       },
       "access_control": {}

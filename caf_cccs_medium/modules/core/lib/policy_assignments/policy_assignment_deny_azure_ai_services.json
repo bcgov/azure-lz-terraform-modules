@@ -1,0 +1,136 @@
+{
+  "name": "Deny-Azure-AI-Services",
+  "type": "Microsoft.Authorization/policyAssignments",
+  "apiVersion": "2026-06-01",
+  "properties": {
+    "displayName": "Deny deployment of selected Azure AI services",
+    "description": "This initiative denies deployment of selected Azure AI services. Individual policy exemptions can be targeted using policy definition reference IDs.",
+    "notScopes": [],
+    "parameters": {
+      "deny_ai_foundry": {
+        "value": "Audit"
+      },
+      "deny_ai_hubs": {
+        "value": "Audit"
+      },
+      "deny_azure_openai": {
+        "value": "Audit"
+      },
+      "deny_ai_search": {
+        "value": "Audit"
+      },
+      "deny_bot_services": {
+        "value": "Audit"
+      },
+      "deny_computer_vision": {
+        "value": "Audit"
+      },
+      "deny_custom_vision": {
+        "value": "Audit"
+      },
+      "deny_content_safety": {
+        "value": "Audit"
+      },
+      "deny_document_intelligence": {
+        "value": "Audit"
+      },
+      "deny_face_api": {
+        "value": "Audit"
+      },
+      "deny_health_insights": {
+        "value": "Audit"
+      },
+      "deny_machine_learning": {
+        "value": "Audit"
+      },
+      "deny_immersive_reader": {
+        "value": "Audit"
+      },
+      "deny_language_service": {
+        "value": "Audit"
+      },
+      "deny_speech_service": {
+        "value": "Audit"
+      },
+      "deny_translator": {
+        "value": "Audit"
+      }
+    },
+    "policyDefinitionId": "${root_scope_resource_id}/providers/Microsoft.Authorization/policySetDefinitions/Deny-Azure-AI-Services-Initiative",
+    "nonComplianceMessages": [
+      {
+        "message": "Creation of selected Azure AI services is restricted in this landing zone. See guidance: https://learn.microsoft.com/azure/ai-services/what-are-ai-services"
+      },
+      {
+        "message": "Azure AI Foundry services are restricted in this landing zone.",
+        "policyDefinitionReferenceId": "Deny-AI-Foundry"
+      },
+      {
+        "message": "Azure AI Hubs are restricted in this landing zone.",
+        "policyDefinitionReferenceId": "Deny-AI-Hubs"
+      },
+      {
+        "message": "Azure OpenAI services are restricted in this landing zone.",
+        "policyDefinitionReferenceId": "Deny-Azure-OpenAI"
+      },
+      {
+        "message": "Azure AI Search services are restricted in this landing zone.",
+        "policyDefinitionReferenceId": "Deny-AI-Search"
+      },
+      {
+        "message": "Azure Bot Services resources are restricted in this landing zone.",
+        "policyDefinitionReferenceId": "Deny-Bot-Services"
+      },
+      {
+        "message": "Computer Vision services are restricted in this landing zone.",
+        "policyDefinitionReferenceId": "Deny-Computer-Vision"
+      },
+      {
+        "message": "Custom Vision services are restricted in this landing zone.",
+        "policyDefinitionReferenceId": "Deny-Custom-Vision"
+      },
+      {
+        "message": "Content Safety services are restricted in this landing zone.",
+        "policyDefinitionReferenceId": "Deny-Content-Safety"
+      },
+      {
+        "message": "Document Intelligence services are restricted in this landing zone.",
+        "policyDefinitionReferenceId": "Deny-Document-Intelligence"
+      },
+      {
+        "message": "Face API services are restricted in this landing zone.",
+        "policyDefinitionReferenceId": "Deny-Face-API"
+      },
+      {
+        "message": "Health Insights services are restricted in this landing zone.",
+        "policyDefinitionReferenceId": "Deny-Health-Insights"
+      },
+      {
+        "message": "Machine Learning workspaces are restricted in this landing zone.",
+        "policyDefinitionReferenceId": "Deny-Machine-Learning"
+      },
+      {
+        "message": "Immersive Reader services are restricted in this landing zone.",
+        "policyDefinitionReferenceId": "Deny-Immersive-Reader"
+      },
+      {
+        "message": "Language services are restricted in this landing zone.",
+        "policyDefinitionReferenceId": "Deny-Language-Service"
+      },
+      {
+        "message": "Speech services are restricted in this landing zone.",
+        "policyDefinitionReferenceId": "Deny-Speech-Service"
+      },
+      {
+        "message": "Translator services are restricted in this landing zone.",
+        "policyDefinitionReferenceId": "Deny-Translator"
+      }
+    ],
+    "scope": "${current_scope_resource_id}",
+    "enforcementMode": "Default"
+  },
+  "location": "${default_location}",
+  "identity": {
+    "type": "SystemAssigned"
+  }
+}
