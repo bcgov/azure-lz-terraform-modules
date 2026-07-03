@@ -18,7 +18,8 @@
       "Deny-AMPLS-Creation",
       "Deny-Delete-NetworkWatch",
       "Deny-Azure-SRE-Agent",
-      "Deny-Fabric-Capacity"
+      "Deny-Fabric-Capacity",
+      "Deny-Azure-AI-Services"
     ],
     "policy_definitions": [
       "Deny-VNet-Address-Changes",
