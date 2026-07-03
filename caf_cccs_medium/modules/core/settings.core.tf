@@ -79,7 +79,7 @@ locals {
           Network-Watcher-storageId           = "/subscriptions/${var.subscription_id_management}/resourceGroups/${var.network_watcher_storage_account_resource_group}/providers/Microsoft.Storage/storageAccounts/${var.network_watcher_storage_account_name}"
           Network-Watcher-workspaceResourceId = "/subscriptions/${var.subscription_id_management}/resourceGroups/${var.root_id}-mgmt/providers/Microsoft.OperationalInsights/workspaces/${var.root_id}-la"
         },
-        Public-Ingress-Security-BestPrac = merge(var.public_ingress_security_best_prac_parameters, {
+        Public-Ingress-SecPrac = merge(var.public_ingress_security_best_prac_parameters, {
           log_analytics_workspace_resource_id = "/subscriptions/${var.subscription_id_management}/resourceGroups/${var.root_id}-mgmt/providers/Microsoft.OperationalInsights/workspaces/${var.root_id}-la"
         }),
         Deny-PublicPaaSEndpoints = {

@@ -17,7 +17,7 @@
       "Deny-Delete-Diagnostics",
       "Deny-AMPLS-Creation",
       "Deny-Delete-NetworkWatch",
-      "Public-Ingress-Security-BestPrac",
+      "Public-Ingress-SecPrac",
       "Deny-Azure-SRE-Agent",
       "Deny-Fabric-Capacity"
     ],
@@ -91,7 +91,7 @@
           "Network-Watcher-storageId": "SET using local.archetype_config_overrides",
           "Network-Watcher-workspaceResourceId": "SET using local.archetype_config_overrides"
         },
-        "Public-Ingress-Security-BestPrac": {
+        "Public-Ingress-SecPrac": {
           "app_gateway_deployed_with_azure_waf_effect": "SET using local.archetype_config_overrides",
           "app_gateway_resource_logs_effect": "SET using local.archetype_config_overrides",
           "app_gateway_waf_request_body_inspection_effect": "SET using local.archetype_config_overrides",

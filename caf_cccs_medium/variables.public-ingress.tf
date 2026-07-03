@@ -23,7 +23,7 @@ variable "public_ingress_security_best_prac_parameters" {
     front_door_waf_mode_effect                     = string
     front_door_waf_mode_requirement                = string
   })
-  description = "Parameter values for the Public-Ingress-Security-BestPrac initiative assignment."
+  description = "Parameter values for the Public-Ingress-SecPrac initiative assignment."
   default = {
     app_gateway_deployed_with_azure_waf_effect     = "Audit"
     app_gateway_resource_logs_effect               = "AuditIfNotExists"

@@ -19,6 +19,7 @@ Follow the repository guidance in `AGENTS.md`.
 - Keep edits scoped to the requested module or workflow. Do not reformat unrelated files.
 - Prefer existing Terraform patterns, provider aliases, comments, and module boundaries.
 - Do not add same-repository Git module sources such as `git::https://github.com/bcgov/azure-lz-terraform-modules.git//...?ref=...` from modules in this repo. Use local relative sources instead.
+- For Azure Policy assignments, keep `name` at 24 characters or fewer to avoid ALZ/CAF assignment rendering failures.
 
 ## Terraform Validation
 
