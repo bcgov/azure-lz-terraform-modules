@@ -51,7 +51,8 @@
     "policy_set_definitions": [
       "Deploy-Private-DNS-Zones-Custom",
       "Inherit-Sub-Tags",
-      "AKS-Security-Best-Practices"
+      "AKS-Security-Best-Practices",
+      "Public-Ingress-Security-Best-Practices"
     ],
     "role_definitions": [
       "IP-Address-Lookup-Reader",

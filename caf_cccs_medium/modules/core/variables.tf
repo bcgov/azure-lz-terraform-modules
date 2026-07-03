@@ -99,6 +99,58 @@ variable "aks_security_best_prac_parameters" {
   description = "Parameter values for the AKS-Security-BestPrac initiative assignment."
 }
 
+variable "public_ingress_security_best_prac_parameters" {
+  type = object({
+    app_gateway_deployed_with_azure_waf_effect     = string
+    app_gateway_resource_logs_effect               = string
+    app_gateway_waf_request_body_inspection_effect = string
+    app_gateway_log_analytics_effect               = string
+    app_gateway_log_category_group                 = string
+    app_gateway_waf_enabled_effect                 = string
+    load_balancer_log_analytics_effect             = string
+    load_balancer_log_category_group               = string
+    diagnostic_setting_name                        = string
+    diagnostic_resource_location_list              = list(string)
+    api_management_encrypted_protocols_effect      = string
+    front_door_premium_tier_effect                 = string
+    front_door_resource_logs_effect                = string
+    front_door_min_tls_version_effect              = string
+    front_door_plus_waf_resource_logs_effect       = string
+    front_door_waf_request_body_inspection_effect  = string
+    front_door_waf_enabled_effect                  = string
+    front_door_bot_protection_effect               = string
+    front_door_rate_limit_effect                   = string
+    front_door_private_connectivity_effect         = string
+    front_door_waf_mode_effect                     = string
+    front_door_waf_mode_requirement                = string
+  })
+  description = "Parameter values for the Public-Ingress-Security-BestPrac initiative assignment."
+  default = {
+    app_gateway_deployed_with_azure_waf_effect     = "Audit"
+    app_gateway_resource_logs_effect               = "AuditIfNotExists"
+    app_gateway_waf_request_body_inspection_effect = "Audit"
+    app_gateway_log_analytics_effect               = "AuditIfNotExists"
+    app_gateway_log_category_group                 = "allLogs"
+    app_gateway_waf_enabled_effect                 = "Audit"
+    load_balancer_log_analytics_effect             = "AuditIfNotExists"
+    load_balancer_log_category_group               = "allLogs"
+    diagnostic_setting_name                        = "setByPolicy-LogAnalytics"
+    diagnostic_resource_location_list              = ["*"]
+    api_management_encrypted_protocols_effect      = "Audit"
+    front_door_premium_tier_effect                 = "Audit"
+    front_door_resource_logs_effect                = "AuditIfNotExists"
+    front_door_min_tls_version_effect              = "Audit"
+    front_door_plus_waf_resource_logs_effect       = "AuditIfNotExists"
+    front_door_waf_request_body_inspection_effect  = "Audit"
+    front_door_waf_enabled_effect                  = "Audit"
+    front_door_bot_protection_effect               = "Audit"
+    front_door_rate_limit_effect                   = "Audit"
+    front_door_private_connectivity_effect         = "Audit"
+    front_door_waf_mode_effect                     = "Audit"
+    front_door_waf_mode_requirement                = "Detection"
+  }
+}
+
 variable "enforce_private_cluster" {
   type = object({
     effect = string

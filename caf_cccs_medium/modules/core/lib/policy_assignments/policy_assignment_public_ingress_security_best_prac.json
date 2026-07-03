@@ -1,0 +1,95 @@
+{
+  "name": "Public-Ingress-Security-BestPrac",
+  "type": "Microsoft.Authorization/policyAssignments",
+  "apiVersion": "2019-09-01",
+  "properties": {
+    "displayName": "Enforce Public Ingress security best practices",
+    "description": "This initiative enforces ingress security best practices for Application Gateway, Load Balancer, API Management, and Azure Front Door resources.",
+    "notScopes": [],
+    "parameters": {
+      "app_gateway_deployed_with_azure_waf_effect": {
+        "value": "Audit"
+      },
+      "app_gateway_resource_logs_effect": {
+        "value": "AuditIfNotExists"
+      },
+      "app_gateway_waf_request_body_inspection_effect": {
+        "value": "Audit"
+      },
+      "app_gateway_log_analytics_effect": {
+        "value": "AuditIfNotExists"
+      },
+      "app_gateway_log_category_group": {
+        "value": "allLogs"
+      },
+      "app_gateway_waf_enabled_effect": {
+        "value": "Audit"
+      },
+      "load_balancer_log_analytics_effect": {
+        "value": "AuditIfNotExists"
+      },
+      "load_balancer_log_category_group": {
+        "value": "allLogs"
+      },
+      "diagnostic_setting_name": {
+        "value": "setByPolicy-LogAnalytics"
+      },
+      "log_analytics_workspace_resource_id": {
+        "value": ""
+      },
+      "diagnostic_resource_location_list": {
+        "value": [
+          "*"
+        ]
+      },
+      "api_management_encrypted_protocols_effect": {
+        "value": "Audit"
+      },
+      "front_door_premium_tier_effect": {
+        "value": "Audit"
+      },
+      "front_door_resource_logs_effect": {
+        "value": "AuditIfNotExists"
+      },
+      "front_door_min_tls_version_effect": {
+        "value": "Audit"
+      },
+      "front_door_plus_waf_resource_logs_effect": {
+        "value": "AuditIfNotExists"
+      },
+      "front_door_waf_request_body_inspection_effect": {
+        "value": "Audit"
+      },
+      "front_door_waf_enabled_effect": {
+        "value": "Audit"
+      },
+      "front_door_bot_protection_effect": {
+        "value": "Audit"
+      },
+      "front_door_rate_limit_effect": {
+        "value": "Audit"
+      },
+      "front_door_private_connectivity_effect": {
+        "value": "Audit"
+      },
+      "front_door_waf_mode_effect": {
+        "value": "Audit"
+      },
+      "front_door_waf_mode_requirement": {
+        "value": "Detection"
+      }
+    },
+    "policyDefinitionId": "${root_scope_resource_id}/providers/Microsoft.Authorization/policySetDefinitions/Public-Ingress-Security-Best-Practices",
+    "nonComplianceMessages": [
+      {
+        "message": "Public ingress resources must meet Azure Landing Zone security requirements for WAF posture, TLS, diagnostics, and private connectivity."
+      }
+    ],
+    "scope": "${current_scope_resource_id}",
+    "enforcementMode": "Default"
+  },
+  "location": "${default_location}",
+  "identity": {
+    "type": "SystemAssigned"
+  }
+}

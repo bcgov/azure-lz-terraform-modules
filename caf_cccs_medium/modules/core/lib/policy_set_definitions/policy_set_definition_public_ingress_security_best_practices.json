@@ -1,0 +1,420 @@
+{
+  "name": "Public-Ingress-Security-Best-Practices",
+  "type": "Microsoft.Authorization/policySetDefinitions",
+  "apiVersion": "2026-01-01-preview",
+  "scope": null,
+  "properties": {
+    "policyType": "Custom",
+    "displayName": "Enforce Public Ingress security best practices",
+    "description": "This initiative enforces public ingress security best practices across Application Gateway, Load Balancer, API Management, and Azure Front Door resources, including WAF configuration, TLS posture, diagnostics, and private connectivity controls.",
+    "metadata": {
+      "version": "1.0.0",
+      "category": "Network"
+    },
+    "parameters": {
+      "app_gateway_deployed_with_azure_waf_effect": {
+        "type": "String",
+        "metadata": {
+          "displayName": "Azure Application Gateway should be deployed with Azure WAF",
+          "description": "Controls whether Application Gateways must be deployed with Azure WAF."
+        },
+        "defaultValue": "Audit"
+      },
+      "app_gateway_resource_logs_effect": {
+        "type": "String",
+        "metadata": {
+          "displayName": "Azure Application Gateway should have Resource logs enabled",
+          "description": "Controls whether Application Gateway resource logs are audited when not enabled."
+        },
+        "defaultValue": "AuditIfNotExists"
+      },
+      "app_gateway_waf_request_body_inspection_effect": {
+        "type": "String",
+        "metadata": {
+          "displayName": "Azure Web Application Firewall on Azure Application Gateway should have request body inspection enabled",
+          "description": "Controls whether Application Gateway WAF must have request body inspection enabled."
+        },
+        "defaultValue": "Audit"
+      },
+      "app_gateway_log_analytics_effect": {
+        "type": "String",
+        "metadata": {
+          "displayName": "Enable logging by category group for Application gateways to Log Analytics",
+          "description": "Controls whether Application Gateway diagnostic settings are deployed or audited for Log Analytics."
+        },
+        "defaultValue": "AuditIfNotExists"
+      },
+      "app_gateway_log_category_group": {
+        "type": "String",
+        "metadata": {
+          "displayName": "Application Gateway diagnostic category group",
+          "description": "Diagnostic category group for Application Gateway logs."
+        },
+        "defaultValue": "allLogs"
+      },
+      "app_gateway_waf_enabled_effect": {
+        "type": "String",
+        "metadata": {
+          "displayName": "Web Application Firewall (WAF) should be enabled for Application Gateway",
+          "description": "Controls whether Application Gateway resources must have WAF enabled."
+        },
+        "defaultValue": "Audit"
+      },
+      "load_balancer_log_analytics_effect": {
+        "type": "String",
+        "metadata": {
+          "displayName": "Enable logging by category group for Load balancers to Log Analytics",
+          "description": "Controls whether Load Balancer diagnostic settings are deployed or audited for Log Analytics."
+        },
+        "defaultValue": "AuditIfNotExists"
+      },
+      "load_balancer_log_category_group": {
+        "type": "String",
+        "metadata": {
+          "displayName": "Load Balancer diagnostic category group",
+          "description": "Diagnostic category group for Load Balancer logs."
+        },
+        "defaultValue": "allLogs"
+      },
+      "diagnostic_setting_name": {
+        "type": "String",
+        "metadata": {
+          "displayName": "Diagnostic setting name",
+          "description": "Diagnostic setting name applied by DeployIfNotExists diagnostic policies."
+        },
+        "defaultValue": "setByPolicy-LogAnalytics"
+      },
+      "log_analytics_workspace_resource_id": {
+        "type": "String",
+        "metadata": {
+          "displayName": "Log Analytics workspace resource ID",
+          "description": "Log Analytics workspace resource ID used by DeployIfNotExists diagnostic policies.",
+          "strongType": "omsWorkspace"
+        },
+        "defaultValue": ""
+      },
+      "diagnostic_resource_location_list": {
+        "type": "Array",
+        "metadata": {
+          "displayName": "Diagnostic resource location list",
+          "description": "Resource locations eligible to send diagnostics to the configured Log Analytics workspace."
+        },
+        "defaultValue": [
+          "*"
+        ]
+      },
+      "api_management_encrypted_protocols_effect": {
+        "type": "String",
+        "metadata": {
+          "displayName": "API Management APIs should use only encrypted protocols",
+          "description": "Controls whether API Management APIs may expose unencrypted protocols."
+        },
+        "defaultValue": "Audit"
+      },
+      "front_door_premium_tier_effect": {
+        "type": "String",
+        "metadata": {
+          "displayName": "Azure Front Door profiles should use Premium tier that supports managed WAF rules and private link",
+          "description": "Controls whether Front Door profiles must use the Premium tier."
+        },
+        "defaultValue": "Audit"
+      },
+      "front_door_resource_logs_effect": {
+        "type": "String",
+        "metadata": {
+          "displayName": "Azure Front Door should have Resource logs enabled",
+          "description": "Controls whether classic Front Door resource logs are audited when not enabled."
+        },
+        "defaultValue": "AuditIfNotExists"
+      },
+      "front_door_min_tls_version_effect": {
+        "type": "String",
+        "metadata": {
+          "displayName": "Azure Front Door Standard and Premium should be running minimum TLS version of 1.2",
+          "description": "Controls whether Front Door Standard and Premium require TLS 1.2 or higher."
+        },
+        "defaultValue": "Audit"
+      },
+      "front_door_plus_waf_resource_logs_effect": {
+        "type": "String",
+        "metadata": {
+          "displayName": "Azure Front Door Standard or Premium (Plus WAF) should have resource logs enabled",
+          "description": "Controls whether Front Door Standard or Premium with WAF is audited when resource logs are not enabled."
+        },
+        "defaultValue": "AuditIfNotExists"
+      },
+      "front_door_waf_request_body_inspection_effect": {
+        "type": "String",
+        "metadata": {
+          "displayName": "Azure Web Application Firewall on Azure Front Door should have request body inspection enabled",
+          "description": "Controls whether Front Door WAF must have request body inspection enabled."
+        },
+        "defaultValue": "Audit"
+      },
+      "front_door_waf_enabled_effect": {
+        "type": "String",
+        "metadata": {
+          "displayName": "Azure Web Application Firewall should be enabled for Azure Front Door entry-points",
+          "description": "Controls whether Front Door entry-points must use WAF protection."
+        },
+        "defaultValue": "Audit"
+      },
+      "front_door_bot_protection_effect": {
+        "type": "String",
+        "metadata": {
+          "displayName": "Bot Protection should be enabled for Azure Front Door WAF",
+          "description": "Controls whether Bot Protection must be enabled on Front Door WAF policies."
+        },
+        "defaultValue": "Audit"
+      },
+      "front_door_rate_limit_effect": {
+        "type": "String",
+        "metadata": {
+          "displayName": "Enable Rate Limit rule to protect against DDoS attacks on Azure Front Door WAF",
+          "description": "Controls whether Front Door WAF policies must include rate limiting protection."
+        },
+        "defaultValue": "Audit"
+      },
+      "front_door_private_connectivity_effect": {
+        "type": "String",
+        "metadata": {
+          "displayName": "Secure private connectivity between Azure Front Door Premium and supported origins",
+          "description": "Controls whether Front Door Premium origins should use private connectivity for Azure Storage Blob and Azure App Service."
+        },
+        "defaultValue": "Audit"
+      },
+      "front_door_waf_mode_effect": {
+        "type": "String",
+        "metadata": {
+          "displayName": "Web Application Firewall (WAF) should use the specified mode for Azure Front Door Service",
+          "description": "Controls whether Front Door WAF policies must use the specified operating mode."
+        },
+        "defaultValue": "Audit"
+      },
+      "front_door_waf_mode_requirement": {
+        "type": "String",
+        "metadata": {
+          "displayName": "Front Door WAF mode requirement",
+          "description": "Required Front Door WAF policy mode."
+        },
+        "defaultValue": "Detection"
+      }
+    },
+    "policyDefinitions": [
+      {
+        "policyDefinitionReferenceId": "Require-AppGateway-Azure-WAF",
+        "policyDefinitionId": "/providers/Microsoft.Authorization/policyDefinitions/ff1f1879-a60d-4f23-9641-41e7391ec19a",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('app_gateway_deployed_with_azure_waf_effect')]"
+          }
+        },
+        "groupNames": []
+      },
+      {
+        "policyDefinitionReferenceId": "Audit-AppGateway-Resource-Logs",
+        "policyDefinitionId": "/providers/Microsoft.Authorization/policyDefinitions/8a04f872-51e9-4313-97fb-fc1c3543011c",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('app_gateway_resource_logs_effect')]"
+          }
+        },
+        "groupNames": []
+      },
+      {
+        "policyDefinitionReferenceId": "Require-AppGateway-WAF-Request-Body-Inspection",
+        "policyDefinitionId": "/providers/Microsoft.Authorization/policyDefinitions/ca85ef9a-741d-461d-8b7a-18c2da82c666",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('app_gateway_waf_request_body_inspection_effect')]"
+          }
+        },
+        "groupNames": []
+      },
+      {
+        "policyDefinitionReferenceId": "Deploy-AppGateway-Diagnostics-To-LogAnalytics",
+        "policyDefinitionId": "/providers/Microsoft.Authorization/policyDefinitions/92012204-a7e4-4a95-bbe5-90d0d3e12735",
+        "parameters": {
+          "categoryGroup": {
+            "value": "[parameters('app_gateway_log_category_group')]"
+          },
+          "diagnosticSettingName": {
+            "value": "[parameters('diagnostic_setting_name')]"
+          },
+          "effect": {
+            "value": "[parameters('app_gateway_log_analytics_effect')]"
+          },
+          "logAnalytics": {
+            "value": "[parameters('log_analytics_workspace_resource_id')]"
+          },
+          "resourceLocationList": {
+            "value": "[parameters('diagnostic_resource_location_list')]"
+          }
+        },
+        "groupNames": []
+      },
+      {
+        "policyDefinitionReferenceId": "Require-AppGateway-WAF-Enabled",
+        "policyDefinitionId": "/providers/Microsoft.Authorization/policyDefinitions/564feb30-bf6a-4854-b4bb-0d2d2d1e6c66",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('app_gateway_waf_enabled_effect')]"
+          }
+        },
+        "groupNames": []
+      },
+      {
+        "policyDefinitionReferenceId": "Deploy-LoadBalancer-Diagnostics-To-LogAnalytics",
+        "policyDefinitionId": "/providers/Microsoft.Authorization/policyDefinitions/889bfebf-7428-426e-a86f-79e2a7de2f71",
+        "parameters": {
+          "categoryGroup": {
+            "value": "[parameters('load_balancer_log_category_group')]"
+          },
+          "diagnosticSettingName": {
+            "value": "[parameters('diagnostic_setting_name')]"
+          },
+          "effect": {
+            "value": "[parameters('load_balancer_log_analytics_effect')]"
+          },
+          "logAnalytics": {
+            "value": "[parameters('log_analytics_workspace_resource_id')]"
+          },
+          "resourceLocationList": {
+            "value": "[parameters('diagnostic_resource_location_list')]"
+          }
+        },
+        "groupNames": []
+      },
+      {
+        "policyDefinitionReferenceId": "Require-APIM-Encrypted-Protocols",
+        "policyDefinitionId": "/providers/Microsoft.Authorization/policyDefinitions/ee7495e7-3ba7-40b6-bfee-c29e22cc75d4",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('api_management_encrypted_protocols_effect')]"
+          }
+        },
+        "groupNames": []
+      },
+      {
+        "policyDefinitionReferenceId": "Require-FrontDoor-Premium-Tier",
+        "policyDefinitionId": "/providers/Microsoft.Authorization/policyDefinitions/dfc212af-17ea-423a-9dcb-91e2cb2caa6b",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('front_door_premium_tier_effect')]"
+          }
+        },
+        "groupNames": []
+      },
+      {
+        "policyDefinitionReferenceId": "Audit-FrontDoor-Resource-Logs",
+        "policyDefinitionId": "/providers/Microsoft.Authorization/policyDefinitions/8a04f872-51e9-4313-97fb-fc1c35430fd8",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('front_door_resource_logs_effect')]"
+          }
+        },
+        "groupNames": []
+      },
+      {
+        "policyDefinitionReferenceId": "Require-FrontDoor-TLS-1-2",
+        "policyDefinitionId": "/providers/Microsoft.Authorization/policyDefinitions/679da822-78a7-4eff-8fff-a899454a9970",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('front_door_min_tls_version_effect')]"
+          }
+        },
+        "groupNames": []
+      },
+      {
+        "policyDefinitionReferenceId": "Audit-FrontDoor-StdPremium-WAF-Resource-Logs",
+        "policyDefinitionId": "/providers/Microsoft.Authorization/policyDefinitions/cd906338-3453-47ba-9334-2d654bf845af",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('front_door_plus_waf_resource_logs_effect')]"
+          }
+        },
+        "groupNames": []
+      },
+      {
+        "policyDefinitionReferenceId": "Require-FrontDoor-WAF-Request-Body-Inspection",
+        "policyDefinitionId": "/providers/Microsoft.Authorization/policyDefinitions/4598f028-de1f-4694-8751-84dceb5f86b9",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('front_door_waf_request_body_inspection_effect')]"
+          }
+        },
+        "groupNames": []
+      },
+      {
+        "policyDefinitionReferenceId": "Require-FrontDoor-WAF-Enabled",
+        "policyDefinitionId": "/providers/Microsoft.Authorization/policyDefinitions/055aa869-bc98-4af8-bafc-23f1ab6ffe2c",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('front_door_waf_enabled_effect')]"
+          }
+        },
+        "groupNames": []
+      },
+      {
+        "policyDefinitionReferenceId": "Require-FrontDoor-Bot-Protection",
+        "policyDefinitionId": "/providers/Microsoft.Authorization/policyDefinitions/27f7fb01-5fdb-44ad-954c-d582f8659533",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('front_door_bot_protection_effect')]"
+          }
+        },
+        "groupNames": []
+      },
+      {
+        "policyDefinitionReferenceId": "Require-FrontDoor-Rate-Limit",
+        "policyDefinitionId": "/providers/Microsoft.Authorization/policyDefinitions/e52e8487-4a97-48ac-b3e6-1c3cef45d298",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('front_door_rate_limit_effect')]"
+          }
+        },
+        "groupNames": []
+      },
+      {
+        "policyDefinitionReferenceId": "Audit-FrontDoor-Private-Connectivity-StorageBlob",
+        "policyDefinitionId": "/providers/Microsoft.Authorization/policyDefinitions/daba2cce-8326-4af3-b049-81a362da024d",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('front_door_private_connectivity_effect')]"
+          },
+          "originType": {
+            "value": "StorageBlob"
+          }
+        },
+        "groupNames": []
+      },
+      {
+        "policyDefinitionReferenceId": "Audit-FrontDoor-Private-Connectivity-AppService",
+        "policyDefinitionId": "/providers/Microsoft.Authorization/policyDefinitions/daba2cce-8326-4af3-b049-81a362da024d",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('front_door_private_connectivity_effect')]"
+          },
+          "originType": {
+            "value": "AppService"
+          }
+        },
+        "groupNames": []
+      },
+      {
+        "policyDefinitionReferenceId": "Require-FrontDoor-WAF-Mode",
+        "policyDefinitionId": "/providers/Microsoft.Authorization/policyDefinitions/425bea59-a659-4cbb-8d31-34499bd030b8",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('front_door_waf_mode_effect')]"
+          },
+          "modeRequirement": {
+            "value": "[parameters('front_door_waf_mode_requirement')]"
+          }
+        },
+        "groupNames": []
+      }
+    ],
+    "policyDefinitionGroups": null
+  }
+}
