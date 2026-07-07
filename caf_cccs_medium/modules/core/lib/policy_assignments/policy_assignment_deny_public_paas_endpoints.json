@@ -46,6 +46,9 @@
       "FunctionPublicIpDenyEffect": {
         "value": "Disabled"
       },
+      "FunctionAppSlotPublicIpDenyEffect": {
+        "value": "Disabled"
+      },
       "KeyVaultPublicIpDenyEffect": {
         "value": "Deny"
       },
