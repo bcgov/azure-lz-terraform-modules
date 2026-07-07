@@ -1,0 +1,43 @@
+{
+  "name": "Deny-Copilot-Studio",
+  "type": "Microsoft.Authorization/policyDefinitions",
+  "apiVersion": "2026-06-01",
+  "properties": {
+    "displayName": "Deny Creating Copilot Studio",
+    "description": "This policy prevents users from creating Copilot Studio resources in Power Platform environments.",
+    "policyType": "Custom",
+    "mode": "All",
+    "metadata": {
+      "version": "1.0.0",
+      "category": "Power Platform"
+    },
+    "parameters": {
+      "effect": {
+        "type": "String",
+        "metadata": {
+          "displayName": "Effect",
+          "description": "Select whether the policy is enforced (Deny), evaluated (Audit), or turned off (Disabled)."
+        },
+        "allowedValues": [
+          "Deny",
+          "Audit",
+          "Disabled"
+        ],
+        "defaultValue": "Audit"
+      }
+    },
+    "policyRule": {
+      "if": {
+        "allOf": [
+          {
+            "field": "type",
+            "equals": "microsoft.powerplatform/accounts"
+          }
+        ]
+      },
+      "then": {
+        "effect": "[parameters('effect')]"
+      }
+    }
+  }
+}

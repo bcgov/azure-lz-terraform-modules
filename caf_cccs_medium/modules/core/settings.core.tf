@@ -84,7 +84,8 @@ locals {
           containerAppsPublicNetworkAccess   = "Audit",
         },
         Deny-Azure-SRE-Agent = var.deny_azure_sre_agent_parameters,
-        Deny-Fabric-Capacity = var.deny_fabric_capacity_parameters
+        Deny-Fabric-Capacity = var.deny_fabric_capacity_parameters,
+        Deny-Copilot-Studio  = var.deny_copilot_studio_parameters
       }
       access_control = {}
     }

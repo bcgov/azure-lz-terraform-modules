@@ -117,4 +117,5 @@ module "core" {
 
   deny_azure_sre_agent_parameters = var.deny_azure_sre_agent_parameters
   deny_fabric_capacity_parameters = var.deny_fabric_capacity_parameters
+  deny_copilot_studio_parameters  = var.deny_copilot_studio_parameters
 }

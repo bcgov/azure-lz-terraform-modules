@@ -18,12 +18,14 @@
       "Deny-AMPLS-Creation",
       "Deny-Delete-NetworkWatch",
       "Deny-Azure-SRE-Agent",
-      "Deny-Fabric-Capacity"
+      "Deny-Fabric-Capacity",
+      "Deny-Copilot-Studio"
     ],
     "policy_definitions": [
       "Deny-VNet-Address-Changes",
       "Deny-Azure-SRE-Agent",
-      "Deny-Fabric-Capacity"
+      "Deny-Fabric-Capacity",
+      "Deny-Copilot-Studio"
     ],
     "policy_set_definitions": [],
     "role_definitions": [],
@@ -94,6 +96,9 @@
           "effect": "SET using local.archetype_config_overrides"
         },
         "Deny-Fabric-Capacity": {
+          "effect": "SET using local.archetype_config_overrides"
+        },
+        "Deny-Copilot-Studio": {
           "effect": "SET using local.archetype_config_overrides"
         }
       },
