@@ -3,8 +3,8 @@
   "type": "Microsoft.Authorization/policyDefinitions",
   "apiVersion": "2026-06-01",
   "properties": {
-    "displayName": "Deny Creating Power Platform Resources",
-    "description": "This policy prevents users from creating Power Platform resources.",
+    "displayName": "Deny Creating Power Platform Accounts",
+    "description": "This policy prevents users from creating Power Platform accounts.",
     "policyType": "Custom",
     "mode": "All",
     "metadata": {
@@ -31,7 +31,7 @@
         "allOf": [
           {
             "field": "type",
-            "equals": "microsoft.powerplatform/accounts"
+            "equals": "Microsoft.PowerPlatform/accounts"
           }
         ]
       },
