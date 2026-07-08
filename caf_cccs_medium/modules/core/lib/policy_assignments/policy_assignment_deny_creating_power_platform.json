@@ -1,20 +1,20 @@
 {
-  "name": "Deny-Copilot-Studio",
+  "name": "Deny-Power-Platform",
   "type": "Microsoft.Authorization/policyAssignments",
   "apiVersion": "2026-06-01",
   "properties": {
-    "displayName": "Deny Creating Copilot Studio",
-    "description": "This policy prevents users from creating Copilot Studio resources in Power Platform environments.",
+    "displayName": "Deny Creating Power Platform Resources",
+    "description": "This policy prevents users from creating Power Platform resources.",
     "notScopes": [],
     "parameters": {
       "effect": {
         "value": "Audit"
       }
     },
-    "policyDefinitionId": "${current_scope_resource_id}/providers/Microsoft.Authorization/policyDefinitions/Deny-Copilot-Studio",
+    "policyDefinitionId": "${current_scope_resource_id}/providers/Microsoft.Authorization/policyDefinitions/Deny-Power-Platform",
     "nonComplianceMessages": [
       {
-        "message": "Deploying Copilot Studio resources is restricted in this Landing Zone."
+        "message": "Deploying Power Platform resources is restricted in this Landing Zone."
       }
     ],
     "scope": "${current_scope_resource_id}",
