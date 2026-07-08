@@ -86,8 +86,10 @@ locals {
           ContainerAppsEnvironmentDenyEffect = "Audit",
           containerAppsPublicNetworkAccess   = "Audit",
         },
-        Deny-Azure-SRE-Agent = var.deny_azure_sre_agent_parameters,
-        Deny-Fabric-Capacity = var.deny_fabric_capacity_parameters
+        Deny-Azure-SRE-Agent   = var.deny_azure_sre_agent_parameters,
+        Deny-Fabric-Capacity   = var.deny_fabric_capacity_parameters,
+        Deny-Power-Platform    = var.deny_power_platform_parameters,
+        Deny-Azure-AI-Services = var.deny_azure_ai_services_parameters
       }
       access_control = {}
     }
