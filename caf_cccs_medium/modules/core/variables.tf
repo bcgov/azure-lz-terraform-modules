@@ -168,6 +168,13 @@ variable "deny_fabric_capacity_parameters" {
   description = "Parameter values for the Deny-Fabric-Capacity policy assignment."
 }
 
+variable "deny_power_platform_parameters" {
+  type = object({
+    effect = string
+  })
+  description = "Parameter values for the Deny-Power-Platform policy assignment."
+}
+
 variable "deny_azure_ai_services_parameters" {
   type = object({
     deny_ai_foundry            = string

@@ -118,4 +118,5 @@ module "core" {
   deny_azure_sre_agent_parameters   = var.deny_azure_sre_agent_parameters
   deny_fabric_capacity_parameters   = var.deny_fabric_capacity_parameters
   deny_azure_ai_services_parameters = var.deny_azure_ai_services_parameters
+  deny_power_platform_parameters    = var.deny_power_platform_parameters
 }

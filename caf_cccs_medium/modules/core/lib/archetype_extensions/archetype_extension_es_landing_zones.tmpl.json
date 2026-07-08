@@ -19,12 +19,14 @@
       "Deny-Delete-NetworkWatch",
       "Deny-Azure-SRE-Agent",
       "Deny-Fabric-Capacity",
+      "Deny-Power-Platform",
       "Deny-Azure-AI-Services"
     ],
     "policy_definitions": [
       "Deny-VNet-Address-Changes",
       "Deny-Azure-SRE-Agent",
       "Deny-Fabric-Capacity",
+      "Deny-Power-Platform",
       "Deny-AI-Foundry",
       "Deny-AI-Hubs",
       "Deny-Azure-OpenAI",
@@ -113,6 +115,9 @@
           "effect": "SET using local.archetype_config_overrides"
         },
         "Deny-Fabric-Capacity": {
+          "effect": "SET using local.archetype_config_overrides"
+        },
+        "Deny-Power-Platform": {
           "effect": "SET using local.archetype_config_overrides"
         },
         "Deny-Azure-AI-Services": {
