@@ -14,7 +14,7 @@
     "policyDefinitionId": "${current_scope_resource_id}/providers/Microsoft.Authorization/policyDefinitions/Deny-Power-Platform",
     "nonComplianceMessages": [
       {
-        "message": "Deploying Power Platform resources is restricted in this Landing Zone."
+        "message": "Provisioning a Power Platform account is restricted to authorized subscriptions in the Landing Zone. Please see TechDocs for more information on how to request a new Power Platform account: https://developer.gov.bc.ca/docs/default/component/public-cloud-techdocs/azure/azure-services/external-power-platform/"
       }
     ],
     "scope": "${current_scope_resource_id}",
