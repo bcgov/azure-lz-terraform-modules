@@ -11,3 +11,29 @@ Shared modules for Azure Virtual WAN concerns that sit outside CAF:
 Callers: `azure-lz-core-forge` / `azure-lz-core-live` under `azure_vwan/`.
 
 Prefer `routing` for the standard on-prem outbound filter. Use `route_maps` only when you need custom map rules without the connection-attachment opinion.
+
+<!-- BEGIN_TF_DOCS -->
+## Requirements
+
+No requirements.
+
+## Providers
+
+No providers.
+
+## Modules
+
+No modules.
+
+## Resources
+
+No resources.
+
+## Inputs
+
+No inputs.
+
+## Outputs
+
+No outputs.
+<!-- END_TF_DOCS -->
