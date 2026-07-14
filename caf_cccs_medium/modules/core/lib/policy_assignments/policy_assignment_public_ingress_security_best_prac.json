@@ -28,6 +28,9 @@
       "app_gateway_bot_protection_effect": {
         "value": "Audit"
       },
+      "app_gateway_for_containers_security_policies_effect": {
+        "value": "AuditIfNotExists"
+      },
       "load_balancer_log_analytics_effect": {
         "value": "AuditIfNotExists"
       },

@@ -68,6 +68,14 @@
         },
         "defaultValue": "Audit"
       },
+      "app_gateway_for_containers_security_policies_effect": {
+        "type": "String",
+        "metadata": {
+          "displayName": "Azure Application Gateway for Containers must have security policies",
+          "description": "Controls whether Application Gateway for Containers resources must have security policies."
+        },
+        "defaultValue": "AuditIfNotExists"
+      },
       "load_balancer_log_analytics_effect": {
         "type": "String",
         "metadata": {
@@ -277,6 +285,16 @@
         "parameters": {
           "effect": {
             "value": "[parameters('app_gateway_bot_protection_effect')]"
+          }
+        },
+        "groupNames": []
+      },
+      {
+        "policyDefinitionReferenceId": "Require-AppGatewayForContainers-Security-Policies",
+        "policyDefinitionId": "/providers/Microsoft.Authorization/policyDefinitions/c3a8e4bd-b215-4c99-bd53-92f8d7ea65f7",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('app_gateway_for_containers_security_policies_effect')]"
           }
         },
         "groupNames": []
