@@ -40,6 +40,9 @@ locals {
           networkSecurityPerimeterSubscriptionId    = var.nsp_subscription_id
           networkSecurityPerimeterProfileId         = "/subscriptions/${var.nsp_subscription_id}/resourceGroups/${var.nsp_resource_group_name}/providers/Microsoft.Network/networkSecurityPerimeters/${var.nsp_name}/profiles/${var.nsp_profile}"
         },
+        Public-Ingress-SecPrac = merge(var.public_ingress_security_best_prac_parameters, {
+          log_analytics_workspace_resource_id = "/subscriptions/${var.subscription_id_management}/resourceGroups/${var.root_id}-mgmt/providers/Microsoft.OperationalInsights/workspaces/${var.root_id}-la"
+        }),
         SQLMI-Disable-PublicData = var.sqlmi_disable_public_endpoint_parameters,
         SQLMI-Entra-AuthN        = var.sqlmi_entra_authentication_parameters,
       }

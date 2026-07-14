@@ -107,6 +107,7 @@ variable "public_ingress_security_best_prac_parameters" {
     app_gateway_log_analytics_effect               = string
     app_gateway_log_category_group                 = string
     app_gateway_waf_enabled_effect                 = string
+    app_gateway_bot_protection_effect              = string
     load_balancer_log_analytics_effect             = string
     load_balancer_log_category_group               = string
     diagnostic_setting_name                        = string
@@ -132,6 +133,7 @@ variable "public_ingress_security_best_prac_parameters" {
     app_gateway_log_analytics_effect               = "AuditIfNotExists"
     app_gateway_log_category_group                 = "allLogs"
     app_gateway_waf_enabled_effect                 = "Audit"
+    app_gateway_bot_protection_effect              = "Audit"
     load_balancer_log_analytics_effect             = "AuditIfNotExists"
     load_balancer_log_category_group               = "allLogs"
     diagnostic_setting_name                        = "setByPolicy-LogAnalytics"

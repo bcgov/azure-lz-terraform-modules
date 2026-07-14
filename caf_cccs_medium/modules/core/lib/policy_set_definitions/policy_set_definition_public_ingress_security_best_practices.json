@@ -60,6 +60,14 @@
         },
         "defaultValue": "Audit"
       },
+      "app_gateway_bot_protection_effect": {
+        "type": "String",
+        "metadata": {
+          "displayName": "Bot Protection should be enabled for Azure Application Gateway WAF",
+          "description": "Controls whether Bot Protection must be enabled on Application Gateway WAF policies."
+        },
+        "defaultValue": "Audit"
+      },
       "load_balancer_log_analytics_effect": {
         "type": "String",
         "metadata": {
@@ -259,6 +267,16 @@
         "parameters": {
           "effect": {
             "value": "[parameters('app_gateway_waf_enabled_effect')]"
+          }
+        },
+        "groupNames": []
+      },
+      {
+        "policyDefinitionReferenceId": "Require-AppGateway-Bot-Protection",
+        "policyDefinitionId": "/providers/Microsoft.Authorization/policyDefinitions/ebea0d86-7fbd-42e3-8a46-27e7568c2525",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('app_gateway_bot_protection_effect')]"
           }
         },
         "groupNames": []

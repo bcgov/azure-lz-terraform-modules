@@ -25,6 +25,9 @@
       "app_gateway_waf_enabled_effect": {
         "value": "Audit"
       },
+      "app_gateway_bot_protection_effect": {
+        "value": "Audit"
+      },
       "load_balancer_log_analytics_effect": {
         "value": "AuditIfNotExists"
       },
