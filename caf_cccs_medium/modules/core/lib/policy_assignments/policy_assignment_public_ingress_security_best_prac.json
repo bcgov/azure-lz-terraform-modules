@@ -89,6 +89,78 @@
     "nonComplianceMessages": [
       {
         "message": "Public ingress resources must meet Azure Landing Zone security requirements for WAF posture, TLS, diagnostics, and private connectivity."
+      },
+      {
+        "policyDefinitionReferenceId": "Require-FrontDoor-Premium-Tier",
+        "message": "Azure Front Door must use Premium tier to support required managed WAF capabilities and private origin connectivity."
+      },
+      {
+        "policyDefinitionReferenceId": "Audit-FrontDoor-Resource-Logs",
+        "message": "Enable Azure Front Door resource logs to support security monitoring, incident response, and auditability."
+      },
+      {
+        "policyDefinitionReferenceId": "Require-FrontDoor-TLS-1-2",
+        "message": "Azure Front Door Standard/Premium must enforce minimum TLS version 1.2 for all client-facing traffic."
+      },
+      {
+        "policyDefinitionReferenceId": "Audit-FrontDoor-StdPremium-WAF-Resource-Logs",
+        "message": "Front Door Standard/Premium with WAF must have resource logs enabled for security visibility and threat investigations."
+      },
+      {
+        "policyDefinitionReferenceId": "Require-FrontDoor-WAF-Request-Body-Inspection",
+        "message": "Front Door WAF must enable request body inspection to detect malicious payloads in POST/PUT requests."
+      },
+      {
+        "policyDefinitionReferenceId": "Require-FrontDoor-WAF-Enabled",
+        "message": "Each Azure Front Door entry point must be protected by an attached Web Application Firewall policy."
+      },
+      {
+        "policyDefinitionReferenceId": "Require-FrontDoor-Bot-Protection",
+        "message": "Front Door WAF must enable Bot Protection managed rules to reduce automated abuse and malicious bot traffic."
+      },
+      {
+        "policyDefinitionReferenceId": "Require-FrontDoor-Rate-Limit",
+        "message": "Front Door WAF must include a rate-limit rule to reduce denial-of-service risk and abusive request patterns."
+      },
+      {
+        "policyDefinitionReferenceId": "Audit-FrontDoor-Private-Connectivity-StorageBlob",
+        "message": "Front Door Premium origins backed by Azure Storage Blob should use private connectivity instead of public origin exposure."
+      },
+      {
+        "policyDefinitionReferenceId": "Audit-FrontDoor-Private-Connectivity-AppService",
+        "message": "Front Door Premium origins backed by Azure App Service should use private connectivity instead of public origin exposure."
+      },
+      {
+        "policyDefinitionReferenceId": "Require-FrontDoor-WAF-Mode",
+        "message": "Front Door WAF must run in the required operating mode defined by policy parameters."
+      },
+      {
+        "policyDefinitionReferenceId": "Require-AppGateway-Azure-WAF",
+        "message": "Application Gateway must be deployed with Azure Web Application Firewall enabled."
+      },
+      {
+        "policyDefinitionReferenceId": "Audit-AppGateway-Resource-Logs",
+        "message": "Enable Application Gateway resource logs to support monitoring, detection, and incident investigations."
+      },
+      {
+        "policyDefinitionReferenceId": "Require-AppGateway-WAF-Request-Body-Inspection",
+        "message": "Application Gateway WAF must enable request body inspection to detect malicious request payloads."
+      },
+      {
+        "policyDefinitionReferenceId": "Deploy-AppGateway-Diagnostics-To-LogAnalytics",
+        "message": "Application Gateway diagnostics must be sent to the configured Log Analytics workspace."
+      },
+      {
+        "policyDefinitionReferenceId": "Require-AppGateway-WAF-Enabled",
+        "message": "Application Gateway must have Web Application Firewall enabled to protect internet-facing applications."
+      },
+      {
+        "policyDefinitionReferenceId": "Require-AppGateway-Bot-Protection",
+        "message": "Application Gateway WAF must enable Bot Protection managed rules to reduce automated abuse."
+      },
+      {
+        "policyDefinitionReferenceId": "Require-AppGatewayForContainers-Security-Policies",
+        "message": "Application Gateway for Containers must have security policies configured on exposed ingress paths."
       }
     ],
     "scope": "${current_scope_resource_id}",
