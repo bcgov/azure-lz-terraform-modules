@@ -49,7 +49,7 @@ module "vwan_routing" {
 ## Requirements
 
 | Name | Version |
-| ---- | ------- |
+|------|---------|
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >=1.9.0, < 2.0.0 |
 | <a name="requirement_azapi"></a> [azapi](#requirement\_azapi) | ~> 2.10 |
 | <a name="requirement_azurerm"></a> [azurerm](#requirement\_azurerm) | ~> 4.76 |
@@ -57,26 +57,26 @@ module "vwan_routing" {
 ## Providers
 
 | Name | Version |
-| ---- | ------- |
+|------|---------|
 | <a name="provider_azapi"></a> [azapi](#provider\_azapi) | ~> 2.10 |
 
 ## Modules
 
 | Name | Source | Version |
-| ---- | ------ | ------- |
+|------|--------|---------|
 | <a name="module_route_maps"></a> [route\_maps](#module\_route\_maps) | ../route_maps | n/a |
 
 ## Resources
 
 | Name | Type |
-| ---- | ---- |
+|------|------|
 | [azapi_update_resource.express_route_connection_routing](https://registry.terraform.io/providers/azure/azapi/latest/docs/resources/update_resource) | resource |
 | [azapi_update_resource.vpn_connection_routing](https://registry.terraform.io/providers/azure/azapi/latest/docs/resources/update_resource) | resource |
 
 ## Inputs
 
 | Name | Description | Type | Default | Required |
-| ---- | ----------- | ---- | ------- | :------: |
+|------|-------------|------|---------|:--------:|
 | <a name="input_associated_route_table_id"></a> [associated\_route\_table\_id](#input\_associated\_route\_table\_id) | Hub route table ID to associate on branch connections. Defaults to the hub defaultRouteTable. | `string` | `null` | no |
 | <a name="input_express_route_connection_routing"></a> [express\_route\_connection\_routing](#input\_express\_route\_connection\_routing) | ExpressRoute gateway connections that should receive the outbound route map via routingConfiguration. | <pre>map(object({<br/>    express_route_gateway_name    = string<br/>    express_route_connection_name = string<br/>  }))</pre> | `{}` | no |
 | <a name="input_onprem_bgp_asns"></a> [onprem\_bgp\_asns](#input\_onprem\_bgp\_asns) | On-premises BGP ASNs to drop from outbound advertisements (AS-Path Contains). | `list(string)` | n/a | yes |
@@ -92,7 +92,7 @@ module "vwan_routing" {
 ## Outputs
 
 | Name | Description |
-| ---- | ----------- |
+|------|-------------|
 | <a name="output_express_route_connection_routing_ids"></a> [express\_route\_connection\_routing\_ids](#output\_express\_route\_connection\_routing\_ids) | ExpressRoute connections whose routingConfiguration is managed by this module. |
 | <a name="output_outbound_route_map_id"></a> [outbound\_route\_map\_id](#output\_outbound\_route\_map\_id) | Resource ID of the outbound-to-onprem route map. |
 | <a name="output_route_map_ids"></a> [route\_map\_ids](#output\_route\_map\_ids) | Map of route map keys to Azure resource IDs. |

@@ -54,14 +54,14 @@ terraform import 'module.vwan_route_maps.azurerm_route_map.this["outbound_to_onp
 ## Requirements
 
 | Name | Version |
-| ---- | ------- |
+|------|---------|
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >=1.9.0, < 2.0.0 |
 | <a name="requirement_azurerm"></a> [azurerm](#requirement\_azurerm) | ~> 4.76 |
 
 ## Providers
 
 | Name | Version |
-| ---- | ------- |
+|------|---------|
 | <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) | ~> 4.76 |
 
 ## Modules
@@ -71,13 +71,13 @@ No modules.
 ## Resources
 
 | Name | Type |
-| ---- | ---- |
+|------|------|
 | [azurerm_route_map.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/route_map) | resource |
 
 ## Inputs
 
 | Name | Description | Type | Default | Required |
-| ---- | ----------- | ---- | ------- | :------: |
+|------|-------------|------|---------|:--------:|
 | <a name="input_route_maps"></a> [route\_maps](#input\_route\_maps) | Map of Virtual Hub route maps to manage.<br/>Key is a stable Terraform identifier; each value.name is the Azure route map name.<br/>Rules are applied in list order. | <pre>map(object({<br/>    name = string<br/>    rules = list(object({<br/>      name                 = string<br/>      next_step_if_matched = optional(string, "Terminate")<br/>      match_criteria = optional(list(object({<br/>        match_condition = string<br/>        as_path         = optional(list(string), [])<br/>        community       = optional(list(string), [])<br/>        route_prefix    = optional(list(string), [])<br/>      })), [])<br/>      actions = optional(list(object({<br/>        type         = string<br/>        as_path      = optional(list(string), [])<br/>        community    = optional(list(string), [])<br/>        route_prefix = optional(list(string), [])<br/>      })), [])<br/>    }))<br/>  }))</pre> | n/a | yes |
 | <a name="input_subscription_id_connectivity"></a> [subscription\_id\_connectivity](#input\_subscription\_id\_connectivity) | Subscription ID to use for "connectivity" resources. | `string` | n/a | yes |
 | <a name="input_virtual_hub_id"></a> [virtual\_hub\_id](#input\_virtual\_hub\_id) | Resource ID of the Virtual Hub that owns the route maps. | `string` | n/a | yes |
@@ -85,7 +85,7 @@ No modules.
 ## Outputs
 
 | Name | Description |
-| ---- | ----------- |
+|------|-------------|
 | <a name="output_route_map_ids"></a> [route\_map\_ids](#output\_route\_map\_ids) | Map of route map Terraform keys to Azure resource IDs. |
 | <a name="output_route_maps"></a> [route\_maps](#output\_route\_maps) | Full azurerm\_route\_map resources keyed by Terraform map key. |
 <!-- END_TF_DOCS -->
