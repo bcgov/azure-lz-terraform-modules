@@ -10,7 +10,8 @@
       "allowedPodCidrRanges": {
         "value": [
           "10.10.0.0/18",
-          "10.10.128.0/18"
+          "10.10.128.0/18",
+          "10.244.0.0/16"
         ]
       },
       "enforceServiceCidr": {
