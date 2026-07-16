@@ -28,7 +28,7 @@ resource "azurerm_management_group" "project_set" {
 
 module "lz_vending" {
   source  = "Azure/avm-ptn-alz-sub-vending/azure"
-  version = "0.3" # NOTE: When updating this version, please update the respective `resourceproviders_*` modules below
+  version = "0.3.0" # NOTE: When updating this version, please update the respective `resourceproviders_*` modules below
 
   for_each = var.subscriptions
 
