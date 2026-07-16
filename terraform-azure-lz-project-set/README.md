@@ -7,63 +7,61 @@ For each environment, the module will create a subscription, a network resource 
 ## Terraform module documentation
 
 <!-- BEGIN_TF_DOCS -->
-
 ## Requirements
 
-| Name                                                               | Version |
-| ------------------------------------------------------------------ | ------- |
-| <a name="requirement_azapi"></a> [azapi](#requirement_azapi)       | ~> 2.10 |
-| <a name="requirement_azurerm"></a> [azurerm](#requirement_azurerm) | ~> 4.76 |
+| Name | Version |
+|------|---------|
+| <a name="requirement_azapi"></a> [azapi](#requirement\_azapi) | ~> 2.10 |
+| <a name="requirement_azurerm"></a> [azurerm](#requirement\_azurerm) | ~> 4.76 |
 
 ## Providers
 
-| Name                                                         | Version |
-| ------------------------------------------------------------ | ------- |
-| <a name="provider_azurerm"></a> [azurerm](#provider_azurerm) | ~> 4.76 |
+| Name | Version |
+|------|---------|
+| <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) | ~> 4.76 |
 
 ## Modules
 
-| Name                                                                                                                                         | Source                                                         | Version |
-| -------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------- | ------- |
-| <a name="module_lz_vending"></a> [lz_vending](#module_lz_vending)                                                                            | Azure/avm-ptn-alz-sub-vending/azure                            | 0.3.0   |
-| <a name="module_network_flow_logs"></a> [network_flow_logs](#module_network_flow_logs)                                                       | Azure/avm-res-network-networkwatcher/azurerm                   | 0.3.0   |
-| <a name="module_resourceproviders_alerts_management"></a> [resourceproviders_alerts_management](#module_resourceproviders_alerts_management) | Azure/avm-ptn-alz-sub-vending/azure//modules/resource-provider | 0.3.0   |
-| <a name="module_resourceproviders_insights"></a> [resourceproviders_insights](#module_resourceproviders_insights)                            | Azure/avm-ptn-alz-sub-vending/azure//modules/resource-provider | 0.3.0   |
+| Name | Source | Version |
+|------|--------|---------|
+| <a name="module_lz_vending"></a> [lz\_vending](#module\_lz\_vending) | Azure/avm-ptn-alz-sub-vending/azure | 0.3.0 |
+| <a name="module_network_flow_logs"></a> [network\_flow\_logs](#module\_network\_flow\_logs) | Azure/avm-res-network-networkwatcher/azurerm | 0.3.0 |
+| <a name="module_resourceproviders_alerts_management"></a> [resourceproviders\_alerts\_management](#module\_resourceproviders\_alerts\_management) | Azure/avm-ptn-alz-sub-vending/azure//modules/resource-provider | 0.3.0 |
+| <a name="module_resourceproviders_insights"></a> [resourceproviders\_insights](#module\_resourceproviders\_insights) | Azure/avm-ptn-alz-sub-vending/azure//modules/resource-provider | 0.3.0 |
 
 ## Resources
 
-| Name                                                                                                                                                                                | Type        |
-| ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------- |
-| [azurerm_consumption_budget_subscription.subscription_budget](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/consumption_budget_subscription)      | resource    |
-| [azurerm_management_group.project_set](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/management_group)                                            | resource    |
-| [azurerm_network_manager_ipam_pool_static_cidr.reservations](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/network_manager_ipam_pool_static_cidr) | resource    |
-| [azurerm_subscription_policy_assignment.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/subscription_policy_assignment)                       | resource    |
-| [azurerm_management_group.landing_zones](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/data-sources/management_group)                                       | data source |
+| Name | Type |
+|------|------|
+| [azurerm_consumption_budget_subscription.subscription_budget](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/consumption_budget_subscription) | resource |
+| [azurerm_management_group.project_set](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/management_group) | resource |
+| [azurerm_network_manager_ipam_pool_static_cidr.reservations](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/network_manager_ipam_pool_static_cidr) | resource |
+| [azurerm_subscription_policy_assignment.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/subscription_policy_assignment) | resource |
+| [azurerm_management_group.landing_zones](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/data-sources/management_group) | data source |
 
 ## Inputs
 
-| Name                                                                                                                                                                     | Description                                                                                    | Type                                                                                                                                                                                                                                                                                                                                                  | Default                                           | Required |
-| ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ---------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------- | :------: |
-| <a name="input_common_tags"></a> [common_tags](#input_common_tags)                                                                                                       | Common tags to apply to all resources                                                          | `map(string)`                                                                                                                                                                                                                                                                                                                                         | <pre>{<br/> "deployedBy": "Terraform"<br/>}</pre> |    no    |
-| <a name="input_deny_vnet_address_change_policy_definition_id"></a> [deny_vnet_address_change_policy_definition_id](#input_deny_vnet_address_change_policy_definition_id) | The ID of the policy definition to deny changes to virtual network address spaces              | `string`                                                                                                                                                                                                                                                                                                                                              | `null`                                            |    no    |
-| <a name="input_license_plate"></a> [license_plate](#input_license_plate)                                                                                                 | The license plate identifier for the project                                                   | `string`                                                                                                                                                                                                                                                                                                                                              | n/a                                               |   yes    |
-| <a name="input_lz_management_group_id"></a> [lz_management_group_id](#input_lz_management_group_id)                                                                      | The ID of the management group for landing zones                                               | `string`                                                                                                                                                                                                                                                                                                                                              | n/a                                               |   yes    |
-| <a name="input_network_manager_ipam_pool_id"></a> [network_manager_ipam_pool_id](#input_network_manager_ipam_pool_id)                                                    | IPAM Pool id                                                                                   | `string`                                                                                                                                                                                                                                                                                                                                              | n/a                                               |   yes    |
-| <a name="input_primary_location"></a> [primary_location](#input_primary_location)                                                                                        | The primary location for resources                                                             | `string`                                                                                                                                                                                                                                                                                                                                              | `"canadacentral"`                                 |    no    |
-| <a name="input_project_set_name"></a> [project_set_name](#input_project_set_name)                                                                                        | The name of the project set                                                                    | `string`                                                                                                                                                                                                                                                                                                                                              | n/a                                               |   yes    |
-| <a name="input_secondary_location"></a> [secondary_location](#input_secondary_location)                                                                                  | The secondary location for resources                                                           | `string`                                                                                                                                                                                                                                                                                                                                              | `"canadaeast"`                                    |    no    |
-| <a name="input_subscription_billing_scope"></a> [subscription_billing_scope](#input_subscription_billing_scope)                                                          | The billing scope for the subscription                                                         | `string`                                                                                                                                                                                                                                                                                                                                              | n/a                                               |   yes    |
-| <a name="input_subscriptions"></a> [subscriptions](#input_subscriptions)                                                                                                 | Configuration details for each subscription                                                    | <pre>map(object({<br/> name : string<br/> display_name : string<br/> budget : optional(number, 0)<br/> network : optional(object({<br/> enabled : bool<br/> address_space : optional(list(string))<br/> address_sizes : optional(map(string))<br/> dns_servers : optional(list(string))<br/> }))<br/> tags : optional(map(string), {})<br/> }))</pre> | n/a                                               |   yes    |
-| <a name="input_vnet_flow_logs_storage_account_id"></a> [vnet_flow_logs_storage_account_id](#input_vnet_flow_logs_storage_account_id)                                     | Storage account ID for storing VNet flow logs                                                  | `string`                                                                                                                                                                                                                                                                                                                                              | n/a                                               |   yes    |
-| <a name="input_vwan_hub_resource_id"></a> [vwan_hub_resource_id](#input_vwan_hub_resource_id)                                                                            | The resource ID for the virtual WAN hub (required only if any subscription enables networking) | `string`                                                                                                                                                                                                                                                                                                                                              | `null`                                            |    no    |
-| <a name="input_workspace_id"></a> [workspace_id](#input_workspace_id)                                                                                                    | Log Analytics workspace ID for traffic analytics                                               | `string`                                                                                                                                                                                                                                                                                                                                              | n/a                                               |   yes    |
-| <a name="input_workspace_resource_id"></a> [workspace_resource_id](#input_workspace_resource_id)                                                                         | Log Analytics workspace resource ID for traffic analytics                                      | `string`                                                                                                                                                                                                                                                                                                                                              | n/a                                               |   yes    |
+| Name | Description | Type | Default | Required |
+|------|-------------|------|---------|:--------:|
+| <a name="input_common_tags"></a> [common\_tags](#input\_common\_tags) | Common tags to apply to all resources | `map(string)` | <pre>{<br/>  "deployedBy": "Terraform"<br/>}</pre> | no |
+| <a name="input_deny_vnet_address_change_policy_definition_id"></a> [deny\_vnet\_address\_change\_policy\_definition\_id](#input\_deny\_vnet\_address\_change\_policy\_definition\_id) | The ID of the policy definition to deny changes to virtual network address spaces | `string` | `null` | no |
+| <a name="input_license_plate"></a> [license\_plate](#input\_license\_plate) | The license plate identifier for the project | `string` | n/a | yes |
+| <a name="input_lz_management_group_id"></a> [lz\_management\_group\_id](#input\_lz\_management\_group\_id) | The ID of the management group for landing zones | `string` | n/a | yes |
+| <a name="input_network_manager_ipam_pool_id"></a> [network\_manager\_ipam\_pool\_id](#input\_network\_manager\_ipam\_pool\_id) | IPAM Pool id | `string` | n/a | yes |
+| <a name="input_primary_location"></a> [primary\_location](#input\_primary\_location) | The primary location for resources | `string` | `"canadacentral"` | no |
+| <a name="input_project_set_name"></a> [project\_set\_name](#input\_project\_set\_name) | The name of the project set | `string` | n/a | yes |
+| <a name="input_secondary_location"></a> [secondary\_location](#input\_secondary\_location) | The secondary location for resources | `string` | `"canadaeast"` | no |
+| <a name="input_subscription_billing_scope"></a> [subscription\_billing\_scope](#input\_subscription\_billing\_scope) | The billing scope for the subscription | `string` | n/a | yes |
+| <a name="input_subscriptions"></a> [subscriptions](#input\_subscriptions) | Configuration details for each subscription | <pre>map(object({<br/>    name : string<br/>    display_name : string<br/>    budget : optional(number, 0)<br/>    network : optional(object({<br/>      enabled : bool<br/>      address_space : optional(list(string))<br/>      address_sizes : optional(map(string))<br/>      dns_servers : optional(list(string))<br/>    }))<br/>    tags : optional(map(string), {})<br/>  }))</pre> | n/a | yes |
+| <a name="input_vnet_flow_logs_storage_account_id"></a> [vnet\_flow\_logs\_storage\_account\_id](#input\_vnet\_flow\_logs\_storage\_account\_id) | Storage account ID for storing VNet flow logs | `string` | n/a | yes |
+| <a name="input_vwan_hub_resource_id"></a> [vwan\_hub\_resource\_id](#input\_vwan\_hub\_resource\_id) | The resource ID for the virtual WAN hub (required only if any subscription enables networking) | `string` | `null` | no |
+| <a name="input_workspace_id"></a> [workspace\_id](#input\_workspace\_id) | Log Analytics workspace ID for traffic analytics | `string` | n/a | yes |
+| <a name="input_workspace_resource_id"></a> [workspace\_resource\_id](#input\_workspace\_resource\_id) | Log Analytics workspace resource ID for traffic analytics | `string` | n/a | yes |
 
 ## Outputs
 
-| Name                                                                                         | Description                                        |
-| -------------------------------------------------------------------------------------------- | -------------------------------------------------- |
-| <a name="output_management_group_id"></a> [management_group_id](#output_management_group_id) | The management group ID for the project set.       |
-| <a name="output_subscription_ids"></a> [subscription_ids](#output_subscription_ids)          | The subscription IDs of each landing zone created. |
-
+| Name | Description |
+|------|-------------|
+| <a name="output_management_group_id"></a> [management\_group\_id](#output\_management\_group\_id) | The management group ID for the project set. |
+| <a name="output_subscription_ids"></a> [subscription\_ids](#output\_subscription\_ids) | The subscription IDs of each landing zone created. |
 <!-- END_TF_DOCS -->
