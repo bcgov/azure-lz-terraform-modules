@@ -22,6 +22,9 @@
       "app_gateway_log_category_group": {
         "value": "allLogs"
       },
+      "app_gateway_log_analytics_destination_type": {
+        "value": "Dedicated"
+      },
       "app_gateway_waf_enabled_effect": {
         "value": "Audit"
       },
@@ -37,6 +40,9 @@
       "load_balancer_log_category_group": {
         "value": "allLogs"
       },
+      "load_balancer_log_analytics_destination_type": {
+        "value": "Dedicated"
+      },
       "diagnostic_setting_name": {
         "value": "setByPolicy-LogAnalytics"
       },
@@ -50,6 +56,15 @@
       },
       "api_management_encrypted_protocols_effect": {
         "value": "Audit"
+      },
+      "api_management_log_analytics_effect": {
+        "value": "AuditIfNotExists"
+      },
+      "api_management_log_category_group": {
+        "value": "allLogs"
+      },
+      "api_management_log_analytics_destination_type": {
+        "value": "Dedicated"
       },
       "front_door_premium_tier_effect": {
         "value": "Audit"
@@ -149,6 +164,14 @@
       {
         "policyDefinitionReferenceId": "Deploy-AppGateway-Diagnostics-To-LogAnalytics",
         "message": "Application Gateway diagnostics must be sent to the configured Log Analytics workspace."
+      },
+      {
+        "policyDefinitionReferenceId": "Deploy-LoadBalancer-Diagnostics-To-LogAnalytics",
+        "message": "Load Balancer diagnostics must be sent to the configured Log Analytics workspace."
+      },
+      {
+        "policyDefinitionReferenceId": "Deploy-APIM-Diagnostics-To-LogAnalytics",
+        "message": "API Management diagnostics must be sent to the configured Log Analytics workspace."
       },
       {
         "policyDefinitionReferenceId": "Require-AppGateway-WAF-Enabled",

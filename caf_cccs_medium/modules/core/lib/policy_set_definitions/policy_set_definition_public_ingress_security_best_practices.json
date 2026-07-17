@@ -52,6 +52,18 @@
         },
         "defaultValue": "allLogs"
       },
+      "app_gateway_log_analytics_destination_type": {
+        "type": "String",
+        "metadata": {
+          "displayName": "Application Gateway Log Analytics destination type",
+          "description": "Destination table mode for Application Gateway diagnostics. Dedicated uses resource-specific tables; null uses platform default behavior."
+        },
+        "allowedValues": [
+          "Dedicated",
+          "null"
+        ],
+        "defaultValue": "Dedicated"
+      },
       "app_gateway_waf_enabled_effect": {
         "type": "String",
         "metadata": {
@@ -92,6 +104,18 @@
         },
         "defaultValue": "allLogs"
       },
+      "load_balancer_log_analytics_destination_type": {
+        "type": "String",
+        "metadata": {
+          "displayName": "Load Balancer Log Analytics destination type",
+          "description": "Destination table mode for Load Balancer diagnostics. Dedicated uses resource-specific tables; null uses platform default behavior."
+        },
+        "allowedValues": [
+          "Dedicated",
+          "null"
+        ],
+        "defaultValue": "Dedicated"
+      },
       "diagnostic_setting_name": {
         "type": "String",
         "metadata": {
@@ -126,6 +150,34 @@
           "description": "Controls whether API Management APIs may expose unencrypted protocols."
         },
         "defaultValue": "Audit"
+      },
+      "api_management_log_analytics_effect": {
+        "type": "String",
+        "metadata": {
+          "displayName": "Enable logging by category group for API Management services to Log Analytics",
+          "description": "Controls whether API Management diagnostic settings are deployed or audited for Log Analytics."
+        },
+        "defaultValue": "AuditIfNotExists"
+      },
+      "api_management_log_category_group": {
+        "type": "String",
+        "metadata": {
+          "displayName": "API Management diagnostic category group",
+          "description": "Diagnostic category group for API Management logs."
+        },
+        "defaultValue": "allLogs"
+      },
+      "api_management_log_analytics_destination_type": {
+        "type": "String",
+        "metadata": {
+          "displayName": "API Management Log Analytics destination type",
+          "description": "Destination table mode for API Management diagnostics. Dedicated uses resource-specific tables; null uses platform default behavior."
+        },
+        "allowedValues": [
+          "Dedicated",
+          "null"
+        ],
+        "defaultValue": "Dedicated"
       },
       "front_door_premium_tier_effect": {
         "type": "String",
@@ -249,7 +301,7 @@
       },
       {
         "policyDefinitionReferenceId": "Deploy-AppGateway-Diagnostics-To-LogAnalytics",
-        "policyDefinitionId": "/providers/Microsoft.Authorization/policyDefinitions/92012204-a7e4-4a95-bbe5-90d0d3e12735",
+        "policyDefinitionId": "${root_scope_resource_id}/providers/Microsoft.Authorization/policyDefinitions/Deploy-AppGateway-Diagnostics-Dedicated",
         "parameters": {
           "categoryGroup": {
             "value": "[parameters('app_gateway_log_category_group')]"
@@ -262,6 +314,9 @@
           },
           "logAnalytics": {
             "value": "[parameters('log_analytics_workspace_resource_id')]"
+          },
+          "logAnalyticsDestinationType": {
+            "value": "[parameters('app_gateway_log_analytics_destination_type')]"
           },
           "resourceLocationList": {
             "value": "[parameters('diagnostic_resource_location_list')]"
@@ -301,7 +356,7 @@
       },
       {
         "policyDefinitionReferenceId": "Deploy-LoadBalancer-Diagnostics-To-LogAnalytics",
-        "policyDefinitionId": "/providers/Microsoft.Authorization/policyDefinitions/889bfebf-7428-426e-a86f-79e2a7de2f71",
+        "policyDefinitionId": "${root_scope_resource_id}/providers/Microsoft.Authorization/policyDefinitions/Deploy-LoadBalancer-Diagnostics-Dedicated",
         "parameters": {
           "categoryGroup": {
             "value": "[parameters('load_balancer_log_category_group')]"
@@ -314,6 +369,34 @@
           },
           "logAnalytics": {
             "value": "[parameters('log_analytics_workspace_resource_id')]"
+          },
+          "logAnalyticsDestinationType": {
+            "value": "[parameters('load_balancer_log_analytics_destination_type')]"
+          },
+          "resourceLocationList": {
+            "value": "[parameters('diagnostic_resource_location_list')]"
+          }
+        },
+        "groupNames": []
+      },
+      {
+        "policyDefinitionReferenceId": "Deploy-APIM-Diagnostics-To-LogAnalytics",
+        "policyDefinitionId": "${root_scope_resource_id}/providers/Microsoft.Authorization/policyDefinitions/Deploy-APIM-Diagnostics-Dedicated",
+        "parameters": {
+          "categoryGroup": {
+            "value": "[parameters('api_management_log_category_group')]"
+          },
+          "diagnosticSettingName": {
+            "value": "[parameters('diagnostic_setting_name')]"
+          },
+          "effect": {
+            "value": "[parameters('api_management_log_analytics_effect')]"
+          },
+          "logAnalytics": {
+            "value": "[parameters('log_analytics_workspace_resource_id')]"
+          },
+          "logAnalyticsDestinationType": {
+            "value": "[parameters('api_management_log_analytics_destination_type')]"
           },
           "resourceLocationList": {
             "value": "[parameters('diagnostic_resource_location_list')]"

@@ -1,0 +1,213 @@
+{
+  "name": "Deploy-LoadBalancer-Diagnostics-Dedicated",
+  "type": "Microsoft.Authorization/policyDefinitions",
+  "apiVersion": "2024-05-01",
+  "scope": null,
+  "properties": {
+    "displayName": "Enable logging by category group for Load balancers to Log Analytics (Dedicated supported)",
+    "description": "Deploys a diagnostic setting using category group routing to Log Analytics for Load Balancers and supports configuring logAnalyticsDestinationType.",
+    "policyType": "Custom",
+    "mode": "Indexed",
+    "metadata": {
+      "version": "1.0.0",
+      "category": "Monitoring"
+    },
+    "parameters": {
+      "effect": {
+        "type": "String",
+        "metadata": {
+          "displayName": "Effect",
+          "description": "Enable or disable policy execution."
+        },
+        "allowedValues": [
+          "DeployIfNotExists",
+          "AuditIfNotExists",
+          "Disabled"
+        ],
+        "defaultValue": "DeployIfNotExists"
+      },
+      "diagnosticSettingName": {
+        "type": "String",
+        "metadata": {
+          "displayName": "Diagnostic Setting Name",
+          "description": "Diagnostic setting name."
+        },
+        "defaultValue": "setByPolicy-LogAnalytics"
+      },
+      "categoryGroup": {
+        "type": "String",
+        "metadata": {
+          "displayName": "Category Group",
+          "description": "Diagnostic category group."
+        },
+        "allowedValues": [
+          "audit",
+          "allLogs"
+        ],
+        "defaultValue": "audit"
+      },
+      "resourceLocationList": {
+        "type": "Array",
+        "metadata": {
+          "displayName": "Resource Location List",
+          "description": "Locations eligible for diagnostics. A single entry '*' selects all locations."
+        },
+        "defaultValue": [
+          "*"
+        ]
+      },
+      "logAnalytics": {
+        "type": "String",
+        "metadata": {
+          "displayName": "Log Analytics Workspace",
+          "description": "Log Analytics workspace resource ID.",
+          "strongType": "omsWorkspace",
+          "assignPermissions": true
+        }
+      },
+      "logAnalyticsDestinationType": {
+        "type": "String",
+        "metadata": {
+          "displayName": "Log Analytics destination type",
+          "description": "Dedicated sends logs to resource-specific tables. null uses the platform default (legacy behavior)."
+        },
+        "allowedValues": [
+          "Dedicated",
+          "null"
+        ],
+        "defaultValue": "Dedicated"
+      }
+    },
+    "policyRule": {
+      "if": {
+        "allOf": [
+          {
+            "field": "type",
+            "equals": "microsoft.network/loadbalancers"
+          },
+          {
+            "anyOf": [
+              {
+                "value": "[first(parameters('resourceLocationList'))]",
+                "equals": "*"
+              },
+              {
+                "field": "location",
+                "in": "[parameters('resourceLocationList')]"
+              }
+            ]
+          }
+        ]
+      },
+      "then": {
+        "effect": "[parameters('effect')]",
+        "details": {
+          "type": "Microsoft.Insights/diagnosticSettings",
+          "evaluationDelay": "AfterProvisioning",
+          "existenceCondition": {
+            "allOf": [
+              {
+                "count": {
+                  "field": "Microsoft.Insights/diagnosticSettings/logs[*]",
+                  "where": {
+                    "allOf": [
+                      {
+                        "field": "Microsoft.Insights/diagnosticSettings/logs[*].enabled",
+                        "equals": "[equals(parameters('categoryGroup'), 'allLogs')]"
+                      },
+                      {
+                        "field": "Microsoft.Insights/diagnosticSettings/logs[*].categoryGroup",
+                        "equals": "allLogs"
+                      }
+                    ]
+                  }
+                },
+                "equals": 1
+              },
+              {
+                "field": "Microsoft.Insights/diagnosticSettings/workspaceId",
+                "equals": "[parameters('logAnalytics')]"
+              },
+              {
+                "anyOf": [
+                  {
+                    "value": "[parameters('logAnalyticsDestinationType')]",
+                    "equals": "null"
+                  },
+                  {
+                    "field": "Microsoft.Insights/diagnosticSettings/logAnalyticsDestinationType",
+                    "equals": "[parameters('logAnalyticsDestinationType')]"
+                  }
+                ]
+              }
+            ]
+          },
+          "roleDefinitionIds": [
+            "/providers/Microsoft.Authorization/roleDefinitions/92aaf0da-9dab-42b6-94a3-d43ce8d16293"
+          ],
+          "deployment": {
+            "properties": {
+              "mode": "incremental",
+              "template": {
+                "$schema": "http://schema.management.azure.com/schemas/2019-08-01/deploymentTemplate.json#",
+                "contentVersion": "1.0.0.0",
+                "parameters": {
+                  "diagnosticSettingName": {
+                    "type": "String"
+                  },
+                  "logAnalytics": {
+                    "type": "String"
+                  },
+                  "categoryGroup": {
+                    "type": "String"
+                  },
+                  "resourceName": {
+                    "type": "String"
+                  },
+                  "logAnalyticsDestinationType": {
+                    "type": "String"
+                  }
+                },
+                "resources": [
+                  {
+                    "type": "microsoft.network/loadbalancers/providers/diagnosticSettings",
+                    "apiVersion": "2021-05-01-preview",
+                    "name": "[concat(parameters('resourceName'), '/', 'Microsoft.Insights/', parameters('diagnosticSettingName'))]",
+                    "properties": {
+                      "workspaceId": "[parameters('logAnalytics')]",
+                      "logAnalyticsDestinationType": "[if(equals(parameters('logAnalyticsDestinationType'), 'null'), json('null'), parameters('logAnalyticsDestinationType'))]",
+                      "logs": [
+                        {
+                          "categoryGroup": "allLogs",
+                          "enabled": "[equals(parameters('categoryGroup'), 'allLogs')]"
+                        }
+                      ],
+                      "metrics": []
+                    }
+                  }
+                ]
+              },
+              "parameters": {
+                "diagnosticSettingName": {
+                  "value": "[parameters('diagnosticSettingName')]"
+                },
+                "logAnalytics": {
+                  "value": "[parameters('logAnalytics')]"
+                },
+                "categoryGroup": {
+                  "value": "[parameters('categoryGroup')]"
+                },
+                "resourceName": {
+                  "value": "[field('name')]"
+                },
+                "logAnalyticsDestinationType": {
+                  "value": "[parameters('logAnalyticsDestinationType')]"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
