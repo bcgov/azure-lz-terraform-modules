@@ -57,7 +57,8 @@
     ],
     "role_definitions": [
       "IP-Address-Lookup-Reader",
-      "AKS Private DNS Record Writer"
+      "AKS Private DNS Record Writer",
+      "Terraform Deployment Read/Export"
     ],
     "archetype_config": {
       "parameters": {
