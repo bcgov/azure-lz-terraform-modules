@@ -1,0 +1,80 @@
+{
+  "name": "CanadaFederalPBMM",
+  "type": "Microsoft.Authorization/policyAssignments",
+  "apiVersion": "2024-04-01",
+  "properties": {
+    "displayName": "Canada Federal PBMM",
+    "description": "This initiative includes policies that address a subset of Canada Federal PBMM controls. Additional policies will be added in upcoming releases. For more information, visit https://aka.ms/canadafederalpbmm-init.",
+    "policyDefinitionId": "/providers/Microsoft.Authorization/policySetDefinitions/4c4a5f27-de81-430b-b4e5-9cbd50595a87",
+    "metadata": {},
+    "scope": "/providers/Microsoft.Management/managementGroups/bcgov-managed-lz-forge",
+    "notScopes": [],
+    "parameters": {
+      "logAnalyticsWorkspaceIdforVMReporting": {
+        "value": "logAnalyticsWorkspaceId"
+      },
+      "listOfMembersToExcludeFromWindowsVMAdministratorsGroup": {
+        "value": "listOfMembersToExcludeFromWindowsVMAdministratorsGroup"
+      },
+      "listOfMembersToIncludeInWindowsVMAdministratorsGroup": {
+        "value": "listOfMembersToIncludeInWindowsVMAdministratorsGroup"
+      },
+      "logsEnabled-7f89b1eb-583c-429a-8828-af049802c1d9": {
+        "value": true
+      },
+      "metricsEnabled-7f89b1eb-583c-429a-8828-af049802c1d9": {
+        "value": false
+      },
+      "listOfResourceTypesWithDiagnosticLogsEnabled": {
+        "value": [
+          "Microsoft.AnalysisServices/servers",
+          "Microsoft.ApiManagement/service",
+          "Microsoft.Network/applicationGateways",
+          "Microsoft.Automation/automationAccounts",
+          "Microsoft.ContainerRegistry/registries",
+          "Microsoft.ContainerService/managedClusters",
+          "Microsoft.Batch/batchAccounts",
+          "Microsoft.Cdn/profiles/endpoints",
+          "Microsoft.CognitiveServices/accounts",
+          "Microsoft.DocumentDB/databaseAccounts",
+          "Microsoft.DataFactory/factories",
+          "Microsoft.DataLakeAnalytics/accounts",
+          "Microsoft.DataLakeStore/accounts",
+          "Microsoft.EventGrid/topics",
+          "Microsoft.EventHub/namespaces",
+          "Microsoft.Network/expressRouteCircuits",
+          "Microsoft.Network/azureFirewalls",
+          "Microsoft.HDInsight/clusters",
+          "Microsoft.Devices/IotHubs",
+          "Microsoft.KeyVault/vaults",
+          "Microsoft.Network/loadBalancers",
+          "Microsoft.Logic/integrationAccounts",
+          "Microsoft.Logic/workflows",
+          "Microsoft.DBforMySQL/servers",
+          "Microsoft.Network/networkSecurityGroups",
+          "Microsoft.DBforPostgreSQL/servers",
+          "Microsoft.PowerBIDedicated/capacities",
+          "Microsoft.Network/publicIPAddresses",
+          "Microsoft.RecoveryServices/vaults",
+          "Microsoft.Cache/redis",
+          "Microsoft.Relay/namespaces",
+          "Microsoft.Search/searchServices",
+          "Microsoft.ServiceBus/namespaces",
+          "Microsoft.SignalRService/SignalR",
+          "Microsoft.Sql/servers/databases",
+          "Microsoft.StreamAnalytics/streamingjobs",
+          "Microsoft.TimeSeriesInsights/environments",
+          "Microsoft.Network/trafficManagerProfiles",
+          "Microsoft.Network/virtualNetworks",
+          "Microsoft.Network/virtualNetworkGateways"
+        ]
+      }
+    },
+    "enforcementMode": "Default",
+    "overrides": []
+  },
+  "location": "canadacentral",
+  "identity": {
+    "type": "SystemAssigned"
+  }
+}
