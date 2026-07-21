@@ -130,9 +130,3 @@ variable "network_watcher_storage_account_name" {
   type        = string
   description = "The name of the Storage Account used for Network Watcher VNet Flow Logs."
 }
-
-variable "read_only_service_principal_object_id" {
-  type        = string
-  description = "Optional object ID of the read-only service principal to assign the Terraform Deployment Read/Export custom role at the root management group scope."
-  default     = null
-}

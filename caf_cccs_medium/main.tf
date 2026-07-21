@@ -24,19 +24,6 @@ terraform {
 
 data "azurerm_client_config" "current" {}
 
-locals {
-  root_management_group_scope = "/providers/Microsoft.Management/managementGroups/${trimprefix(var.root_parent_id, "/providers/Microsoft.Management/managementGroups/")}"
-}
-
-resource "azurerm_role_assignment" "read_only_deployment_read_export" {
-  count = var.read_only_service_principal_object_id != null ? 1 : 0
-
-  scope                = local.root_management_group_scope
-  role_definition_name = "Terraform Deployment Read/Export"
-  principal_id         = var.read_only_service_principal_object_id
-}
-
-
 # The following module declarations act to orchestrate the
 # independently defined module instances for core,
 # connectivity and management resources
