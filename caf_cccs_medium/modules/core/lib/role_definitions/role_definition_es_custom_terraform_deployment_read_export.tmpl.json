@@ -1,0 +1,24 @@
+{
+  "name": "d80c62ac-f6d8-474e-b45f-f57f56ce95e9",
+  "type": "Microsoft.Authorization/roleDefinitions",
+  "apiVersion": "2022-05-01-preview",
+  "properties": {
+      "roleName": "Terraform Deployment Read/Export",
+      "description": "Required for read-only Terraform plan telemetry because Reader does not include deployment export template and deployment read actions.",
+      "type": "customRole",
+      "permissions": [
+          {
+              "actions": [
+                "Microsoft.Resources/deployments/exportTemplate/action",
+                "Microsoft.Resources/deployments/read"
+              ],
+              "notActions": [],
+              "dataActions": [],
+              "notDataActions": []
+          }
+      ],
+      "assignableScopes": [
+          "${current_scope_resource_id}"
+      ]
+  }
+}

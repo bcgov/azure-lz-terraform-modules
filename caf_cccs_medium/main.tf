@@ -24,7 +24,6 @@ terraform {
 
 data "azurerm_client_config" "current" {}
 
-
 # The following module declarations act to orchestrate the
 # independently defined module instances for core,
 # connectivity and management resources
