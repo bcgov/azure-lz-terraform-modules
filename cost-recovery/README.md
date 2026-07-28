@@ -5,7 +5,7 @@ This script queries Azure Cost Management API to generate detailed cost recovery
 ## Features
 
 - Retrieves subscription costs for a specified time period
-- Calculates PST, brokerage fees, and total costs
+- Calculates PST and total costs
 - Groups costs by account coding and expense authority
 - Exports results to CSV and formatted Excel files
 - Supports querying multiple months of data
