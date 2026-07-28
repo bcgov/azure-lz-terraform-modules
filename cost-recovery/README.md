@@ -70,7 +70,6 @@ The Excel output includes bold headers, column width adjustments, money formatti
 - Default management group: "bcgov-managed-lz-live-landing-zones"
 - Tax rates:
   - PST: 7%
-  - Brokerage fee: 6%
 - You can include decommissioned management group data with `--include-decom`
 - For more help, run: `python cost_recovery.py --help`
 
