@@ -142,22 +142,14 @@ def get_subscription_costs(
             summary_df["Total Spend (CAD)"] + summary_df["Vendor PST"]
         )
 
-        # Calculate brokerage fee
-        summary_df["Brokerage Fee (6%)"] = summary_df["Total Spend (CAD)"] * Decimal(
-            "0.06"
-        )
-
         # Calculate grand total
-        summary_df["Grand Total"] = (
-            summary_df["Vendor Sub-total"] + summary_df["Brokerage Fee (6%)"]
-        )
+        summary_df["Grand Total"] = summary_df["Vendor Sub-total"]
 
         # Round all decimal columns to 2 decimal places
         decimal_columns = [
             "Total Spend (CAD)",
             "Vendor PST",
             "Vendor Sub-total",
-            "Brokerage Fee (6%)",
             "Grand Total",
         ]
         for col in decimal_columns:
@@ -173,7 +165,6 @@ def get_subscription_costs(
                 "Total Spend (CAD)",
                 "Vendor PST",
                 "Vendor Sub-total",
-                "Brokerage Fee (6%)",
                 "Grand Total",
                 "Expense Authority",
             ]
@@ -309,14 +300,12 @@ if __name__ == "__main__":
         )
         summary_df["Vendor PST"] = summary_df["Total Spend (CAD)"] * Decimal("0.07")
         summary_df["Vendor Sub-total"] = summary_df["Total Spend (CAD)"] + summary_df["Vendor PST"]
-        summary_df["Brokerage Fee (6%)"] = summary_df["Total Spend (CAD)"] * Decimal("0.06")
-        summary_df["Grand Total"] = summary_df["Vendor Sub-total"] + summary_df["Brokerage Fee (6%)"]
+        summary_df["Grand Total"] = summary_df["Vendor Sub-total"]
 
         decimal_columns = [
             "Total Spend (CAD)",
             "Vendor PST",
             "Vendor Sub-total",
-            "Brokerage Fee (6%)",
             "Grand Total",
         ]
         for col in decimal_columns:
@@ -331,7 +320,6 @@ if __name__ == "__main__":
                 "Total Spend (CAD)",
                 "Vendor PST",
                 "Vendor Sub-total",
-                "Brokerage Fee (6%)",
                 "Grand Total",
                 "Expense Authority",
             ]
