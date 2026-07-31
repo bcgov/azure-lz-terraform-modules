@@ -28,7 +28,7 @@ resource "azurerm_management_group" "project_set" {
 
 module "lz_vending" {
   source  = "Azure/avm-ptn-alz-sub-vending/azure"
-  version = "0.2.1" # NOTE: When updating this version, please update the respective `resourceproviders_*` modules below
+  version = "0.3.0" # NOTE: When updating this version, please update the respective `resourceproviders_*` modules below
 
   for_each = var.subscriptions
 
@@ -141,7 +141,7 @@ resource "azurerm_consumption_budget_subscription" "subscription_budget" {
 # NOTE: This Resource Provider is required when using Azure Monitor Baseline Alerts (AMBA)
 module "resourceproviders_alerts_management" {
   source  = "Azure/avm-ptn-alz-sub-vending/azure//modules/resource-provider"
-  version = "0.2.1" # Should match the avm-ptn-alz-sub-vending module version
+  version = "0.3.0" # Should match the avm-ptn-alz-sub-vending module version
 
   for_each = {
     for k, v in var.subscriptions : k => v
@@ -155,7 +155,7 @@ module "resourceproviders_alerts_management" {
 # NOTE: This Resource Provider is required when using Azure Monitor Baseline Alerts (AMBA)
 module "resourceproviders_insights" {
   source  = "Azure/avm-ptn-alz-sub-vending/azure//modules/resource-provider"
-  version = "0.2.1" # Should match the avm-ptn-alz-sub-vending module version
+  version = "0.3.0" # Should match the avm-ptn-alz-sub-vending module version
 
   for_each = {
     for k, v in var.subscriptions : k => v
