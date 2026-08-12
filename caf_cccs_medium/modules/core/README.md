@@ -4,31 +4,31 @@
 ## Requirements
 
 | Name | Version |
-|------|---------|
+| ---- | ------- |
 | <a name="requirement_azurerm"></a> [azurerm](#requirement\_azurerm) | 3.116.0 |
 
 ## Providers
 
 | Name | Version |
-|------|---------|
+| ---- | ------- |
 | <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) | 3.116.0 |
 
 ## Modules
 
 | Name | Source | Version |
-|------|--------|---------|
+| ---- | ------ | ------- |
 | <a name="module_alz"></a> [alz](#module\_alz) | Azure/caf-enterprise-scale/azurerm | 6.3.1 |
 
 ## Resources
 
 | Name | Type |
-|------|------|
+| ---- | ---- |
 | [azurerm_client_config.current](https://registry.terraform.io/providers/hashicorp/azurerm/3.116.0/docs/data-sources/client_config) | data source |
 
 ## Inputs
 
 | Name | Description | Type | Default | Required |
-|------|-------------|------|---------|:--------:|
+| ---- | ----------- | ---- | ------- | :------: |
 | <a name="input_VNet-DNS-Settings"></a> [VNet-DNS-Settings](#input\_VNet-DNS-Settings) | Sets the VNet DNS settings for the policy assignment. | `list(any)` | n/a | yes |
 | <a name="input_aks_security_best_prac_parameters"></a> [aks\_security\_best\_prac\_parameters](#input\_aks\_security\_best\_prac\_parameters) | Parameter values for the AKS-Security-BestPrac initiative assignment. | <pre>object({<br/>    enforce_azure_cni_overlay    = string<br/>    enforce_entra_id_integration = string<br/>    enforce_kubernetes_rbac      = string<br/>    enforce_azure_rbac           = string<br/>    enforce_disable_local_auth   = string<br/>    enforce_workload_identity    = string<br/>    enforce_managed_identity     = string<br/>    enforce_oidc_issuer          = string<br/>    enforce_secrets_store_csi    = string<br/>    enforce_acns_security        = string<br/>    enforce_cilium_dataplane     = string<br/>    audit_azure_policy_addon     = string<br/>    deploy_azure_policy_addon    = string<br/>    deploy_image_cleaner         = string<br/>    audit_image_cleaner          = string<br/>  })</pre> | n/a | yes |
 | <a name="input_configure_connectivity_resources"></a> [configure\_connectivity\_resources](#input\_configure\_connectivity\_resources) | Configuration settings for "connectivity" resources. | `any` | n/a | yes |
