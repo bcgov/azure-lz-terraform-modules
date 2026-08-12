@@ -56,6 +56,15 @@ locals {
         }
       }
     }
+    platform = {
+      parameters = {
+        # Built-in CAF assignment; DigiCert/GlobalSign-only integrated CA is unused, so disable that effect.
+        Enforce-GR-KeyVault = {
+          keyVaultIntegratedCa = "Disabled"
+        }
+      }
+      access_control = {}
+    }
     landing-zones = {
       parameters = {
         Resource-Locations = {
@@ -92,7 +101,11 @@ locals {
         Deny-Azure-SRE-Agent   = var.deny_azure_sre_agent_parameters,
         Deny-Fabric-Capacity   = var.deny_fabric_capacity_parameters,
         Deny-Power-Platform    = var.deny_power_platform_parameters,
-        Deny-Azure-AI-Services = var.deny_azure_ai_services_parameters
+        Deny-Azure-AI-Services = var.deny_azure_ai_services_parameters,
+        # Built-in CAF assignment; DigiCert/GlobalSign-only integrated CA is unused, so disable that effect.
+        Enforce-GR-KeyVault = {
+          keyVaultIntegratedCa = "Disabled"
+        }
       }
       access_control = {}
     }
