@@ -68,6 +68,7 @@ resource "azurerm_virtual_network" "this" {
       error_message = "Gateway transit is not supported for isolated expansion VNets."
     }
 
-    ignore_changes = [tags]
+    # Callers may add workload subnets outside this module when var.subnets is empty.
+    ignore_changes = [tags, subnet]
   }
 }

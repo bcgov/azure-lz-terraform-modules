@@ -81,7 +81,7 @@ variable "routable_vnet" {
 }
 
 variable "subnets" {
-  description = "Generic subnet map for the expansion VNet. Wrapper modules should add service-specific delegation, endpoints, and NSG rules here rather than changing the core pattern."
+  description = "Optional subnet map for the expansion VNet. Leave empty when the caller creates workload subnets separately. Wrapper modules should add service-specific delegation, endpoints, and NSG rules here rather than changing the core pattern."
   type = map(object({
     address_prefix                                = string
     name                                          = optional(string)
@@ -115,11 +115,7 @@ variable "subnets" {
       destination_address_prefixes = optional(list(string))
     })), {})
   }))
-
-  validation {
-    condition     = length(var.subnets) > 0
-    error_message = "At least one subnet must be defined."
-  }
+  default = {}
 
   validation {
     condition = alltrue([
