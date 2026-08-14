@@ -7,7 +7,7 @@ module "analytics_expansion" {
   location            = var.location
   resource_group_name = var.resource_group_name
 
-  address_space = ["10.200.0.0/16"]
+  address_space = ["10.10.0.0/16"]
 
   routable_vnet = {
     id                  = var.routable_vnet_id
@@ -18,11 +18,11 @@ module "analytics_expansion" {
 
   subnets = {
     compute = {
-      address_prefix = "10.200.0.0/20"
+      address_prefix = "10.10.0.0/20"
     }
 
     databricks_public = {
-      address_prefix = "10.200.16.0/22"
+      address_prefix = "10.10.16.0/22"
 
       delegation = {
         service_name = "Microsoft.Databricks/workspaces"
@@ -35,7 +35,7 @@ module "analytics_expansion" {
     }
 
     databricks_private = {
-      address_prefix = "10.200.20.0/22"
+      address_prefix = "10.10.20.0/22"
 
       delegation = {
         service_name = "Microsoft.Databricks/workspaces"

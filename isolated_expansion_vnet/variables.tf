@@ -30,8 +30,9 @@ variable "resource_group_name" {
 }
 
 variable "address_space" {
-  description = "Isolated RFC1918 address space for the expansion VNet. Must not overlap the routable workload VNet, other directly peered networks, or destinations the expansion workload must reach without SNAT. This prefix must never be advertised into the enterprise routing domain."
+  description = "Isolated RFC1918 address space for the expansion VNet. Must not overlap the routable workload VNet, other directly peered networks, or destinations the expansion workload must reach without SNAT. This prefix must never be advertised into the enterprise routing domain. Defaults to 10.10.0.0/16."
   type        = list(string)
+  default     = ["10.10.0.0/16"]
 
   validation {
     condition     = length(var.address_space) > 0

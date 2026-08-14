@@ -8,7 +8,7 @@ module "aks_expansion" {
   location            = var.location
   resource_group_name = var.resource_group_name
 
-  address_space = ["10.200.0.0/16"]
+  address_space = ["10.10.0.0/16"]
 
   routable_vnet = {
     id                  = var.routable_vnet_id
@@ -19,7 +19,7 @@ module "aks_expansion" {
 
   subnets = {
     nodes = {
-      address_prefix = "10.200.0.0/20"
+      address_prefix = "10.10.0.0/20"
 
       delegation = {
         service_name = "Microsoft.ContainerService/managedClusters"
@@ -27,7 +27,7 @@ module "aks_expansion" {
     }
 
     pods = {
-      address_prefix = "10.200.16.0/20"
+      address_prefix = "10.10.16.0/20"
     }
   }
 
