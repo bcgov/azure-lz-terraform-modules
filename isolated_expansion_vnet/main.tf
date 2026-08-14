@@ -30,4 +30,14 @@ check "isolated_expansion_invariants" {
     condition     = !local.subnets_overlap
     error_message = "Subnet address prefixes overlap."
   }
+
+  assert {
+    condition     = !local.spoke_dns_resolver_enabled || var.dns.mode == "azure"
+    error_message = "When spoke_dns_resolver is enabled, leave dns.mode as azure. The module sets the expansion VNet DNS servers to the spoke inbound IP."
+  }
+
+  assert {
+    condition     = !local.spoke_dns_resolver_enabled || !local.dns_forwarding_ruleset_link_enabled
+    error_message = "spoke_dns_resolver and dns_forwarding_ruleset_id are mutually exclusive. Use the spoke resolver or the central ruleset link, not both."
+  }
 }

@@ -23,7 +23,7 @@ variable "routable_vnet_address_space" {
   type = list(string)
 }
 
-variable "private_dns_zone_ids" {
-  type    = list(string)
-  default = []
+variable "dns_forwarding_ruleset_id" {
+  type    = string
+  default = null
 }

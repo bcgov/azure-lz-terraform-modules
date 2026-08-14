@@ -221,7 +221,7 @@ variable "disallowed_address_spaces" {
 }
 
 variable "dns" {
-  description = "DNS configuration for the expansion VNet. Azure-provided DNS is the default. Use custom servers only when those resolvers are reachable from the expansion VNet (in the directly peered workload VNet for NAT mode, or via firewall SNAT for enterprise DNS)."
+  description = "DNS configuration for the expansion VNet. Azure-provided DNS is the default. Use custom servers only when those resolvers are reachable from the expansion VNet (in the directly peered workload VNet for NAT mode, or via firewall SNAT for enterprise DNS). When spoke_dns_resolver.enabled is true, leave this at the default; the module points the expansion VNet at the spoke inbound endpoint."
   type = object({
     mode    = optional(string, "azure")
     servers = optional(list(string), [])
@@ -241,27 +241,48 @@ variable "dns" {
   }
 }
 
-variable "private_dns_zone_ids" {
-  description = "Existing private DNS zone resource IDs to link to the expansion VNet. Central zones should be reused rather than duplicated. Combined with any zones discovered from private_dns_zone_resource_group_id. The identity applying this module must be able to write virtual network links on those zones."
-  type        = list(string)
-  default     = []
-}
-
-variable "private_dns_zone_resource_group_id" {
-  description = "Resource ID of the central private DNS resource group. When set, every Private DNS zone in that group is linked to the expansion VNet."
-  type        = string
-  default     = null
+variable "spoke_dns_resolver" {
+  description = "Optional DNS Private Resolver in the routable spoke. When enabled, the expansion VNet uses the spoke inbound endpoint as custom DNS and the resolver forwards all queries to forward_to (typically the hub firewall DNS proxy). Private DNS zone links on the expansion VNet are not required. Enable on at most one expansion module per spoke. inbound_address_prefix and outbound_address_prefix must be unused /28 or larger prefixes already in the spoke address space."
+  type = object({
+    enabled                 = optional(bool, false)
+    inbound_address_prefix  = optional(string)
+    outbound_address_prefix = optional(string)
+    inbound_ip              = optional(string)
+    forward_to              = optional(list(string), [])
+  })
+  default = {
+    enabled = false
+  }
 
   validation {
-    condition     = var.private_dns_zone_resource_group_id == null || can(regex("(?i)^/subscriptions/[^/]+/resource[gG]roups/[^/]+$", var.private_dns_zone_resource_group_id))
-    error_message = "private_dns_zone_resource_group_id must be a resource group ID of the form /subscriptions/{id}/resourceGroups/{name}."
+    condition     = !var.spoke_dns_resolver.enabled || (try(var.spoke_dns_resolver.inbound_address_prefix, null) != null && can(cidrhost(var.spoke_dns_resolver.inbound_address_prefix, 0)))
+    error_message = "spoke_dns_resolver.inbound_address_prefix is required and must be a valid CIDR when the resolver is enabled."
   }
+
+  validation {
+    condition     = !var.spoke_dns_resolver.enabled || (try(var.spoke_dns_resolver.outbound_address_prefix, null) != null && can(cidrhost(var.spoke_dns_resolver.outbound_address_prefix, 0)))
+    error_message = "spoke_dns_resolver.outbound_address_prefix is required and must be a valid CIDR when the resolver is enabled."
+  }
+
+  validation {
+    condition = !var.spoke_dns_resolver.enabled || (
+      tonumber(split("/", var.spoke_dns_resolver.inbound_address_prefix)[1]) <= 28 &&
+      tonumber(split("/", var.spoke_dns_resolver.outbound_address_prefix)[1]) <= 28
+    )
+    error_message = "DNS Private Resolver subnets must be /28 or larger (prefix length 28 or smaller)."
+  }
+
+  validation {
+    condition     = !var.spoke_dns_resolver.enabled || length(var.spoke_dns_resolver.forward_to) > 0
+    error_message = "spoke_dns_resolver.forward_to must contain at least one DNS server IP when the resolver is enabled. Use the hub firewall DNS proxy, not the central resolver inbound, unless firewall policy already allows spoke-to-inbound port 53."
+  }
+
 }
 
-variable "link_private_dns_to_routable_vnet" {
-  description = "Also create private DNS zone links on the routable workload VNet. Leave false when those zones are already linked centrally."
-  type        = bool
-  default     = false
+variable "dns_forwarding_ruleset_id" {
+  description = "Optional existing central DNS forwarding ruleset ID to link to the expansion VNet (Azure-provided DNS / slimmer platform variant). The ruleset must forward queries to a resolver inbound whose VNet is linked to the central private zones, and must not itself be linked to that inbound VNet. Mutually exclusive with spoke_dns_resolver.enabled."
+  type        = string
+  default     = null
 }
 
 variable "nsg_rules" {

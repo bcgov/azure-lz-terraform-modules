@@ -44,8 +44,8 @@ variable "firewall_private_ip" {
   type        = string
 }
 
-variable "private_dns_zone_ids" {
-  description = "Existing central private DNS zone IDs to link to the expansion VNet."
-  type        = list(string)
-  default     = []
+variable "dns_forwarding_ruleset_id" {
+  description = "Optional central isolated-expansion forwarding ruleset ID. The expansion VNet keeps Azure-provided DNS."
+  type        = string
+  default     = null
 }

@@ -41,12 +41,14 @@ No resources.
 | Name | Description | Type | Default | Required |
 | ---- | ----------- | ---- | ------- | :------: |
 | <a name="input_location"></a> [location](#input\_location) | n/a | `string` | `"canadacentral"` | no |
-| <a name="input_private_dns_zone_ids"></a> [private\_dns\_zone\_ids](#input\_private\_dns\_zone\_ids) | n/a | `list(string)` | `[]` | no |
 | <a name="input_resource_group_name"></a> [resource\_group\_name](#input\_resource\_group\_name) | n/a | `string` | n/a | yes |
 | <a name="input_routable_vnet_address_space"></a> [routable\_vnet\_address\_space](#input\_routable\_vnet\_address\_space) | n/a | `list(string)` | n/a | yes |
 | <a name="input_routable_vnet_id"></a> [routable\_vnet\_id](#input\_routable\_vnet\_id) | n/a | `string` | n/a | yes |
 | <a name="input_routable_vnet_name"></a> [routable\_vnet\_name](#input\_routable\_vnet\_name) | n/a | `string` | n/a | yes |
 | <a name="input_routable_vnet_resource_group_name"></a> [routable\_vnet\_resource\_group\_name](#input\_routable\_vnet\_resource\_group\_name) | n/a | `string` | n/a | yes |
+| <a name="input_spoke_dns_forward_to"></a> [spoke\_dns\_forward\_to](#input\_spoke\_dns\_forward\_to) | n/a | `list(string)` | n/a | yes |
+| <a name="input_spoke_dns_inbound_address_prefix"></a> [spoke\_dns\_inbound\_address\_prefix](#input\_spoke\_dns\_inbound\_address\_prefix) | n/a | `string` | n/a | yes |
+| <a name="input_spoke_dns_outbound_address_prefix"></a> [spoke\_dns\_outbound\_address\_prefix](#input\_spoke\_dns\_outbound\_address\_prefix) | n/a | `string` | n/a | yes |
 
 ## Outputs
 

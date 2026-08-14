@@ -34,8 +34,17 @@ variable "routable_vnet_address_space" {
   type        = list(string)
 }
 
-variable "private_dns_zone_ids" {
-  description = "Existing central private DNS zone IDs to link to the expansion VNet."
+variable "spoke_dns_inbound_address_prefix" {
+  description = "Unused /28 or larger prefix in the routable spoke for the DNS resolver inbound subnet."
+  type        = string
+}
+
+variable "spoke_dns_outbound_address_prefix" {
+  description = "Unused /28 or larger prefix in the routable spoke for the DNS resolver outbound subnet."
+  type        = string
+}
+
+variable "spoke_dns_forward_to" {
+  description = "DNS servers the spoke resolver forwards all queries to. Use the hub firewall DNS proxy."
   type        = list(string)
-  default     = []
 }

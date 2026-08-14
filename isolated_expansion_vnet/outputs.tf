@@ -59,9 +59,9 @@ output "route_table_ids" {
   )
 }
 
-output "private_dns_link_ids" {
-  description = "Map of private DNS virtual network link keys to resource IDs."
-  value       = { for key, link in azurerm_private_dns_zone_virtual_network_link.this : key => link.id }
+output "dns_forwarding_ruleset_link_id" {
+  description = "Resource ID of the expansion VNet link to dns_forwarding_ruleset_id when that input is set; otherwise null."
+  value       = local.dns_forwarding_ruleset_link_enabled ? azurerm_private_dns_resolver_virtual_network_link.expansion[0].id : null
 }
 
 output "nsg_ids" {
@@ -87,4 +87,14 @@ output "required_private_snat" {
 output "network_classification" {
   description = "Platform classification for this VNet. Isolated expansion VNets must not receive enterprise-routed spoke automation such as vWAN connections."
   value       = "isolated_expansion"
+}
+
+output "spoke_dns_resolver_inbound_ip" {
+  description = "Private IP of the spoke DNS resolver inbound endpoint when spoke_dns_resolver is enabled; otherwise null. The expansion VNet uses this as its custom DNS server."
+  value       = local.spoke_dns_resolver_inbound_ip
+}
+
+output "spoke_dns_resolver_id" {
+  description = "Resource ID of the spoke DNS Private Resolver when spoke_dns_resolver is enabled; otherwise null."
+  value       = local.spoke_dns_resolver_enabled ? azurerm_private_dns_resolver.spoke[0].id : null
 }

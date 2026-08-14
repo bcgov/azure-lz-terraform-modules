@@ -6,4 +6,4 @@ routable_vnet_resource_group_name = "<resource-group-name>"
 routable_vnet_address_space       = ["10.40.32.0/21"]
 firewall_id                       = "/subscriptions/<subscription-id>/resourceGroups/<resource-group-name>/providers/Microsoft.Network/azureFirewalls/<firewall-name>"
 firewall_private_ip               = "10.40.33.4"
-private_dns_zone_ids              = []
+dns_forwarding_ruleset_id         = null

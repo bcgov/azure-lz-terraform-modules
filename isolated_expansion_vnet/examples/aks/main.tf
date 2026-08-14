@@ -35,5 +35,5 @@ module "aks_expansion" {
     mode = "nat"
   }
 
-  private_dns_zone_ids = var.private_dns_zone_ids
+  dns_forwarding_ruleset_id = var.dns_forwarding_ruleset_id
 }

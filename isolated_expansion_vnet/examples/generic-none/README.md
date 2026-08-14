@@ -33,12 +33,14 @@ No resources.
 | Name | Description | Type | Default | Required |
 | ---- | ----------- | ---- | ------- | :------: |
 | <a name="input_location"></a> [location](#input\_location) | Azure region for the expansion VNet. | `string` | `"canadacentral"` | no |
-| <a name="input_private_dns_zone_ids"></a> [private\_dns\_zone\_ids](#input\_private\_dns\_zone\_ids) | Existing central private DNS zone IDs to link to the expansion VNet. | `list(string)` | `[]` | no |
 | <a name="input_resource_group_name"></a> [resource\_group\_name](#input\_resource\_group\_name) | Existing network resource group name. | `string` | n/a | yes |
 | <a name="input_routable_vnet_address_space"></a> [routable\_vnet\_address\_space](#input\_routable\_vnet\_address\_space) | Address space of the enterprise-routed workload VNet. | `list(string)` | n/a | yes |
 | <a name="input_routable_vnet_id"></a> [routable\_vnet\_id](#input\_routable\_vnet\_id) | Resource ID of the enterprise-routed workload VNet. | `string` | n/a | yes |
 | <a name="input_routable_vnet_name"></a> [routable\_vnet\_name](#input\_routable\_vnet\_name) | Name of the enterprise-routed workload VNet. | `string` | n/a | yes |
 | <a name="input_routable_vnet_resource_group_name"></a> [routable\_vnet\_resource\_group\_name](#input\_routable\_vnet\_resource\_group\_name) | Resource group of the enterprise-routed workload VNet. | `string` | n/a | yes |
+| <a name="input_spoke_dns_forward_to"></a> [spoke\_dns\_forward\_to](#input\_spoke\_dns\_forward\_to) | DNS servers the spoke resolver forwards all queries to. Use the hub firewall DNS proxy. | `list(string)` | n/a | yes |
+| <a name="input_spoke_dns_inbound_address_prefix"></a> [spoke\_dns\_inbound\_address\_prefix](#input\_spoke\_dns\_inbound\_address\_prefix) | Unused /28 or larger prefix in the routable spoke for the DNS resolver inbound subnet. | `string` | n/a | yes |
+| <a name="input_spoke_dns_outbound_address_prefix"></a> [spoke\_dns\_outbound\_address\_prefix](#input\_spoke\_dns\_outbound\_address\_prefix) | Unused /28 or larger prefix in the routable spoke for the DNS resolver outbound subnet. | `string` | n/a | yes |
 | <a name="input_subscription_id"></a> [subscription\_id](#input\_subscription\_id) | Subscription that contains the workload resource group. Use a placeholder in committed tfvars. | `string` | n/a | yes |
 
 ## Outputs

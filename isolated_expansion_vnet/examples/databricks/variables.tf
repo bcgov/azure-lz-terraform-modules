@@ -23,7 +23,14 @@ variable "routable_vnet_address_space" {
   type = list(string)
 }
 
-variable "private_dns_zone_ids" {
-  type    = list(string)
-  default = []
+variable "spoke_dns_inbound_address_prefix" {
+  type = string
+}
+
+variable "spoke_dns_outbound_address_prefix" {
+  type = string
+}
+
+variable "spoke_dns_forward_to" {
+  type = list(string)
 }

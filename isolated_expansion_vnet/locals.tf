@@ -21,7 +21,15 @@ locals {
   allow_gateway_transit   = false
   use_remote_gateways     = false
 
-  dns_servers = var.dns.mode == "custom" ? var.dns.servers : null
+  spoke_dns_resolver_enabled = var.spoke_dns_resolver.enabled
+  spoke_dns_resolver_inbound_ip = local.spoke_dns_resolver_enabled ? coalesce(
+    var.spoke_dns_resolver.inbound_ip,
+    cidrhost(var.spoke_dns_resolver.inbound_address_prefix, 4)
+  ) : null
+
+  dns_servers = local.spoke_dns_resolver_enabled ? [local.spoke_dns_resolver_inbound_ip] : (
+    var.dns.mode == "custom" ? var.dns.servers : null
+  )
 
   subnet_keys = keys(var.subnets)
 
@@ -108,33 +116,7 @@ locals {
   peering_from_expansion_name = "isolated-expansion-${var.name}"
   peering_from_routable_name  = "isolated-expansion-from-${var.name}"
 
-  discovered_private_dns_zone_ids = try(data.azapi_resource_list.central_private_dns_zones[0].output.ids, [])
-  private_dns_zone_ids            = distinct(concat(var.private_dns_zone_ids, local.discovered_private_dns_zone_ids))
-
-  private_dns_zones = {
-    for id in local.private_dns_zone_ids : id => {
-      id                  = id
-      name                = element(split("/privateDnsZones/", id), 1)
-      resource_group_name = regex("(?i)resource[gG]roups/([^/]+)/", id)[0]
-    }
-  }
-
-  private_dns_links = merge(
-    {
-      for id, zone in local.private_dns_zones : "expansion-${id}" => {
-        name               = local.virtual_network_name
-        private_dns_zone   = zone
-        virtual_network_id = azurerm_virtual_network.this.id
-      }
-    },
-    var.link_private_dns_to_routable_vnet ? {
-      for id, zone in local.private_dns_zones : "routable-${id}" => {
-        name               = "${var.routable_vnet.name}-link"
-        private_dns_zone   = zone
-        virtual_network_id = var.routable_vnet.id
-      }
-    } : {}
-  )
+  dns_forwarding_ruleset_link_enabled = var.dns_forwarding_ruleset_id != null
 
   peer_bypass_routes = local.firewall_enabled && !try(local.firewall.direct_peer_bypass, true) ? var.routable_vnet.address_space : []
 
