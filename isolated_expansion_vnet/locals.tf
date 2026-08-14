@@ -118,6 +118,107 @@ locals {
 
   dns_forwarding_ruleset_link_enabled = var.dns_forwarding_ruleset_id != null
 
+  spoke_dns_inbound_nsg_rules = {
+    AllowDnsUdpInbound = {
+      priority                     = 110
+      direction                    = "Inbound"
+      access                       = "Allow"
+      protocol                     = "Udp"
+      description                  = "Allow DNS from the isolated expansion VNet."
+      destination_port_range       = "53"
+      source_address_prefix        = null
+      source_address_prefixes      = var.address_space
+      destination_address_prefix   = "VirtualNetwork"
+      destination_address_prefixes = null
+    }
+    AllowDnsTcpInbound = {
+      priority                     = 111
+      direction                    = "Inbound"
+      access                       = "Allow"
+      protocol                     = "Tcp"
+      description                  = "Allow DNS from the isolated expansion VNet."
+      destination_port_range       = "53"
+      source_address_prefix        = null
+      source_address_prefixes      = var.address_space
+      destination_address_prefix   = "VirtualNetwork"
+      destination_address_prefixes = null
+    }
+    AllowAzureLoadBalancerInbound = {
+      priority                     = 120
+      direction                    = "Inbound"
+      access                       = "Allow"
+      protocol                     = "*"
+      description                  = "Allow Azure Load Balancer health probes."
+      destination_port_range       = "*"
+      source_address_prefix        = "AzureLoadBalancer"
+      source_address_prefixes      = null
+      destination_address_prefix   = "*"
+      destination_address_prefixes = null
+    }
+    DenyInternetInbound = {
+      priority                     = 4096
+      direction                    = "Inbound"
+      access                       = "Deny"
+      protocol                     = "*"
+      description                  = "Deny inbound Internet traffic."
+      destination_port_range       = "*"
+      source_address_prefix        = "Internet"
+      source_address_prefixes      = null
+      destination_address_prefix   = "*"
+      destination_address_prefixes = null
+    }
+  }
+
+  spoke_dns_outbound_nsg_rules = {
+    AllowDnsUdpOutbound = {
+      priority                     = 110
+      direction                    = "Outbound"
+      access                       = "Allow"
+      protocol                     = "Udp"
+      description                  = "Allow forwarded DNS to the hub DNS proxy."
+      destination_port_range       = "53"
+      source_address_prefix        = "*"
+      source_address_prefixes      = null
+      destination_address_prefix   = null
+      destination_address_prefixes = var.spoke_dns_resolver.forward_to
+    }
+    AllowDnsTcpOutbound = {
+      priority                     = 111
+      direction                    = "Outbound"
+      access                       = "Allow"
+      protocol                     = "Tcp"
+      description                  = "Allow forwarded DNS to the hub DNS proxy."
+      destination_port_range       = "53"
+      source_address_prefix        = "*"
+      source_address_prefixes      = null
+      destination_address_prefix   = null
+      destination_address_prefixes = var.spoke_dns_resolver.forward_to
+    }
+    AllowAzureLoadBalancerInbound = {
+      priority                     = 120
+      direction                    = "Inbound"
+      access                       = "Allow"
+      protocol                     = "*"
+      description                  = "Allow Azure Load Balancer health probes."
+      destination_port_range       = "*"
+      source_address_prefix        = "AzureLoadBalancer"
+      source_address_prefixes      = null
+      destination_address_prefix   = "*"
+      destination_address_prefixes = null
+    }
+  }
+
+  spoke_dns_subnets = {
+    inbound = {
+      address_prefix = var.spoke_dns_resolver.inbound_address_prefix
+      nsg_id         = one(azurerm_network_security_group.spoke_dns_inbound[*].id)
+    }
+    outbound = {
+      address_prefix = var.spoke_dns_resolver.outbound_address_prefix
+      nsg_id         = one(azurerm_network_security_group.spoke_dns_outbound[*].id)
+    }
+  }
+
   peer_bypass_routes = local.firewall_enabled && !try(local.firewall.direct_peer_bypass, true) ? var.routable_vnet.address_space : []
 
   internet_routes = local.firewall_enabled && try(local.firewall.route_internet_through_firewall, true) ? ["0.0.0.0/0"] : []

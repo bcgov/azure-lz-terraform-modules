@@ -12,62 +12,25 @@ resource "azurerm_network_security_group" "spoke_dns_inbound" {
 }
 
 resource "azurerm_network_security_rule" "spoke_dns_inbound" {
-  for_each = local.spoke_dns_resolver_enabled ? {
-    AllowDnsUdpInbound = {
-      priority                   = 110
-      direction                  = "Inbound"
-      access                     = "Allow"
-      protocol                   = "Udp"
-      description                = "Allow DNS from the isolated expansion VNet."
-      destination_port_range     = "53"
-      source_address_prefixes    = var.address_space
-      destination_address_prefix = "VirtualNetwork"
-    }
-    AllowDnsTcpInbound = {
-      priority                   = 111
-      direction                  = "Inbound"
-      access                     = "Allow"
-      protocol                   = "Tcp"
-      description                = "Allow DNS from the isolated expansion VNet."
-      destination_port_range     = "53"
-      source_address_prefixes    = var.address_space
-      destination_address_prefix = "VirtualNetwork"
-    }
-    AllowAzureLoadBalancerInbound = {
-      priority                   = 120
-      direction                  = "Inbound"
-      access                     = "Allow"
-      protocol                   = "*"
-      description                = "Allow Azure Load Balancer health probes."
-      destination_port_range     = "*"
-      source_address_prefix      = "AzureLoadBalancer"
-      destination_address_prefix = "*"
-    }
-    DenyInternetInbound = {
-      priority                   = 4096
-      direction                  = "Inbound"
-      access                     = "Deny"
-      protocol                   = "*"
-      description                = "Deny inbound Internet traffic."
-      destination_port_range     = "*"
-      source_address_prefix      = "Internet"
-      destination_address_prefix = "*"
-    }
-  } : {}
+  for_each = {
+    for key, rule in local.spoke_dns_inbound_nsg_rules : key => rule
+    if local.spoke_dns_resolver_enabled
+  }
 
-  name                        = each.key
-  resource_group_name         = var.routable_vnet.resource_group_name
-  network_security_group_name = azurerm_network_security_group.spoke_dns_inbound[0].name
-  priority                    = each.value.priority
-  direction                   = each.value.direction
-  access                      = each.value.access
-  protocol                    = each.value.protocol
-  description                 = each.value.description
-  source_port_range           = "*"
-  destination_port_range      = each.value.destination_port_range
-  source_address_prefix       = try(each.value.source_address_prefixes, null) == null ? try(each.value.source_address_prefix, "*") : null
-  source_address_prefixes     = try(each.value.source_address_prefixes, null)
-  destination_address_prefix  = each.value.destination_address_prefix
+  name                         = each.key
+  resource_group_name          = var.routable_vnet.resource_group_name
+  network_security_group_name  = azurerm_network_security_group.spoke_dns_inbound[0].name
+  priority                     = each.value.priority
+  direction                    = each.value.direction
+  access                       = each.value.access
+  protocol                     = each.value.protocol
+  description                  = each.value.description
+  source_port_range            = "*"
+  destination_port_range       = each.value.destination_port_range
+  source_address_prefix        = each.value.source_address_prefix
+  source_address_prefixes      = each.value.source_address_prefixes
+  destination_address_prefix   = each.value.destination_address_prefix
+  destination_address_prefixes = each.value.destination_address_prefixes
 }
 
 resource "azurerm_network_security_group" "spoke_dns_outbound" {
@@ -84,38 +47,10 @@ resource "azurerm_network_security_group" "spoke_dns_outbound" {
 }
 
 resource "azurerm_network_security_rule" "spoke_dns_outbound" {
-  for_each = local.spoke_dns_resolver_enabled ? {
-    AllowDnsUdpOutbound = {
-      priority                     = 110
-      direction                    = "Outbound"
-      access                       = "Allow"
-      protocol                     = "Udp"
-      description                  = "Allow forwarded DNS to the hub DNS proxy."
-      destination_port_range       = "53"
-      source_address_prefix        = "*"
-      destination_address_prefixes = var.spoke_dns_resolver.forward_to
-    }
-    AllowDnsTcpOutbound = {
-      priority                     = 111
-      direction                    = "Outbound"
-      access                       = "Allow"
-      protocol                     = "Tcp"
-      description                  = "Allow forwarded DNS to the hub DNS proxy."
-      destination_port_range       = "53"
-      source_address_prefix        = "*"
-      destination_address_prefixes = var.spoke_dns_resolver.forward_to
-    }
-    AllowAzureLoadBalancerInbound = {
-      priority                   = 120
-      direction                  = "Inbound"
-      access                     = "Allow"
-      protocol                   = "*"
-      description                = "Allow Azure Load Balancer health probes."
-      destination_port_range     = "*"
-      source_address_prefix      = "AzureLoadBalancer"
-      destination_address_prefix = "*"
-    }
-  } : {}
+  for_each = {
+    for key, rule in local.spoke_dns_outbound_nsg_rules : key => rule
+    if local.spoke_dns_resolver_enabled
+  }
 
   name                         = each.key
   resource_group_name          = var.routable_vnet.resource_group_name
@@ -127,22 +62,17 @@ resource "azurerm_network_security_rule" "spoke_dns_outbound" {
   description                  = each.value.description
   source_port_range            = "*"
   destination_port_range       = each.value.destination_port_range
-  source_address_prefix        = try(each.value.source_address_prefix, "*")
-  destination_address_prefix   = try(each.value.destination_address_prefixes, null) == null ? try(each.value.destination_address_prefix, "*") : null
-  destination_address_prefixes = try(each.value.destination_address_prefixes, null)
+  source_address_prefix        = each.value.source_address_prefix
+  source_address_prefixes      = each.value.source_address_prefixes
+  destination_address_prefix   = each.value.destination_address_prefix
+  destination_address_prefixes = each.value.destination_address_prefixes
 }
 
 resource "azapi_resource" "spoke_dns_subnet" {
-  for_each = local.spoke_dns_resolver_enabled ? {
-    inbound = {
-      address_prefix = var.spoke_dns_resolver.inbound_address_prefix
-      nsg_id         = azurerm_network_security_group.spoke_dns_inbound[0].id
-    }
-    outbound = {
-      address_prefix = var.spoke_dns_resolver.outbound_address_prefix
-      nsg_id         = azurerm_network_security_group.spoke_dns_outbound[0].id
-    }
-  } : {}
+  for_each = {
+    for key, subnet in local.spoke_dns_subnets : key => subnet
+    if local.spoke_dns_resolver_enabled
+  }
 
   type      = "Microsoft.Network/virtualNetworks/subnets@2024-05-01"
   name      = "dns-${each.key}"
