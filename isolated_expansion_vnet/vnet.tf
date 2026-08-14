@@ -7,6 +7,34 @@ resource "azurerm_virtual_network" "this" {
 
   private_endpoint_vnet_policies = "Disabled"
 
+  dynamic "subnet" {
+    for_each = var.subnets
+
+    content {
+      name             = local.subnet_name[subnet.key]
+      address_prefixes = [subnet.value.address_prefix]
+      security_group   = try(local.subnet_nsg_id[subnet.key], null)
+
+      service_endpoints                             = subnet.value.service_endpoints
+      private_endpoint_network_policies             = subnet.value.private_endpoint_network_policies
+      private_link_service_network_policies_enabled = subnet.value.private_link_service_network_policies_enabled
+      default_outbound_access_enabled               = subnet.value.default_outbound_access_enabled
+      route_table_id                                = local.firewall_enabled && subnet.value.associate_route_table ? azurerm_route_table.firewall[0].id : null
+
+      delegation = subnet.value.delegation == null ? [] : [
+        {
+          name = coalesce(subnet.value.delegation.name, replace(subnet.value.delegation.service_name, "/", "-"))
+          service_delegation = [
+            {
+              name    = subnet.value.delegation.service_name
+              actions = subnet.value.delegation.actions
+            }
+          ]
+        }
+      ]
+    }
+  }
+
   tags = local.tags
 
   lifecycle {

@@ -42,6 +42,6 @@ resource "azurerm_subnet_nat_gateway_association" "this" {
     for key, subnet in var.subnets : key => subnet if subnet.associate_nat_gateway
   } : {}
 
-  subnet_id      = azurerm_subnet.this[each.key].id
+  subnet_id      = local.subnet_ids[each.key]
   nat_gateway_id = azurerm_nat_gateway.this[0].id
 }

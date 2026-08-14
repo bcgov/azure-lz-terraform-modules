@@ -15,12 +15,12 @@ output "address_space" {
 
 output "subnet_ids" {
   description = "Map of subnet keys to subnet resource IDs."
-  value       = { for key, subnet in azurerm_subnet.this : key => subnet.id }
+  value       = local.subnet_ids
 }
 
 output "subnet_prefixes" {
   description = "Map of subnet keys to subnet address prefixes."
-  value       = { for key, subnet in azurerm_subnet.this : key => subnet.address_prefixes }
+  value       = local.subnet_prefixes
 }
 
 output "peering_ids" {

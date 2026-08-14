@@ -33,10 +33,3 @@ resource "azurerm_network_security_rule" "this" {
   destination_address_prefix   = each.value.rule.destination_address_prefixes == null ? each.value.rule.destination_address_prefix : null
   destination_address_prefixes = each.value.rule.destination_address_prefixes
 }
-
-resource "azurerm_subnet_network_security_group_association" "this" {
-  for_each = local.subnets_needing_nsg
-
-  subnet_id                 = azurerm_subnet.this[each.key].id
-  network_security_group_id = each.value.create_nsg ? azurerm_network_security_group.this[each.key].id : each.value.nsg_id
-}

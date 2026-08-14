@@ -86,6 +86,24 @@ locals {
     for key, subnet in var.subnets : key => subnet if subnet.create_nsg
   }
 
+  subnet_name = {
+    for key, subnet in var.subnets : key => coalesce(subnet.name, key)
+  }
+
+  subnet_nsg_id = {
+    for key, subnet in local.subnets_needing_nsg : key => (
+      subnet.create_nsg ? azurerm_network_security_group.this[key].id : subnet.nsg_id
+    )
+  }
+
+  subnet_ids = {
+    for key, name in local.subnet_name : key => "${azurerm_virtual_network.this.id}/subnets/${name}"
+  }
+
+  subnet_prefixes = {
+    for key, subnet in var.subnets : key => [subnet.address_prefix]
+  }
+
   peering_from_expansion_name = "isolated-expansion-${var.name}"
   peering_from_routable_name  = "isolated-expansion-from-${var.name}"
 

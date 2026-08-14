@@ -22,12 +22,3 @@ resource "azurerm_route" "firewall" {
   next_hop_type          = each.value.next_hop_type
   next_hop_in_ip_address = each.value.next_hop_in_ip_address
 }
-
-resource "azurerm_subnet_route_table_association" "firewall" {
-  for_each = local.firewall_enabled ? {
-    for key, subnet in var.subnets : key => subnet if subnet.associate_route_table
-  } : {}
-
-  subnet_id      = azurerm_subnet.this[each.key].id
-  route_table_id = azurerm_route_table.firewall[0].id
-}
