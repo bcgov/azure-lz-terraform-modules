@@ -242,9 +242,20 @@ variable "dns" {
 }
 
 variable "private_dns_zone_ids" {
-  description = "Existing private DNS zone resource IDs to link to the expansion VNet. Central zones should be reused rather than duplicated. The identity applying this module must be able to write virtual network links on those zones."
+  description = "Existing private DNS zone resource IDs to link to the expansion VNet. Central zones should be reused rather than duplicated. Combined with any zones discovered from private_dns_zone_resource_group_id. The identity applying this module must be able to write virtual network links on those zones."
   type        = list(string)
   default     = []
+}
+
+variable "private_dns_zone_resource_group_id" {
+  description = "Resource ID of the central private DNS resource group. When set, every Private DNS zone in that group is linked to the expansion VNet."
+  type        = string
+  default     = null
+
+  validation {
+    condition     = var.private_dns_zone_resource_group_id == null || can(regex("(?i)^/subscriptions/[^/]+/resource[gG]roups/[^/]+$", var.private_dns_zone_resource_group_id))
+    error_message = "private_dns_zone_resource_group_id must be a resource group ID of the form /subscriptions/{id}/resourceGroups/{name}."
+  }
 }
 
 variable "link_private_dns_to_routable_vnet" {

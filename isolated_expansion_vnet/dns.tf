@@ -1,3 +1,13 @@
+data "azapi_resource_list" "central_private_dns_zones" {
+  count = var.private_dns_zone_resource_group_id != null ? 1 : 0
+
+  type      = "Microsoft.Network/privateDnsZones@2020-06-01"
+  parent_id = var.private_dns_zone_resource_group_id
+  response_export_values = {
+    ids = "value[].id"
+  }
+}
+
 resource "azurerm_private_dns_zone_virtual_network_link" "this" {
   for_each = local.private_dns_links
 

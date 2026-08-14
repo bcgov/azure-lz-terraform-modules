@@ -108,8 +108,11 @@ locals {
   peering_from_expansion_name = "isolated-expansion-${var.name}"
   peering_from_routable_name  = "isolated-expansion-from-${var.name}"
 
+  discovered_private_dns_zone_ids = try(data.azapi_resource_list.central_private_dns_zones[0].output.ids, [])
+  private_dns_zone_ids            = distinct(concat(var.private_dns_zone_ids, local.discovered_private_dns_zone_ids))
+
   private_dns_zones = {
-    for id in var.private_dns_zone_ids : id => {
+    for id in local.private_dns_zone_ids : id => {
       id                  = id
       name                = element(split("/privateDnsZones/", id), 1)
       resource_group_name = regex("(?i)resource[gG]roups/([^/]+)/", id)[0]
