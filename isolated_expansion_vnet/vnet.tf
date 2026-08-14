@@ -19,7 +19,7 @@ resource "azurerm_virtual_network" "this" {
       private_endpoint_network_policies             = subnet.value.private_endpoint_network_policies
       private_link_service_network_policies_enabled = subnet.value.private_link_service_network_policies_enabled
       default_outbound_access_enabled               = subnet.value.default_outbound_access_enabled
-      route_table_id                                = local.firewall_enabled && subnet.value.associate_route_table ? azurerm_route_table.firewall[0].id : null
+      route_table_id                                = subnet.value.associate_route_table ? local.egress_route_table_id : null
 
       delegation = subnet.value.delegation == null ? [] : [
         {

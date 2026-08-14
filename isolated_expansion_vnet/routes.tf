@@ -12,6 +12,30 @@ resource "azurerm_route_table" "firewall" {
   }
 }
 
+resource "azurerm_route_table" "none" {
+  count = local.none_enabled ? 1 : 0
+
+  name                          = "${local.virtual_network_name}-none"
+  location                      = var.location
+  resource_group_name           = var.resource_group_name
+  bgp_route_propagation_enabled = false
+  tags                          = local.tags
+
+  lifecycle {
+    ignore_changes = [tags]
+  }
+}
+
+resource "azurerm_route" "none_blackhole" {
+  count = local.none_enabled ? 1 : 0
+
+  name                = "internet-blackhole"
+  resource_group_name = var.resource_group_name
+  route_table_name    = azurerm_route_table.none[0].name
+  address_prefix      = "0.0.0.0/0"
+  next_hop_type       = "None"
+}
+
 resource "azurerm_route" "firewall" {
   for_each = local.firewall_enabled ? local.firewall_routes : {}
 

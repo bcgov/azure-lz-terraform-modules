@@ -64,7 +64,9 @@ The same isolated prefix may be reused elsewhere only when those networks can ne
 
 ## Egress modes
 
-`nat` is the default. Use it when the isolated workload only needs resources in the directly peered workload VNet, private endpoints in that VNet, and public outbound connectivity.
+`none` is the default. Use it when the workload must stay on private paths only: the expansion VNet itself, the directly peered routable VNet, and Private Endpoints reachable over that peering or in the expansion VNet. The module does not create a NAT Gateway and installs a `0.0.0.0/0 -> None` blackhole plus an Internet-deny NSG rule. If residual Databricks-owned endpoints still need a public or enterprise path, use `firewall_snat` instead of claiming a no-egress VNet.
+
+`nat` is for workloads that only need resources in the directly peered workload VNet, private endpoints in that VNet, and public outbound connectivity.
 
 `firewall_snat` is for workloads that must reach on-premises, other landing zones, shared central services, or other vWAN-connected networks while keeping the isolated prefix out of enterprise routing. The firewall is the routing-domain boundary and must SNAT isolated sources to an enterprise-routable IP **before** packets enter vWAN.
 
@@ -94,13 +96,30 @@ This module uses an **existing** firewall only. It does not create a firewall or
 
 Setting `direct_peer_bypass = false` steers even the routable VNet CIDR through the firewall so the expansion prefix can be hidden from the peer. That is supported but is not the default.
 
+### None mode traffic
+
+| Flow | Result |
+| --- | --- |
+| Expansion → routable VNet / customer Private Endpoints | Direct peering, original source IP |
+| Expansion → local Private Endpoints (for example `databricks_ui_api`) | VNet local |
+| Expansion → Internet | Dropped |
+| Expansion → other vWAN spokes or on-prem | Not supported |
+| On-prem → expansion | Not supported |
+
+None mode is the intended Databricks classic compute-plane pattern when customer Storage, Key Vault, Event Hubs, and similar Private Endpoints live in the routable VNet, and the Databricks control-plane PE lives in a dedicated subnet in the expansion VNet. Databricks-owned artifact storage, log storage, platform Event Hubs, and metastore endpoints are not necessarily resources you can attach your own Private Endpoints to. Validate those residual dependencies before treating Internet egress as unnecessary.
+
 ## Decision rule
 
 ```text
-Need only the peered workload VNet, its private endpoints, and public egress?
+Need only local VNet, direct peering, and Private Endpoints,
+with Internet explicitly blocked?
+  → egress.mode = "none"   (default)
+
+Need public egress as well, but only to the peered VNet
+and its private endpoints?
   → egress.mode = "nat"
 
-Need on-prem, other spokes, or central enterprise services
+Need on-prem, other spokes, or residual platform endpoints
 without advertising the isolated CIDR?
   → egress.mode = "firewall_snat"
 ```
@@ -192,6 +211,65 @@ module "compute_expansion" {
 }
 ```
 
+### No Internet egress
+
+```hcl
+module "databricks_expansion" {
+  source = "../../isolated_expansion_vnet"
+
+  name                = "databricks-isolated-expansion"
+  location            = "canadacentral"
+  resource_group_name = "<resource-group-name>"
+
+  routable_vnet = {
+    id                  = module.workload_vnet.resource_id
+    name                = module.workload_vnet.name
+    resource_group_name = module.workload_vnet.resource_group_name
+    address_space       = module.workload_vnet.address_space
+  }
+
+  subnets = {
+    databricks_public = {
+      address_prefix = "10.10.0.0/22"
+
+      delegation = {
+        service_name = "Microsoft.Databricks/workspaces"
+        actions = [
+          "Microsoft.Network/virtualNetworks/subnets/join/action",
+          "Microsoft.Network/virtualNetworks/subnets/prepareNetworkPolicies/action",
+          "Microsoft.Network/virtualNetworks/subnets/unprepareNetworkPolicies/action"
+        ]
+      }
+    }
+
+    databricks_private = {
+      address_prefix = "10.10.4.0/22"
+
+      delegation = {
+        service_name = "Microsoft.Databricks/workspaces"
+        actions = [
+          "Microsoft.Network/virtualNetworks/subnets/join/action",
+          "Microsoft.Network/virtualNetworks/subnets/prepareNetworkPolicies/action",
+          "Microsoft.Network/virtualNetworks/subnets/unprepareNetworkPolicies/action"
+        ]
+      }
+    }
+
+    private_endpoints = {
+      address_prefix = "10.10.8.0/26"
+    }
+  }
+
+  egress = {
+    mode = "none"
+  }
+
+  private_dns_zone_ids = var.private_dns_zone_ids
+}
+```
+
+Place customer Storage, Key Vault, SQL, and application Private Endpoints in the routable workload VNet. Place the Databricks `databricks_ui_api` Private Endpoint in the expansion VNet `private_endpoints` subnet. This module does not create those endpoints.
+
 ## What this module does not own
 
 - the existing routable workload VNet
@@ -213,7 +291,7 @@ Private DNS zone IDs are linked to the expansion VNet. Set `link_private_dns_to_
 
 ## NSGs and security
 
-Each subnet gets an NSG unless you pass an existing `nsg_id`. Baseline rules allow Azure Load Balancer inbound, VNet and Internet outbound, and deny Internet inbound. Firewall mode also allows outbound to `enterprise_routes`.
+Each subnet gets an NSG unless you pass an existing `nsg_id`. Baseline rules allow Azure Load Balancer inbound and VNet outbound, and deny Internet inbound. NAT and firewall modes also allow Internet outbound. `none` denies Internet outbound. Firewall mode also allows outbound to `enterprise_routes`.
 
 Do not treat the expansion CIDR as trusted merely because it is peered. Scope access on the routable side (for example TCP 443 from a specific expansion subnet to a private endpoint subnet) instead of allowing `10.10.0.0/16` to any destination.
 
@@ -243,22 +321,24 @@ This module never offers `enable_vwan`. If a consumer needs a vWAN connection, t
 
 ## Connectivity matrix
 
-| Capability | NAT | Firewall SNAT |
-| --- | :---: | :---: |
-| Large isolated CIDR | yes | yes |
-| Direct peer access | yes | yes |
-| Access workload private endpoints | yes | yes |
-| Public Internet egress | yes | yes |
-| Private SNAT | no | yes |
-| Reach other vWAN spokes / on-prem | no | yes |
-| Enterprise route to isolated CIDR required | no | no |
-| Expansion CIDR propagated into vWAN | no | no |
+| Capability | NAT | Firewall SNAT | None |
+| --- | :---: | :---: | :---: |
+| Large isolated CIDR | yes | yes | yes |
+| Direct peer access | yes | yes | yes |
+| Access workload private endpoints | yes | yes | yes |
+| Public Internet egress | yes | yes | no |
+| Private SNAT | no | yes | no |
+| Reach other vWAN spokes / on-prem | no | yes | no |
+| Enterprise route to isolated CIDR required | no | no | no |
+| Expansion CIDR propagated into vWAN | no | no | no |
 
 ## Acceptance tests
 
 NAT mode: expansion can reach the routable VNet, its private endpoints, and the Internet via the NAT public IP. Expansion cannot reach on-prem or other spokes. The isolated prefix must not appear in vWAN routing or ExpressRoute advertisements.
 
 Firewall SNAT mode: local peer traffic keeps the original expansion source IP. Enterprise destinations see the firewall private IP. Return traffic comes through the firewall. The isolated prefix still must not appear in enterprise routing, vWAN, or ExpressRoute.
+
+None mode: expansion can reach the routable VNet, customer Private Endpoints over peering, and local Private Endpoints. Internet and other spokes fail. The isolated prefix must not appear in vWAN routing or ExpressRoute advertisements.
 
 ## Invariant
 
@@ -268,14 +348,14 @@ The expansion prefix may be known by the expansion VNet, its directly peered wor
 ## Requirements
 
 | Name | Version |
-|------|---------|
+| ---- | ------- |
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >=1.9.0, < 2.0.0 |
 | <a name="requirement_azurerm"></a> [azurerm](#requirement\_azurerm) | ~> 4.0 |
 
 ## Providers
 
 | Name | Version |
-|------|---------|
+| ---- | ------- |
 | <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) | ~> 4.0 |
 
 ## Modules
@@ -285,7 +365,7 @@ No modules.
 ## Resources
 
 | Name | Type |
-|------|------|
+| ---- | ---- |
 | [azurerm_nat_gateway.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/nat_gateway) | resource |
 | [azurerm_nat_gateway_public_ip_association.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/nat_gateway_public_ip_association) | resource |
 | [azurerm_network_security_group.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/network_security_group) | resource |
@@ -293,7 +373,9 @@ No modules.
 | [azurerm_private_dns_zone_virtual_network_link.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/private_dns_zone_virtual_network_link) | resource |
 | [azurerm_public_ip.nat](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/public_ip) | resource |
 | [azurerm_route.firewall](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/route) | resource |
+| [azurerm_route.none_blackhole](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/route) | resource |
 | [azurerm_route_table.firewall](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/route_table) | resource |
+| [azurerm_route_table.none](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/route_table) | resource |
 | [azurerm_subnet_nat_gateway_association.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/subnet_nat_gateway_association) | resource |
 | [azurerm_virtual_network.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/virtual_network) | resource |
 | [azurerm_virtual_network_peering.expansion_to_routable](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/virtual_network_peering) | resource |
@@ -302,16 +384,16 @@ No modules.
 ## Inputs
 
 | Name | Description | Type | Default | Required |
-|------|-------------|------|---------|:--------:|
+| ---- | ----------- | ---- | ------- | :------: |
 | <a name="input_address_space"></a> [address\_space](#input\_address\_space) | Isolated RFC1918 address space for the expansion VNet. Must not overlap the routable workload VNet, other directly peered networks, or destinations the expansion workload must reach without SNAT. This prefix must never be advertised into the enterprise routing domain. Defaults to 10.10.0.0/16. | `list(string)` | <pre>[<br/>  "10.10.0.0/16"<br/>]</pre> | no |
 | <a name="input_disallowed_address_spaces"></a> [disallowed\_address\_spaces](#input\_disallowed\_address\_spaces) | Known directly connected or otherwise incompatible CIDRs. The module fails if the expansion address space overlaps any of these prefixes. Full enterprise IPAM validation remains outside Terraform. | `list(string)` | `[]` | no |
 | <a name="input_dns"></a> [dns](#input\_dns) | DNS configuration for the expansion VNet. Azure-provided DNS is the default. Use custom servers only when those resolvers are reachable from the expansion VNet (in the directly peered workload VNet for NAT mode, or via firewall SNAT for enterprise DNS). | <pre>object({<br/>    mode    = optional(string, "azure")<br/>    servers = optional(list(string), [])<br/>  })</pre> | <pre>{<br/>  "mode": "azure"<br/>}</pre> | no |
-| <a name="input_egress"></a> [egress](#input\_egress) | Outbound connectivity model. Use `nat` when the workload only needs the directly peered routable VNet plus public egress. Use `firewall_snat` when the workload must reach enterprise destinations beyond that peer, with the isolated prefix translated before it enters the enterprise routing domain. | <pre>object({<br/>    mode = optional(string, "nat")<br/>    nat = optional(object({<br/>      public_ip_count = optional(number, 1)<br/>      idle_timeout    = optional(number, 10)<br/>      zones           = optional(list(string), ["1"])<br/>      sku_name        = optional(string, "Standard")<br/>      }), {<br/>      public_ip_count = 1<br/>      idle_timeout    = 10<br/>      zones           = ["1"]<br/>      sku_name        = "Standard"<br/>    })<br/>    firewall = optional(object({<br/>      deployment_mode                 = optional(string, "existing")<br/>      firewall_id                     = optional(string)<br/>      firewall_private_ip             = optional(string)<br/>      direct_peer_bypass              = optional(bool, true)<br/>      route_internet_through_firewall = optional(bool, true)<br/>    }))<br/>  })</pre> | <pre>{<br/>  "mode": "nat"<br/>}</pre> | no |
+| <a name="input_egress"></a> [egress](#input\_egress) | Outbound connectivity model. Defaults to `none` (private paths only: local VNet, direct peering, and Private Endpoints, with no NAT Gateway or Internet route). Use `nat` when the workload also needs public egress. Use `firewall_snat` when the workload must reach enterprise destinations beyond the peer, with the isolated prefix translated before it enters the enterprise routing domain. | <pre>object({<br/>    mode = optional(string, "none")<br/>    nat = optional(object({<br/>      public_ip_count = optional(number, 1)<br/>      idle_timeout    = optional(number, 10)<br/>      zones           = optional(list(string), ["1"])<br/>      sku_name        = optional(string, "Standard")<br/>      }), {<br/>      public_ip_count = 1<br/>      idle_timeout    = 10<br/>      zones           = ["1"]<br/>      sku_name        = "Standard"<br/>    })<br/>    firewall = optional(object({<br/>      deployment_mode                 = optional(string, "existing")<br/>      firewall_id                     = optional(string)<br/>      firewall_private_ip             = optional(string)<br/>      direct_peer_bypass              = optional(bool, true)<br/>      route_internet_through_firewall = optional(bool, true)<br/>    }))<br/>  })</pre> | <pre>{<br/>  "mode": "none"<br/>}</pre> | no |
 | <a name="input_enterprise_routes"></a> [enterprise\_routes](#input\_enterprise\_routes) | Enterprise prefixes that firewall\_snat mode should send to the firewall. Never hard-code these in a wrapper; the caller supplies the prefixes that must be translated before they enter the enterprise routing domain. | `list(string)` | `[]` | no |
 | <a name="input_link_private_dns_to_routable_vnet"></a> [link\_private\_dns\_to\_routable\_vnet](#input\_link\_private\_dns\_to\_routable\_vnet) | Also create private DNS zone links on the routable workload VNet. Leave false when those zones are already linked centrally. | `bool` | `false` | no |
 | <a name="input_location"></a> [location](#input\_location) | (Required) Azure region to deploy to. Changing this forces a new resource to be created. | `string` | n/a | yes |
 | <a name="input_name"></a> [name](#input\_name) | Logical name for the isolated expansion VNet. Used as the Virtual Network name unless virtual\_network\_name is set. In this landing zone, the VNet name should end with `-isolated-expansion` so platform policy can distinguish it from enterprise-routed spokes. | `string` | n/a | yes |
-| <a name="input_nsg_default_rules_enabled"></a> [nsg\_default\_rules\_enabled](#input\_nsg\_default\_rules\_enabled) | Create the module's baseline NSG rules (Azure Load Balancer inbound, VNet outbound, Internet outbound, deny Internet inbound, and enterprise-route outbound in firewall mode). Disable only when supplying a complete custom rule set. | `bool` | `true` | no |
+| <a name="input_nsg_default_rules_enabled"></a> [nsg\_default\_rules\_enabled](#input\_nsg\_default\_rules\_enabled) | Create the module's baseline NSG rules (Azure Load Balancer inbound, VNet outbound, deny Internet inbound, Internet outbound in nat/firewall\_snat, Internet deny in none, and enterprise-route outbound in firewall mode). Disable only when supplying a complete custom rule set. | `bool` | `true` | no |
 | <a name="input_nsg_rules"></a> [nsg\_rules](#input\_nsg\_rules) | Additional NSG rules applied to every subnet NSG created by this module. Use subnet-level nsg\_rules for workload-specific exceptions. Do not add allow-all rules from the expansion CIDR. | <pre>map(object({<br/>    priority                     = number<br/>    direction                    = string<br/>    access                       = string<br/>    protocol                     = string<br/>    description                  = optional(string)<br/>    source_port_range            = optional(string)<br/>    source_port_ranges           = optional(list(string))<br/>    destination_port_range       = optional(string)<br/>    destination_port_ranges      = optional(list(string))<br/>    source_address_prefix        = optional(string)<br/>    source_address_prefixes      = optional(list(string))<br/>    destination_address_prefix   = optional(string)<br/>    destination_address_prefixes = optional(list(string))<br/>  }))</pre> | `{}` | no |
 | <a name="input_private_dns_zone_ids"></a> [private\_dns\_zone\_ids](#input\_private\_dns\_zone\_ids) | Existing private DNS zone resource IDs to link to the expansion VNet. Central zones should be reused rather than duplicated. The identity applying this module must be able to write virtual network links on those zones. | `list(string)` | `[]` | no |
 | <a name="input_resource_group_name"></a> [resource\_group\_name](#input\_resource\_group\_name) | (Required) Name of the existing resource group that will contain the expansion VNet and its supporting resources. | `string` | n/a | yes |
@@ -323,9 +405,9 @@ No modules.
 ## Outputs
 
 | Name | Description |
-|------|-------------|
+| ---- | ----------- |
 | <a name="output_address_space"></a> [address\_space](#output\_address\_space) | Address space assigned to the isolated expansion Virtual Network. |
-| <a name="output_egress_mode"></a> [egress\_mode](#output\_egress\_mode) | Configured egress mode: nat or firewall\_snat. |
+| <a name="output_egress_mode"></a> [egress\_mode](#output\_egress\_mode) | Configured egress mode: nat, firewall\_snat, or none. |
 | <a name="output_firewall_private_ip"></a> [firewall\_private\_ip](#output\_firewall\_private\_ip) | Firewall private IP used as the SNAT/routing boundary when egress.mode is firewall\_snat; otherwise null. |
 | <a name="output_nat_gateway_id"></a> [nat\_gateway\_id](#output\_nat\_gateway\_id) | NAT Gateway resource ID when egress.mode is nat; otherwise null. |
 | <a name="output_nat_public_ips"></a> [nat\_public\_ips](#output\_nat\_public\_ips) | Public IP addresses used by the NAT Gateway when egress.mode is nat; otherwise null. |
@@ -333,10 +415,10 @@ No modules.
 | <a name="output_nsg_ids"></a> [nsg\_ids](#output\_nsg\_ids) | Map of subnet keys to NSG resource IDs created by this module. |
 | <a name="output_peering_ids"></a> [peering\_ids](#output\_peering\_ids) | Resource IDs for both sides of the expansion-to-routable peering. |
 | <a name="output_private_dns_link_ids"></a> [private\_dns\_link\_ids](#output\_private\_dns\_link\_ids) | Map of private DNS virtual network link keys to resource IDs. |
-| <a name="output_required_firewall_routes"></a> [required\_firewall\_routes](#output\_required\_firewall\_routes) | Routes a higher-level networking deployment should honour on the firewall path. Null in NAT mode. |
-| <a name="output_required_firewall_rules"></a> [required\_firewall\_rules](#output\_required\_firewall\_rules) | Suggested firewall allow sources and destinations for isolated expansion traffic. Null in NAT mode. |
-| <a name="output_required_private_snat"></a> [required\_private\_snat](#output\_required\_private\_snat) | Private SNAT contract: isolated source prefixes that must be translated to the firewall's enterprise-routable IP before entering the enterprise routing domain. Null in NAT mode. |
-| <a name="output_route_table_ids"></a> [route\_table\_ids](#output\_route\_table\_ids) | Map of route table names to IDs created for firewall SNAT mode. Empty in NAT mode. |
+| <a name="output_required_firewall_routes"></a> [required\_firewall\_routes](#output\_required\_firewall\_routes) | Routes a higher-level networking deployment should honour on the firewall path. Null unless egress.mode is firewall\_snat. |
+| <a name="output_required_firewall_rules"></a> [required\_firewall\_rules](#output\_required\_firewall\_rules) | Suggested firewall allow sources and destinations for isolated expansion traffic. Null unless egress.mode is firewall\_snat. |
+| <a name="output_required_private_snat"></a> [required\_private\_snat](#output\_required\_private\_snat) | Private SNAT contract: isolated source prefixes that must be translated to the firewall's enterprise-routable IP before entering the enterprise routing domain. Null unless egress.mode is firewall\_snat. |
+| <a name="output_route_table_ids"></a> [route\_table\_ids](#output\_route\_table\_ids) | Map of route table names to IDs created for firewall SNAT or none mode. Empty in NAT mode. |
 | <a name="output_subnet_ids"></a> [subnet\_ids](#output\_subnet\_ids) | Map of subnet keys to subnet resource IDs. |
 | <a name="output_subnet_prefixes"></a> [subnet\_prefixes](#output\_subnet\_prefixes) | Map of subnet keys to subnet address prefixes. |
 | <a name="output_vnet_id"></a> [vnet\_id](#output\_vnet\_id) | Resource ID of the isolated expansion Virtual Network. |

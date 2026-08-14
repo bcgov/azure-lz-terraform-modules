@@ -11,6 +11,7 @@ locals {
   egress_mode      = var.egress.mode
   nat_enabled      = local.egress_mode == "nat"
   firewall_enabled = local.egress_mode == "firewall_snat"
+  none_enabled     = local.egress_mode == "none"
 
   nat = var.egress.nat
 
@@ -179,21 +180,6 @@ locals {
         destination_address_prefix   = "VirtualNetwork"
         destination_address_prefixes = null
       }
-      AllowInternetOutbound = {
-        priority                     = 210
-        direction                    = "Outbound"
-        access                       = "Allow"
-        protocol                     = "*"
-        description                  = "Allow outbound Internet traffic. In NAT mode this is SNATed by the NAT Gateway; in firewall mode it is steered by UDR."
-        source_port_range            = "*"
-        source_port_ranges           = null
-        destination_port_range       = "*"
-        destination_port_ranges      = null
-        source_address_prefix        = "*"
-        source_address_prefixes      = null
-        destination_address_prefix   = "Internet"
-        destination_address_prefixes = null
-      }
       DenyInternetInbound = {
         priority                     = 4096
         direction                    = "Inbound"
@@ -226,8 +212,45 @@ locals {
         destination_address_prefix   = null
         destination_address_prefixes = var.enterprise_routes
       }
-    } : {}
+    } : {},
+    !local.none_enabled ? {
+      AllowInternetOutbound = {
+        priority                     = 210
+        direction                    = "Outbound"
+        access                       = "Allow"
+        protocol                     = "*"
+        description                  = "Allow outbound Internet traffic. In NAT mode this is SNATed by the NAT Gateway; in firewall mode it is steered by UDR."
+        source_port_range            = "*"
+        source_port_ranges           = null
+        destination_port_range       = "*"
+        destination_port_ranges      = null
+        source_address_prefix        = "*"
+        source_address_prefixes      = null
+        destination_address_prefix   = "Internet"
+        destination_address_prefixes = null
+      }
+      } : {
+      DenyInternetOutbound = {
+        priority                     = 4095
+        direction                    = "Outbound"
+        access                       = "Deny"
+        protocol                     = "*"
+        description                  = "Deny Internet egress. none mode allows only local VNet, direct peering, and Private Endpoint paths."
+        source_port_range            = "*"
+        source_port_ranges           = null
+        destination_port_range       = "*"
+        destination_port_ranges      = null
+        source_address_prefix        = "*"
+        source_address_prefixes      = null
+        destination_address_prefix   = "Internet"
+        destination_address_prefixes = null
+      }
+    }
   ) : {}
+
+  egress_route_table_id = local.firewall_enabled ? azurerm_route_table.firewall[0].id : (
+    local.none_enabled ? azurerm_route_table.none[0].id : null
+  )
 
   nsg_rules = concat(
     flatten([

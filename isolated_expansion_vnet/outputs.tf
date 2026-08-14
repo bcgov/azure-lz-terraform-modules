@@ -32,7 +32,7 @@ output "peering_ids" {
 }
 
 output "egress_mode" {
-  description = "Configured egress mode: nat or firewall_snat."
+  description = "Configured egress mode: nat, firewall_snat, or none."
   value       = local.egress_mode
 }
 
@@ -52,10 +52,11 @@ output "firewall_private_ip" {
 }
 
 output "route_table_ids" {
-  description = "Map of route table names to IDs created for firewall SNAT mode. Empty in NAT mode."
-  value = local.firewall_enabled ? {
-    firewall = azurerm_route_table.firewall[0].id
-  } : {}
+  description = "Map of route table names to IDs created for firewall SNAT or none mode. Empty in NAT mode."
+  value = merge(
+    local.firewall_enabled ? { firewall = azurerm_route_table.firewall[0].id } : {},
+    local.none_enabled ? { none = azurerm_route_table.none[0].id } : {}
+  )
 }
 
 output "private_dns_link_ids" {
@@ -69,17 +70,17 @@ output "nsg_ids" {
 }
 
 output "required_firewall_routes" {
-  description = "Routes a higher-level networking deployment should honour on the firewall path. Null in NAT mode."
+  description = "Routes a higher-level networking deployment should honour on the firewall path. Null unless egress.mode is firewall_snat."
   value       = local.required_firewall_routes
 }
 
 output "required_firewall_rules" {
-  description = "Suggested firewall allow sources and destinations for isolated expansion traffic. Null in NAT mode."
+  description = "Suggested firewall allow sources and destinations for isolated expansion traffic. Null unless egress.mode is firewall_snat."
   value       = local.required_firewall_rules
 }
 
 output "required_private_snat" {
-  description = "Private SNAT contract: isolated source prefixes that must be translated to the firewall's enterprise-routable IP before entering the enterprise routing domain. Null in NAT mode."
+  description = "Private SNAT contract: isolated source prefixes that must be translated to the firewall's enterprise-routable IP before entering the enterprise routing domain. Null unless egress.mode is firewall_snat."
   value       = local.required_private_snat
 }
 

@@ -18,3 +18,15 @@ check "firewall_snat_boundary" {
     error_message = "firewall_private_ip is required so enterprise destinations can be reached without advertising the isolated prefix."
   }
 }
+
+check "none_mode_is_private_only" {
+  assert {
+    condition     = !local.none_enabled || !local.nat_enabled
+    error_message = "egress.mode = none must not create a NAT Gateway."
+  }
+
+  assert {
+    condition     = !local.none_enabled || length(var.enterprise_routes) == 0
+    error_message = "enterprise_routes are ignored when egress.mode is none. Use firewall_snat if residual Databricks or enterprise platform endpoints still require a translated path."
+  }
+}

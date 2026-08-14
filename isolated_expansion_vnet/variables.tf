@@ -137,9 +137,9 @@ variable "subnets" {
 }
 
 variable "egress" {
-  description = "Outbound connectivity model. Use `nat` when the workload only needs the directly peered routable VNet plus public egress. Use `firewall_snat` when the workload must reach enterprise destinations beyond that peer, with the isolated prefix translated before it enters the enterprise routing domain."
+  description = "Outbound connectivity model. Defaults to `none` (private paths only: local VNet, direct peering, and Private Endpoints, with no NAT Gateway or Internet route). Use `nat` when the workload also needs public egress. Use `firewall_snat` when the workload must reach enterprise destinations beyond the peer, with the isolated prefix translated before it enters the enterprise routing domain."
   type = object({
-    mode = optional(string, "nat")
+    mode = optional(string, "none")
     nat = optional(object({
       public_ip_count = optional(number, 1)
       idle_timeout    = optional(number, 10)
@@ -160,12 +160,12 @@ variable "egress" {
     }))
   })
   default = {
-    mode = "nat"
+    mode = "none"
   }
 
   validation {
-    condition     = contains(["nat", "firewall_snat"], var.egress.mode)
-    error_message = "egress.mode must be nat or firewall_snat."
+    condition     = contains(["nat", "firewall_snat", "none"], var.egress.mode)
+    error_message = "egress.mode must be nat, firewall_snat, or none."
   }
 
   validation {
@@ -278,7 +278,7 @@ variable "nsg_rules" {
 }
 
 variable "nsg_default_rules_enabled" {
-  description = "Create the module's baseline NSG rules (Azure Load Balancer inbound, VNet outbound, Internet outbound, deny Internet inbound, and enterprise-route outbound in firewall mode). Disable only when supplying a complete custom rule set."
+  description = "Create the module's baseline NSG rules (Azure Load Balancer inbound, VNet outbound, deny Internet inbound, Internet outbound in nat/firewall_snat, Internet deny in none, and enterprise-route outbound in firewall mode). Disable only when supplying a complete custom rule set."
   type        = bool
   default     = true
 }
