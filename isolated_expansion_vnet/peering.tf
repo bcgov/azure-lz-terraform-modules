@@ -9,8 +9,7 @@ resource "azurerm_virtual_network_peering" "expansion_to_routable" {
   use_remote_gateways          = local.use_remote_gateways
 
   triggers = {
-    local_address_space  = join(",", var.address_space)
-    remote_address_space = join(",", var.routable_vnet.address_space)
+    expansion_address_space = join(",", var.address_space)
   }
 
   lifecycle {
@@ -32,8 +31,7 @@ resource "azurerm_virtual_network_peering" "routable_to_expansion" {
   use_remote_gateways          = local.use_remote_gateways
 
   triggers = {
-    local_address_space  = join(",", var.routable_vnet.address_space)
-    remote_address_space = join(",", var.address_space)
+    expansion_address_space = join(",", var.address_space)
   }
 
   depends_on = [azurerm_virtual_network_peering.expansion_to_routable]
