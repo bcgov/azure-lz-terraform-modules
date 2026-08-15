@@ -7,4 +7,16 @@ locals {
       }
     )
   }
+
+  additional_forwarding_rules = {
+    for item in flatten([
+      for ruleset_key, ruleset in var.additional_forwarding_rulesets : [
+        for rule in ruleset.rules : {
+          key         = "${ruleset_key}/${rule.name}"
+          ruleset_key = ruleset_key
+          rule        = rule
+        }
+      ]
+    ]) : item.key => item
+  }
 }
