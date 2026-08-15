@@ -344,7 +344,9 @@ This module does not create private DNS zone virtual network links. Isolated exp
 
 ### Spoke DNS resolver (recommended for `none` mode)
 
-Set `spoke_dns_resolver.enabled = true` to create a DNS Private Resolver **in the routable spoke**. The expansion VNet uses that inbound IP as custom DNS. The resolver forwards all queries (`.`) to `forward_to`, which should be the hub firewall DNS proxy the spoke already uses. The firewall already forwards to the central inbound, whose VNet is linked to the privatelink zones.
+Set `spoke_dns_resolver.enabled = true` to create a DNS Private Resolver **in the routable spoke**. The expansion VNet uses that inbound IP as custom DNS. The resolver forwards all queries (`.`) to `forward_to`, which should be the hub firewall DNS proxy the spoke already uses. The firewall already forwards to the central inbound, whose VNet is linked to the privatelink zones. Do not point `forward_to` or `additional_forward_domains` at the central inbound; spokes are not allowed to query `10.41.12.4` directly.
+
+Pass `routable_vnet.address_space` so the inbound NSG allows DNS from the spoke as well as the expansion VNet. Use `additional_forward_domains` for suffixes such as `azuredatabricks.net` that should use an explicit rule to the same firewall DNS servers.
 
 ```text
 Expansion  --UDP/53 over peering-->  spoke inbound
@@ -372,6 +374,10 @@ module "databricks_expansion" {
     inbound_address_prefix  = "10.41.15.0/28"
     outbound_address_prefix = "10.41.15.16/28"
     forward_to              = ["10.41.253.4"]
+    additional_forward_domains = [
+      "azuredatabricks.net.",
+      "privatelink.azuredatabricks.net.",
+    ]
   }
 }
 ```
@@ -410,7 +416,7 @@ The expansion prefix may be known by the expansion VNet, its directly peered wor
 ## Requirements
 
 | Name | Version |
-|------|---------|
+| ---- | ------- |
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >=1.9.0, < 2.0.0 |
 | <a name="requirement_azapi"></a> [azapi](#requirement\_azapi) | ~> 2.0 |
 | <a name="requirement_azurerm"></a> [azurerm](#requirement\_azurerm) | ~> 4.0 |
@@ -418,7 +424,7 @@ The expansion prefix may be known by the expansion VNet, its directly peered wor
 ## Providers
 
 | Name | Version |
-|------|---------|
+| ---- | ------- |
 | <a name="provider_azapi"></a> [azapi](#provider\_azapi) | ~> 2.0 |
 | <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) | ~> 4.0 |
 
@@ -429,7 +435,7 @@ No modules.
 ## Resources
 
 | Name | Type |
-|------|------|
+| ---- | ---- |
 | [azapi_resource.spoke_dns_subnet](https://registry.terraform.io/providers/azure/azapi/latest/docs/resources/resource) | resource |
 | [azurerm_nat_gateway.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/nat_gateway) | resource |
 | [azurerm_nat_gateway_public_ip_association.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/nat_gateway_public_ip_association) | resource |
@@ -441,6 +447,7 @@ No modules.
 | [azurerm_network_security_rule.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/network_security_rule) | resource |
 | [azurerm_private_dns_resolver.spoke](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/private_dns_resolver) | resource |
 | [azurerm_private_dns_resolver_dns_forwarding_ruleset.spoke](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/private_dns_resolver_dns_forwarding_ruleset) | resource |
+| [azurerm_private_dns_resolver_forwarding_rule.spoke_additional](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/private_dns_resolver_forwarding_rule) | resource |
 | [azurerm_private_dns_resolver_forwarding_rule.spoke_all](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/private_dns_resolver_forwarding_rule) | resource |
 | [azurerm_private_dns_resolver_inbound_endpoint.spoke](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/private_dns_resolver_inbound_endpoint) | resource |
 | [azurerm_private_dns_resolver_outbound_endpoint.spoke](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/private_dns_resolver_outbound_endpoint) | resource |
@@ -459,7 +466,7 @@ No modules.
 ## Inputs
 
 | Name | Description | Type | Default | Required |
-|------|-------------|------|---------|:--------:|
+| ---- | ----------- | ---- | ------- | :------: |
 | <a name="input_address_space"></a> [address\_space](#input\_address\_space) | Isolated RFC1918 address space for the expansion VNet. Must not overlap the routable workload VNet, other directly peered networks, or destinations the expansion workload must reach without SNAT. This prefix must never be advertised into the enterprise routing domain. Defaults to 10.10.0.0/16. | `list(string)` | <pre>[<br/>  "10.10.0.0/16"<br/>]</pre> | no |
 | <a name="input_disallowed_address_spaces"></a> [disallowed\_address\_spaces](#input\_disallowed\_address\_spaces) | Known directly connected or otherwise incompatible CIDRs. The module fails if the expansion address space overlaps any of these prefixes. Full enterprise IPAM validation remains outside Terraform. | `list(string)` | `[]` | no |
 | <a name="input_dns"></a> [dns](#input\_dns) | DNS configuration for the expansion VNet. Azure-provided DNS is the default. Use custom servers only when those resolvers are reachable from the expansion VNet (in the directly peered workload VNet for NAT mode, or via firewall SNAT for enterprise DNS). When spoke\_dns\_resolver.enabled is true, leave this at the default; the module points the expansion VNet at the spoke inbound endpoint. | <pre>object({<br/>    mode    = optional(string, "azure")<br/>    servers = optional(list(string), [])<br/>  })</pre> | <pre>{<br/>  "mode": "azure"<br/>}</pre> | no |
@@ -472,7 +479,7 @@ No modules.
 | <a name="input_nsg_rules"></a> [nsg\_rules](#input\_nsg\_rules) | Additional NSG rules applied to every subnet NSG created by this module. Use subnet-level nsg\_rules for workload-specific exceptions. Do not add allow-all rules from the expansion CIDR. | <pre>map(object({<br/>    priority                     = number<br/>    direction                    = string<br/>    access                       = string<br/>    protocol                     = string<br/>    description                  = optional(string)<br/>    source_port_range            = optional(string)<br/>    source_port_ranges           = optional(list(string))<br/>    destination_port_range       = optional(string)<br/>    destination_port_ranges      = optional(list(string))<br/>    source_address_prefix        = optional(string)<br/>    source_address_prefixes      = optional(list(string))<br/>    destination_address_prefix   = optional(string)<br/>    destination_address_prefixes = optional(list(string))<br/>  }))</pre> | `{}` | no |
 | <a name="input_resource_group_name"></a> [resource\_group\_name](#input\_resource\_group\_name) | (Required) Name of the existing resource group that will contain the expansion VNet and its supporting resources. | `string` | n/a | yes |
 | <a name="input_routable_vnet"></a> [routable\_vnet](#input\_routable\_vnet) | The existing enterprise-routed workload VNet that this expansion VNet will be directly peered to. This is the only intended private path out of the isolated address space besides an optional firewall SNAT boundary. | <pre>object({<br/>    id                  = string<br/>    name                = string<br/>    resource_group_name = string<br/>    address_space       = optional(list(string), [])<br/>  })</pre> | n/a | yes |
-| <a name="input_spoke_dns_resolver"></a> [spoke\_dns\_resolver](#input\_spoke\_dns\_resolver) | Optional DNS Private Resolver in the routable spoke. When enabled, the expansion VNet uses the spoke inbound endpoint as custom DNS and the resolver forwards all queries to forward\_to (typically the hub firewall DNS proxy). Private DNS zone links on the expansion VNet are not required. Enable on at most one expansion module per spoke. inbound\_address\_prefix and outbound\_address\_prefix must be unused /28 or larger prefixes already in the spoke address space. | <pre>object({<br/>    enabled                 = optional(bool, false)<br/>    inbound_address_prefix  = optional(string)<br/>    outbound_address_prefix = optional(string)<br/>    inbound_ip              = optional(string)<br/>    forward_to              = optional(list(string), [])<br/>  })</pre> | <pre>{<br/>  "enabled": false<br/>}</pre> | no |
+| <a name="input_spoke_dns_resolver"></a> [spoke\_dns\_resolver](#input\_spoke\_dns\_resolver) | Optional DNS Private Resolver in the routable spoke. When enabled, the expansion VNet uses the spoke inbound endpoint as custom DNS and the resolver forwards all queries to forward\_to (typically the hub firewall DNS proxy). additional\_forward\_domains creates more-specific rules to the same forward\_to servers; use it for names such as azuredatabricks.net that must stay on the already-allowed firewall DNS path. Pass routable\_vnet.address\_space so the inbound NSG allows spoke clients as well as the expansion VNet. Private DNS zone links on the expansion VNet are not required. Enable on at most one expansion module per spoke. inbound\_address\_prefix and outbound\_address\_prefix must be unused /28 or larger prefixes already in the spoke address space. | <pre>object({<br/>    enabled                    = optional(bool, false)<br/>    inbound_address_prefix     = optional(string)<br/>    outbound_address_prefix    = optional(string)<br/>    inbound_ip                 = optional(string)<br/>    forward_to                 = optional(list(string), [])<br/>    additional_forward_domains = optional(list(string), [])<br/>  })</pre> | <pre>{<br/>  "enabled": false<br/>}</pre> | no |
 | <a name="input_subnets"></a> [subnets](#input\_subnets) | Optional subnet map for the expansion VNet. Leave empty when the caller creates workload subnets separately. Wrapper modules should add service-specific delegation, endpoints, and NSG rules here rather than changing the core pattern. | <pre>map(object({<br/>    address_prefix                                = string<br/>    name                                          = optional(string)<br/>    nsg_name                                      = optional(string)<br/>    create_nsg                                    = optional(bool, true)<br/>    nsg_id                                        = optional(string)<br/>    service_endpoints                             = optional(list(string), [])<br/>    private_endpoint_network_policies             = optional(string, "Enabled")<br/>    private_link_service_network_policies_enabled = optional(bool, true)<br/>    default_outbound_access_enabled               = optional(bool, false)<br/>    associate_nat_gateway                         = optional(bool, true)<br/>    associate_route_table                         = optional(bool, true)<br/>    delegation = optional(object({<br/>      name         = optional(string)<br/>      service_name = string<br/>      actions      = optional(list(string), ["Microsoft.Network/virtualNetworks/subnets/join/action"])<br/>    }))<br/>    nsg_rules = optional(map(object({<br/>      priority                     = number<br/>      direction                    = string<br/>      access                       = string<br/>      protocol                     = string<br/>      description                  = optional(string)<br/>      source_port_range            = optional(string)<br/>      source_port_ranges           = optional(list(string))<br/>      destination_port_range       = optional(string)<br/>      destination_port_ranges      = optional(list(string))<br/>      source_address_prefix        = optional(string)<br/>      source_address_prefixes      = optional(list(string))<br/>      destination_address_prefix   = optional(string)<br/>      destination_address_prefixes = optional(list(string))<br/>    })), {})<br/>  }))</pre> | `{}` | no |
 | <a name="input_tags"></a> [tags](#input\_tags) | (Optional) Additional tags to merge with the isolated\_expansion classification tags. | `map(string)` | `{}` | no |
 | <a name="input_virtual_network_name"></a> [virtual\_network\_name](#input\_virtual\_network\_name) | Override the Azure Virtual Network name. Defaults to `name`. Prefer a name ending in `-isolated-expansion`. | `string` | `null` | no |
@@ -480,7 +487,7 @@ No modules.
 ## Outputs
 
 | Name | Description |
-|------|-------------|
+| ---- | ----------- |
 | <a name="output_address_space"></a> [address\_space](#output\_address\_space) | Address space assigned to the isolated expansion Virtual Network. |
 | <a name="output_dns_forwarding_ruleset_link_id"></a> [dns\_forwarding\_ruleset\_link\_id](#output\_dns\_forwarding\_ruleset\_link\_id) | Resource ID of the expansion VNet link to dns\_forwarding\_ruleset\_id when that input is set; otherwise null. |
 | <a name="output_egress_mode"></a> [egress\_mode](#output\_egress\_mode) | Configured egress mode: nat, firewall\_snat, or none. |

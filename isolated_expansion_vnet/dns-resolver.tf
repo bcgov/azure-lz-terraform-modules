@@ -179,6 +179,23 @@ resource "azurerm_private_dns_resolver_forwarding_rule" "spoke_all" {
   }
 }
 
+resource "azurerm_private_dns_resolver_forwarding_rule" "spoke_additional" {
+  for_each = local.spoke_dns_additional_forward_domains
+
+  name                      = each.key
+  dns_forwarding_ruleset_id = azurerm_private_dns_resolver_dns_forwarding_ruleset.spoke[0].id
+  domain_name               = each.value
+  enabled                   = true
+
+  dynamic "target_dns_servers" {
+    for_each = var.spoke_dns_resolver.forward_to
+    content {
+      ip_address = target_dns_servers.value
+      port       = 53
+    }
+  }
+}
+
 resource "azurerm_private_dns_resolver_virtual_network_link" "expansion" {
   count = local.dns_forwarding_ruleset_link_enabled ? 1 : 0
 

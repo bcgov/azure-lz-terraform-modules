@@ -118,16 +118,26 @@ locals {
 
   dns_forwarding_ruleset_link_enabled = var.dns_forwarding_ruleset_id != null
 
+  spoke_dns_inbound_sources = distinct(concat(var.address_space, var.routable_vnet.address_space))
+
+  spoke_dns_additional_forward_domains = {
+    for domain in var.spoke_dns_resolver.additional_forward_domains :
+    replace(trimsuffix(domain, "."), ".", "-") => (
+      endswith(domain, ".") ? domain : "${domain}."
+    )
+    if local.spoke_dns_resolver_enabled
+  }
+
   spoke_dns_inbound_nsg_rules = {
     AllowDnsUdpInbound = {
       priority                     = 110
       direction                    = "Inbound"
       access                       = "Allow"
       protocol                     = "Udp"
-      description                  = "Allow DNS from the isolated expansion VNet."
+      description                  = "Allow DNS from the isolated expansion VNet and the routable spoke."
       destination_port_range       = "53"
       source_address_prefix        = null
-      source_address_prefixes      = var.address_space
+      source_address_prefixes      = local.spoke_dns_inbound_sources
       destination_address_prefix   = "VirtualNetwork"
       destination_address_prefixes = null
     }
@@ -136,10 +146,10 @@ locals {
       direction                    = "Inbound"
       access                       = "Allow"
       protocol                     = "Tcp"
-      description                  = "Allow DNS from the isolated expansion VNet."
+      description                  = "Allow DNS from the isolated expansion VNet and the routable spoke."
       destination_port_range       = "53"
       source_address_prefix        = null
-      source_address_prefixes      = var.address_space
+      source_address_prefixes      = local.spoke_dns_inbound_sources
       destination_address_prefix   = "VirtualNetwork"
       destination_address_prefixes = null
     }

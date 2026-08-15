@@ -242,13 +242,14 @@ variable "dns" {
 }
 
 variable "spoke_dns_resolver" {
-  description = "Optional DNS Private Resolver in the routable spoke. When enabled, the expansion VNet uses the spoke inbound endpoint as custom DNS and the resolver forwards all queries to forward_to (typically the hub firewall DNS proxy). Private DNS zone links on the expansion VNet are not required. Enable on at most one expansion module per spoke. inbound_address_prefix and outbound_address_prefix must be unused /28 or larger prefixes already in the spoke address space."
+  description = "Optional DNS Private Resolver in the routable spoke. When enabled, the expansion VNet uses the spoke inbound endpoint as custom DNS and the resolver forwards all queries to forward_to (typically the hub firewall DNS proxy). additional_forward_domains creates more-specific rules to the same forward_to servers; use it for names such as azuredatabricks.net that must stay on the already-allowed firewall DNS path. Pass routable_vnet.address_space so the inbound NSG allows spoke clients as well as the expansion VNet. Private DNS zone links on the expansion VNet are not required. Enable on at most one expansion module per spoke. inbound_address_prefix and outbound_address_prefix must be unused /28 or larger prefixes already in the spoke address space."
   type = object({
-    enabled                 = optional(bool, false)
-    inbound_address_prefix  = optional(string)
-    outbound_address_prefix = optional(string)
-    inbound_ip              = optional(string)
-    forward_to              = optional(list(string), [])
+    enabled                    = optional(bool, false)
+    inbound_address_prefix     = optional(string)
+    outbound_address_prefix    = optional(string)
+    inbound_ip                 = optional(string)
+    forward_to                 = optional(list(string), [])
+    additional_forward_domains = optional(list(string), [])
   })
   default = {
     enabled = false
@@ -275,6 +276,14 @@ variable "spoke_dns_resolver" {
   validation {
     condition     = !var.spoke_dns_resolver.enabled || length(var.spoke_dns_resolver.forward_to) > 0
     error_message = "spoke_dns_resolver.forward_to must contain at least one DNS server IP when the resolver is enabled. Use the hub firewall DNS proxy, not the central resolver inbound, unless firewall policy already allows spoke-to-inbound port 53."
+  }
+
+  validation {
+    condition = alltrue([
+      for domain in var.spoke_dns_resolver.additional_forward_domains :
+      can(regex("^[a-zA-Z0-9._-]+\\.?$", domain)) && domain != "."
+    ])
+    error_message = "Each additional_forward_domains value must be a DNS suffix other than the catch-all '.' rule."
   }
 
 }

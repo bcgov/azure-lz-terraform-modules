@@ -68,6 +68,11 @@ resource "azurerm_virtual_network" "this" {
       error_message = "Gateway transit is not supported for isolated expansion VNets."
     }
 
+    precondition {
+      condition     = !local.spoke_dns_resolver_enabled || length(var.routable_vnet.address_space) > 0
+      error_message = "routable_vnet.address_space is required when spoke_dns_resolver is enabled so the inbound NSG can allow DNS from the spoke."
+    }
+
     # Callers may add workload subnets outside this module when var.subnets is empty.
     ignore_changes = [tags, subnet]
   }
