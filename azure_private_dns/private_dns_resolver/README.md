@@ -1,46 +1,17 @@
 # private_dns_resolver
 
-`forwarding_rules` land on the default ruleset, which consumers typically VNet-link to the resolver VNet for on-prem domains.
-
-`additional_forwarding_rulesets` creates more rulesets on the **same outbound**. Inbound queries use all of them. Do **not** VNet-link those extra rulesets to the resolver VNet. A rule such as `azuredatabricks.net` → `168.63.129.16` on a ruleset linked to that VNet would loop.
-
-Forge and live pass the same map. Example:
-
-```hcl
-additional_forwarding_rulesets = {
-  azure-dns = {
-    rules = [
-      {
-        name        = "azuredatabricks"
-        domain_name = "azuredatabricks.net."
-        target_dns_servers = [{
-          ip_address = "168.63.129.16"
-        }]
-      },
-      {
-        name        = "privatelink-azuredatabricks"
-        domain_name = "privatelink.azuredatabricks.net."
-        target_dns_servers = [{
-          ip_address = "168.63.129.16"
-        }]
-      }
-    ]
-  }
-}
-```
-
 <!-- BEGIN_TF_DOCS -->
 ## Requirements
 
 | Name | Version |
-| ---- | ------- |
+|------|---------|
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >=1.9.0, < 2.0.0 |
 | <a name="requirement_azurerm"></a> [azurerm](#requirement\_azurerm) | ~> 4.76 |
 
 ## Providers
 
 | Name | Version |
-| ---- | ------- |
+|------|---------|
 | <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) | ~> 4.76 |
 
 ## Modules
@@ -50,11 +21,9 @@ No modules.
 ## Resources
 
 | Name | Type |
-| ---- | ---- |
+|------|------|
 | [azurerm_private_dns_resolver.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/private_dns_resolver) | resource |
-| [azurerm_private_dns_resolver_dns_forwarding_ruleset.additional](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/private_dns_resolver_dns_forwarding_ruleset) | resource |
 | [azurerm_private_dns_resolver_dns_forwarding_ruleset.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/private_dns_resolver_dns_forwarding_ruleset) | resource |
-| [azurerm_private_dns_resolver_forwarding_rule.additional](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/private_dns_resolver_forwarding_rule) | resource |
 | [azurerm_private_dns_resolver_forwarding_rule.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/private_dns_resolver_forwarding_rule) | resource |
 | [azurerm_private_dns_resolver_inbound_endpoint.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/private_dns_resolver_inbound_endpoint) | resource |
 | [azurerm_private_dns_resolver_outbound_endpoint.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/private_dns_resolver_outbound_endpoint) | resource |
@@ -63,8 +32,7 @@ No modules.
 ## Inputs
 
 | Name | Description | Type | Default | Required |
-| ---- | ----------- | ---- | ------- | :------: |
-| <a name="input_additional_forwarding_rulesets"></a> [additional\_forwarding\_rulesets](#input\_additional\_forwarding\_rulesets) | Extra forwarding rulesets attached to the existing outbound endpoint.<br/>Inbound queries use every ruleset on that outbound. These rulesets are<br/>never linked to the resolver VNet. Linking them there and forwarding to<br/>168.63.129.16 would recurse.<br/><br/>Use this for Azure PaaS names that must be resolved by Azure DNS instead<br/>of public recursion, for example azuredatabricks.net and<br/>privatelink.azuredatabricks.net. | <pre>map(object({<br/>    rules = list(object({<br/>      name        = string<br/>      domain_name = string<br/>      enabled     = optional(bool, true)<br/>      target_dns_servers = list(object({<br/>        ip_address = string<br/>        port       = optional(number, 53)<br/>      }))<br/>    }))<br/>  }))</pre> | `{}` | no |
+|------|-------------|------|---------|:--------:|
 | <a name="input_forwarding_rules"></a> [forwarding\_rules](#input\_forwarding\_rules) | (Optional) List of forwarding rules to create. Each rule should have name, domain\_name, enabled, and target\_dns\_servers. | <pre>list(object({<br/>    name        = string<br/>    domain_name = string<br/>    enabled     = bool<br/>    target_dns_servers = list(object({<br/>      ip_address = string<br/>      port       = number<br/>    }))<br/>  }))</pre> | `[]` | no |
 | <a name="input_location"></a> [location](#input\_location) | (Required) Azure region to deploy to. Changing this forces a new resource to be created. | `string` | n/a | yes |
 | <a name="input_private_dns_resolver_name"></a> [private\_dns\_resolver\_name](#input\_private\_dns\_resolver\_name) | (Required) Specifies the name which should be used for this Private DNS Resolver. | `string` | n/a | yes |
@@ -75,9 +43,7 @@ No modules.
 ## Outputs
 
 | Name | Description |
-| ---- | ----------- |
-| <a name="output_additional_forwarding_rules"></a> [additional\_forwarding\_rules](#output\_additional\_forwarding\_rules) | Map of forwarding rules on additional\_forwarding\_rulesets. |
-| <a name="output_additional_forwarding_rulesets"></a> [additional\_forwarding\_rulesets](#output\_additional\_forwarding\_rulesets) | Map of extra forwarding rulesets attached to the existing outbound endpoint. These are not linked to the resolver VNet. |
+|------|-------------|
 | <a name="output_private_dns_resolver"></a> [private\_dns\_resolver](#output\_private\_dns\_resolver) | The ID of the Private DNS Resolver. |
 | <a name="output_private_dns_resolver_dns_forwarding_ruleset"></a> [private\_dns\_resolver\_dns\_forwarding\_ruleset](#output\_private\_dns\_resolver\_dns\_forwarding\_ruleset) | The ID of the Private DNS Resolver DNS Forwarding Ruleset. |
 | <a name="output_private_dns_resolver_forwarding_rules"></a> [private\_dns\_resolver\_forwarding\_rules](#output\_private\_dns\_resolver\_forwarding\_rules) | Map of Private DNS Resolver Forwarding Rules. |

@@ -346,8 +346,6 @@ This module does not create private DNS zone virtual network links. Isolated exp
 
 Set `spoke_dns_resolver.enabled = true` to create a DNS Private Resolver **in the routable spoke**. The expansion VNet uses that inbound IP as custom DNS. The resolver forwards all queries (`.`) to `forward_to`, which should be the hub firewall DNS proxy the spoke already uses. The firewall already forwards to the central inbound, whose VNet is linked to the privatelink zones. Do not point `forward_to` or `additional_forward_domains` at the central inbound; spokes are not allowed to query `10.41.12.4` directly.
 
-Databricks workspace URLs must still resolve to the Private Endpoint. Publish that on the **central** resolver with `additional_forwarding_rulesets` (Azure DNS / `168.63.129.16`), not on this spoke resolver and not on the on-prem ruleset that is linked to the DNS VNet.
-
 Pass `routable_vnet.address_space` so the inbound NSG allows DNS from the spoke as well as the expansion VNet. Use `additional_forward_domains` for suffixes such as `azuredatabricks.net` that should use an explicit rule to the same firewall DNS servers.
 
 ```text

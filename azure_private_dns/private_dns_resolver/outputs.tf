@@ -31,27 +31,3 @@ output "private_dns_resolver_forwarding_rules" {
     }
   }
 }
-
-output "additional_forwarding_rulesets" {
-  description = "Map of extra forwarding rulesets attached to the existing outbound endpoint. These are not linked to the resolver VNet."
-  value = {
-    for key, ruleset in azurerm_private_dns_resolver_dns_forwarding_ruleset.additional : key => {
-      id   = ruleset.id
-      name = ruleset.name
-    }
-  }
-}
-
-output "additional_forwarding_rules" {
-  description = "Map of forwarding rules on additional_forwarding_rulesets."
-  value = {
-    for k, v in azurerm_private_dns_resolver_forwarding_rule.additional : k => {
-      id                        = v.id
-      name                      = v.name
-      dns_forwarding_ruleset_id = v.dns_forwarding_ruleset_id
-      domain_name               = v.domain_name
-      enabled                   = v.enabled
-      target_dns_servers        = v.target_dns_servers
-    }
-  }
-}
