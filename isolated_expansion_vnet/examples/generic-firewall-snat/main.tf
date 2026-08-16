@@ -30,10 +30,5 @@ module "compute_expansion" {
     }
   }
 
-  enterprise_routes = [
-    "10.0.0.0/8",
-    "142.0.0.0/8"
-  ]
-
   dns_forwarding_ruleset_id = var.dns_forwarding_ruleset_id
 }

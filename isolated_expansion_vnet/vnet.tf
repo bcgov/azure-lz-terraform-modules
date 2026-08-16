@@ -78,6 +78,16 @@ resource "azurerm_virtual_network" "this" {
     }
 
     precondition {
+      condition     = !local.private_nat_enabled || local.private_nat_ip_in_subnet
+      error_message = "egress.private_nat.private_ip must be a usable address in subnet_address_prefix (not the first four Azure-reserved addresses or the broadcast address)."
+    }
+
+    precondition {
+      condition     = !local.enterprise_routes_overlap_expansion
+      error_message = "enterprise_routes must not overlap the isolated expansion address_space. Local VNet traffic must not be steered to the SNAT hop."
+    }
+
+    precondition {
       condition     = !local.allow_gateway_transit && !local.use_remote_gateways
       error_message = "Gateway transit is not supported for isolated expansion VNets."
     }

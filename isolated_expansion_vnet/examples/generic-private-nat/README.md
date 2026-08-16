@@ -12,6 +12,7 @@ Copy `terraform.tfvars.example` to `terraform.tfvars` and replace placeholders b
 | Name | Version |
 | ---- | ------- |
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >=1.9.0, < 2.0.0 |
+| <a name="requirement_azapi"></a> [azapi](#requirement\_azapi) | ~> 2.0 |
 | <a name="requirement_azurerm"></a> [azurerm](#requirement\_azurerm) | ~> 4.0 |
 
 ## Providers
@@ -32,7 +33,7 @@ No resources.
 
 | Name | Description | Type | Default | Required |
 | ---- | ----------- | ---- | ------- | :------: |
-| <a name="input_enterprise_routes"></a> [enterprise\_routes](#input\_enterprise\_routes) | Enterprise prefixes the expansion VNet should send to the spoke NVA. | `list(string)` | <pre>[<br/>  "10.0.0.0/8",<br/>  "142.0.0.0/8"<br/>]</pre> | no |
+| <a name="input_enterprise_routes"></a> [enterprise\_routes](#input\_enterprise\_routes) | Optional extra prefixes to steer to the NVA. Leave empty to use the default 0.0.0.0/0 egress route. | `list(string)` | `[]` | no |
 | <a name="input_location"></a> [location](#input\_location) | Azure region for the expansion VNet. | `string` | `"canadacentral"` | no |
 | <a name="input_private_nat_subnet_address_prefix"></a> [private\_nat\_subnet\_address\_prefix](#input\_private\_nat\_subnet\_address\_prefix) | Unused /28 or larger prefix already in the routable spoke for the private NAT NVA. | `string` | n/a | yes |
 | <a name="input_resource_group_name"></a> [resource\_group\_name](#input\_resource\_group\_name) | Existing network resource group name. | `string` | n/a | yes |

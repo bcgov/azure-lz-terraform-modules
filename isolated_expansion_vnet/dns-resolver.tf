@@ -77,6 +77,7 @@ resource "azapi_resource" "spoke_dns_subnet" {
   type      = "Microsoft.Network/virtualNetworks/subnets@2024-05-01"
   name      = "dns-${each.key}"
   parent_id = var.routable_vnet.id
+  locks     = [var.routable_vnet.id]
 
   body = {
     properties = {

@@ -250,7 +250,7 @@ variable "egress" {
 }
 
 variable "enterprise_routes" {
-  description = "Enterprise prefixes that firewall_snat and private_nat modes should send to the SNAT hop. Never hard-code these in a wrapper; the caller supplies the prefixes that must be translated before they enter the enterprise routing domain. Required for private_nat when route_internet_through_nva is false."
+  description = "Optional extra prefixes to steer to the SNAT hop. The default egress path is 0.0.0.0/0 (route_internet_through_nva / route_internet_through_firewall). Use this only when that default is disabled and specific prefixes still need translation. Do not list 10.0.0.0/8, 142.0.0.0/8, or other stand-ins for default egress."
   type        = list(string)
   default     = []
 
@@ -259,6 +259,11 @@ variable "enterprise_routes" {
       for cidr in var.enterprise_routes : can(cidrhost(cidr, 0))
     ])
     error_message = "Each enterprise_routes value must be a valid CIDR prefix."
+  }
+
+  validation {
+    condition     = !contains(var.enterprise_routes, "0.0.0.0/0")
+    error_message = "Do not put 0.0.0.0/0 in enterprise_routes. Use route_internet_through_nva or route_internet_through_firewall."
   }
 }
 
@@ -370,7 +375,7 @@ variable "nsg_rules" {
 }
 
 variable "nsg_default_rules_enabled" {
-  description = "Create the module's baseline NSG rules (Azure Load Balancer inbound, VNet outbound, deny Internet inbound, Internet outbound in nat/firewall_snat/private_nat when Internet is routed, Internet deny in none, and enterprise-route outbound in firewall_snat and private_nat). Disable only when supplying a complete custom rule set."
+  description = "Create the module's baseline NSG rules (Azure Load Balancer inbound, VNet outbound, deny Internet inbound, default egress in nat/firewall_snat/private_nat when 0.0.0.0/0 is routed, Internet deny in none, and optional enterprise-route outbound). Disable only when supplying a complete custom rule set."
   type        = bool
   default     = true
 }

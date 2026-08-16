@@ -90,8 +90,7 @@ NAT mode does not create a `0.0.0.0/0` virtual appliance route. Internet egress 
 | Flow | Result |
 | --- | --- |
 | Expansion → routable VNet (default `direct_peer_bypass = true`) | Direct peering, original source IP |
-| Expansion → enterprise prefixes | Firewall private SNAT; destination sees the firewall IP |
-| Expansion → Internet (`route_internet_through_firewall = true`) | Firewall Internet SNAT |
+| Expansion → any other destination (`route_internet_through_firewall = true`) | `0.0.0.0/0` to the firewall; destination sees the firewall IP |
 | Enterprise / on-prem → expansion CIDR | Not required and must not be configured |
 
 This module uses an **existing** firewall only. It does not create a firewall or modify shared firewall policy. Consume `required_firewall_routes`, `required_firewall_rules`, and `required_private_snat` from a platform networking layer that owns those policy objects.
@@ -103,8 +102,7 @@ Setting `direct_peer_bypass = false` steers even the routable VNet CIDR through 
 | Flow | Result |
 | --- | --- |
 | Expansion → routable VNet (default `direct_peer_bypass = true`) | Direct peering, original source IP |
-| Expansion → enterprise prefixes | Spoke NVA private SNAT; destination sees the NVA IP |
-| Expansion → Internet (`route_internet_through_nva = true`) | NVA SNAT, then the spoke's existing enterprise/Internet path |
+| Expansion → any other destination (`route_internet_through_nva = true`) | `0.0.0.0/0` to the spoke NVA; destination sees the NVA IP |
 | Enterprise / on-prem → expansion CIDR | Not required and must not be configured |
 
 The module creates the NVA, its spoke subnet and NSG, IP forwarding, SNAT rules, expansion UDRs, and forwarded-traffic peering. Pass an unused `/28` or larger prefix already in the spoke address space and an SSH public key. Associate `spoke_route_table_id` when the NVA should follow an existing spoke UDR (for example `0.0.0.0/0` to the hub firewall) after SNAT. Do not put a route for the isolated prefix on that table.
@@ -146,7 +144,7 @@ creating a Linux NVA in the routable spoke?
   → egress.mode = "private_nat"
 ```
 
-Changing `egress.mode` destroys and creates the mode-specific hops and routes: NAT Gateway, spoke NVA, firewall UDRs, and the default `0.0.0.0/0` next hop. `none` and `private_nat` keep the same expansion route table (`${name}-none`) so Azure is not asked to delete a table that caller-managed subnets still reference. Associate those subnets from `egress_route_table_id`.
+Changing `egress.mode` destroys and creates the mode-specific hops: NAT Gateway or spoke NVA. `none`, `private_nat`, and `firewall_snat` keep the same expansion route table (`${name}-none`) and update the default `0.0.0.0/0` next hop and enterprise UDRs in place, so Azure is not asked to delete a table that caller-managed subnets still reference. Associate those subnets from `egress_route_table_id`.
 
 ## Usage
 
@@ -226,11 +224,6 @@ module "compute_expansion" {
     }
   }
 
-  enterprise_routes = [
-    "10.0.0.0/8",
-    "142.0.0.0/8"
-  ]
-
   dns_forwarding_ruleset_id = var.isolated_expansion_dns_forwarding_ruleset_id
 }
 ```
@@ -268,15 +261,10 @@ module "compute_expansion" {
       ssh_public_key        = file("~/.ssh/id_rsa.pub")
     }
   }
-
-  enterprise_routes = [
-    "10.0.0.0/8",
-    "142.0.0.0/8"
-  ]
 }
 ```
 
-`subnet_address_prefix` must be unused space already in the spoke. The module places the NVA at `.4` in that prefix unless you set `private_ip`.
+Default egress is `0.0.0.0/0` through the NVA. Spoke prefixes stay on peering (longer match). `subnet_address_prefix` must be unused space already in the spoke. The module places the NVA at `.4` in that prefix unless you set `private_ip`.
 
 ### No Internet egress
 
@@ -356,7 +344,7 @@ Private endpoints may be created in the expansion VNet, but those isolated addre
 
 ## NSGs and security
 
-Each subnet gets an NSG unless you pass an existing `nsg_id`. Baseline rules allow Azure Load Balancer inbound and VNet outbound, and deny Internet inbound. NAT, firewall, and private_nat (when Internet is routed through the hop) also allow Internet outbound. `none` denies Internet outbound. Firewall and private_nat modes also allow outbound to `enterprise_routes`. The private_nat NVA subnet NSG allows forwarded traffic from the expansion CIDR and SSH from the spoke.
+Each subnet gets an NSG unless you pass an existing `nsg_id`. Baseline rules allow Azure Load Balancer inbound and VNet outbound, and deny Internet inbound. NAT allows Internet outbound. firewall_snat and private_nat (when `0.0.0.0/0` is routed through the hop) allow all outbound destinations; the Azure `Internet` tag does not include RFC1918. `none` denies Internet outbound. `enterprise_routes` is only for extra prefixes when that default route is disabled. The private_nat NVA subnet NSG allows forwarded traffic from the expansion CIDR and SSH from the spoke.
 
 Do not treat the expansion CIDR as trusted merely because it is peered. Scope access on the routable side (for example TCP 443 from a specific expansion subnet to a private endpoint subnet) instead of allowing `10.10.0.0/16` to any destination.
 
@@ -485,7 +473,7 @@ The expansion prefix may be known by the expansion VNet, its directly peered wor
 ## Requirements
 
 | Name | Version |
-|------|---------|
+| ---- | ------- |
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >=1.9.0, < 2.0.0 |
 | <a name="requirement_azapi"></a> [azapi](#requirement\_azapi) | ~> 2.0 |
 | <a name="requirement_azurerm"></a> [azurerm](#requirement\_azurerm) | ~> 4.0 |
@@ -493,9 +481,9 @@ The expansion prefix may be known by the expansion VNet, its directly peered wor
 ## Providers
 
 | Name | Version |
-|------|---------|
-| <a name="provider_azapi"></a> [azapi](#provider\_azapi) | ~> 2.0 |
-| <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) | ~> 4.0 |
+| ---- | ------- |
+| <a name="provider_azapi"></a> [azapi](#provider\_azapi) | 2.12.0 |
+| <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) | 4.81.0 |
 
 ## Modules
 
@@ -504,7 +492,7 @@ No modules.
 ## Resources
 
 | Name | Type |
-|------|------|
+| ---- | ---- |
 | [azapi_resource.private_nat_subnet](https://registry.terraform.io/providers/azure/azapi/latest/docs/resources/resource) | resource |
 | [azapi_resource.spoke_dns_subnet](https://registry.terraform.io/providers/azure/azapi/latest/docs/resources/resource) | resource |
 | [azurerm_linux_virtual_machine.private_nat](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/linux_virtual_machine) | resource |
@@ -532,7 +520,6 @@ No modules.
 | [azurerm_route.firewall](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/route) | resource |
 | [azurerm_route.private_nat](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/route) | resource |
 | [azurerm_route_table.expansion](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/route_table) | resource |
-| [azurerm_route_table.firewall](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/route_table) | resource |
 | [azurerm_subnet_nat_gateway_association.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/subnet_nat_gateway_association) | resource |
 | [azurerm_subnet_route_table_association.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/subnet_route_table_association) | resource |
 | [azurerm_virtual_network.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/virtual_network) | resource |
@@ -542,16 +529,16 @@ No modules.
 ## Inputs
 
 | Name | Description | Type | Default | Required |
-|------|-------------|------|---------|:--------:|
+| ---- | ----------- | ---- | ------- | :------: |
 | <a name="input_address_space"></a> [address\_space](#input\_address\_space) | Isolated RFC1918 address space for the expansion VNet. Must not overlap the routable workload VNet, other directly peered networks, or destinations the expansion workload must reach without SNAT. This prefix must never be advertised into the enterprise routing domain. Defaults to 10.10.0.0/16. | `list(string)` | <pre>[<br/>  "10.10.0.0/16"<br/>]</pre> | no |
 | <a name="input_disallowed_address_spaces"></a> [disallowed\_address\_spaces](#input\_disallowed\_address\_spaces) | Known directly connected or otherwise incompatible CIDRs. The module fails if the expansion address space overlaps any of these prefixes. Full enterprise IPAM validation remains outside Terraform. | `list(string)` | `[]` | no |
 | <a name="input_dns"></a> [dns](#input\_dns) | DNS configuration for the expansion VNet. Azure-provided DNS is the default. Use custom servers only when those resolvers are reachable from the expansion VNet (in the directly peered workload VNet for NAT mode, or via firewall SNAT for enterprise DNS). When spoke\_dns\_resolver.enabled is true, leave this at the default; the module points the expansion VNet at the spoke inbound endpoint. | <pre>object({<br/>    mode    = optional(string, "azure")<br/>    servers = optional(list(string), [])<br/>  })</pre> | <pre>{<br/>  "mode": "azure"<br/>}</pre> | no |
 | <a name="input_dns_forwarding_ruleset_id"></a> [dns\_forwarding\_ruleset\_id](#input\_dns\_forwarding\_ruleset\_id) | Optional existing central DNS forwarding ruleset ID to link to the expansion VNet (Azure-provided DNS / slimmer platform variant). The ruleset must forward queries to a resolver inbound whose VNet is linked to the central private zones, and must not itself be linked to that inbound VNet. Mutually exclusive with spoke\_dns\_resolver.enabled. | `string` | `null` | no |
 | <a name="input_egress"></a> [egress](#input\_egress) | Outbound connectivity model. Defaults to `none` (private paths only: local VNet, direct peering, and Private Endpoints, with no NAT Gateway or Internet route). Use `nat` when the workload also needs public egress. Use `firewall_snat` when an existing hub firewall must translate isolated sources. Use `private_nat` to create a Linux NVA in the routable spoke that SNATs isolated sources to a spoke IP before packets enter the enterprise routing domain. | <pre>object({<br/>    mode = optional(string, "none")<br/>    nat = optional(object({<br/>      public_ip_count = optional(number, 1)<br/>      idle_timeout    = optional(number, 10)<br/>      zones           = optional(list(string), ["1"])<br/>      sku_name        = optional(string, "Standard")<br/>      }), {<br/>      public_ip_count = 1<br/>      idle_timeout    = 10<br/>      zones           = ["1"]<br/>      sku_name        = "Standard"<br/>    })<br/>    firewall = optional(object({<br/>      deployment_mode                 = optional(string, "existing")<br/>      firewall_id                     = optional(string)<br/>      firewall_private_ip             = optional(string)<br/>      direct_peer_bypass              = optional(bool, true)<br/>      route_internet_through_firewall = optional(bool, true)<br/>    }))<br/>    private_nat = optional(object({<br/>      subnet_address_prefix      = string<br/>      ssh_public_key             = string<br/>      subnet_name                = optional(string)<br/>      private_ip                 = optional(string)<br/>      vm_size                    = optional(string, "Standard_B2s")<br/>      admin_username             = optional(string, "azureadmin")<br/>      os_disk_size_gb            = optional(number, 30)<br/>      zone                       = optional(string)<br/>      spoke_route_table_id       = optional(string)<br/>      ssh_source_prefixes        = optional(list(string), [])<br/>      direct_peer_bypass         = optional(bool, true)<br/>      route_internet_through_nva = optional(bool, true)<br/>      image = optional(object({<br/>        publisher = optional(string, "Canonical")<br/>        offer     = optional(string, "ubuntu-26_04-lts")<br/>        sku       = optional(string, "server-gen1")<br/>        version   = optional(string, "latest")<br/>      }), {})<br/>    }))<br/>  })</pre> | <pre>{<br/>  "mode": "none"<br/>}</pre> | no |
-| <a name="input_enterprise_routes"></a> [enterprise\_routes](#input\_enterprise\_routes) | Enterprise prefixes that firewall\_snat and private\_nat modes should send to the SNAT hop. Never hard-code these in a wrapper; the caller supplies the prefixes that must be translated before they enter the enterprise routing domain. Required for private\_nat when route\_internet\_through\_nva is false. | `list(string)` | `[]` | no |
+| <a name="input_enterprise_routes"></a> [enterprise\_routes](#input\_enterprise\_routes) | Optional extra prefixes to steer to the SNAT hop. The default egress path is 0.0.0.0/0 (route\_internet\_through\_nva / route\_internet\_through\_firewall). Use this only when that default is disabled and specific prefixes still need translation. Do not list 10.0.0.0/8, 142.0.0.0/8, or other stand-ins for default egress. | `list(string)` | `[]` | no |
 | <a name="input_location"></a> [location](#input\_location) | (Required) Azure region to deploy to. Changing this forces a new resource to be created. | `string` | n/a | yes |
 | <a name="input_name"></a> [name](#input\_name) | Logical name for the isolated expansion VNet. Used as the Virtual Network name unless virtual\_network\_name is set. In this landing zone, the VNet name should end with `-isolated-expansion` so platform policy can distinguish it from enterprise-routed spokes. | `string` | n/a | yes |
-| <a name="input_nsg_default_rules_enabled"></a> [nsg\_default\_rules\_enabled](#input\_nsg\_default\_rules\_enabled) | Create the module's baseline NSG rules (Azure Load Balancer inbound, VNet outbound, deny Internet inbound, Internet outbound in nat/firewall\_snat/private\_nat when Internet is routed, Internet deny in none, and enterprise-route outbound in firewall\_snat and private\_nat). Disable only when supplying a complete custom rule set. | `bool` | `true` | no |
+| <a name="input_nsg_default_rules_enabled"></a> [nsg\_default\_rules\_enabled](#input\_nsg\_default\_rules\_enabled) | Create the module's baseline NSG rules (Azure Load Balancer inbound, VNet outbound, deny Internet inbound, default egress in nat/firewall\_snat/private\_nat when 0.0.0.0/0 is routed, Internet deny in none, and optional enterprise-route outbound). Disable only when supplying a complete custom rule set. | `bool` | `true` | no |
 | <a name="input_nsg_rules"></a> [nsg\_rules](#input\_nsg\_rules) | Additional NSG rules applied to every subnet NSG created by this module. Use subnet-level nsg\_rules for workload-specific exceptions. Do not add allow-all rules from the expansion CIDR. | <pre>map(object({<br/>    priority                     = number<br/>    direction                    = string<br/>    access                       = string<br/>    protocol                     = string<br/>    description                  = optional(string)<br/>    source_port_range            = optional(string)<br/>    source_port_ranges           = optional(list(string))<br/>    destination_port_range       = optional(string)<br/>    destination_port_ranges      = optional(list(string))<br/>    source_address_prefix        = optional(string)<br/>    source_address_prefixes      = optional(list(string))<br/>    destination_address_prefix   = optional(string)<br/>    destination_address_prefixes = optional(list(string))<br/>  }))</pre> | `{}` | no |
 | <a name="input_resource_group_name"></a> [resource\_group\_name](#input\_resource\_group\_name) | (Required) Name of the existing resource group that will contain the expansion VNet and its supporting resources. | `string` | n/a | yes |
 | <a name="input_routable_vnet"></a> [routable\_vnet](#input\_routable\_vnet) | The existing enterprise-routed workload VNet that this expansion VNet will be directly peered to. This is the only intended private path out of the isolated address space besides an optional firewall or spoke private-NAT SNAT boundary. address\_space is required for private\_nat so the NVA subnet can be validated against the spoke. | <pre>object({<br/>    id                  = string<br/>    name                = string<br/>    resource_group_name = string<br/>    address_space       = optional(list(string), [])<br/>  })</pre> | n/a | yes |
@@ -563,11 +550,11 @@ No modules.
 ## Outputs
 
 | Name | Description |
-|------|-------------|
+| ---- | ----------- |
 | <a name="output_address_space"></a> [address\_space](#output\_address\_space) | Address space assigned to the isolated expansion Virtual Network. |
 | <a name="output_dns_forwarding_ruleset_link_id"></a> [dns\_forwarding\_ruleset\_link\_id](#output\_dns\_forwarding\_ruleset\_link\_id) | Resource ID of the expansion VNet link to dns\_forwarding\_ruleset\_id when that input is set; otherwise null. |
 | <a name="output_egress_mode"></a> [egress\_mode](#output\_egress\_mode) | Configured egress mode: nat, firewall\_snat, private\_nat, or none. |
-| <a name="output_egress_route_table_id"></a> [egress\_route\_table\_id](#output\_egress\_route\_table\_id) | Route table ID for the active egress mode. Null in NAT mode. none and private\_nat share one table so a mode change updates routes in place instead of deleting an in-use table. Callers that create their own subnets should associate this ID. |
+| <a name="output_egress_route_table_id"></a> [egress\_route\_table\_id](#output\_egress\_route\_table\_id) | Route table ID for the active egress mode. Null in NAT mode. none, private\_nat, and firewall\_snat share one table so a mode change updates routes in place instead of deleting an in-use table. Callers that create their own subnets should associate this ID. |
 | <a name="output_firewall_private_ip"></a> [firewall\_private\_ip](#output\_firewall\_private\_ip) | Firewall private IP used as the SNAT/routing boundary when egress.mode is firewall\_snat; otherwise null. |
 | <a name="output_nat_gateway_id"></a> [nat\_gateway\_id](#output\_nat\_gateway\_id) | NAT Gateway resource ID when egress.mode is nat; otherwise null. |
 | <a name="output_nat_public_ips"></a> [nat\_public\_ips](#output\_nat\_public\_ips) | Public IP addresses used by the NAT Gateway when egress.mode is nat; otherwise null. |
@@ -580,7 +567,7 @@ No modules.
 | <a name="output_required_firewall_routes"></a> [required\_firewall\_routes](#output\_required\_firewall\_routes) | Routes a higher-level networking deployment should honour on the firewall path. Null unless egress.mode is firewall\_snat. |
 | <a name="output_required_firewall_rules"></a> [required\_firewall\_rules](#output\_required\_firewall\_rules) | Suggested firewall allow sources and destinations for isolated expansion traffic. Null unless egress.mode is firewall\_snat. |
 | <a name="output_required_private_snat"></a> [required\_private\_snat](#output\_required\_private\_snat) | Private SNAT contract: isolated source prefixes that must be translated to an enterprise-routable IP (hub firewall or spoke NVA) before entering the enterprise routing domain. Null unless egress.mode is firewall\_snat or private\_nat. |
-| <a name="output_route_table_ids"></a> [route\_table\_ids](#output\_route\_table\_ids) | Map of the active egress mode name to its route table ID. Empty in NAT mode. none and private\_nat resolve to the same table. Prefer egress\_route\_table\_id when associating caller-managed subnets. |
+| <a name="output_route_table_ids"></a> [route\_table\_ids](#output\_route\_table\_ids) | Map of the active egress mode name to its route table ID. Empty in NAT mode. none, private\_nat, and firewall\_snat resolve to the same table. Prefer egress\_route\_table\_id when associating caller-managed subnets. |
 | <a name="output_spoke_dns_resolver_id"></a> [spoke\_dns\_resolver\_id](#output\_spoke\_dns\_resolver\_id) | Resource ID of the spoke DNS Private Resolver when spoke\_dns\_resolver is enabled; otherwise null. |
 | <a name="output_spoke_dns_resolver_inbound_ip"></a> [spoke\_dns\_resolver\_inbound\_ip](#output\_spoke\_dns\_resolver\_inbound\_ip) | Private IP of the spoke DNS resolver inbound endpoint when spoke\_dns\_resolver is enabled; otherwise null. The expansion VNet uses this as its custom DNS server. |
 | <a name="output_subnet_ids"></a> [subnet\_ids](#output\_subnet\_ids) | Map of subnet keys to subnet resource IDs. |

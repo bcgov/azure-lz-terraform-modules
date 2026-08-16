@@ -6,6 +6,9 @@
 # required_firewall_routes, required_firewall_rules, and required_private_snat
 # so the firewall SNATs isolated sources before packets enter the enterprise
 # routing domain.
+#
+# Expansion UDRs for this mode live on azurerm_route_table.expansion, the same
+# table used by none and private_nat. Mode changes update routes in place.
 
 check "firewall_snat_boundary" {
   assert {
@@ -60,6 +63,11 @@ check "private_nat_boundary" {
   assert {
     condition     = !local.private_nat_overlaps_dns
     error_message = "egress.private_nat.subnet_address_prefix overlaps a spoke DNS resolver subnet."
+  }
+
+  assert {
+    condition     = !local.private_nat_enabled || local.private_nat_ip_in_subnet
+    error_message = "egress.private_nat.private_ip must be a usable address in subnet_address_prefix."
   }
 
   assert {

@@ -67,16 +67,16 @@ output "private_nat_subnet_id" {
 }
 
 output "egress_route_table_id" {
-  description = "Route table ID for the active egress mode. Null in NAT mode. none and private_nat share one table so a mode change updates routes in place instead of deleting an in-use table. Callers that create their own subnets should associate this ID."
+  description = "Route table ID for the active egress mode. Null in NAT mode. none, private_nat, and firewall_snat share one table so a mode change updates routes in place instead of deleting an in-use table. Callers that create their own subnets should associate this ID."
   value       = local.egress_route_table_id
 }
 
 output "route_table_ids" {
-  description = "Map of the active egress mode name to its route table ID. Empty in NAT mode. none and private_nat resolve to the same table. Prefer egress_route_table_id when associating caller-managed subnets."
+  description = "Map of the active egress mode name to its route table ID. Empty in NAT mode. none, private_nat, and firewall_snat resolve to the same table. Prefer egress_route_table_id when associating caller-managed subnets."
   value = merge(
     local.none_enabled ? { none = azurerm_route_table.expansion[0].id } : {},
     local.private_nat_enabled ? { private_nat = azurerm_route_table.expansion[0].id } : {},
-    local.firewall_enabled ? { firewall = azurerm_route_table.firewall[0].id } : {}
+    local.firewall_enabled ? { firewall = azurerm_route_table.expansion[0].id } : {}
   )
 }
 

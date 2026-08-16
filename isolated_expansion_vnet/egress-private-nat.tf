@@ -44,6 +44,7 @@ resource "azapi_resource" "private_nat_subnet" {
   type      = "Microsoft.Network/virtualNetworks/subnets@2024-05-01"
   name      = local.private_nat_subnet_name
   parent_id = var.routable_vnet.id
+  locks     = [var.routable_vnet.id]
 
   body = {
     properties = merge(
@@ -125,7 +126,7 @@ resource "azurerm_linux_virtual_machine" "private_nat" {
   boot_diagnostics {}
 
   lifecycle {
-    ignore_changes = [tags]
+    ignore_changes = [identity, tags]
   }
 
   depends_on = [

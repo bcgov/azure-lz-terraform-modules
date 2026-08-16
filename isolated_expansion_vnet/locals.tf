@@ -14,7 +14,9 @@ locals {
   private_nat_enabled = local.egress_mode == "private_nat"
   none_enabled        = local.egress_mode == "none"
   appliance_enabled   = local.firewall_enabled || local.private_nat_enabled
-  internet_egress_enabled = local.nat_enabled || local.firewall_enabled || (
+  internet_egress_enabled = local.nat_enabled || (
+    local.firewall_enabled && try(var.egress.firewall.route_internet_through_firewall, true)
+    ) || (
     local.private_nat_enabled && try(var.egress.private_nat.route_internet_through_nva, true)
   )
 
@@ -78,7 +80,13 @@ locals {
       var.spoke_dns_resolver.outbound_address_prefix
     ] : []
   ))
-  cidrs_for_range = distinct(concat(var.address_space, local.known_other_cidrs, [for s in var.subnets : s.address_prefix], local.extra_spoke_cidrs))
+  cidrs_for_range = distinct(concat(
+    var.address_space,
+    local.known_other_cidrs,
+    [for s in var.subnets : s.address_prefix],
+    local.extra_spoke_cidrs,
+    var.enterprise_routes
+  ))
 
   # HashiCorp Terraform has no cidrcontains; compare IPv4 ranges numerically.
   ipv4_num = {
@@ -139,6 +147,26 @@ locals {
     local.ipv4_num[local.private_nat.subnet_address_prefix].start <= local.ipv4_num[dns_cidr].end &&
     local.ipv4_num[dns_cidr].start <= local.ipv4_num[local.private_nat.subnet_address_prefix].end
   ])
+
+  private_nat_ip_num = local.private_nat_enabled ? (
+    tonumber(split(".", local.private_nat_ip)[0]) * 16777216 +
+    tonumber(split(".", local.private_nat_ip)[1]) * 65536 +
+    tonumber(split(".", local.private_nat_ip)[2]) * 256 +
+    tonumber(split(".", local.private_nat_ip)[3])
+  ) : null
+
+  private_nat_ip_in_subnet = !local.private_nat_enabled || (
+    local.private_nat_ip_num >= local.ipv4_num[local.private_nat.subnet_address_prefix].start + 4 &&
+    local.private_nat_ip_num <= local.ipv4_num[local.private_nat.subnet_address_prefix].end - 1
+  )
+
+  enterprise_routes_overlap_expansion = anytrue(flatten([
+    for left in var.address_space : [
+      for right in var.enterprise_routes :
+      local.ipv4_num[left].start <= local.ipv4_num[right].end &&
+      local.ipv4_num[right].start <= local.ipv4_num[left].end
+    ]
+  ]))
 
   subnets_needing_nsg = {
     for key, subnet in var.subnets : key => subnet if subnet.create_nsg || subnet.nsg_id != null
@@ -297,19 +325,23 @@ locals {
     }
   }
 
+  firewall_table_routes = {
+    for cidr, route in local.firewall_routes : cidr => route
+    if cidr != "0.0.0.0/0"
+  }
+
   private_nat_peer_bypass_routes = local.private_nat_enabled && !try(local.private_nat.direct_peer_bypass, true) ? var.routable_vnet.address_space : []
 
-  private_nat_internet_routes = local.private_nat_enabled && try(local.private_nat.route_internet_through_nva, true) ? ["0.0.0.0/0"] : []
-
-  private_nat_route_prefixes = local.private_nat_enabled ? distinct(concat(var.enterprise_routes, local.private_nat_peer_bypass_routes, local.private_nat_internet_routes)) : []
-
-  private_nat_routes = {
-    for cidr in local.private_nat_route_prefixes : cidr => {
-      name                   = cidr == "0.0.0.0/0" ? "internet-via-private-nat" : "enterprise-${replace(replace(cidr, "/", "-"), ".", "-")}"
+  private_nat_enterprise_routes = {
+    for cidr in(
+      local.private_nat_enabled ? distinct(concat(var.enterprise_routes, local.private_nat_peer_bypass_routes)) : []
+      ) : cidr => {
+      name                   = "enterprise-${replace(replace(cidr, "/", "-"), ".", "-")}"
       address_prefix         = cidr
       next_hop_type          = "VirtualAppliance"
       next_hop_in_ip_address = local.private_nat_ip
     }
+    if cidr != "0.0.0.0/0"
   }
 
   private_nat_nsg_rules = {
@@ -429,14 +461,14 @@ locals {
         direction                    = "Outbound"
         access                       = "Allow"
         protocol                     = "*"
-        description                  = "Allow outbound Internet traffic. In NAT mode this is SNATed by the NAT Gateway; in firewall_snat and private_nat it is steered by UDR."
+        description                  = local.nat_enabled ? "Allow outbound Internet traffic. SNATed by the NAT Gateway." : "Allow default egress. The 0.0.0.0/0 UDR steers it to the SNAT hop. Destination is * because the Azure Internet tag does not include RFC1918."
         source_port_range            = "*"
         source_port_ranges           = null
         destination_port_range       = "*"
         destination_port_ranges      = null
         source_address_prefix        = "*"
         source_address_prefixes      = null
-        destination_address_prefix   = "Internet"
+        destination_address_prefix   = local.nat_enabled ? "Internet" : "*"
         destination_address_prefixes = null
       }
       } : {
@@ -458,20 +490,20 @@ locals {
     }
   ) : {}
 
-  expansion_route_table_enabled = local.none_enabled || local.private_nat_enabled
+  expansion_route_table_enabled = !local.nat_enabled
 
-  private_nat_internet_via_nva       = local.private_nat_enabled && try(local.private_nat.route_internet_through_nva, true)
-  private_nat_internet_next_hop_type = local.private_nat_internet_via_nva ? "VirtualAppliance" : "None"
-  private_nat_internet_next_hop_ip   = local.private_nat_internet_via_nva ? local.private_nat_ip : null
-
-  private_nat_enterprise_routes = {
-    for cidr, route in local.private_nat_routes : cidr => route
-    if cidr != "0.0.0.0/0"
-  }
-
-  egress_route_table_id = local.firewall_enabled ? azurerm_route_table.firewall[0].id : (
-    local.expansion_route_table_enabled ? azurerm_route_table.expansion[0].id : null
+  default_internet_via_appliance = (
+    (local.private_nat_enabled && try(local.private_nat.route_internet_through_nva, true)) ||
+    (local.firewall_enabled && try(local.firewall.route_internet_through_firewall, true))
   )
+  default_internet_next_hop_type = local.default_internet_via_appliance ? "VirtualAppliance" : "None"
+  default_internet_next_hop_ip = (
+    local.private_nat_enabled && try(local.private_nat.route_internet_through_nva, true) ? local.private_nat_ip :
+    local.firewall_enabled && try(local.firewall.route_internet_through_firewall, true) ? local.firewall.firewall_private_ip :
+    null
+  )
+
+  egress_route_table_id = local.expansion_route_table_enabled ? azurerm_route_table.expansion[0].id : null
 
   associated_subnet_keys = {
     for key, subnet in var.subnets : key => subnet
@@ -543,7 +575,7 @@ locals {
 
   required_firewall_rules = local.firewall_enabled ? {
     sources      = var.address_space
-    destinations = var.enterprise_routes
+    destinations = try(local.firewall.route_internet_through_firewall, true) ? ["0.0.0.0/0"] : var.enterprise_routes
   } : null
 
   required_private_snat = local.firewall_enabled ? {

@@ -45,4 +45,14 @@ check "isolated_expansion_invariants" {
     condition     = !local.private_nat_enabled || local.private_nat_subnet_in_spoke
     error_message = "private_nat subnet_address_prefix must sit inside routable_vnet.address_space. The NVA is a spoke hop, not an expansion-VNet resource."
   }
+
+  assert {
+    condition     = !local.private_nat_enabled || local.private_nat_ip_in_subnet
+    error_message = "private_nat private_ip must be a usable address in subnet_address_prefix."
+  }
+
+  assert {
+    condition     = !local.enterprise_routes_overlap_expansion
+    error_message = "enterprise_routes must not overlap the isolated expansion address_space."
+  }
 }
