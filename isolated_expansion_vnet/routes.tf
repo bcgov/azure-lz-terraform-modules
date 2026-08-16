@@ -12,6 +12,11 @@ resource "azurerm_route_table" "expansion" {
   }
 }
 
+moved {
+  from = azurerm_route_table.this["none"]
+  to   = azurerm_route_table.expansion[0]
+}
+
 resource "azurerm_route_table" "firewall" {
   count = local.firewall_enabled ? 1 : 0
 
