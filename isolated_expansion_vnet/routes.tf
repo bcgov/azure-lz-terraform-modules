@@ -1,41 +1,60 @@
-resource "azurerm_route_table" "this" {
-  for_each = local.route_table_key != null ? toset([local.route_table_key]) : toset([])
+resource "azurerm_route_table" "expansion" {
+  count = local.expansion_route_table_enabled ? 1 : 0
 
-  name                          = local.route_table_names[each.key]
+  name                          = "${local.virtual_network_name}-none"
   location                      = var.location
   resource_group_name           = var.resource_group_name
   bgp_route_propagation_enabled = false
   tags                          = local.tags
 
   lifecycle {
-    create_before_destroy = true
-    ignore_changes        = [tags]
+    ignore_changes = [tags]
+  }
+}
+
+resource "azurerm_route_table" "firewall" {
+  count = local.firewall_enabled ? 1 : 0
+
+  name                          = "${local.virtual_network_name}-fw"
+  location                      = var.location
+  resource_group_name           = var.resource_group_name
+  bgp_route_propagation_enabled = false
+  tags                          = local.tags
+
+  lifecycle {
+    ignore_changes = [tags]
   }
 }
 
 moved {
   from = azurerm_route_table.none[0]
-  to   = azurerm_route_table.this["none"]
+  to   = azurerm_route_table.expansion[0]
 }
 
 moved {
-  from = azurerm_route_table.private_nat[0]
-  to   = azurerm_route_table.this["private_nat"]
+  from = azurerm_route_table.this["none"]
+  to   = azurerm_route_table.expansion[0]
 }
 
 moved {
-  from = azurerm_route_table.firewall[0]
-  to   = azurerm_route_table.this["firewall"]
+  from = azurerm_route_table.this["firewall"]
+  to   = azurerm_route_table.firewall[0]
 }
 
-resource "azurerm_route" "none_blackhole" {
-  count = local.none_enabled ? 1 : 0
+resource "azurerm_route" "default_internet" {
+  count = local.expansion_route_table_enabled ? 1 : 0
 
-  name                = "internet-blackhole"
-  resource_group_name = var.resource_group_name
-  route_table_name    = azurerm_route_table.this["none"].name
-  address_prefix      = "0.0.0.0/0"
-  next_hop_type       = "None"
+  name                   = "internet-blackhole"
+  resource_group_name    = var.resource_group_name
+  route_table_name       = azurerm_route_table.expansion[0].name
+  address_prefix         = "0.0.0.0/0"
+  next_hop_type          = local.private_nat_internet_next_hop_type
+  next_hop_in_ip_address = local.private_nat_internet_next_hop_ip
+}
+
+moved {
+  from = azurerm_route.none_blackhole[0]
+  to   = azurerm_route.default_internet[0]
 }
 
 resource "azurerm_route" "firewall" {
@@ -43,18 +62,18 @@ resource "azurerm_route" "firewall" {
 
   name                   = each.value.name
   resource_group_name    = var.resource_group_name
-  route_table_name       = azurerm_route_table.this["firewall"].name
+  route_table_name       = azurerm_route_table.firewall[0].name
   address_prefix         = each.value.address_prefix
   next_hop_type          = each.value.next_hop_type
   next_hop_in_ip_address = each.value.next_hop_in_ip_address
 }
 
 resource "azurerm_route" "private_nat" {
-  for_each = local.private_nat_enabled ? local.private_nat_routes : {}
+  for_each = local.private_nat_enterprise_routes
 
   name                   = each.value.name
   resource_group_name    = var.resource_group_name
-  route_table_name       = azurerm_route_table.this["private_nat"].name
+  route_table_name       = azurerm_route_table.expansion[0].name
   address_prefix         = each.value.address_prefix
   next_hop_type          = each.value.next_hop_type
   next_hop_in_ip_address = each.value.next_hop_in_ip_address

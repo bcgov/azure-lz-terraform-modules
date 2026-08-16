@@ -458,21 +458,20 @@ locals {
     }
   ) : {}
 
-  route_table_key = local.firewall_enabled ? "firewall" : (
-    local.private_nat_enabled ? "private_nat" : (
-      local.none_enabled ? "none" : null
-    )
-  )
+  expansion_route_table_enabled = local.none_enabled || local.private_nat_enabled
 
-  route_table_names = {
-    none        = "${local.virtual_network_name}-none"
-    private_nat = "${local.virtual_network_name}-private-nat"
-    firewall    = "${local.virtual_network_name}-fw"
+  private_nat_internet_via_nva       = local.private_nat_enabled && try(local.private_nat.route_internet_through_nva, true)
+  private_nat_internet_next_hop_type = local.private_nat_internet_via_nva ? "VirtualAppliance" : "None"
+  private_nat_internet_next_hop_ip   = local.private_nat_internet_via_nva ? local.private_nat_ip : null
+
+  private_nat_enterprise_routes = {
+    for cidr, route in local.private_nat_routes : cidr => route
+    if cidr != "0.0.0.0/0"
   }
 
-  # one(values(...)) references every instance of azurerm_route_table.this so a
-  # mode change updates dependents before create_before_destroy deletes the old table.
-  egress_route_table_id = try(one(values(azurerm_route_table.this)).id, null)
+  egress_route_table_id = local.firewall_enabled ? azurerm_route_table.firewall[0].id : (
+    local.expansion_route_table_enabled ? azurerm_route_table.expansion[0].id : null
+  )
 
   associated_subnet_keys = {
     for key, subnet in var.subnets : key => subnet

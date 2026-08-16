@@ -88,8 +88,8 @@ resource "azurerm_virtual_network" "this" {
     }
 
     # Callers may add workload subnets outside this module when var.subnets is empty.
-    # Route table associations are a separate resource so egress mode changes
-    # are not swallowed by this ignore.
+    # Route table associations are a separate resource so this ignore does not
+    # freeze egress UDRs onto an old table.
     ignore_changes = [tags, subnet]
   }
 }
