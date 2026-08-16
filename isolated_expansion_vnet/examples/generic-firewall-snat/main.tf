@@ -24,9 +24,9 @@ module "compute_expansion" {
     mode = "firewall_snat"
 
     firewall = {
-      firewall_id         = var.firewall_id
-      firewall_private_ip = var.firewall_private_ip
-      direct_peer_bypass  = true
+      subnet_address_prefix            = var.firewall_subnet_address_prefix
+      management_subnet_address_prefix = var.firewall_management_subnet_address_prefix
+      spoke_route_table_id             = var.spoke_route_table_id
     }
   }
 

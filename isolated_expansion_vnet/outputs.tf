@@ -46,9 +46,19 @@ output "nat_public_ips" {
   value       = local.nat_enabled ? azurerm_public_ip.nat[*].ip_address : null
 }
 
+output "firewall_id" {
+  description = "Resource ID of the spoke Azure Firewall when egress.mode is firewall_snat; otherwise null."
+  value       = local.firewall_enabled ? azurerm_firewall.spoke[0].id : null
+}
+
 output "firewall_private_ip" {
-  description = "Firewall private IP used as the SNAT/routing boundary when egress.mode is firewall_snat; otherwise null."
-  value       = local.firewall_enabled ? local.firewall.firewall_private_ip : null
+  description = "Spoke Azure Firewall private IP used as the SNAT/routing boundary when egress.mode is firewall_snat; otherwise null."
+  value       = local.firewall_ip
+}
+
+output "firewall_policy_id" {
+  description = "Resource ID of the spoke Azure Firewall policy when egress.mode is firewall_snat; otherwise null."
+  value       = local.firewall_enabled ? azurerm_firewall_policy.spoke[0].id : null
 }
 
 output "private_nat_private_ip" {
@@ -91,17 +101,17 @@ output "nsg_ids" {
 }
 
 output "required_firewall_routes" {
-  description = "Routes a higher-level networking deployment should honour on the firewall path. Null unless egress.mode is firewall_snat."
+  description = "Unused. firewall_snat now creates the spoke firewall and its policy in this module. Always null."
   value       = local.required_firewall_routes
 }
 
 output "required_firewall_rules" {
-  description = "Suggested firewall allow sources and destinations for isolated expansion traffic. Null unless egress.mode is firewall_snat."
+  description = "Unused. firewall_snat now creates the spoke firewall and its policy in this module. Always null."
   value       = local.required_firewall_rules
 }
 
 output "required_private_snat" {
-  description = "Private SNAT contract: isolated source prefixes that must be translated to an enterprise-routable IP (hub firewall or spoke NVA) before entering the enterprise routing domain. Null unless egress.mode is firewall_snat or private_nat."
+  description = "Private SNAT contract: isolated source prefixes that must be translated to a spoke IP (Azure Firewall or NVA) before entering the enterprise routing domain. Null unless egress.mode is firewall_snat or private_nat."
   value       = local.required_private_snat
 }
 

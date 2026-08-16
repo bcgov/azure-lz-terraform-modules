@@ -30,6 +30,24 @@ locals {
     cidrhost(local.private_nat.subnet_address_prefix, 4)
   ) : null
 
+  firewall_ip = local.firewall_enabled ? coalesce(
+    local.firewall.private_ip,
+    cidrhost(local.firewall.subnet_address_prefix, 4)
+  ) : null
+
+  firewall_subnets = local.firewall_enabled ? {
+    data = {
+      name           = "AzureFirewallSubnet"
+      address_prefix = local.firewall.subnet_address_prefix
+      route_table_id = local.firewall.spoke_route_table_id
+    }
+    management = {
+      name           = "AzureFirewallManagementSubnet"
+      address_prefix = local.firewall.management_subnet_address_prefix
+      route_table_id = null
+    }
+  } : {}
+
   private_nat_subnet_name = local.private_nat_enabled ? coalesce(
     local.private_nat.subnet_name,
     "nva-${local.virtual_network_name}"
@@ -74,7 +92,11 @@ locals {
 
   known_other_cidrs = concat(var.routable_vnet.address_space, var.disallowed_address_spaces)
   extra_spoke_cidrs = compact(concat(
-    local.private_nat_enabled ? [local.private_nat.subnet_address_prefix] : [],
+    try(var.egress.private_nat.subnet_address_prefix, null) != null ? [var.egress.private_nat.subnet_address_prefix] : [],
+    try(var.egress.firewall.subnet_address_prefix, null) != null ? [
+      var.egress.firewall.subnet_address_prefix,
+      var.egress.firewall.management_subnet_address_prefix
+    ] : [],
     local.spoke_dns_resolver_enabled ? [
       var.spoke_dns_resolver.inbound_address_prefix,
       var.spoke_dns_resolver.outbound_address_prefix
@@ -167,6 +189,53 @@ locals {
       local.ipv4_num[right].start <= local.ipv4_num[left].end
     ]
   ]))
+
+  firewall_subnet_in_spoke = !local.firewall_enabled || alltrue([
+    for prefix in [local.firewall.subnet_address_prefix, local.firewall.management_subnet_address_prefix] : anytrue([
+      for vnet_cidr in var.routable_vnet.address_space :
+      local.ipv4_num[prefix].start >= local.ipv4_num[vnet_cidr].start &&
+      local.ipv4_num[prefix].end <= local.ipv4_num[vnet_cidr].end
+    ])
+  ])
+
+  firewall_subnets_overlap = local.firewall_enabled && (
+    local.ipv4_num[local.firewall.subnet_address_prefix].start <= local.ipv4_num[local.firewall.management_subnet_address_prefix].end &&
+    local.ipv4_num[local.firewall.management_subnet_address_prefix].start <= local.ipv4_num[local.firewall.subnet_address_prefix].end
+  )
+
+  firewall_overlaps_expansion = local.firewall_enabled && anytrue(flatten([
+    for prefix in [local.firewall.subnet_address_prefix, local.firewall.management_subnet_address_prefix] : [
+      for left in var.address_space :
+      local.ipv4_num[left].start <= local.ipv4_num[prefix].end &&
+      local.ipv4_num[prefix].start <= local.ipv4_num[left].end
+    ]
+  ]))
+
+  firewall_overlaps_dns = local.firewall_enabled && local.spoke_dns_resolver_enabled && anytrue(flatten([
+    for prefix in [local.firewall.subnet_address_prefix, local.firewall.management_subnet_address_prefix] : [
+      for dns_cidr in [var.spoke_dns_resolver.inbound_address_prefix, var.spoke_dns_resolver.outbound_address_prefix] :
+      local.ipv4_num[prefix].start <= local.ipv4_num[dns_cidr].end &&
+      local.ipv4_num[dns_cidr].start <= local.ipv4_num[prefix].end
+    ]
+  ]))
+
+  firewall_overlaps_nva = local.firewall_enabled && try(var.egress.private_nat.subnet_address_prefix, null) != null && anytrue([
+    for prefix in [local.firewall.subnet_address_prefix, local.firewall.management_subnet_address_prefix] :
+    local.ipv4_num[prefix].start <= local.ipv4_num[var.egress.private_nat.subnet_address_prefix].end &&
+    local.ipv4_num[var.egress.private_nat.subnet_address_prefix].start <= local.ipv4_num[prefix].end
+  ])
+
+  firewall_ip_num = local.firewall_enabled ? (
+    tonumber(split(".", local.firewall_ip)[0]) * 16777216 +
+    tonumber(split(".", local.firewall_ip)[1]) * 65536 +
+    tonumber(split(".", local.firewall_ip)[2]) * 256 +
+    tonumber(split(".", local.firewall_ip)[3])
+  ) : null
+
+  firewall_ip_in_subnet = !local.firewall_enabled || (
+    local.firewall_ip_num >= local.ipv4_num[local.firewall.subnet_address_prefix].start + 4 &&
+    local.firewall_ip_num <= local.ipv4_num[local.firewall.subnet_address_prefix].end - 1
+  )
 
   subnets_needing_nsg = {
     for key, subnet in var.subnets : key => subnet if subnet.create_nsg || subnet.nsg_id != null
@@ -321,7 +390,7 @@ locals {
       name                   = cidr == "0.0.0.0/0" ? "internet-via-firewall" : "enterprise-${replace(replace(cidr, "/", "-"), ".", "-")}"
       address_prefix         = cidr
       next_hop_type          = "VirtualAppliance"
-      next_hop_in_ip_address = local.firewall.firewall_private_ip
+      next_hop_in_ip_address = local.firewall_ip
     }
   }
 
@@ -499,7 +568,7 @@ locals {
   default_internet_next_hop_type = local.default_internet_via_appliance ? "VirtualAppliance" : "None"
   default_internet_next_hop_ip = (
     local.private_nat_enabled && try(local.private_nat.route_internet_through_nva, true) ? local.private_nat_ip :
-    local.firewall_enabled && try(local.firewall.route_internet_through_firewall, true) ? local.firewall.firewall_private_ip :
+    local.firewall_enabled && try(local.firewall.route_internet_through_firewall, true) ? local.firewall_ip :
     null
   )
 
@@ -565,23 +634,14 @@ locals {
     for item in local.nsg_rules : item.key => item
   }
 
-  required_firewall_routes = local.firewall_enabled ? [
-    for route in local.firewall_routes : {
-      address_prefix         = route.address_prefix
-      next_hop_type          = route.next_hop_type
-      next_hop_in_ip_address = route.next_hop_in_ip_address
-    }
-  ] : null
+  required_firewall_routes = null
 
-  required_firewall_rules = local.firewall_enabled ? {
-    sources      = var.address_space
-    destinations = try(local.firewall.route_internet_through_firewall, true) ? ["0.0.0.0/0"] : var.enterprise_routes
-  } : null
+  required_firewall_rules = null
 
   required_private_snat = local.firewall_enabled ? {
     enabled         = true
     source_prefixes = var.address_space
-    snat_to         = local.firewall.firewall_private_ip
+    snat_to         = local.firewall_ip
     } : local.private_nat_enabled ? {
     enabled         = true
     source_prefixes = var.address_space

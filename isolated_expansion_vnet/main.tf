@@ -47,6 +47,16 @@ check "isolated_expansion_invariants" {
   }
 
   assert {
+    condition     = !local.firewall_enabled || local.firewall_subnet_in_spoke
+    error_message = "firewall_snat subnet prefixes must sit inside routable_vnet.address_space. The Azure Firewall is a spoke hop, not an expansion-VNet resource."
+  }
+
+  assert {
+    condition     = !local.firewall_subnets_overlap && !local.firewall_overlaps_expansion && !local.firewall_overlaps_dns && !local.firewall_overlaps_nva
+    error_message = "firewall_snat subnet prefixes overlap the expansion address space, a spoke DNS resolver subnet, the private_nat NVA subnet, or each other."
+  }
+
+  assert {
     condition     = !local.private_nat_enabled || local.private_nat_ip_in_subnet
     error_message = "private_nat private_ip must be a usable address in subnet_address_prefix."
   }

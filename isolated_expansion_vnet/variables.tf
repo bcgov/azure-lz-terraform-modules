@@ -59,7 +59,7 @@ variable "address_space" {
 }
 
 variable "routable_vnet" {
-  description = "The existing enterprise-routed workload VNet that this expansion VNet will be directly peered to. This is the only intended private path out of the isolated address space besides an optional firewall or spoke private-NAT SNAT boundary. address_space is required for private_nat so the NVA subnet can be validated against the spoke."
+  description = "The existing enterprise-routed workload VNet that this expansion VNet will be directly peered to. This is the only intended private path out of the isolated address space besides an optional spoke firewall or private-NAT SNAT hop. address_space is required for firewall_snat and private_nat so those spoke subnets can be validated against the spoke."
   type = object({
     id                  = string
     name                = string
@@ -133,7 +133,7 @@ variable "subnets" {
 }
 
 variable "egress" {
-  description = "Outbound connectivity model. Defaults to `none` (private paths only: local VNet, direct peering, and Private Endpoints, with no NAT Gateway or Internet route). Use `nat` when the workload also needs public egress. Use `firewall_snat` when an existing hub firewall must translate isolated sources. Use `private_nat` to create a Linux NVA in the routable spoke that SNATs isolated sources to a spoke IP before packets enter the enterprise routing domain."
+  description = "Outbound connectivity model. Defaults to `none` (private paths only: local VNet, direct peering, and Private Endpoints, with no NAT Gateway or Internet route). Use `nat` when the workload also needs public egress. Use `firewall_snat` to create a forced-tunnel Azure Firewall in the routable spoke that SNATs isolated sources to the firewall's spoke IP. Use `private_nat` to create a Linux NVA in the spoke for the same translation contract."
   type = object({
     mode = optional(string, "none")
     nat = optional(object({
@@ -148,11 +148,14 @@ variable "egress" {
       sku_name        = "Standard"
     })
     firewall = optional(object({
-      deployment_mode                 = optional(string, "existing")
-      firewall_id                     = optional(string)
-      firewall_private_ip             = optional(string)
-      direct_peer_bypass              = optional(bool, true)
-      route_internet_through_firewall = optional(bool, true)
+      subnet_address_prefix            = string
+      management_subnet_address_prefix = string
+      private_ip                       = optional(string)
+      sku_tier                         = optional(string, "Standard")
+      spoke_route_table_id             = optional(string)
+      direct_peer_bypass               = optional(bool, true)
+      route_internet_through_firewall  = optional(bool, true)
+      zones                            = optional(list(string))
     }))
     private_nat = optional(object({
       subnet_address_prefix      = string
@@ -187,15 +190,25 @@ variable "egress" {
   validation {
     condition = var.egress.mode != "firewall_snat" || (
       var.egress.firewall != null &&
-      try(var.egress.firewall.firewall_id, null) != null &&
-      try(var.egress.firewall.firewall_private_ip, null) != null
+      try(var.egress.firewall.subnet_address_prefix, null) != null &&
+      can(cidrhost(var.egress.firewall.subnet_address_prefix, 0)) &&
+      try(var.egress.firewall.management_subnet_address_prefix, null) != null &&
+      can(cidrhost(var.egress.firewall.management_subnet_address_prefix, 0))
     )
-    error_message = "Firewall configuration (firewall_id and firewall_private_ip) is required when using firewall_snat."
+    error_message = "egress.firewall.subnet_address_prefix and management_subnet_address_prefix are required CIDRs when using firewall_snat."
   }
 
   validation {
-    condition     = var.egress.mode != "firewall_snat" || try(var.egress.firewall.deployment_mode, "existing") == "existing"
-    error_message = "Only an existing firewall is supported. egress.firewall.deployment_mode must be \"existing\"."
+    condition = var.egress.mode != "firewall_snat" || try(var.egress.firewall, null) == null || (
+      tonumber(split("/", var.egress.firewall.subnet_address_prefix)[1]) <= 26 &&
+      tonumber(split("/", var.egress.firewall.management_subnet_address_prefix)[1]) <= 26
+    )
+    error_message = "Azure Firewall subnets must be /26 or larger (prefix length 26 or smaller)."
+  }
+
+  validation {
+    condition     = var.egress.mode != "firewall_snat" || try(var.egress.firewall.sku_tier, "Standard") == null || contains(["Standard", "Premium"], var.egress.firewall.sku_tier)
+    error_message = "egress.firewall.sku_tier must be Standard or Premium."
   }
 
   validation {

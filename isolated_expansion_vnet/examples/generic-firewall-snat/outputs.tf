@@ -2,12 +2,12 @@ output "vnet_id" {
   value = module.compute_expansion.vnet_id
 }
 
-output "required_firewall_routes" {
-  value = module.compute_expansion.required_firewall_routes
+output "firewall_id" {
+  value = module.compute_expansion.firewall_id
 }
 
-output "required_firewall_rules" {
-  value = module.compute_expansion.required_firewall_rules
+output "firewall_private_ip" {
+  value = module.compute_expansion.firewall_private_ip
 }
 
 output "required_private_snat" {

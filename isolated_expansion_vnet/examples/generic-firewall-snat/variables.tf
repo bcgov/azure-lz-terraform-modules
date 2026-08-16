@@ -34,14 +34,20 @@ variable "routable_vnet_address_space" {
   type        = list(string)
 }
 
-variable "firewall_id" {
-  description = "Resource ID of the existing enterprise-routable firewall."
+variable "firewall_subnet_address_prefix" {
+  description = "Unused /26 or larger prefix already in the routable spoke for AzureFirewallSubnet."
   type        = string
 }
 
-variable "firewall_private_ip" {
-  description = "Private IP of the existing firewall used as the SNAT boundary."
+variable "firewall_management_subnet_address_prefix" {
+  description = "Unused /26 or larger prefix already in the routable spoke for AzureFirewallManagementSubnet."
   type        = string
+}
+
+variable "spoke_route_table_id" {
+  description = "Optional existing spoke route table to associate with AzureFirewallSubnet so SNATed packets follow the spoke egress path."
+  type        = string
+  default     = null
 }
 
 variable "dns_forwarding_ruleset_id" {

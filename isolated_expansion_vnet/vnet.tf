@@ -54,7 +54,22 @@ resource "azurerm_virtual_network" "this" {
 
     precondition {
       condition     = local.egress_mode != "firewall_snat" || local.firewall != null
-      error_message = "Firewall configuration is required when using firewall_snat."
+      error_message = "egress.firewall is required when using firewall_snat."
+    }
+
+    precondition {
+      condition     = !local.firewall_enabled || local.firewall_subnet_in_spoke
+      error_message = "egress.firewall subnet prefixes must be contained in routable_vnet.address_space."
+    }
+
+    precondition {
+      condition     = !local.firewall_subnets_overlap && !local.firewall_overlaps_expansion && !local.firewall_overlaps_dns && !local.firewall_overlaps_nva
+      error_message = "egress.firewall subnet prefixes overlap the expansion address space, a spoke DNS resolver subnet, the private_nat NVA subnet, or each other."
+    }
+
+    precondition {
+      condition     = !local.firewall_enabled || local.firewall_ip_in_subnet
+      error_message = "egress.firewall.private_ip must be a usable address in subnet_address_prefix (not the first four Azure-reserved addresses or the broadcast address)."
     }
 
     precondition {
