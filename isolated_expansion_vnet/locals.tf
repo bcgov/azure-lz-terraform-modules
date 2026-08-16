@@ -423,23 +423,6 @@ locals {
         destination_address_prefixes = null
       }
     },
-    local.appliance_enabled && length(var.enterprise_routes) > 0 ? {
-      AllowEnterpriseOutbound = {
-        priority                     = 220
-        direction                    = "Outbound"
-        access                       = "Allow"
-        protocol                     = "*"
-        description                  = "Allow outbound traffic to caller-supplied enterprise prefixes via the SNAT boundary."
-        source_port_range            = "*"
-        source_port_ranges           = null
-        destination_port_range       = "*"
-        destination_port_ranges      = null
-        source_address_prefix        = "*"
-        source_address_prefixes      = null
-        destination_address_prefix   = null
-        destination_address_prefixes = var.enterprise_routes
-      }
-    } : {},
     local.internet_egress_enabled ? {
       AllowInternetOutbound = {
         priority                     = 210
@@ -481,10 +464,38 @@ locals {
     )
   )
 
+  enterprise_nsg_rules = local.appliance_enabled && length(var.enterprise_routes) > 0 ? {
+    AllowEnterpriseOutbound = {
+      priority                     = 220
+      direction                    = "Outbound"
+      access                       = "Allow"
+      protocol                     = "*"
+      description                  = "Allow outbound traffic to caller-supplied enterprise prefixes via the SNAT boundary."
+      source_port_range            = "*"
+      source_port_ranges           = null
+      destination_port_range       = "*"
+      destination_port_ranges      = null
+      source_address_prefix        = "*"
+      source_address_prefixes      = null
+      destination_address_prefix   = null
+      destination_address_prefixes = var.enterprise_routes
+    }
+  } : {}
+
   nsg_rules = concat(
     flatten([
       for subnet_key, subnet in local.created_nsgs : [
         for rule_key, rule in local.default_nsg_rules : {
+          key        = "${subnet_key}/${rule_key}"
+          subnet_key = subnet_key
+          rule_name  = rule_key
+          rule       = rule
+        }
+      ]
+    ]),
+    flatten([
+      for subnet_key, subnet in local.created_nsgs : [
+        for rule_key, rule in local.enterprise_nsg_rules : {
           key        = "${subnet_key}/${rule_key}"
           subnet_key = subnet_key
           rule_name  = rule_key
