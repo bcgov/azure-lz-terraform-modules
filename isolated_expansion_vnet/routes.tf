@@ -26,21 +26,6 @@ resource "azurerm_route_table" "firewall" {
   }
 }
 
-moved {
-  from = azurerm_route_table.none[0]
-  to   = azurerm_route_table.expansion[0]
-}
-
-moved {
-  from = azurerm_route_table.this["none"]
-  to   = azurerm_route_table.expansion[0]
-}
-
-moved {
-  from = azurerm_route_table.this["firewall"]
-  to   = azurerm_route_table.firewall[0]
-}
-
 resource "azurerm_route" "default_internet" {
   count = local.expansion_route_table_enabled ? 1 : 0
 
@@ -50,11 +35,6 @@ resource "azurerm_route" "default_internet" {
   address_prefix         = "0.0.0.0/0"
   next_hop_type          = local.private_nat_internet_next_hop_type
   next_hop_in_ip_address = local.private_nat_internet_next_hop_ip
-}
-
-moved {
-  from = azurerm_route.none_blackhole[0]
-  to   = azurerm_route.default_internet[0]
 }
 
 resource "azurerm_route" "firewall" {
