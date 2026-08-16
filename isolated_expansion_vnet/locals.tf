@@ -40,8 +40,8 @@ locals {
 
   private_nat_image = local.private_nat_enabled ? {
     publisher = coalesce(try(local.private_nat.image.publisher, null), "Canonical")
-    offer     = coalesce(try(local.private_nat.image.offer, null), "0001-com-ubuntu-server-jammy")
-    sku       = coalesce(try(local.private_nat.image.sku, null), "22_04-lts")
+    offer     = coalesce(try(local.private_nat.image.offer, null), "ubuntu-26_04-lts")
+    sku       = coalesce(try(local.private_nat.image.sku, null), "server-gen1")
     version   = coalesce(try(local.private_nat.image.version, null), "latest")
   } : null
 

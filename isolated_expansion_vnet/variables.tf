@@ -169,8 +169,8 @@ variable "egress" {
       route_internet_through_nva = optional(bool, true)
       image = optional(object({
         publisher = optional(string, "Canonical")
-        offer     = optional(string, "0001-com-ubuntu-server-jammy")
-        sku       = optional(string, "22_04-lts")
+        offer     = optional(string, "ubuntu-26_04-lts")
+        sku       = optional(string, "server-gen1")
         version   = optional(string, "latest")
       }), {})
     }))
