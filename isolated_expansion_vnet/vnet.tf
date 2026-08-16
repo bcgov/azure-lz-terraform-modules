@@ -19,7 +19,6 @@ resource "azurerm_virtual_network" "this" {
       private_endpoint_network_policies             = subnet.value.private_endpoint_network_policies
       private_link_service_network_policies_enabled = subnet.value.private_link_service_network_policies_enabled
       default_outbound_access_enabled               = subnet.value.default_outbound_access_enabled
-      route_table_id                                = subnet.value.associate_route_table ? local.egress_route_table_id : null
 
       delegation = subnet.value.delegation == null ? [] : [
         {
@@ -89,6 +88,8 @@ resource "azurerm_virtual_network" "this" {
     }
 
     # Callers may add workload subnets outside this module when var.subnets is empty.
+    # Route table associations are a separate resource so egress mode changes
+    # are not swallowed by this ignore.
     ignore_changes = [tags, subnet]
   }
 }

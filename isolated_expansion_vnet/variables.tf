@@ -81,7 +81,7 @@ variable "routable_vnet" {
 }
 
 variable "subnets" {
-  description = "Optional subnet map for the expansion VNet. Leave empty when the caller creates workload subnets separately. Wrapper modules should add service-specific delegation, endpoints, and NSG rules here rather than changing the core pattern."
+  description = "Optional subnet map for the expansion VNet. Leave empty when the caller creates workload subnets separately. Wrapper modules should add service-specific delegation, endpoints, and NSG rules here rather than changing the core pattern. associate_route_table attaches the active egress route table through a dedicated association resource so a mode change reassociates the subnet before the previous table is destroyed."
   type = map(object({
     address_prefix                                = string
     name                                          = optional(string)

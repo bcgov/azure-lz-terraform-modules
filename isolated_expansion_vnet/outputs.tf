@@ -66,13 +66,14 @@ output "private_nat_subnet_id" {
   value       = local.private_nat_enabled ? azapi_resource.private_nat_subnet[0].id : null
 }
 
+output "egress_route_table_id" {
+  description = "Route table ID for the active egress mode. Null in NAT mode. Callers that create their own subnets must use this value so a mode change reassociates those subnets before the previous route table is destroyed."
+  value       = local.egress_route_table_id
+}
+
 output "route_table_ids" {
-  description = "Map of route table names to IDs created for firewall SNAT, private NAT, or none mode. Empty in NAT mode."
-  value = merge(
-    local.firewall_enabled ? { firewall = azurerm_route_table.firewall[0].id } : {},
-    local.private_nat_enabled ? { private_nat = azurerm_route_table.private_nat[0].id } : {},
-    local.none_enabled ? { none = azurerm_route_table.none[0].id } : {}
-  )
+  description = "Map of the active egress mode name to its route table ID. Empty in NAT mode. Prefer egress_route_table_id when associating caller-managed subnets."
+  value       = { for key, table in azurerm_route_table.this : key => table.id }
 }
 
 output "dns_forwarding_ruleset_link_id" {

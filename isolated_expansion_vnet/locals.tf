@@ -458,11 +458,26 @@ locals {
     }
   ) : {}
 
-  egress_route_table_id = local.firewall_enabled ? azurerm_route_table.firewall[0].id : (
-    local.private_nat_enabled ? azurerm_route_table.private_nat[0].id : (
-      local.none_enabled ? azurerm_route_table.none[0].id : null
+  route_table_key = local.firewall_enabled ? "firewall" : (
+    local.private_nat_enabled ? "private_nat" : (
+      local.none_enabled ? "none" : null
     )
   )
+
+  route_table_names = {
+    none        = "${local.virtual_network_name}-none"
+    private_nat = "${local.virtual_network_name}-private-nat"
+    firewall    = "${local.virtual_network_name}-fw"
+  }
+
+  # one(values(...)) references every instance of azurerm_route_table.this so a
+  # mode change updates dependents before create_before_destroy deletes the old table.
+  egress_route_table_id = try(one(values(azurerm_route_table.this)).id, null)
+
+  associated_subnet_keys = {
+    for key, subnet in var.subnets : key => subnet
+    if subnet.associate_route_table && local.egress_route_table_id != null
+  }
 
   enterprise_nsg_rules = local.appliance_enabled && length(var.enterprise_routes) > 0 ? {
     AllowEnterpriseOutbound = {
