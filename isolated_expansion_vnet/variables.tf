@@ -59,7 +59,7 @@ variable "address_space" {
 }
 
 variable "routable_vnet" {
-  description = "The existing enterprise-routed workload VNet that this expansion VNet will be directly peered to. This is the only intended private path out of the isolated address space besides an optional firewall SNAT boundary."
+  description = "The existing enterprise-routed workload VNet that this expansion VNet will be directly peered to. This is the only intended private path out of the isolated address space besides an optional firewall or spoke private-NAT SNAT boundary. address_space is required for private_nat so the NVA subnet can be validated against the spoke."
   type = object({
     id                  = string
     name                = string
@@ -133,7 +133,7 @@ variable "subnets" {
 }
 
 variable "egress" {
-  description = "Outbound connectivity model. Defaults to `none` (private paths only: local VNet, direct peering, and Private Endpoints, with no NAT Gateway or Internet route). Use `nat` when the workload also needs public egress. Use `firewall_snat` when the workload must reach enterprise destinations beyond the peer, with the isolated prefix translated before it enters the enterprise routing domain."
+  description = "Outbound connectivity model. Defaults to `none` (private paths only: local VNet, direct peering, and Private Endpoints, with no NAT Gateway or Internet route). Use `nat` when the workload also needs public egress. Use `firewall_snat` when an existing hub firewall must translate isolated sources. Use `private_nat` to create a Linux NVA in the routable spoke that SNATs isolated sources to a spoke IP before packets enter the enterprise routing domain."
   type = object({
     mode = optional(string, "none")
     nat = optional(object({
@@ -154,14 +154,34 @@ variable "egress" {
       direct_peer_bypass              = optional(bool, true)
       route_internet_through_firewall = optional(bool, true)
     }))
+    private_nat = optional(object({
+      subnet_address_prefix      = string
+      ssh_public_key             = string
+      subnet_name                = optional(string)
+      private_ip                 = optional(string)
+      vm_size                    = optional(string, "Standard_B2s")
+      admin_username             = optional(string, "azureadmin")
+      os_disk_size_gb            = optional(number, 30)
+      zone                       = optional(string)
+      spoke_route_table_id       = optional(string)
+      ssh_source_prefixes        = optional(list(string), [])
+      direct_peer_bypass         = optional(bool, true)
+      route_internet_through_nva = optional(bool, true)
+      image = optional(object({
+        publisher = optional(string, "Canonical")
+        offer     = optional(string, "0001-com-ubuntu-server-jammy")
+        sku       = optional(string, "22_04-lts")
+        version   = optional(string, "latest")
+      }), {})
+    }))
   })
   default = {
     mode = "none"
   }
 
   validation {
-    condition     = contains(["nat", "firewall_snat", "none"], var.egress.mode)
-    error_message = "egress.mode must be nat, firewall_snat, or none."
+    condition     = contains(["nat", "firewall_snat", "private_nat", "none"], var.egress.mode)
+    error_message = "egress.mode must be nat, firewall_snat, private_nat, or none."
   }
 
   validation {
@@ -176,6 +196,41 @@ variable "egress" {
   validation {
     condition     = var.egress.mode != "firewall_snat" || try(var.egress.firewall.deployment_mode, "existing") == "existing"
     error_message = "Only an existing firewall is supported. egress.firewall.deployment_mode must be \"existing\"."
+  }
+
+  validation {
+    condition = var.egress.mode != "private_nat" || (
+      var.egress.private_nat != null &&
+      try(var.egress.private_nat.subnet_address_prefix, null) != null &&
+      can(cidrhost(var.egress.private_nat.subnet_address_prefix, 0)) &&
+      try(var.egress.private_nat.ssh_public_key, null) != null &&
+      length(try(var.egress.private_nat.ssh_public_key, "")) > 0
+    )
+    error_message = "egress.private_nat.subnet_address_prefix and ssh_public_key are required when using private_nat."
+  }
+
+  validation {
+    condition = var.egress.mode != "private_nat" || try(var.egress.private_nat, null) == null || (
+      tonumber(split("/", var.egress.private_nat.subnet_address_prefix)[1]) <= 28
+    )
+    error_message = "egress.private_nat.subnet_address_prefix must be /28 or larger (prefix length 28 or smaller)."
+  }
+
+  validation {
+    condition     = var.egress.mode != "private_nat" || try(var.egress.private_nat.ssh_public_key, null) == null || can(regex("^(ssh-rsa|ssh-ed25519|ecdsa-sha2-nistp256|ecdsa-sha2-nistp384|ecdsa-sha2-nistp521) ", var.egress.private_nat.ssh_public_key))
+    error_message = "egress.private_nat.ssh_public_key must be an OpenSSH public key (ssh-rsa, ssh-ed25519, or ecdsa-sha2-nistp*)."
+  }
+
+  validation {
+    condition = var.egress.mode != "private_nat" || try(var.egress.private_nat.admin_username, "azureadmin") == null || !contains([
+      "admin", "administrator", "root", "user", "guest"
+    ], lower(var.egress.private_nat.admin_username))
+    error_message = "egress.private_nat.admin_username cannot be a reserved Azure account name."
+  }
+
+  validation {
+    condition     = var.egress.mode != "private_nat" || try(var.egress.private_nat.os_disk_size_gb, 30) >= 30
+    error_message = "egress.private_nat.os_disk_size_gb must be at least 30."
   }
 
   validation {
@@ -195,7 +250,7 @@ variable "egress" {
 }
 
 variable "enterprise_routes" {
-  description = "Enterprise prefixes that firewall_snat mode should send to the firewall. Never hard-code these in a wrapper; the caller supplies the prefixes that must be translated before they enter the enterprise routing domain."
+  description = "Enterprise prefixes that firewall_snat and private_nat modes should send to the SNAT hop. Never hard-code these in a wrapper; the caller supplies the prefixes that must be translated before they enter the enterprise routing domain. Required for private_nat when route_internet_through_nva is false."
   type        = list(string)
   default     = []
 
@@ -315,7 +370,7 @@ variable "nsg_rules" {
 }
 
 variable "nsg_default_rules_enabled" {
-  description = "Create the module's baseline NSG rules (Azure Load Balancer inbound, VNet outbound, deny Internet inbound, Internet outbound in nat/firewall_snat, Internet deny in none, and enterprise-route outbound in firewall mode). Disable only when supplying a complete custom rule set."
+  description = "Create the module's baseline NSG rules (Azure Load Balancer inbound, VNet outbound, deny Internet inbound, Internet outbound in nat/firewall_snat/private_nat when Internet is routed, Internet deny in none, and enterprise-route outbound in firewall_snat and private_nat). Disable only when supplying a complete custom rule set."
   type        = bool
   default     = true
 }

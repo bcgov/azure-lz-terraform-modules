@@ -46,3 +46,28 @@ resource "azurerm_route" "firewall" {
   next_hop_type          = each.value.next_hop_type
   next_hop_in_ip_address = each.value.next_hop_in_ip_address
 }
+
+resource "azurerm_route_table" "private_nat" {
+  count = local.private_nat_enabled ? 1 : 0
+
+  name                          = "${local.virtual_network_name}-private-nat"
+  location                      = var.location
+  resource_group_name           = var.resource_group_name
+  bgp_route_propagation_enabled = false
+  tags                          = local.tags
+
+  lifecycle {
+    ignore_changes = [tags]
+  }
+}
+
+resource "azurerm_route" "private_nat" {
+  for_each = local.private_nat_enabled ? local.private_nat_routes : {}
+
+  name                   = each.value.name
+  resource_group_name    = var.resource_group_name
+  route_table_name       = azurerm_route_table.private_nat[0].name
+  address_prefix         = each.value.address_prefix
+  next_hop_type          = each.value.next_hop_type
+  next_hop_in_ip_address = each.value.next_hop_in_ip_address
+}

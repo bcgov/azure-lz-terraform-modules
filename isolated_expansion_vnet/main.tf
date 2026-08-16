@@ -40,4 +40,9 @@ check "isolated_expansion_invariants" {
     condition     = !local.spoke_dns_resolver_enabled || !local.dns_forwarding_ruleset_link_enabled
     error_message = "spoke_dns_resolver and dns_forwarding_ruleset_id are mutually exclusive. Use the spoke resolver or the central ruleset link, not both."
   }
+
+  assert {
+    condition     = !local.private_nat_enabled || local.private_nat_subnet_in_spoke
+    error_message = "private_nat subnet_address_prefix must sit inside routable_vnet.address_space. The NVA is a spoke hop, not an expansion-VNet resource."
+  }
 }

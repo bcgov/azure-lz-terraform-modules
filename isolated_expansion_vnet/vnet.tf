@@ -64,6 +64,21 @@ resource "azurerm_virtual_network" "this" {
     }
 
     precondition {
+      condition     = local.egress_mode != "private_nat" || local.private_nat != null
+      error_message = "egress.private_nat is required when using private_nat."
+    }
+
+    precondition {
+      condition     = !local.private_nat_enabled || local.private_nat_subnet_in_spoke
+      error_message = "egress.private_nat.subnet_address_prefix must be contained in routable_vnet.address_space."
+    }
+
+    precondition {
+      condition     = !local.private_nat_overlaps_expansion && !local.private_nat_overlaps_dns
+      error_message = "egress.private_nat.subnet_address_prefix overlaps the expansion address space or a spoke DNS resolver subnet."
+    }
+
+    precondition {
       condition     = !local.allow_gateway_transit && !local.use_remote_gateways
       error_message = "Gateway transit is not supported for isolated expansion VNets."
     }

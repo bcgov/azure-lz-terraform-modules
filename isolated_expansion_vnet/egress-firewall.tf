@@ -27,6 +27,43 @@ check "none_mode_is_private_only" {
 
   assert {
     condition     = !local.none_enabled || length(var.enterprise_routes) == 0
-    error_message = "enterprise_routes are ignored when egress.mode is none. Use firewall_snat if residual Databricks or enterprise platform endpoints still require a translated path."
+    error_message = "enterprise_routes are ignored when egress.mode is none. Use firewall_snat or private_nat if residual Databricks or enterprise platform endpoints still require a translated path."
+  }
+}
+
+check "private_nat_boundary" {
+  assert {
+    condition     = !local.private_nat_enabled || local.private_nat != null
+    error_message = "egress.private_nat is required when egress.mode is private_nat."
+  }
+
+  assert {
+    condition     = !local.private_nat_enabled || try(local.private_nat.route_internet_through_nva, true) || length(var.enterprise_routes) > 0
+    error_message = "enterprise_routes is required when private_nat is used without route_internet_through_nva. Otherwise the expansion VNet has no translated path beyond the peer."
+  }
+
+  assert {
+    condition     = !local.private_nat_enabled || length(var.routable_vnet.address_space) > 0
+    error_message = "routable_vnet.address_space is required when using private_nat so the NVA subnet can be validated against the spoke."
+  }
+
+  assert {
+    condition     = !local.private_nat_enabled || local.private_nat_subnet_in_spoke
+    error_message = "egress.private_nat.subnet_address_prefix must be contained in routable_vnet.address_space."
+  }
+
+  assert {
+    condition     = !local.private_nat_overlaps_expansion
+    error_message = "egress.private_nat.subnet_address_prefix must not overlap the isolated expansion address_space."
+  }
+
+  assert {
+    condition     = !local.private_nat_overlaps_dns
+    error_message = "egress.private_nat.subnet_address_prefix overlaps a spoke DNS resolver subnet."
+  }
+
+  assert {
+    condition     = !local.private_nat_enabled || try(local.private_nat.direct_peer_bypass, true) || length(var.routable_vnet.address_space) > 0
+    error_message = "routable_vnet.address_space is required when private_nat.direct_peer_bypass is false so peer prefixes can be steered to the NVA."
   }
 }

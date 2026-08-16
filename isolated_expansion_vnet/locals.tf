@@ -8,16 +8,44 @@ locals {
 
   tags = merge(local.classification_tags, var.tags)
 
-  egress_mode      = var.egress.mode
-  nat_enabled      = local.egress_mode == "nat"
-  firewall_enabled = local.egress_mode == "firewall_snat"
-  none_enabled     = local.egress_mode == "none"
+  egress_mode         = var.egress.mode
+  nat_enabled         = local.egress_mode == "nat"
+  firewall_enabled    = local.egress_mode == "firewall_snat"
+  private_nat_enabled = local.egress_mode == "private_nat"
+  none_enabled        = local.egress_mode == "none"
+  appliance_enabled   = local.firewall_enabled || local.private_nat_enabled
+  internet_egress_enabled = local.nat_enabled || local.firewall_enabled || (
+    local.private_nat_enabled && try(var.egress.private_nat.route_internet_through_nva, true)
+  )
 
   nat = var.egress.nat
 
-  firewall = local.firewall_enabled ? var.egress.firewall : null
+  firewall    = local.firewall_enabled ? var.egress.firewall : null
+  private_nat = local.private_nat_enabled ? var.egress.private_nat : null
 
-  allow_forwarded_traffic = local.firewall_enabled
+  private_nat_ip = local.private_nat_enabled ? coalesce(
+    local.private_nat.private_ip,
+    cidrhost(local.private_nat.subnet_address_prefix, 4)
+  ) : null
+
+  private_nat_subnet_name = local.private_nat_enabled ? coalesce(
+    local.private_nat.subnet_name,
+    "nva-${local.virtual_network_name}"
+  ) : null
+
+  private_nat_ssh_sources = local.private_nat_enabled ? distinct(concat(
+    local.private_nat.ssh_source_prefixes,
+    var.routable_vnet.address_space
+  )) : []
+
+  private_nat_image = local.private_nat_enabled ? {
+    publisher = coalesce(try(local.private_nat.image.publisher, null), "Canonical")
+    offer     = coalesce(try(local.private_nat.image.offer, null), "0001-com-ubuntu-server-jammy")
+    sku       = coalesce(try(local.private_nat.image.sku, null), "22_04-lts")
+    version   = coalesce(try(local.private_nat.image.version, null), "latest")
+  } : null
+
+  allow_forwarded_traffic = local.appliance_enabled
   allow_gateway_transit   = false
   use_remote_gateways     = false
 
@@ -43,7 +71,14 @@ locals {
   ])
 
   known_other_cidrs = concat(var.routable_vnet.address_space, var.disallowed_address_spaces)
-  cidrs_for_range   = distinct(concat(var.address_space, local.known_other_cidrs, [for s in var.subnets : s.address_prefix]))
+  extra_spoke_cidrs = compact(concat(
+    local.private_nat_enabled ? [local.private_nat.subnet_address_prefix] : [],
+    local.spoke_dns_resolver_enabled ? [
+      var.spoke_dns_resolver.inbound_address_prefix,
+      var.spoke_dns_resolver.outbound_address_prefix
+    ] : []
+  ))
+  cidrs_for_range = distinct(concat(var.address_space, local.known_other_cidrs, [for s in var.subnets : s.address_prefix], local.extra_spoke_cidrs))
 
   # HashiCorp Terraform has no cidrcontains; compare IPv4 ranges numerically.
   ipv4_num = {
@@ -85,6 +120,24 @@ locals {
   subnets_overlap = anytrue([
     for pair in local.subnet_pairs :
     local.ipv4_num[pair.a].start <= local.ipv4_num[pair.b].end && local.ipv4_num[pair.b].start <= local.ipv4_num[pair.a].end
+  ])
+
+  private_nat_subnet_in_spoke = !local.private_nat_enabled || anytrue([
+    for vnet_cidr in var.routable_vnet.address_space :
+    local.ipv4_num[local.private_nat.subnet_address_prefix].start >= local.ipv4_num[vnet_cidr].start &&
+    local.ipv4_num[local.private_nat.subnet_address_prefix].end <= local.ipv4_num[vnet_cidr].end
+  ])
+
+  private_nat_overlaps_expansion = local.private_nat_enabled && anytrue([
+    for left in var.address_space :
+    local.ipv4_num[left].start <= local.ipv4_num[local.private_nat.subnet_address_prefix].end &&
+    local.ipv4_num[local.private_nat.subnet_address_prefix].start <= local.ipv4_num[left].end
+  ])
+
+  private_nat_overlaps_dns = local.private_nat_enabled && local.spoke_dns_resolver_enabled && anytrue([
+    for dns_cidr in [var.spoke_dns_resolver.inbound_address_prefix, var.spoke_dns_resolver.outbound_address_prefix] :
+    local.ipv4_num[local.private_nat.subnet_address_prefix].start <= local.ipv4_num[dns_cidr].end &&
+    local.ipv4_num[dns_cidr].start <= local.ipv4_num[local.private_nat.subnet_address_prefix].end
   ])
 
   subnets_needing_nsg = {
@@ -244,6 +297,84 @@ locals {
     }
   }
 
+  private_nat_peer_bypass_routes = local.private_nat_enabled && !try(local.private_nat.direct_peer_bypass, true) ? var.routable_vnet.address_space : []
+
+  private_nat_internet_routes = local.private_nat_enabled && try(local.private_nat.route_internet_through_nva, true) ? ["0.0.0.0/0"] : []
+
+  private_nat_route_prefixes = local.private_nat_enabled ? distinct(concat(var.enterprise_routes, local.private_nat_peer_bypass_routes, local.private_nat_internet_routes)) : []
+
+  private_nat_routes = {
+    for cidr in local.private_nat_route_prefixes : cidr => {
+      name                   = cidr == "0.0.0.0/0" ? "internet-via-private-nat" : "enterprise-${replace(replace(cidr, "/", "-"), ".", "-")}"
+      address_prefix         = cidr
+      next_hop_type          = "VirtualAppliance"
+      next_hop_in_ip_address = local.private_nat_ip
+    }
+  }
+
+  private_nat_nsg_rules = {
+    AllowForwardedInbound = {
+      priority                     = 110
+      direction                    = "Inbound"
+      access                       = "Allow"
+      protocol                     = "*"
+      description                  = "Allow forwarded traffic from the isolated expansion VNet so the NVA can SNAT it."
+      destination_port_range       = "*"
+      source_address_prefix        = null
+      source_address_prefixes      = var.address_space
+      destination_address_prefix   = "*"
+      destination_address_prefixes = null
+    }
+    AllowSshInbound = {
+      priority                     = 120
+      direction                    = "Inbound"
+      access                       = "Allow"
+      protocol                     = "Tcp"
+      description                  = "Allow SSH to the private NAT NVA from the routable spoke."
+      destination_port_range       = "22"
+      source_address_prefix        = length(local.private_nat_ssh_sources) > 0 ? null : "VirtualNetwork"
+      source_address_prefixes      = length(local.private_nat_ssh_sources) > 0 ? local.private_nat_ssh_sources : null
+      destination_address_prefix   = "*"
+      destination_address_prefixes = null
+    }
+    AllowAzureLoadBalancerInbound = {
+      priority                     = 130
+      direction                    = "Inbound"
+      access                       = "Allow"
+      protocol                     = "*"
+      description                  = "Allow Azure Load Balancer health probes."
+      destination_port_range       = "*"
+      source_address_prefix        = "AzureLoadBalancer"
+      source_address_prefixes      = null
+      destination_address_prefix   = "*"
+      destination_address_prefixes = null
+    }
+    AllowForwardedOutbound = {
+      priority                     = 110
+      direction                    = "Outbound"
+      access                       = "Allow"
+      protocol                     = "*"
+      description                  = "Allow SNATed traffic from the NVA into the spoke and enterprise paths."
+      destination_port_range       = "*"
+      source_address_prefix        = "*"
+      source_address_prefixes      = null
+      destination_address_prefix   = "*"
+      destination_address_prefixes = null
+    }
+    DenyInternetInbound = {
+      priority                     = 4096
+      direction                    = "Inbound"
+      access                       = "Deny"
+      protocol                     = "*"
+      description                  = "Deny inbound Internet traffic. The NVA has no public IP."
+      destination_port_range       = "*"
+      source_address_prefix        = "Internet"
+      source_address_prefixes      = null
+      destination_address_prefix   = "*"
+      destination_address_prefixes = null
+    }
+  }
+
   default_nsg_rules = var.nsg_default_rules_enabled ? merge(
     {
       AllowAzureLoadBalancerInbound = {
@@ -292,13 +423,13 @@ locals {
         destination_address_prefixes = null
       }
     },
-    local.firewall_enabled && length(var.enterprise_routes) > 0 ? {
+    local.appliance_enabled && length(var.enterprise_routes) > 0 ? {
       AllowEnterpriseOutbound = {
         priority                     = 220
         direction                    = "Outbound"
         access                       = "Allow"
         protocol                     = "*"
-        description                  = "Allow outbound traffic to caller-supplied enterprise prefixes via the firewall SNAT boundary."
+        description                  = "Allow outbound traffic to caller-supplied enterprise prefixes via the SNAT boundary."
         source_port_range            = "*"
         source_port_ranges           = null
         destination_port_range       = "*"
@@ -309,13 +440,13 @@ locals {
         destination_address_prefixes = var.enterprise_routes
       }
     } : {},
-    !local.none_enabled ? {
+    local.internet_egress_enabled ? {
       AllowInternetOutbound = {
         priority                     = 210
         direction                    = "Outbound"
         access                       = "Allow"
         protocol                     = "*"
-        description                  = "Allow outbound Internet traffic. In NAT mode this is SNATed by the NAT Gateway; in firewall mode it is steered by UDR."
+        description                  = "Allow outbound Internet traffic. In NAT mode this is SNATed by the NAT Gateway; in firewall_snat and private_nat it is steered by UDR."
         source_port_range            = "*"
         source_port_ranges           = null
         destination_port_range       = "*"
@@ -331,7 +462,7 @@ locals {
         direction                    = "Outbound"
         access                       = "Deny"
         protocol                     = "*"
-        description                  = "Deny Internet egress. none mode allows only local VNet, direct peering, and Private Endpoint paths."
+        description                  = "Deny Internet egress. none mode, and private_nat without route_internet_through_nva, allow only local VNet, direct peering, Private Endpoints, and optional enterprise prefixes."
         source_port_range            = "*"
         source_port_ranges           = null
         destination_port_range       = "*"
@@ -345,7 +476,9 @@ locals {
   ) : {}
 
   egress_route_table_id = local.firewall_enabled ? azurerm_route_table.firewall[0].id : (
-    local.none_enabled ? azurerm_route_table.none[0].id : null
+    local.private_nat_enabled ? azurerm_route_table.private_nat[0].id : (
+      local.none_enabled ? azurerm_route_table.none[0].id : null
+    )
   )
 
   nsg_rules = concat(
@@ -392,5 +525,9 @@ locals {
     enabled         = true
     source_prefixes = var.address_space
     snat_to         = local.firewall.firewall_private_ip
+    } : local.private_nat_enabled ? {
+    enabled         = true
+    source_prefixes = var.address_space
+    snat_to         = local.private_nat_ip
   } : null
 }

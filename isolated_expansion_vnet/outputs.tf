@@ -32,7 +32,7 @@ output "peering_ids" {
 }
 
 output "egress_mode" {
-  description = "Configured egress mode: nat, firewall_snat, or none."
+  description = "Configured egress mode: nat, firewall_snat, private_nat, or none."
   value       = local.egress_mode
 }
 
@@ -51,10 +51,26 @@ output "firewall_private_ip" {
   value       = local.firewall_enabled ? local.firewall.firewall_private_ip : null
 }
 
+output "private_nat_private_ip" {
+  description = "Spoke NVA private IP used as the SNAT/routing boundary when egress.mode is private_nat; otherwise null."
+  value       = local.private_nat_ip
+}
+
+output "private_nat_vm_id" {
+  description = "Resource ID of the private NAT NVA when egress.mode is private_nat; otherwise null."
+  value       = local.private_nat_enabled ? azurerm_linux_virtual_machine.private_nat[0].id : null
+}
+
+output "private_nat_subnet_id" {
+  description = "Resource ID of the spoke NVA subnet when egress.mode is private_nat; otherwise null."
+  value       = local.private_nat_enabled ? azapi_resource.private_nat_subnet[0].id : null
+}
+
 output "route_table_ids" {
-  description = "Map of route table names to IDs created for firewall SNAT or none mode. Empty in NAT mode."
+  description = "Map of route table names to IDs created for firewall SNAT, private NAT, or none mode. Empty in NAT mode."
   value = merge(
     local.firewall_enabled ? { firewall = azurerm_route_table.firewall[0].id } : {},
+    local.private_nat_enabled ? { private_nat = azurerm_route_table.private_nat[0].id } : {},
     local.none_enabled ? { none = azurerm_route_table.none[0].id } : {}
   )
 }
@@ -80,7 +96,7 @@ output "required_firewall_rules" {
 }
 
 output "required_private_snat" {
-  description = "Private SNAT contract: isolated source prefixes that must be translated to the firewall's enterprise-routable IP before entering the enterprise routing domain. Null unless egress.mode is firewall_snat."
+  description = "Private SNAT contract: isolated source prefixes that must be translated to an enterprise-routable IP (hub firewall or spoke NVA) before entering the enterprise routing domain. Null unless egress.mode is firewall_snat or private_nat."
   value       = local.required_private_snat
 }
 
