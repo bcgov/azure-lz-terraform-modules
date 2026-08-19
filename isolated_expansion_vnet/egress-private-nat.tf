@@ -2,6 +2,8 @@
 # traffic to enterprise prefixes (and optionally 0.0.0.0/0) is steered to
 # that VM, which SNATs isolated sources to the NVA's spoke IP before packets
 # enter the enterprise routing domain. The isolated prefix is never advertised.
+# Leave the NVA subnet without a table so vWAN routing intent programs
+# 0.0.0.0/0 to the hub, unless the caller passes spoke_route_table_id.
 
 resource "azurerm_network_security_group" "private_nat" {
   count = local.private_nat_enabled ? 1 : 0

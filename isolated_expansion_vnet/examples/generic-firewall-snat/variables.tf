@@ -44,8 +44,13 @@ variable "firewall_management_subnet_address_prefix" {
   type        = string
 }
 
+variable "hub_firewall_dns_servers" {
+  description = "Hub firewall DNS proxy IPs. The expansion VNet uses these as custom DNS after SNAT."
+  type        = list(string)
+}
+
 variable "spoke_route_table_id" {
-  description = "Optional existing spoke route table to associate with AzureFirewallSubnet so SNATed packets follow the spoke egress path."
+  description = "Optional existing spoke route table to associate with AzureFirewallSubnet when the spoke already uses a custom UDR. Leave null so vWAN routing intent programs the data subnet."
   type        = string
   default     = null
 }

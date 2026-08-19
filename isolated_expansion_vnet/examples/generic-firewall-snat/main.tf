@@ -26,6 +26,7 @@ module "compute_expansion" {
     firewall = {
       subnet_address_prefix            = var.firewall_subnet_address_prefix
       management_subnet_address_prefix = var.firewall_management_subnet_address_prefix
+      hub_firewall_dns_servers         = var.hub_firewall_dns_servers
       spoke_route_table_id             = var.spoke_route_table_id
     }
   }

@@ -4,9 +4,10 @@
 # existing hub/vWAN path. The isolated prefix is never advertised.
 #
 # AzureFirewallSubnet and AzureFirewallManagementSubnet cannot have NSGs.
-# Associate spoke_route_table_id on AzureFirewallSubnet only so SNATed
-# packets follow the spoke egress path. Do not put that table on the
-# management subnet.
+# Leave AzureFirewallSubnet without a table so vWAN routing intent programs
+# 0.0.0.0/0 to the hub, unless the caller passes spoke_route_table_id.
+# AzureFirewallManagementSubnet gets a module-owned 0.0.0.0/0 → Internet
+# table so forced-tunnel management is not sucked into the hub.
 
 check "firewall_snat_boundary" {
   assert {

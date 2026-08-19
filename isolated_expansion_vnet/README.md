@@ -47,13 +47,16 @@ flowchart TB
   hub -->|"vWAN connection"| spoke
   spoke ---|"direct peering only"| expansion
   WORK -.->|"firewall_snat / private_nat"| SNAT
-  WORK -.->|"UDP/53 over peering"| DNS
+  SNAT -.->|"SNAT then vWAN to hub DNS and Internet"| HUBFW
+  WORK -.->|"none/nat UDP/53 opt-in"| DNS
   DNS -.->|"forward . to hub DNS proxy"| HUBFW
 ```
 
 The **vWAN connection** is hub to routable spoke only. The expansion VNet is not on vWAN; it has **direct peering** to the spoke, and its prefix is never advertised on-prem or into vWAN. Hub Azure Firewall filters spoke traffic to on-prem and the Internet.
 
-Dotted paths: `firewall_snat` / `private_nat` SNAT in the spoke then follow the spoke UDR into the hub firewall. `none` and `nat` default to Azure-provided DNS and do not create a resolver. An optional spoke resolver (UDP/53 over peering, then `.` to the hub DNS proxy) is opt-in. `nat` Internet uses the expansion NAT Gateway and does not go through the hub. Default `none` is this diagram without the optional hops.
+Dotted paths: `firewall_snat` / `private_nat` SNAT in the spoke then follow vWAN routing intent into the hub firewall. Those modes set expansion DNS to the hub firewall DNS proxy. `none` and `nat` default to Azure-provided DNS and do not create a resolver. An optional spoke resolver (UDP/53 over peering, then `.` to the hub DNS proxy) is opt-in. `nat` Internet uses the expansion NAT Gateway and does not go through the hub. Default `none` is this diagram without the optional hops.
+
+Packet walks, per-subnet route tables, and DNS query/response are in [ROUTING-AND-DNS.md](ROUTING-AND-DNS.md).
 
 ## Addressing
 
@@ -101,7 +104,9 @@ NAT mode does not create a `0.0.0.0/0` virtual appliance route. Internet egress 
 | Expansion → any other destination (`route_internet_through_firewall = true`) | `0.0.0.0/0` to the firewall; destination sees the firewall IP |
 | Enterprise / on-prem → expansion CIDR | Not required and must not be configured |
 
-The module creates the spoke firewall (Basic by default), a dedicated firewall policy that allows expansion sources to any destination, and forced-tunnel SNAT so RFC1918 destinations are translated. Pass two unused `/26` or larger prefixes already in the spoke address space. Associate `spoke_route_table_id` on `AzureFirewallSubnet` when SNATed packets should follow an existing spoke UDR (for example `0.0.0.0/0` to the hub firewall). Do not put that table on `AzureFirewallManagementSubnet`, and do not put a route for the isolated prefix on it.
+The module creates the spoke firewall (Basic by default), a dedicated firewall policy that allows expansion sources to any destination, and forced-tunnel SNAT so RFC1918 destinations are translated. Pass two unused `/26` or larger prefixes already in the spoke address space and `hub_firewall_dns_servers` (the hub firewall DNS proxy IPs). Leave `AzureFirewallSubnet` without a custom table so vWAN routing intent programs `0.0.0.0/0` to the hub. Pass `spoke_route_table_id` only when this spoke already uses a custom UDR. The module associates a `0.0.0.0/0` → Internet table on `AzureFirewallManagementSubnet` only (management plane, not workload SNAT). Do not put a route for the isolated prefix on any spoke table.
+
+See [ROUTING-AND-DNS.md](ROUTING-AND-DNS.md) for the data-plane vs management-plane split and the DNS path.
 
 Azure forbids NSGs on `AzureFirewallSubnet` and `AzureFirewallManagementSubnet`. Landing-zone policy may also need an exemption to create Azure Firewall in an application subscription. One Azure Firewall per spoke VNet: those subnet names are reserved.
 
@@ -115,7 +120,9 @@ Setting `direct_peer_bypass = false` steers even the routable VNet CIDR through 
 | Expansion → any other destination (`route_internet_through_nva = true`) | `0.0.0.0/0` to the spoke NVA; destination sees the NVA IP |
 | Enterprise / on-prem → expansion CIDR | Not required and must not be configured |
 
-The module creates the NVA, its spoke subnet and NSG, IP forwarding, SNAT rules, expansion UDRs, and forwarded-traffic peering. Pass an unused `/28` or larger prefix already in the spoke address space. Associate `spoke_route_table_id` when the NVA should follow an existing spoke UDR (for example `0.0.0.0/0` to the hub firewall) after SNAT. Do not put a route for the isolated prefix on that table.
+The module creates the NVA, its spoke subnet and NSG, IP forwarding, SNAT rules, expansion UDRs, and forwarded-traffic peering. Pass an unused `/28` or larger prefix already in the spoke address space and `hub_firewall_dns_servers`. Leave the NVA subnet without a custom table so vWAN routing intent programs `0.0.0.0/0` to the hub. Pass `spoke_route_table_id` only when this spoke already uses a custom UDR. Do not put a route for the isolated prefix on that table.
+
+See [ROUTING-AND-DNS.md](ROUTING-AND-DNS.md).
 
 The NVA has no public IP. SSH is allowed from the spoke address space (and optional `ssh_source_prefixes`). This is a single VM with no HA; treat it as a landing-zone hop, not a high-throughput firewall. ACI cannot be this hop: it has no IP forwarding and cannot be a UDR next hop.
 
@@ -242,11 +249,9 @@ module "compute_expansion" {
     firewall = {
       subnet_address_prefix            = "10.40.32.64/26"
       management_subnet_address_prefix = "10.40.32.128/26"
-      spoke_route_table_id             = var.spoke_route_table_id
+      hub_firewall_dns_servers         = ["<hub-firewall-dns-proxy-ip>"]
     }
   }
-
-  dns_forwarding_ruleset_id = var.isolated_expansion_dns_forwarding_ruleset_id
 }
 ```
 
@@ -281,6 +286,7 @@ module "compute_expansion" {
     private_nat = {
       subnet_address_prefix     = "10.40.32.64/28"
       ssh_admin_group_object_id = "<entra-admin-group-object-id>"
+      hub_firewall_dns_servers  = ["<hub-firewall-dns-proxy-ip>"]
 
       patch_schedule = {
         start_date_time = "2026-09-12 02:00"
@@ -359,7 +365,7 @@ Place customer Storage, Key Vault, SQL, and application Private Endpoints in the
 - the platform forwarding ruleset used by `dns_forwarding_ruleset_id`
 - private endpoints (prefer placing them in the routable VNet)
 - workloads deployed into the expansion VNet
-- the hub firewall or shared enterprise firewall policy (`firewall_snat` creates a spoke Azure Firewall instead; `private_nat` creates a spoke NVA)
+- the hub firewall or shared enterprise firewall policy (`firewall_snat` creates a spoke Azure Firewall instead; `private_nat` creates a spoke NVA). Hub policy must already allow the spoke hop SNAT IP, including UDP/53.
 
 Private endpoints may be created in the expansion VNet, but those isolated addresses (for example `10.10.x.x`) are reachable only from networks that know the isolated prefix: the expansion VNet itself and the directly peered routable VNet.
 
@@ -446,7 +452,9 @@ None mode: expansion can reach the routable VNet, customer Private Endpoints ove
 
 `none` and `nat` default to Azure-provided DNS. This module does not create a DNS Private Resolver or private DNS zone virtual network links unless you opt in.
 
-Isolated expansion VNets are not vWAN spokes. They do not receive the hub firewall DNS servers and, in `none` mode, they cannot reach the central Private DNS Resolver inbound. If you need privatelink or enterprise names, use the cheapest option that works:
+`firewall_snat` and `private_nat` set the expansion VNet to `hub_firewall_dns_servers` (the hub firewall DNS proxy). Queries go to that IP, SNAT at the spoke hop, then follow routing intent to the hub. See [ROUTING-AND-DNS.md](ROUTING-AND-DNS.md).
+
+Isolated expansion VNets are not vWAN spokes. In `none` and `nat` they do not receive hub firewall DNS and cannot reach the central Private DNS Resolver inbound. If those modes need privatelink or enterprise names, use the cheapest option that works:
 
 1. Link private DNS zones to the expansion VNet outside this module.
 2. Pass `dns_forwarding_ruleset_id` (a second ruleset on the existing central outbound).
@@ -510,7 +518,7 @@ The expansion prefix may be known by the expansion VNet, its directly peered wor
 ## Requirements
 
 | Name | Version |
-|------|---------|
+| ---- | ------- |
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >=1.9.0, < 2.0.0 |
 | <a name="requirement_azapi"></a> [azapi](#requirement\_azapi) | ~> 2.0 |
 | <a name="requirement_azurerm"></a> [azurerm](#requirement\_azurerm) | ~> 4.0 |
@@ -519,10 +527,10 @@ The expansion prefix may be known by the expansion VNet, its directly peered wor
 ## Providers
 
 | Name | Version |
-|------|---------|
-| <a name="provider_azapi"></a> [azapi](#provider\_azapi) | ~> 2.0 |
-| <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) | ~> 4.0 |
-| <a name="provider_tls"></a> [tls](#provider\_tls) | ~> 4.0 |
+| ---- | ------- |
+| <a name="provider_azapi"></a> [azapi](#provider\_azapi) | 2.12.0 |
+| <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) | 4.81.0 |
+| <a name="provider_tls"></a> [tls](#provider\_tls) | 4.3.0 |
 
 ## Modules
 
@@ -531,7 +539,7 @@ No modules.
 ## Resources
 
 | Name | Type |
-|------|------|
+| ---- | ---- |
 | [azapi_resource.firewall_subnet](https://registry.terraform.io/providers/azure/azapi/latest/docs/resources/resource) | resource |
 | [azapi_resource.private_nat_subnet](https://registry.terraform.io/providers/azure/azapi/latest/docs/resources/resource) | resource |
 | [azapi_resource.spoke_dns_subnet](https://registry.terraform.io/providers/azure/azapi/latest/docs/resources/resource) | resource |
@@ -566,8 +574,10 @@ No modules.
 | [azurerm_role_assignment.private_nat_aad_ssh](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/role_assignment) | resource |
 | [azurerm_route.default_internet](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/route) | resource |
 | [azurerm_route.firewall](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/route) | resource |
+| [azurerm_route.firewall_management_internet](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/route) | resource |
 | [azurerm_route.private_nat](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/route) | resource |
 | [azurerm_route_table.expansion](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/route_table) | resource |
+| [azurerm_route_table.firewall_management](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/route_table) | resource |
 | [azurerm_subnet_nat_gateway_association.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/subnet_nat_gateway_association) | resource |
 | [azurerm_subnet_route_table_association.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/subnet_route_table_association) | resource |
 | [azurerm_virtual_machine_extension.private_nat_aad_ssh](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/virtual_machine_extension) | resource |
@@ -579,12 +589,12 @@ No modules.
 ## Inputs
 
 | Name | Description | Type | Default | Required |
-|------|-------------|------|---------|:--------:|
+| ---- | ----------- | ---- | ------- | :------: |
 | <a name="input_address_space"></a> [address\_space](#input\_address\_space) | Isolated RFC1918 address space for the expansion VNet. Must not overlap the routable workload VNet, other directly peered networks, or destinations the expansion workload must reach without SNAT. This prefix must never be advertised into the enterprise routing domain. Defaults to 10.10.0.0/16. | `list(string)` | <pre>[<br/>  "10.10.0.0/16"<br/>]</pre> | no |
 | <a name="input_disallowed_address_spaces"></a> [disallowed\_address\_spaces](#input\_disallowed\_address\_spaces) | Known directly connected or otherwise incompatible CIDRs. The module fails if the expansion address space overlaps any of these prefixes. Full enterprise IPAM validation remains outside Terraform. | `list(string)` | `[]` | no |
-| <a name="input_dns"></a> [dns](#input\_dns) | DNS configuration for the expansion VNet. Azure-provided DNS is the default. Use custom servers only when those resolvers are reachable from the expansion VNet (in the directly peered workload VNet for NAT mode, or via firewall SNAT for enterprise DNS). When spoke\_dns\_resolver.enabled is true, leave this at the default; the module points the expansion VNet at the spoke inbound endpoint. | <pre>object({<br/>    mode    = optional(string, "azure")<br/>    servers = optional(list(string), [])<br/>  })</pre> | <pre>{<br/>  "mode": "azure"<br/>}</pre> | no |
+| <a name="input_dns"></a> [dns](#input\_dns) | DNS configuration for the expansion VNet. Azure-provided DNS is the default for none and nat. firewall\_snat and private\_nat set the expansion VNet to hub\_firewall\_dns\_servers unless this is custom or spoke\_dns\_resolver is enabled. Use custom servers only when those resolvers are reachable from the expansion VNet. When spoke\_dns\_resolver.enabled is true, leave this at the default; the module points the expansion VNet at the spoke inbound endpoint. | <pre>object({<br/>    mode    = optional(string, "azure")<br/>    servers = optional(list(string), [])<br/>  })</pre> | <pre>{<br/>  "mode": "azure"<br/>}</pre> | no |
 | <a name="input_dns_forwarding_ruleset_id"></a> [dns\_forwarding\_ruleset\_id](#input\_dns\_forwarding\_ruleset\_id) | Optional existing central DNS forwarding ruleset ID to link to the expansion VNet (Azure-provided DNS / slimmer platform variant). The ruleset must forward queries to a resolver inbound whose VNet is linked to the central private zones, and must not itself be linked to that inbound VNet. Mutually exclusive with spoke\_dns\_resolver.enabled. | `string` | `null` | no |
-| <a name="input_egress"></a> [egress](#input\_egress) | Outbound connectivity model. Defaults to `none` (private paths only: local VNet, direct peering, and Private Endpoints, with no NAT Gateway or Internet route). Use `nat` when the workload also needs public egress. Use `firewall_snat` to create a forced-tunnel Azure Firewall in the routable spoke that SNATs isolated sources to the firewall's spoke IP. Use `private_nat` to create a Linux NVA in the spoke for the same translation contract. | <pre>object({<br/>    mode = optional(string, "none")<br/>    nat = optional(object({<br/>      public_ip_count = optional(number, 1)<br/>      idle_timeout    = optional(number, 10)<br/>      zones           = optional(list(string), ["1"])<br/>      sku_name        = optional(string, "Standard")<br/>      }), {<br/>      public_ip_count = 1<br/>      idle_timeout    = 10<br/>      zones           = ["1"]<br/>      sku_name        = "Standard"<br/>    })<br/>    firewall = optional(object({<br/>      subnet_address_prefix            = string<br/>      management_subnet_address_prefix = string<br/>      private_ip                       = optional(string)<br/>      sku_tier                         = optional(string, "Basic")<br/>      spoke_route_table_id             = optional(string)<br/>      direct_peer_bypass               = optional(bool, true)<br/>      route_internet_through_firewall  = optional(bool, true)<br/>      zones                            = optional(list(string))<br/>    }))<br/>    private_nat = optional(object({<br/>      subnet_address_prefix      = string<br/>      ssh_public_key             = optional(string)<br/>      ssh_admin_group_object_id  = optional(string)<br/>      subnet_name                = optional(string)<br/>      private_ip                 = optional(string)<br/>      vm_size                    = optional(string, "Standard_B2s")<br/>      admin_username             = optional(string, "azureadmin")<br/>      os_disk_size_gb            = optional(number, 30)<br/>      zone                       = optional(string)<br/>      spoke_route_table_id       = optional(string)<br/>      ssh_source_prefixes        = optional(list(string), [])<br/>      direct_peer_bypass         = optional(bool, true)<br/>      route_internet_through_nva = optional(bool, true)<br/>      patch_schedule = optional(object({<br/>        start_date_time            = string<br/>        time_zone                  = optional(string, "UTC")<br/>        recur_every                = optional(string, "1Month Second Saturday")<br/>        duration                   = optional(string, "02:00")<br/>        reboot                     = optional(string, "IfRequired")<br/>        classifications_to_include = optional(list(string), ["Critical", "Security"])<br/>      }))<br/>      image = optional(object({<br/>        publisher = optional(string, "Canonical")<br/>        offer     = optional(string, "ubuntu-26_04-lts")<br/>        sku       = optional(string, "server-gen1")<br/>        version   = optional(string, "latest")<br/>      }), {})<br/>    }))<br/>  })</pre> | <pre>{<br/>  "mode": "none"<br/>}</pre> | no |
+| <a name="input_egress"></a> [egress](#input\_egress) | Outbound connectivity model. Defaults to `none` (private paths only: local VNet, direct peering, and Private Endpoints, with no NAT Gateway or Internet route). Use `nat` when the workload also needs public egress. Use `firewall_snat` to create a forced-tunnel Azure Firewall in the routable spoke that SNATs isolated sources to the firewall's spoke IP. Use `private_nat` to create a Linux NVA in the spoke for the same translation contract. firewall\_snat and private\_nat require hub\_firewall\_dns\_servers (hub firewall DNS proxy IPs) so the expansion VNet can resolve through the hub after SNAT. spoke\_route\_table\_id is an optional override when the spoke already uses a custom UDR; leave it unset so vWAN routing intent programs AzureFirewallSubnet / the NVA subnet. | <pre>object({<br/>    mode = optional(string, "none")<br/>    nat = optional(object({<br/>      public_ip_count = optional(number, 1)<br/>      idle_timeout    = optional(number, 10)<br/>      zones           = optional(list(string), ["1"])<br/>      sku_name        = optional(string, "Standard")<br/>      }), {<br/>      public_ip_count = 1<br/>      idle_timeout    = 10<br/>      zones           = ["1"]<br/>      sku_name        = "Standard"<br/>    })<br/>    firewall = optional(object({<br/>      subnet_address_prefix            = string<br/>      management_subnet_address_prefix = string<br/>      hub_firewall_dns_servers         = list(string)<br/>      private_ip                       = optional(string)<br/>      sku_tier                         = optional(string, "Basic")<br/>      spoke_route_table_id             = optional(string)<br/>      direct_peer_bypass               = optional(bool, true)<br/>      route_internet_through_firewall  = optional(bool, true)<br/>      zones                            = optional(list(string))<br/>    }))<br/>    private_nat = optional(object({<br/>      subnet_address_prefix      = string<br/>      ssh_public_key             = optional(string)<br/>      ssh_admin_group_object_id  = optional(string)<br/>      subnet_name                = optional(string)<br/>      private_ip                 = optional(string)<br/>      vm_size                    = optional(string, "Standard_B2s")<br/>      admin_username             = optional(string, "azureadmin")<br/>      os_disk_size_gb            = optional(number, 30)<br/>      zone                       = optional(string)<br/>      hub_firewall_dns_servers   = list(string)<br/>      spoke_route_table_id       = optional(string)<br/>      ssh_source_prefixes        = optional(list(string), [])<br/>      direct_peer_bypass         = optional(bool, true)<br/>      route_internet_through_nva = optional(bool, true)<br/>      patch_schedule = optional(object({<br/>        start_date_time            = string<br/>        time_zone                  = optional(string, "UTC")<br/>        recur_every                = optional(string, "1Month Second Saturday")<br/>        duration                   = optional(string, "02:00")<br/>        reboot                     = optional(string, "IfRequired")<br/>        classifications_to_include = optional(list(string), ["Critical", "Security"])<br/>      }))<br/>      image = optional(object({<br/>        publisher = optional(string, "Canonical")<br/>        offer     = optional(string, "ubuntu-26_04-lts")<br/>        sku       = optional(string, "server-gen1")<br/>        version   = optional(string, "latest")<br/>      }), {})<br/>    }))<br/>  })</pre> | <pre>{<br/>  "mode": "none"<br/>}</pre> | no |
 | <a name="input_enterprise_routes"></a> [enterprise\_routes](#input\_enterprise\_routes) | Optional extra prefixes to steer to the SNAT hop. The default egress path is 0.0.0.0/0 (route\_internet\_through\_nva / route\_internet\_through\_firewall). Use this only when that default is disabled and specific prefixes still need translation. Do not list 10.0.0.0/8, 142.0.0.0/8, or other stand-ins for default egress. | `list(string)` | `[]` | no |
 | <a name="input_location"></a> [location](#input\_location) | (Required) Azure region to deploy to. Changing this forces a new resource to be created. | `string` | n/a | yes |
 | <a name="input_name"></a> [name](#input\_name) | Logical name for the isolated expansion VNet. Used as the Virtual Network name unless virtual\_network\_name is set. In this landing zone, the VNet name should end with `-isolated-expansion` so platform policy can distinguish it from enterprise-routed spokes. | `string` | n/a | yes |
@@ -600,7 +610,7 @@ No modules.
 ## Outputs
 
 | Name | Description |
-|------|-------------|
+| ---- | ----------- |
 | <a name="output_address_space"></a> [address\_space](#output\_address\_space) | Address space assigned to the isolated expansion Virtual Network. |
 | <a name="output_dns_forwarding_ruleset_link_id"></a> [dns\_forwarding\_ruleset\_link\_id](#output\_dns\_forwarding\_ruleset\_link\_id) | Resource ID of the expansion VNet link to dns\_forwarding\_ruleset\_id when that input is set; otherwise null. |
 | <a name="output_egress_mode"></a> [egress\_mode](#output\_egress\_mode) | Configured egress mode: nat, firewall\_snat, private\_nat, or none. |

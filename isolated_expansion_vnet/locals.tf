@@ -54,7 +54,7 @@ locals {
     management = {
       name           = "AzureFirewallManagementSubnet"
       address_prefix = local.firewall.management_subnet_address_prefix
-      route_table_id = null
+      route_table_id = one(azurerm_route_table.firewall_management[*].id)
     }
   } : {}
 
@@ -85,8 +85,16 @@ locals {
     cidrhost(var.spoke_dns_resolver.inbound_address_prefix, 4)
   ) : null
 
+  hub_firewall_dns_servers = (
+    local.firewall_enabled ? try(local.firewall.hub_firewall_dns_servers, []) :
+    local.private_nat_enabled ? try(local.private_nat.hub_firewall_dns_servers, []) :
+    []
+  )
+
   dns_servers = local.spoke_dns_resolver_enabled ? [local.spoke_dns_resolver_inbound_ip] : (
-    var.dns.mode == "custom" ? var.dns.servers : null
+    var.dns.mode == "custom" ? var.dns.servers : (
+      local.appliance_enabled && length(local.hub_firewall_dns_servers) > 0 ? local.hub_firewall_dns_servers : null
+    )
   )
 
   subnet_keys = keys(var.subnets)

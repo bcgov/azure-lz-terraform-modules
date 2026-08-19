@@ -27,6 +27,7 @@ module "compute_expansion" {
       subnet_address_prefix     = var.private_nat_subnet_address_prefix
       ssh_admin_group_object_id = var.ssh_admin_group_object_id
       ssh_public_key            = var.ssh_public_key
+      hub_firewall_dns_servers  = var.hub_firewall_dns_servers
       spoke_route_table_id      = var.spoke_route_table_id
     }
   }

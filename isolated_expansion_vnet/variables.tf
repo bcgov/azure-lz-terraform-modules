@@ -135,7 +135,7 @@ variable "subnets" {
 }
 
 variable "egress" {
-  description = "Outbound connectivity model. Defaults to `none` (private paths only: local VNet, direct peering, and Private Endpoints, with no NAT Gateway or Internet route). Use `nat` when the workload also needs public egress. Use `firewall_snat` to create a forced-tunnel Azure Firewall in the routable spoke that SNATs isolated sources to the firewall's spoke IP. Use `private_nat` to create a Linux NVA in the spoke for the same translation contract."
+  description = "Outbound connectivity model. Defaults to `none` (private paths only: local VNet, direct peering, and Private Endpoints, with no NAT Gateway or Internet route). Use `nat` when the workload also needs public egress. Use `firewall_snat` to create a forced-tunnel Azure Firewall in the routable spoke that SNATs isolated sources to the firewall's spoke IP. Use `private_nat` to create a Linux NVA in the spoke for the same translation contract. firewall_snat and private_nat require hub_firewall_dns_servers (hub firewall DNS proxy IPs) so the expansion VNet can resolve through the hub after SNAT. spoke_route_table_id is an optional override when the spoke already uses a custom UDR; leave it unset so vWAN routing intent programs AzureFirewallSubnet / the NVA subnet."
   type = object({
     mode = optional(string, "none")
     nat = optional(object({
@@ -152,6 +152,7 @@ variable "egress" {
     firewall = optional(object({
       subnet_address_prefix            = string
       management_subnet_address_prefix = string
+      hub_firewall_dns_servers         = list(string)
       private_ip                       = optional(string)
       sku_tier                         = optional(string, "Basic")
       spoke_route_table_id             = optional(string)
@@ -169,6 +170,7 @@ variable "egress" {
       admin_username             = optional(string, "azureadmin")
       os_disk_size_gb            = optional(number, 30)
       zone                       = optional(string)
+      hub_firewall_dns_servers   = list(string)
       spoke_route_table_id       = optional(string)
       ssh_source_prefixes        = optional(list(string), [])
       direct_peer_bypass         = optional(bool, true)
@@ -223,6 +225,17 @@ variable "egress" {
   }
 
   validation {
+    condition = var.egress.mode != "firewall_snat" || (
+      length(try(var.egress.firewall.hub_firewall_dns_servers, [])) > 0 &&
+      alltrue([
+        for ip in try(var.egress.firewall.hub_firewall_dns_servers, []) :
+        can(cidrhost("${ip}/32", 0)) && !can(regex("/", ip))
+      ])
+    )
+    error_message = "egress.firewall.hub_firewall_dns_servers must be a non-empty list of IPv4 addresses when using firewall_snat. Use the hub firewall DNS proxy IPs."
+  }
+
+  validation {
     condition = var.egress.mode != "private_nat" || (
       var.egress.private_nat != null &&
       try(var.egress.private_nat.subnet_address_prefix, null) != null &&
@@ -230,6 +243,17 @@ variable "egress" {
       try(var.egress.private_nat.ssh_admin_group_object_id, null) != null
     )
     error_message = "egress.private_nat.subnet_address_prefix and ssh_admin_group_object_id are required when using private_nat."
+  }
+
+  validation {
+    condition = var.egress.mode != "private_nat" || (
+      length(try(var.egress.private_nat.hub_firewall_dns_servers, [])) > 0 &&
+      alltrue([
+        for ip in try(var.egress.private_nat.hub_firewall_dns_servers, []) :
+        can(cidrhost("${ip}/32", 0)) && !can(regex("/", ip))
+      ])
+    )
+    error_message = "egress.private_nat.hub_firewall_dns_servers must be a non-empty list of IPv4 addresses when using private_nat. Use the hub firewall DNS proxy IPs."
   }
 
   validation {
@@ -333,7 +357,7 @@ variable "disallowed_address_spaces" {
 }
 
 variable "dns" {
-  description = "DNS configuration for the expansion VNet. Azure-provided DNS is the default. Use custom servers only when those resolvers are reachable from the expansion VNet (in the directly peered workload VNet for NAT mode, or via firewall SNAT for enterprise DNS). When spoke_dns_resolver.enabled is true, leave this at the default; the module points the expansion VNet at the spoke inbound endpoint."
+  description = "DNS configuration for the expansion VNet. Azure-provided DNS is the default for none and nat. firewall_snat and private_nat set the expansion VNet to hub_firewall_dns_servers unless this is custom or spoke_dns_resolver is enabled. Use custom servers only when those resolvers are reachable from the expansion VNet. When spoke_dns_resolver.enabled is true, leave this at the default; the module points the expansion VNet at the spoke inbound endpoint."
   type = object({
     mode    = optional(string, "azure")
     servers = optional(list(string), [])
