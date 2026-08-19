@@ -74,9 +74,10 @@ variable "routable_vnet" {
 
   validation {
     condition = alltrue([
-      for cidr in var.routable_vnet.address_space : can(cidrhost(cidr, 0))
+      for cidr in var.routable_vnet.address_space :
+      can(cidrhost(cidr, 0)) && can(regex("^\\d+\\.\\d+\\.\\d+\\.\\d+$", cidrhost(cidr, 0)))
     ])
-    error_message = "Each routable_vnet.address_space value must be a valid CIDR prefix."
+    error_message = "Each routable_vnet.address_space value must be a valid IPv4 CIDR prefix."
   }
 }
 
@@ -119,9 +120,10 @@ variable "subnets" {
 
   validation {
     condition = alltrue([
-      for s in var.subnets : can(cidrhost(s.address_prefix, 0))
+      for s in var.subnets :
+      can(cidrhost(s.address_prefix, 0)) && can(regex("^\\d+\\.\\d+\\.\\d+\\.\\d+$", cidrhost(s.address_prefix, 0)))
     ])
-    error_message = "Each subnet address_prefix must be a valid CIDR prefix."
+    error_message = "Each subnet address_prefix must be a valid IPv4 CIDR prefix."
   }
 
   validation {
@@ -260,6 +262,17 @@ variable "egress" {
     condition     = var.egress.mode != "nat" || contains(["Standard", "StandardV2"], var.egress.nat.sku_name)
     error_message = "egress.nat.sku_name must be Standard or StandardV2."
   }
+
+  validation {
+    condition = alltrue([
+      for cidr in compact([
+        try(var.egress.firewall.subnet_address_prefix, null),
+        try(var.egress.firewall.management_subnet_address_prefix, null),
+        try(var.egress.private_nat.subnet_address_prefix, null),
+      ]) : can(regex("^\\d+\\.\\d+\\.\\d+\\.\\d+$", cidrhost(cidr, 0)))
+    ])
+    error_message = "egress.firewall and egress.private_nat subnet prefixes must be IPv4 CIDRs."
+  }
 }
 
 variable "enterprise_routes" {
@@ -269,9 +282,10 @@ variable "enterprise_routes" {
 
   validation {
     condition = alltrue([
-      for cidr in var.enterprise_routes : can(cidrhost(cidr, 0))
+      for cidr in var.enterprise_routes :
+      can(cidrhost(cidr, 0)) && can(regex("^\\d+\\.\\d+\\.\\d+\\.\\d+$", cidrhost(cidr, 0)))
     ])
-    error_message = "Each enterprise_routes value must be a valid CIDR prefix."
+    error_message = "Each enterprise_routes value must be a valid IPv4 CIDR prefix."
   }
 
   validation {
@@ -287,9 +301,10 @@ variable "disallowed_address_spaces" {
 
   validation {
     condition = alltrue([
-      for cidr in var.disallowed_address_spaces : can(cidrhost(cidr, 0))
+      for cidr in var.disallowed_address_spaces :
+      can(cidrhost(cidr, 0)) && can(regex("^\\d+\\.\\d+\\.\\d+\\.\\d+$", cidrhost(cidr, 0)))
     ])
-    error_message = "Each disallowed_address_spaces value must be a valid CIDR prefix."
+    error_message = "Each disallowed_address_spaces value must be a valid IPv4 CIDR prefix."
   }
 }
 
@@ -329,13 +344,13 @@ variable "spoke_dns_resolver" {
   }
 
   validation {
-    condition     = !var.spoke_dns_resolver.enabled || (try(var.spoke_dns_resolver.inbound_address_prefix, null) != null && can(cidrhost(var.spoke_dns_resolver.inbound_address_prefix, 0)))
-    error_message = "spoke_dns_resolver.inbound_address_prefix is required and must be a valid CIDR when the resolver is enabled."
+    condition     = !var.spoke_dns_resolver.enabled || (try(var.spoke_dns_resolver.inbound_address_prefix, null) != null && can(cidrhost(var.spoke_dns_resolver.inbound_address_prefix, 0)) && can(regex("^\\d+\\.\\d+\\.\\d+\\.\\d+$", cidrhost(var.spoke_dns_resolver.inbound_address_prefix, 0))))
+    error_message = "spoke_dns_resolver.inbound_address_prefix is required and must be a valid IPv4 CIDR when the resolver is enabled."
   }
 
   validation {
-    condition     = !var.spoke_dns_resolver.enabled || (try(var.spoke_dns_resolver.outbound_address_prefix, null) != null && can(cidrhost(var.spoke_dns_resolver.outbound_address_prefix, 0)))
-    error_message = "spoke_dns_resolver.outbound_address_prefix is required and must be a valid CIDR when the resolver is enabled."
+    condition     = !var.spoke_dns_resolver.enabled || (try(var.spoke_dns_resolver.outbound_address_prefix, null) != null && can(cidrhost(var.spoke_dns_resolver.outbound_address_prefix, 0)) && can(regex("^\\d+\\.\\d+\\.\\d+\\.\\d+$", cidrhost(var.spoke_dns_resolver.outbound_address_prefix, 0))))
+    error_message = "spoke_dns_resolver.outbound_address_prefix is required and must be a valid IPv4 CIDR when the resolver is enabled."
   }
 
   validation {

@@ -86,7 +86,7 @@ output "route_table_ids" {
   value = merge(
     local.none_enabled ? { none = azurerm_route_table.expansion[0].id } : {},
     local.private_nat_enabled ? { private_nat = azurerm_route_table.expansion[0].id } : {},
-    local.firewall_enabled ? { firewall = azurerm_route_table.expansion[0].id } : {}
+    local.firewall_enabled ? { firewall_snat = azurerm_route_table.expansion[0].id } : {}
   )
 }
 
