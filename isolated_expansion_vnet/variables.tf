@@ -176,7 +176,7 @@ variable "egress" {
       patch_schedule = optional(object({
         start_date_time            = string
         time_zone                  = optional(string, "UTC")
-        recur_every                = optional(string, "1Month")
+        recur_every                = optional(string, "1Month Second Saturday")
         duration                   = optional(string, "02:00")
         reboot                     = optional(string, "IfRequired")
         classifications_to_include = optional(list(string), ["Critical", "Security"])
@@ -266,9 +266,10 @@ variable "egress" {
       can(regex("^\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}$", var.egress.private_nat.patch_schedule.start_date_time)) &&
       contains(["Always", "IfRequired", "Never"], var.egress.private_nat.patch_schedule.reboot) &&
       can(regex("^\\d{2}:\\d{2}$", var.egress.private_nat.patch_schedule.duration)) &&
-      length(var.egress.private_nat.patch_schedule.classifications_to_include) > 0
+      length(var.egress.private_nat.patch_schedule.classifications_to_include) > 0 &&
+      can(regex("(?i)^(Day|\\d+Days?|Week( [A-Za-z,]+)?|\\d+Weeks?( [A-Za-z,]+)?|Month .+|\\d+Months? .+)$", var.egress.private_nat.patch_schedule.recur_every))
     )
-    error_message = "egress.private_nat.patch_schedule.start_date_time must be YYYY-MM-DD HH:MM, duration HH:MM, and reboot Always, IfRequired, or Never."
+    error_message = "egress.private_nat.patch_schedule.start_date_time must be YYYY-MM-DD HH:MM, duration HH:MM, reboot Always/IfRequired/Never, and monthly recur_every must include a day (1Month day12) or week (1Month Second Saturday)."
   }
 
   validation {
