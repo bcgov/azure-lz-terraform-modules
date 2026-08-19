@@ -4,12 +4,12 @@ terraform {
   required_providers {
     azurerm = {
       source  = "hashicorp/azurerm"
-      version = "~> 4.0"
+      version = "~> 4.76"
     }
 
     azapi = {
       source  = "azure/azapi"
-      version = "~> 2.0, != 1.13.0" # NOTE: Cannot use v2.x if calling this module from the CAF deployment
+      version = "~> 2.10" # NOTE: Cannot use v2.x if calling this module from the CAF deployment
     }
   }
 }

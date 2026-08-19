@@ -1,0 +1,30 @@
+variable "public_ingress_security_best_prac_parameters" {
+  type = object({
+    app_gateway_deployed_with_azure_waf_effect          = optional(string, "Audit")
+    app_gateway_resource_logs_effect                    = optional(string, "AuditIfNotExists")
+    app_gateway_waf_request_body_inspection_effect      = optional(string, "Audit")
+    app_gateway_log_analytics_effect                    = optional(string, "AuditIfNotExists")
+    app_gateway_log_category_group                      = optional(string, "allLogs")
+    app_gateway_waf_enabled_effect                      = optional(string, "Audit")
+    app_gateway_bot_protection_effect                   = optional(string, "Audit")
+    app_gateway_for_containers_security_policies_effect = optional(string, "AuditIfNotExists")
+    load_balancer_log_analytics_effect                  = optional(string, "AuditIfNotExists")
+    load_balancer_log_category_group                    = optional(string, "allLogs")
+    diagnostic_setting_name                             = optional(string, "setByPolicy-LogAnalytics")
+    diagnostic_resource_location_list                   = optional(list(string), ["*"])
+    api_management_encrypted_protocols_effect           = optional(string, "Audit")
+    front_door_premium_tier_effect                      = optional(string, "Audit")
+    front_door_resource_logs_effect                     = optional(string, "AuditIfNotExists")
+    front_door_min_tls_version_effect                   = optional(string, "Audit")
+    front_door_plus_waf_resource_logs_effect            = optional(string, "AuditIfNotExists")
+    front_door_waf_request_body_inspection_effect       = optional(string, "Audit")
+    front_door_waf_enabled_effect                       = optional(string, "Audit")
+    front_door_bot_protection_effect                    = optional(string, "Audit")
+    front_door_rate_limit_effect                        = optional(string, "Audit")
+    front_door_private_connectivity_effect              = optional(string, "Audit")
+    front_door_waf_mode_effect                          = optional(string, "Audit")
+    front_door_waf_mode_requirement                     = optional(string, "Detection")
+  })
+  description = "Parameter values for the Public-Ingress-SecPrac initiative assignment."
+  default     = {}
+}

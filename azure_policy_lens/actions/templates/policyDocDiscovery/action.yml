@@ -1,0 +1,68 @@
+name: "Policy Doc Discovery"
+description: "Collect environment discovery data and publish it as a build artifact."
+inputs:
+  topLevelManagementGroupName:
+    description: "Top-level management group name for discovery context."
+    required: true
+  buildArtifactName:
+    description: "Artifact name for discovery output."
+    required: true
+runs:
+  using: composite
+  steps:
+    - name: Run environment discovery
+      shell: bash
+      run: |
+        set -euo pipefail
+
+        script_path="azure_policy_lens/scripts/pipelines/policy-documentation/environment-discovery.ps1"
+        settings_file="azure_policy_lens/configurations/settings.yml"
+        discovery_file="${{ env.policyDocDiscoveryFileName }}"
+        if [[ -z "$discovery_file" ]]; then
+          discovery_file="${{ env.environmentDiscoveryFileName }}"
+        fi
+
+        if [[ -z "$discovery_file" ]]; then
+          discovery_file="EnvironmentDiscovery.zip"
+        fi
+
+        if [[ ! -f "$script_path" ]]; then
+          echo "Required script not found: $script_path" >&2
+          exit 1
+        fi
+
+        if [[ ! -f "$settings_file" ]]; then
+          echo "Required settings file not found: $settings_file" >&2
+          exit 1
+        fi
+
+        mkdir -p policy-doc-discovery
+        output_file="$PWD/policy-doc-discovery/$discovery_file"
+
+        additional_metadata_config=$(awk '/name: policyDocAdditionalBuiltInPolicyMetadataConfigFilePath/{flag=1;next} flag && /value:/{sub(/^ *value: */,"",$0); gsub(/"/,"",$0); print $0; exit}' "$settings_file")
+
+        pwsh_args=(
+          -File "$script_path"
+          -TopLevelManagementGroupName '${{ inputs.topLevelManagementGroupName }}'
+          -OutputFilePath "$output_file"
+        )
+
+        if [[ -n "$additional_metadata_config" ]]; then
+          pwsh_args+=( -AdditionalBuiltInPolicyMetadataConfigFilePath "$additional_metadata_config" )
+        fi
+
+        pwsh "${pwsh_args[@]}"
+
+        if [[ ! -f "$output_file" ]]; then
+          echo "Discovery output was not produced: $output_file" >&2
+          exit 1
+        fi
+
+        echo "Discovery bundle created: $output_file"
+
+    - name: Upload discovery artifact
+      uses: actions/upload-artifact@v4.4.0
+      with:
+        name: ${{ inputs.buildArtifactName }}
+        path: policy-doc-discovery/*.zip
+        if-no-files-found: error

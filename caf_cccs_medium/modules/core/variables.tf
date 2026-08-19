@@ -99,6 +99,37 @@ variable "aks_security_best_prac_parameters" {
   description = "Parameter values for the AKS-Security-BestPrac initiative assignment."
 }
 
+variable "public_ingress_security_best_prac_parameters" {
+  type = object({
+    app_gateway_deployed_with_azure_waf_effect          = optional(string, "Audit")
+    app_gateway_resource_logs_effect                    = optional(string, "AuditIfNotExists")
+    app_gateway_waf_request_body_inspection_effect      = optional(string, "Audit")
+    app_gateway_log_analytics_effect                    = optional(string, "AuditIfNotExists")
+    app_gateway_log_category_group                      = optional(string, "allLogs")
+    app_gateway_waf_enabled_effect                      = optional(string, "Audit")
+    app_gateway_bot_protection_effect                   = optional(string, "Audit")
+    app_gateway_for_containers_security_policies_effect = optional(string, "AuditIfNotExists")
+    load_balancer_log_analytics_effect                  = optional(string, "AuditIfNotExists")
+    load_balancer_log_category_group                    = optional(string, "allLogs")
+    diagnostic_setting_name                             = optional(string, "setByPolicy-LogAnalytics")
+    diagnostic_resource_location_list                   = optional(list(string), ["*"])
+    api_management_encrypted_protocols_effect           = optional(string, "Audit")
+    front_door_premium_tier_effect                      = optional(string, "Audit")
+    front_door_resource_logs_effect                     = optional(string, "AuditIfNotExists")
+    front_door_min_tls_version_effect                   = optional(string, "Audit")
+    front_door_plus_waf_resource_logs_effect            = optional(string, "AuditIfNotExists")
+    front_door_waf_request_body_inspection_effect       = optional(string, "Audit")
+    front_door_waf_enabled_effect                       = optional(string, "Audit")
+    front_door_bot_protection_effect                    = optional(string, "Audit")
+    front_door_rate_limit_effect                        = optional(string, "Audit")
+    front_door_private_connectivity_effect              = optional(string, "Audit")
+    front_door_waf_mode_effect                          = optional(string, "Audit")
+    front_door_waf_mode_requirement                     = optional(string, "Detection")
+  })
+  description = "Parameter values for the Public-Ingress-SecPrac initiative assignment."
+  default     = {}
+}
+
 variable "enforce_private_cluster" {
   type = object({
     effect = string
@@ -152,4 +183,47 @@ variable "sqlmi_entra_authentication_parameters" {
     effect = string
   })
   description = "Parameter values for the SQLMI-Entra-AuthN policy assignment."
+}
+
+variable "deny_azure_sre_agent_parameters" {
+  type = object({
+    effect = string
+  })
+  description = "Parameter values for the Deny-Azure-SRE-Agent policy assignment."
+}
+
+variable "deny_fabric_capacity_parameters" {
+  type = object({
+    effect = string
+  })
+  description = "Parameter values for the Deny-Fabric-Capacity policy assignment."
+}
+
+variable "deny_power_platform_parameters" {
+  type = object({
+    effect = string
+  })
+  description = "Parameter values for the Deny-Power-Platform policy assignment."
+}
+
+variable "deny_azure_ai_services_parameters" {
+  type = object({
+    deny_ai_foundry            = string
+    deny_ai_hubs               = string
+    deny_azure_openai          = string
+    deny_ai_search             = string
+    deny_bot_services          = string
+    deny_computer_vision       = string
+    deny_custom_vision         = string
+    deny_content_safety        = string
+    deny_document_intelligence = string
+    deny_face_api              = string
+    deny_health_insights       = string
+    deny_machine_learning      = string
+    deny_immersive_reader      = string
+    deny_language_service      = string
+    deny_speech_service        = string
+    deny_translator            = string
+  })
+  description = "Parameter values for the Deny-Azure-AI-Services initiative assignment."
 }

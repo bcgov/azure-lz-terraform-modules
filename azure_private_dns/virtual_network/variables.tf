@@ -23,6 +23,33 @@ variable "location" {
   }
 }
 
+variable "primary_location" {
+  description = "Primary Azure region short name for Network Watcher and traffic analytics resources. Must align with location."
+  type        = string
+  default     = "canadacentral"
+
+  validation {
+    condition     = contains(["canadacentral", "canadaeast"], var.primary_location)
+    error_message = "ERROR: Valid values for primary_location are: \"canadaeast\", \"canadacentral\"."
+  }
+
+  validation {
+    condition     = var.primary_location == replace(lower(var.location), " ", "")
+    error_message = "ERROR: primary_location must match location using the Azure region short name without spaces."
+  }
+}
+
+variable "secondary_location" {
+  description = "Secondary Azure region short name reserved for future region expansion."
+  type        = string
+  default     = "canadaeast"
+
+  validation {
+    condition     = contains(["canadacentral", "canadaeast"], var.secondary_location)
+    error_message = "ERROR: Valid values for secondary_location are: \"canadaeast\", \"canadacentral\"."
+  }
+}
+
 variable "private_dns_resource_group_name" {
   description = "(Required) Name of the Resource Group to deploy the Private DNS Resolver into."
   type        = string
@@ -51,4 +78,20 @@ variable "private_dns_resolver_virtual_network_name" {
 variable "network_manager_ipam_pool_id" {
   type        = string
   description = "IPAM Pool id"
+}
+
+
+variable "vnet_flow_logs_storage_account_id" {
+  description = "Storage account ID for storing VNet flow logs"
+  type        = string
+}
+
+variable "workspace_id" {
+  description = "Log Analytics workspace ID for traffic analytics"
+  type        = string
+}
+
+variable "workspace_resource_id" {
+  description = "Log Analytics workspace resource ID for traffic analytics"
+  type        = string
 }

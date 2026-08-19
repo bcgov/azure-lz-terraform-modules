@@ -46,4 +46,5 @@ providers.tf
 **/finops_toolkit/customDeploy/
 **/finops_toolkit/pbi_reports/
 **/.github/copilot-instructions.md
+!.github/copilot-instructions.md
 **/.github/prompts/*

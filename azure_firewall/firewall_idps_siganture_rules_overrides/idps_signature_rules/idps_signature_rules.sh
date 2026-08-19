@@ -1,9 +1,9 @@
 #!/bin/bash
 
-# Set your subscription ID, resource group name, and firewall policy name
-subscriptionId="09bd024b-fbda-417d-b8db-694680c2b44e"
-resourceGroupName="bcgov-managed-lz-forge-connectivity"
-firewallPolicyName="bcgov-managed-lz-forge-fw-hub-canadacentral-policy"
+# Set these for the environment you are querying. Do not commit real values.
+subscriptionId="${AZURE_SUBSCRIPTION_ID:?Set AZURE_SUBSCRIPTION_ID}"
+resourceGroupName="${FIREWALL_POLICY_RESOURCE_GROUP:?Set FIREWALL_POLICY_RESOURCE_GROUP}"
+firewallPolicyName="${FIREWALL_POLICY_NAME:?Set FIREWALL_POLICY_NAME}"
 apiVersion="2024-01-01"
 
 initial_filter='{
