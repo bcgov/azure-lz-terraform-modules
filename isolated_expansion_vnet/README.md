@@ -35,7 +35,6 @@ flowchart TB
   subgraph expansion["Isolated expansion VNet"]
     WORK["Local RFC1918<br/>not advertised to vWAN"]
     NAT["Optional NAT Gateway"]
-    NONE["Default none: private paths only"]
   end
 
   ONPREM --> ER --> HUB
@@ -43,12 +42,11 @@ flowchart TB
   APPS ---|"direct peering only"| WORK
   WORK -.->|"firewall_snat / private_nat"| SNAT
   WORK -.-> NAT
-  WORK -.-> NONE
   WORK -.->|"UDP/53 over peering"| DNS
   DNS -.->|"forward . to hub DNS proxy"| HUB
 ```
 
-The expansion VNet peers only to the routable workload VNet. Its prefix is never advertised into vWAN, ExpressRoute, or on-prem. `firewall_snat` and `private_nat` create the SNAT hop in the **routable** VNet so enterprise destinations see a spoke IP. `nat` attaches a NAT Gateway in the expansion VNet. `none` (default) allows only local and peered private paths.
+The expansion VNet peers only to the routable workload VNet. Its prefix is never advertised into vWAN, ExpressRoute, or on-prem. `firewall_snat` and `private_nat` create the SNAT hop in the **routable** VNet so enterprise destinations see a spoke IP. `nat` attaches a NAT Gateway in the expansion VNet. Default `none` is the diagram without those hops: local VNet, peering, and private endpoints only.
 
 `none` and `nat` cannot reach the central DNS resolver inbound, so private DNS needs either `spoke_dns_resolver` in the routable VNet (shown) or a `dns_forwarding_ruleset_id` link that keeps Azure-provided DNS. Those two options are mutually exclusive. `firewall_snat` and `private_nat` can reach enterprise DNS after SNAT.
 
