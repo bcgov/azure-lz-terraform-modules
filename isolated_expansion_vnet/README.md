@@ -24,31 +24,36 @@ This module owns the network pattern only. Workload-specific networking (AKS, Da
 flowchart TB
   ONPREM["On-premises / enterprise"]
   ER["ExpressRoute / VPN"]
-  HUB["Azure vWAN hub"]
+
+  subgraph hub["Azure vWAN hub"]
+    HUBFW["Azure Firewall<br/>filters on-prem and Internet"]
+  end
+
+  INTERNET["Internet"]
 
   subgraph spoke["Routable workload VNet"]
-    APPS["Enterprise-managed CIDR<br/>Apps and private endpoints"]
+    APPS["Enterprise CIDR<br/>Apps and private endpoints"]
     SNAT["Optional SNAT hop<br/>Azure Firewall or Linux NVA"]
     DNS["Optional DNS Private Resolver"]
   end
 
   subgraph expansion["Isolated expansion VNet"]
     WORK["Local RFC1918<br/>not advertised to vWAN"]
-    NAT["Optional NAT Gateway"]
+    NAT["Optional NAT Gateway<br/>Internet, not via hub"]
   end
 
-  ONPREM --> ER --> HUB
-  HUB -->|"vWAN connection"| APPS
-  APPS ---|"direct peering only"| WORK
+  ONPREM --> ER --> hub
+  hub --- INTERNET
+  hub -->|"vWAN connection"| spoke
+  spoke ---|"direct peering only"| expansion
   WORK -.->|"firewall_snat / private_nat"| SNAT
-  WORK -.-> NAT
   WORK -.->|"UDP/53 over peering"| DNS
-  DNS -.->|"forward . to hub DNS proxy"| HUB
+  DNS -.->|"forward . to hub DNS proxy"| HUBFW
 ```
 
-The expansion VNet peers only to the routable workload VNet. Its prefix is never advertised into vWAN, ExpressRoute, or on-prem. `firewall_snat` and `private_nat` create the SNAT hop in the **routable** VNet so enterprise destinations see a spoke IP. `nat` attaches a NAT Gateway in the expansion VNet. Default `none` is the diagram without those hops: local VNet, peering, and private endpoints only.
+The **vWAN connection** is hub to routable spoke only. The expansion VNet is not on vWAN; it has **direct peering** to the spoke, and its prefix is never advertised on-prem or into vWAN. Hub Azure Firewall filters spoke traffic to on-prem and the Internet.
 
-`none` and `nat` cannot reach the central DNS resolver inbound, so private DNS needs either `spoke_dns_resolver` in the routable VNet (shown) or a `dns_forwarding_ruleset_id` link that keeps Azure-provided DNS. Those two options are mutually exclusive. `firewall_snat` and `private_nat` can reach enterprise DNS after SNAT.
+Dotted paths: `firewall_snat` / `private_nat` SNAT in the spoke then follow the spoke UDR into the hub firewall; DNS for `none` and `nat` is UDP/53 over peering to the optional spoke resolver, which forwards `.` to the hub DNS proxy. `nat` Internet uses the expansion NAT Gateway and does not go through the hub. Default `none` is this diagram without the optional hops.
 
 ## Addressing
 
