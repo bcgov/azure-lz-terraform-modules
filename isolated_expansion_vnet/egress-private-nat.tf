@@ -100,12 +100,12 @@ resource "azurerm_linux_virtual_machine" "private_nat" {
   disable_password_authentication = true
   secure_boot_enabled             = false
   vtpm_enabled                    = false
-  # Update Manager assessment only. Install/reboot is a landing-zone
-  # maintenance assignment, not cloud-init or in-guest unattended-upgrades.
+  # Update Manager assessment is always on. Install/reboot only run when
+  # patch_schedule is set (this module) or a landing-zone assignment exists.
   patch_assessment_mode                                  = "AutomaticByPlatform"
   patch_mode                                             = "AutomaticByPlatform"
   bypass_platform_safety_checks_on_user_schedule_enabled = true
-  reboot_setting                                         = "Never"
+  reboot_setting                                         = local.private_nat_patch_schedule_enabled ? local.private_nat_patch_schedule.reboot : "Never"
   custom_data = base64encode(templatefile("${path.module}/templates/private-nat-cloud-init.yaml.tftpl", {
     source_prefixes = var.address_space
   }))
@@ -139,4 +139,43 @@ resource "azurerm_linux_virtual_machine" "private_nat" {
     azurerm_virtual_network_peering.expansion_to_routable,
     azurerm_virtual_network_peering.routable_to_expansion
   ]
+}
+
+resource "azurerm_maintenance_configuration" "private_nat" {
+  count = local.private_nat_patch_schedule_enabled ? 1 : 0
+
+  name                     = "${local.virtual_network_name}-nva-patch"
+  resource_group_name      = var.routable_vnet.resource_group_name
+  location                 = var.location
+  scope                    = "InGuestPatch"
+  in_guest_user_patch_mode = "User"
+  visibility               = "Custom"
+  tags                     = local.tags
+
+  window {
+    start_date_time = local.private_nat_patch_schedule.start_date_time
+    time_zone       = local.private_nat_patch_schedule.time_zone
+    recur_every     = local.private_nat_patch_schedule.recur_every
+    duration        = local.private_nat_patch_schedule.duration
+  }
+
+  install_patches {
+    reboot = local.private_nat_patch_schedule.reboot
+
+    linux {
+      classifications_to_include = local.private_nat_patch_schedule.classifications_to_include
+    }
+  }
+
+  lifecycle {
+    ignore_changes = [tags]
+  }
+}
+
+resource "azurerm_maintenance_assignment_virtual_machine" "private_nat" {
+  count = local.private_nat_patch_schedule_enabled ? 1 : 0
+
+  location                     = var.location
+  maintenance_configuration_id = azurerm_maintenance_configuration.private_nat[0].id
+  virtual_machine_id           = azurerm_linux_virtual_machine.private_nat[0].id
 }

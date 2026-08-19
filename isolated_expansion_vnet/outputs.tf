@@ -76,6 +76,11 @@ output "private_nat_subnet_id" {
   value       = local.private_nat_enabled ? azapi_resource.private_nat_subnet[0].id : null
 }
 
+output "private_nat_patch_schedule_id" {
+  description = "Resource ID of the Update Manager InGuestPatch schedule when egress.private_nat.patch_schedule is set; otherwise null."
+  value       = local.private_nat_patch_schedule_enabled ? azurerm_maintenance_configuration.private_nat[0].id : null
+}
+
 output "egress_route_table_id" {
   description = "Route table ID for the active egress mode. Null in NAT mode. none, private_nat, and firewall_snat share one table so a mode change updates routes in place instead of deleting an in-use table. Callers that create their own subnets should associate this ID."
   value       = local.egress_route_table_id

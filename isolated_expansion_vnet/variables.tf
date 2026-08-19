@@ -172,6 +172,14 @@ variable "egress" {
       ssh_source_prefixes        = optional(list(string), [])
       direct_peer_bypass         = optional(bool, true)
       route_internet_through_nva = optional(bool, true)
+      patch_schedule = optional(object({
+        start_date_time            = string
+        time_zone                  = optional(string, "UTC")
+        recur_every                = optional(string, "1Month")
+        duration                   = optional(string, "02:00")
+        reboot                     = optional(string, "IfRequired")
+        classifications_to_include = optional(list(string), ["Critical", "Security"])
+      }))
       image = optional(object({
         publisher = optional(string, "Canonical")
         offer     = optional(string, "ubuntu-26_04-lts")
@@ -246,6 +254,16 @@ variable "egress" {
   validation {
     condition     = var.egress.mode != "private_nat" || try(var.egress.private_nat.os_disk_size_gb, 30) >= 30
     error_message = "egress.private_nat.os_disk_size_gb must be at least 30."
+  }
+
+  validation {
+    condition = var.egress.mode != "private_nat" || try(var.egress.private_nat.patch_schedule, null) == null || (
+      can(regex("^\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}$", var.egress.private_nat.patch_schedule.start_date_time)) &&
+      contains(["Always", "IfRequired", "Never"], var.egress.private_nat.patch_schedule.reboot) &&
+      can(regex("^\\d{2}:\\d{2}$", var.egress.private_nat.patch_schedule.duration)) &&
+      length(var.egress.private_nat.patch_schedule.classifications_to_include) > 0
+    )
+    error_message = "egress.private_nat.patch_schedule.start_date_time must be YYYY-MM-DD HH:MM, duration HH:MM, and reboot Always, IfRequired, or Never."
   }
 
   validation {
