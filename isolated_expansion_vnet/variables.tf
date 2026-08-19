@@ -245,7 +245,7 @@ variable "egress" {
   }
 
   validation {
-    condition     = var.egress.mode != "private_nat" || try(var.egress.private_nat.ssh_public_key, null) == null || length(try(var.egress.private_nat.ssh_public_key, "")) == 0 || can(regex("^(ssh-rsa|ssh-ed25519|ecdsa-sha2-nistp256|ecdsa-sha2-nistp384|ecdsa-sha2-nistp521) ", var.egress.private_nat.ssh_public_key))
+    condition     = var.egress.mode != "private_nat" || try(length(var.egress.private_nat.ssh_public_key), 0) == 0 || can(regex("^(ssh-rsa|ssh-ed25519|ecdsa-sha2-nistp256|ecdsa-sha2-nistp384|ecdsa-sha2-nistp521) ", var.egress.private_nat.ssh_public_key))
     error_message = "egress.private_nat.ssh_public_key must be an OpenSSH public key (ssh-rsa, ssh-ed25519, or ecdsa-sha2-nistp*)."
   }
 
