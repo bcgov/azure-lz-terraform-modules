@@ -20,32 +20,37 @@ This module owns the network pattern only. Workload-specific networking (AKS, Da
 
 ## Architecture
 
-```text
-                         Enterprise / On-prem
-                                 |
-                          ExpressRoute / VPN
-                                 |
-                           Azure vWAN Hub
-                                 |
-                  +-----------------------------+
-                  | Routable Workload VNet      |
-                  | Enterprise-managed CIDR     |
-                  | Apps / Private Endpoints    |
-                  +-------------+---------------+
-                                |
-                         Direct VNet Peering
-                                |
-                  +-------------+---------------+
-                  | Isolated Expansion VNet     |
-                  | Large RFC1918 CIDR          |
-                  | NOT connected to vWAN       |
-                  | NOT enterprise-routed       |
-                  +-------------+---------------+
-                                |
-                    +-----------+-----------+-----------+
-                    |                       |           |
-                NAT Mode              Firewall SNAT   Private NAT
+```mermaid
+flowchart TB
+  ONPREM["On-premises / enterprise"]
+  ER["ExpressRoute / VPN"]
+  HUB["Azure vWAN hub"]
+
+  subgraph spoke["Routable workload VNet"]
+    APPS["Enterprise-managed CIDR<br/>Apps and private endpoints"]
+    SNAT["Optional SNAT hop<br/>Azure Firewall or Linux NVA"]
+    DNS["Optional DNS Private Resolver"]
+  end
+
+  subgraph expansion["Isolated expansion VNet"]
+    WORK["Local RFC1918<br/>not advertised to vWAN"]
+    NAT["Optional NAT Gateway"]
+    NONE["Default none: private paths only"]
+  end
+
+  ONPREM --> ER --> HUB
+  HUB -->|"vWAN connection"| APPS
+  APPS ---|"direct peering only"| WORK
+  WORK -.->|"firewall_snat / private_nat"| SNAT
+  WORK -.-> NAT
+  WORK -.-> NONE
+  WORK -.->|"UDP/53 over peering"| DNS
+  DNS -.->|"forward . to hub DNS proxy"| HUB
 ```
+
+The expansion VNet peers only to the routable workload VNet. Its prefix is never advertised into vWAN, ExpressRoute, or on-prem. `firewall_snat` and `private_nat` create the SNAT hop in the **routable** VNet so enterprise destinations see a spoke IP. `nat` attaches a NAT Gateway in the expansion VNet. `none` (default) allows only local and peered private paths.
+
+`none` and `nat` cannot reach the central DNS resolver inbound, so private DNS needs either `spoke_dns_resolver` in the routable VNet (shown) or a `dns_forwarding_ruleset_id` link that keeps Azure-provided DNS. Those two options are mutually exclusive. `firewall_snat` and `private_nat` can reach enterprise DNS after SNAT.
 
 ## Addressing
 
