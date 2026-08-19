@@ -1,4 +1,4 @@
-name: alz_custom
+name: lib_alz_custom
 management_groups:
   - id: alz
     display_name: ALZ Root
