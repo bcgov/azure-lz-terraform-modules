@@ -100,6 +100,12 @@ resource "azurerm_linux_virtual_machine" "private_nat" {
   disable_password_authentication = true
   secure_boot_enabled             = false
   vtpm_enabled                    = false
+  # Update Manager assessment only. Install/reboot is a landing-zone
+  # maintenance assignment, not cloud-init or in-guest unattended-upgrades.
+  patch_assessment_mode                                  = "AutomaticByPlatform"
+  patch_mode                                             = "AutomaticByPlatform"
+  bypass_platform_safety_checks_on_user_schedule_enabled = true
+  reboot_setting                                         = "Never"
   custom_data = base64encode(templatefile("${path.module}/templates/private-nat-cloud-init.yaml.tftpl", {
     source_prefixes = var.address_space
   }))
