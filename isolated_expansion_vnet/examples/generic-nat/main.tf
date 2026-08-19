@@ -33,4 +33,5 @@ module "compute_expansion" {
   }
 
   dns_forwarding_ruleset_id = var.dns_forwarding_ruleset_id
+  spoke_dns_resolver        = var.spoke_dns_resolver
 }

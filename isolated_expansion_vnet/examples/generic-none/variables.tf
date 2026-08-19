@@ -34,17 +34,16 @@ variable "routable_vnet_address_space" {
   type        = list(string)
 }
 
-variable "spoke_dns_inbound_address_prefix" {
-  description = "Unused /28 or larger prefix in the routable spoke for the DNS resolver inbound subnet."
-  type        = string
-}
-
-variable "spoke_dns_outbound_address_prefix" {
-  description = "Unused /28 or larger prefix in the routable spoke for the DNS resolver outbound subnet."
-  type        = string
-}
-
-variable "spoke_dns_forward_to" {
-  description = "DNS servers the spoke resolver forwards all queries to. Use the hub firewall DNS proxy."
-  type        = list(string)
+variable "spoke_dns_resolver" {
+  description = "Optional spoke DNS Private Resolver. Off by default. Set enabled = true and supply prefixes when you need private names and cannot use dns_forwarding_ruleset_id."
+  type = object({
+    enabled                    = optional(bool, false)
+    inbound_address_prefix     = optional(string)
+    outbound_address_prefix    = optional(string)
+    forward_to                 = optional(list(string), [])
+    additional_forward_domains = optional(list(string), [])
+  })
+  default = {
+    enabled = false
+  }
 }

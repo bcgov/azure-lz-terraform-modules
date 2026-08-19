@@ -4,6 +4,8 @@ Isolated expansion VNet with no NAT Gateway and no firewall Internet route. Use 
 
 If residual platform endpoints still require a translated enterprise path, use `firewall_snat` instead.
 
+Azure-provided DNS is the default. `spoke_dns_resolver` remains optional: set `enabled = true` when you need private names and cannot use `dns_forwarding_ruleset_id`.
+
 Copy `terraform.tfvars.example` to `terraform.tfvars` and replace placeholders before planning.
 
 <!-- BEGIN_TF_DOCS -->
@@ -39,9 +41,7 @@ No resources.
 | <a name="input_routable_vnet_id"></a> [routable\_vnet\_id](#input\_routable\_vnet\_id) | Resource ID of the enterprise-routed workload VNet. | `string` | n/a | yes |
 | <a name="input_routable_vnet_name"></a> [routable\_vnet\_name](#input\_routable\_vnet\_name) | Name of the enterprise-routed workload VNet. | `string` | n/a | yes |
 | <a name="input_routable_vnet_resource_group_name"></a> [routable\_vnet\_resource\_group\_name](#input\_routable\_vnet\_resource\_group\_name) | Resource group of the enterprise-routed workload VNet. | `string` | n/a | yes |
-| <a name="input_spoke_dns_forward_to"></a> [spoke\_dns\_forward\_to](#input\_spoke\_dns\_forward\_to) | DNS servers the spoke resolver forwards all queries to. Use the hub firewall DNS proxy. | `list(string)` | n/a | yes |
-| <a name="input_spoke_dns_inbound_address_prefix"></a> [spoke\_dns\_inbound\_address\_prefix](#input\_spoke\_dns\_inbound\_address\_prefix) | Unused /28 or larger prefix in the routable spoke for the DNS resolver inbound subnet. | `string` | n/a | yes |
-| <a name="input_spoke_dns_outbound_address_prefix"></a> [spoke\_dns\_outbound\_address\_prefix](#input\_spoke\_dns\_outbound\_address\_prefix) | Unused /28 or larger prefix in the routable spoke for the DNS resolver outbound subnet. | `string` | n/a | yes |
+| <a name="input_spoke_dns_resolver"></a> [spoke\_dns\_resolver](#input\_spoke\_dns\_resolver) | Optional spoke DNS Private Resolver. Off by default. Set enabled = true and supply prefixes when you need private names and cannot use dns\_forwarding\_ruleset\_id. | <pre>object({<br/>    enabled                    = optional(bool, false)<br/>    inbound_address_prefix     = optional(string)<br/>    outbound_address_prefix    = optional(string)<br/>    forward_to                 = optional(list(string), [])<br/>    additional_forward_domains = optional(list(string), [])<br/>  })</pre> | <pre>{<br/>  "enabled": false<br/>}</pre> | no |
 | <a name="input_subscription_id"></a> [subscription\_id](#input\_subscription\_id) | Subscription that contains the workload resource group. Use a placeholder in committed tfvars. | `string` | n/a | yes |
 
 ## Outputs

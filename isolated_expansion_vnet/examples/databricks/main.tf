@@ -60,10 +60,5 @@ module "databricks_expansion" {
     mode = "none"
   }
 
-  spoke_dns_resolver = {
-    enabled                 = true
-    inbound_address_prefix  = var.spoke_dns_inbound_address_prefix
-    outbound_address_prefix = var.spoke_dns_outbound_address_prefix
-    forward_to              = var.spoke_dns_forward_to
-  }
+  spoke_dns_resolver = var.spoke_dns_resolver
 }

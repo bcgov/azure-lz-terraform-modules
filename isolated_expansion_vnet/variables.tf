@@ -153,7 +153,7 @@ variable "egress" {
       subnet_address_prefix            = string
       management_subnet_address_prefix = string
       private_ip                       = optional(string)
-      sku_tier                         = optional(string, "Standard")
+      sku_tier                         = optional(string, "Basic")
       spoke_route_table_id             = optional(string)
       direct_peer_bypass               = optional(bool, true)
       route_internet_through_firewall  = optional(bool, true)
@@ -218,8 +218,8 @@ variable "egress" {
   }
 
   validation {
-    condition     = var.egress.mode != "firewall_snat" || try(var.egress.firewall.sku_tier, "Standard") == null || contains(["Standard", "Premium"], var.egress.firewall.sku_tier)
-    error_message = "egress.firewall.sku_tier must be Standard or Premium."
+    condition     = var.egress.mode != "firewall_snat" || try(var.egress.firewall.sku_tier, "Basic") == null || contains(["Basic", "Standard", "Premium"], var.egress.firewall.sku_tier)
+    error_message = "egress.firewall.sku_tier must be Basic, Standard, or Premium."
   }
 
   validation {
@@ -354,7 +354,7 @@ variable "dns" {
 }
 
 variable "spoke_dns_resolver" {
-  description = "Optional DNS Private Resolver in the routable spoke. When enabled, the expansion VNet uses the spoke inbound endpoint as custom DNS and the resolver forwards all queries to forward_to (typically the hub firewall DNS proxy). additional_forward_domains creates more-specific rules to the same forward_to servers; use it for names such as azuredatabricks.net that must stay on the already-allowed firewall DNS path. Pass routable_vnet.address_space so the inbound NSG allows spoke clients as well as the expansion VNet. Private DNS zone links on the expansion VNet are not required. Enable on at most one expansion module per spoke. inbound_address_prefix and outbound_address_prefix must be unused /28 or larger prefixes already in the spoke address space."
+  description = "Optional DNS Private Resolver in the routable spoke. Disabled by default for every egress mode, including none and nat. Enable only when you need private name resolution and cannot use dns_forwarding_ruleset_id or zone links. When enabled, the expansion VNet uses the spoke inbound endpoint as custom DNS and the resolver forwards all queries to forward_to (typically the hub firewall DNS proxy). additional_forward_domains creates more-specific rules to the same forward_to servers. Pass routable_vnet.address_space so the inbound NSG allows spoke clients as well as the expansion VNet. Enable on at most one expansion module per spoke. inbound_address_prefix and outbound_address_prefix must be unused /28 or larger prefixes already in the spoke address space."
   type = object({
     enabled                    = optional(bool, false)
     inbound_address_prefix     = optional(string)

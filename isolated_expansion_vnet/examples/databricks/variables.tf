@@ -23,14 +23,16 @@ variable "routable_vnet_address_space" {
   type = list(string)
 }
 
-variable "spoke_dns_inbound_address_prefix" {
-  type = string
-}
-
-variable "spoke_dns_outbound_address_prefix" {
-  type = string
-}
-
-variable "spoke_dns_forward_to" {
-  type = list(string)
+variable "spoke_dns_resolver" {
+  description = "Optional spoke DNS Private Resolver. Off by default."
+  type = object({
+    enabled                    = optional(bool, false)
+    inbound_address_prefix     = optional(string)
+    outbound_address_prefix    = optional(string)
+    forward_to                 = optional(list(string), [])
+    additional_forward_domains = optional(list(string), [])
+  })
+  default = {
+    enabled = false
+  }
 }

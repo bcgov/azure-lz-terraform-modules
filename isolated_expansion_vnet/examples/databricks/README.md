@@ -12,7 +12,7 @@ Storage / KV / SQL PEs   <----> host + container subnets
 
 Customer Azure resource Private Endpoints stay in the routable VNet and are reached over direct peering. The Databricks control-plane `databricks_ui_api` Private Endpoint must live in the workspace VNet.
 
-This example does not create the workspace or those Private Endpoints. It also does not claim that Databricks-owned artifact storage, log storage, platform Event Hubs, or metastore endpoints are privatized. If those residual dependencies still need a path, use `firewall_snat` instead of `none`.
+This example does not create the workspace or those Private Endpoints. It also does not claim that Databricks-owned artifact storage, log storage, platform Event Hubs, or metastore endpoints are privatized. If those residual dependencies still need a path, use `firewall_snat` instead of `none`. Azure-provided DNS is the default. `spoke_dns_resolver` is optional (`enabled = false` unless you need private names).
 
 <!-- BEGIN_TF_DOCS -->
 ## Requirements
@@ -47,9 +47,7 @@ No resources.
 | <a name="input_routable_vnet_id"></a> [routable\_vnet\_id](#input\_routable\_vnet\_id) | n/a | `string` | n/a | yes |
 | <a name="input_routable_vnet_name"></a> [routable\_vnet\_name](#input\_routable\_vnet\_name) | n/a | `string` | n/a | yes |
 | <a name="input_routable_vnet_resource_group_name"></a> [routable\_vnet\_resource\_group\_name](#input\_routable\_vnet\_resource\_group\_name) | n/a | `string` | n/a | yes |
-| <a name="input_spoke_dns_forward_to"></a> [spoke\_dns\_forward\_to](#input\_spoke\_dns\_forward\_to) | n/a | `list(string)` | n/a | yes |
-| <a name="input_spoke_dns_inbound_address_prefix"></a> [spoke\_dns\_inbound\_address\_prefix](#input\_spoke\_dns\_inbound\_address\_prefix) | n/a | `string` | n/a | yes |
-| <a name="input_spoke_dns_outbound_address_prefix"></a> [spoke\_dns\_outbound\_address\_prefix](#input\_spoke\_dns\_outbound\_address\_prefix) | n/a | `string` | n/a | yes |
+| <a name="input_spoke_dns_resolver"></a> [spoke\_dns\_resolver](#input\_spoke\_dns\_resolver) | Optional spoke DNS Private Resolver. Off by default. | <pre>object({<br/>    enabled                    = optional(bool, false)<br/>    inbound_address_prefix     = optional(string)<br/>    outbound_address_prefix    = optional(string)<br/>    forward_to                 = optional(list(string), [])<br/>    additional_forward_domains = optional(list(string), [])<br/>  })</pre> | <pre>{<br/>  "enabled": false<br/>}</pre> | no |
 
 ## Outputs
 

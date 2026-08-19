@@ -2,7 +2,7 @@
 
 Isolated expansion VNet using a spoke Azure Firewall as a private SNAT hop. Use this when the workload must reach enterprise destinations beyond the directly peered routable VNet without advertising the isolated prefix.
 
-The module creates `AzureFirewallSubnet` and `AzureFirewallManagementSubnet` in the routable spoke, plus a forced-tunnel firewall that SNATs isolated sources to the firewall private IP. After SNAT, packets follow the spoke's existing hub/vWAN path. The isolated prefix is never advertised.
+The module creates `AzureFirewallSubnet` and `AzureFirewallManagementSubnet` in the routable spoke, plus a forced-tunnel Basic firewall that SNATs isolated sources to the firewall private IP. After SNAT, packets follow the spoke's existing hub/vWAN path. The isolated prefix is never advertised. Set `sku_tier` to `Standard` or `Premium` when you need more than Basic throughput.
 
 Pass two unused `/26` or larger prefixes already in the spoke address space. Azure forbids NSGs on those subnets. Landing-zone policy may need an exemption to create Azure Firewall in an application subscription.
 

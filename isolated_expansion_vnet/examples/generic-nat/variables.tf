@@ -39,3 +39,17 @@ variable "dns_forwarding_ruleset_id" {
   type        = string
   default     = null
 }
+
+variable "spoke_dns_resolver" {
+  description = "Optional spoke DNS Private Resolver. Off by default. Mutually exclusive with dns_forwarding_ruleset_id."
+  type = object({
+    enabled                    = optional(bool, false)
+    inbound_address_prefix     = optional(string)
+    outbound_address_prefix    = optional(string)
+    forward_to                 = optional(list(string), [])
+    additional_forward_domains = optional(list(string), [])
+  })
+  default = {
+    enabled = false
+  }
+}
