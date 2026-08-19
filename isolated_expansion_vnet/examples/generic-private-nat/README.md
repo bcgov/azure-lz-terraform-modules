@@ -4,6 +4,8 @@ Isolated expansion VNet using a Linux NVA in the routable spoke as a private SNA
 
 The NVA SNATs isolated sources to its spoke IP. Associate `spoke_route_table_id` when SNATed packets should follow an existing spoke UDR after translation.
 
+Prefer Entra ID SSH (`ssh_admin_group_object_id`). Leave `ssh_public_key` unset so the module generates a throwaway key for VM create; do not use that key to sign in.
+
 Copy `terraform.tfvars.example` to `terraform.tfvars` and replace placeholders before planning.
 
 <!-- BEGIN_TF_DOCS -->
@@ -42,7 +44,8 @@ No resources.
 | <a name="input_routable_vnet_name"></a> [routable\_vnet\_name](#input\_routable\_vnet\_name) | Name of the enterprise-routed workload VNet. | `string` | n/a | yes |
 | <a name="input_routable_vnet_resource_group_name"></a> [routable\_vnet\_resource\_group\_name](#input\_routable\_vnet\_resource\_group\_name) | Resource group of the enterprise-routed workload VNet. | `string` | n/a | yes |
 | <a name="input_spoke_route_table_id"></a> [spoke\_route\_table\_id](#input\_spoke\_route\_table\_id) | Optional existing spoke route table to associate with the NVA subnet so SNATed packets follow the spoke egress path. | `string` | `null` | no |
-| <a name="input_ssh_public_key"></a> [ssh\_public\_key](#input\_ssh\_public\_key) | OpenSSH public key for the private NAT NVA. The VM has no public IP. | `string` | n/a | yes |
+| <a name="input_ssh_admin_group_object_id"></a> [ssh\_admin\_group\_object\_id](#input\_ssh\_admin\_group\_object\_id) | Existing Entra security group object ID granted Virtual Machine Administrator Login on the NVA. | `string` | n/a | yes |
+| <a name="input_ssh_public_key"></a> [ssh\_public\_key](#input\_ssh\_public\_key) | Optional OpenSSH public key. Omit to let the module generate a throwaway key for VM create. | `string` | `null` | no |
 | <a name="input_subscription_id"></a> [subscription\_id](#input\_subscription\_id) | Subscription that contains the workload resource group. Use a placeholder in committed tfvars. | `string` | n/a | yes |
 
 ## Outputs

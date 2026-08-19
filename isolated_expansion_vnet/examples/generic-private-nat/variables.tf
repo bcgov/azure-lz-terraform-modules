@@ -39,9 +39,15 @@ variable "private_nat_subnet_address_prefix" {
   type        = string
 }
 
-variable "ssh_public_key" {
-  description = "OpenSSH public key for the private NAT NVA. The VM has no public IP."
+variable "ssh_admin_group_object_id" {
+  description = "Existing Entra security group object ID granted Virtual Machine Administrator Login on the NVA."
   type        = string
+}
+
+variable "ssh_public_key" {
+  description = "Optional OpenSSH public key. Omit to let the module generate a throwaway key for VM create."
+  type        = string
+  default     = null
 }
 
 variable "spoke_route_table_id" {

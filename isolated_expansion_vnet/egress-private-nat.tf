@@ -87,6 +87,12 @@ resource "azurerm_network_interface" "private_nat" {
   }
 }
 
+resource "tls_private_key" "private_nat" {
+  count = local.private_nat_generate_ssh_key ? 1 : 0
+
+  algorithm = "ED25519"
+}
+
 resource "azurerm_linux_virtual_machine" "private_nat" {
   count = local.private_nat_enabled ? 1 : 0
 
@@ -111,9 +117,13 @@ resource "azurerm_linux_virtual_machine" "private_nat" {
   }))
   tags = local.tags
 
+  identity {
+    type = "SystemAssigned"
+  }
+
   admin_ssh_key {
     username   = local.private_nat.admin_username
-    public_key = local.private_nat.ssh_public_key
+    public_key = local.private_nat_ssh_public_key
   }
 
   os_disk {
@@ -132,13 +142,38 @@ resource "azurerm_linux_virtual_machine" "private_nat" {
   boot_diagnostics {}
 
   lifecycle {
-    ignore_changes = [identity, tags]
+    ignore_changes = [tags]
   }
 
   depends_on = [
     azurerm_virtual_network_peering.expansion_to_routable,
     azurerm_virtual_network_peering.routable_to_expansion
   ]
+}
+
+resource "azurerm_virtual_machine_extension" "private_nat_aad_ssh" {
+  count = local.private_nat_entra_ssh_enabled ? 1 : 0
+
+  name                       = "AADSSHLoginForLinux"
+  virtual_machine_id         = azurerm_linux_virtual_machine.private_nat[0].id
+  publisher                  = "Microsoft.Azure.ActiveDirectory"
+  type                       = "AADSSHLoginForLinux"
+  type_handler_version       = "1.0"
+  auto_upgrade_minor_version = true
+  tags                       = local.tags
+
+  lifecycle {
+    ignore_changes = [tags]
+  }
+}
+
+resource "azurerm_role_assignment" "private_nat_aad_ssh" {
+  count = local.private_nat_entra_ssh_enabled ? 1 : 0
+
+  scope                = azurerm_linux_virtual_machine.private_nat[0].id
+  role_definition_name = "Virtual Machine Administrator Login"
+  principal_id         = local.private_nat.ssh_admin_group_object_id
+  principal_type       = "Group"
 }
 
 resource "azurerm_maintenance_configuration" "private_nat" {

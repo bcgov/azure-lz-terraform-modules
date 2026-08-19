@@ -33,6 +33,13 @@ locals {
   private_nat_patch_schedule         = local.private_nat_enabled ? try(local.private_nat.patch_schedule, null) : null
   private_nat_patch_schedule_enabled = local.private_nat_patch_schedule != null
 
+  private_nat_ssh_public_key_provided = local.private_nat_enabled && length(try(local.private_nat.ssh_public_key, "")) > 0
+  private_nat_generate_ssh_key        = local.private_nat_enabled && !local.private_nat_ssh_public_key_provided
+  private_nat_entra_ssh_enabled       = local.private_nat_enabled && try(local.private_nat.ssh_admin_group_object_id, null) != null
+  private_nat_ssh_public_key = local.private_nat_generate_ssh_key ? tls_private_key.private_nat[0].public_key_openssh : (
+    local.private_nat_enabled ? local.private_nat.ssh_public_key : null
+  )
+
   firewall_ip = local.firewall_enabled ? coalesce(
     local.firewall.private_ip,
     cidrhost(local.firewall.subnet_address_prefix, 4)

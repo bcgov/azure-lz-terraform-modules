@@ -161,7 +161,8 @@ variable "egress" {
     }))
     private_nat = optional(object({
       subnet_address_prefix      = string
-      ssh_public_key             = string
+      ssh_public_key             = optional(string)
+      ssh_admin_group_object_id  = optional(string)
       subnet_name                = optional(string)
       private_ip                 = optional(string)
       vm_size                    = optional(string, "Standard_B2s")
@@ -226,10 +227,14 @@ variable "egress" {
       var.egress.private_nat != null &&
       try(var.egress.private_nat.subnet_address_prefix, null) != null &&
       can(cidrhost(var.egress.private_nat.subnet_address_prefix, 0)) &&
-      try(var.egress.private_nat.ssh_public_key, null) != null &&
-      length(try(var.egress.private_nat.ssh_public_key, "")) > 0
+      try(var.egress.private_nat.ssh_admin_group_object_id, null) != null
     )
-    error_message = "egress.private_nat.subnet_address_prefix and ssh_public_key are required when using private_nat."
+    error_message = "egress.private_nat.subnet_address_prefix and ssh_admin_group_object_id are required when using private_nat."
+  }
+
+  validation {
+    condition     = var.egress.mode != "private_nat" || try(var.egress.private_nat.ssh_admin_group_object_id, null) == null || can(regex("^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$", var.egress.private_nat.ssh_admin_group_object_id))
+    error_message = "egress.private_nat.ssh_admin_group_object_id must be an Entra ID group object ID (UUID)."
   }
 
   validation {
@@ -240,7 +245,7 @@ variable "egress" {
   }
 
   validation {
-    condition     = var.egress.mode != "private_nat" || try(var.egress.private_nat.ssh_public_key, null) == null || can(regex("^(ssh-rsa|ssh-ed25519|ecdsa-sha2-nistp256|ecdsa-sha2-nistp384|ecdsa-sha2-nistp521) ", var.egress.private_nat.ssh_public_key))
+    condition     = var.egress.mode != "private_nat" || try(var.egress.private_nat.ssh_public_key, null) == null || length(try(var.egress.private_nat.ssh_public_key, "")) == 0 || can(regex("^(ssh-rsa|ssh-ed25519|ecdsa-sha2-nistp256|ecdsa-sha2-nistp384|ecdsa-sha2-nistp521) ", var.egress.private_nat.ssh_public_key))
     error_message = "egress.private_nat.ssh_public_key must be an OpenSSH public key (ssh-rsa, ssh-ed25519, or ecdsa-sha2-nistp*)."
   }
 

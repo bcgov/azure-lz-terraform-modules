@@ -24,9 +24,10 @@ module "compute_expansion" {
     mode = "private_nat"
 
     private_nat = {
-      subnet_address_prefix = var.private_nat_subnet_address_prefix
-      ssh_public_key        = var.ssh_public_key
-      spoke_route_table_id  = var.spoke_route_table_id
+      subnet_address_prefix     = var.private_nat_subnet_address_prefix
+      ssh_admin_group_object_id = var.ssh_admin_group_object_id
+      ssh_public_key            = var.ssh_public_key
+      spoke_route_table_id      = var.spoke_route_table_id
     }
   }
 
