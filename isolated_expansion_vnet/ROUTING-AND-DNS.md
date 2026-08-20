@@ -1,6 +1,8 @@
 # Routing and DNS for isolated expansion VNets
 
-This is the packet-level path for `firewall_snat` (and `private_nat`, which is the same contract with a Linux NVA instead of a spoke Azure Firewall). The [README](README.md) keeps the short mode tables; use this file for how traffic and name resolution actually move.
+This is the packet-level path for SNAT modes and the name-resolution path for every egress mode. The [README](README.md) keeps the short mode tables; use this file for how traffic and DNS actually move.
+
+`firewall_snat` and `private_nat` share the same SNAT contract (spoke Azure Firewall vs Linux NVA). `none` and `nat` have no hub path, so they resolve private names with Azure-provided DNS plus the central isolated-expansion forwarding ruleset.
 
 Workload Internet and DNS do **not** use the management `0.0.0.0/0` → Internet route. That table is only on `AzureFirewallManagementSubnet`. SNATed packets and DNS queries leave `AzureFirewallSubnet` (or the NVA subnet) and follow vWAN routing intent into the hub.
 
@@ -111,7 +113,20 @@ The management NIC needs Azure. Routing intent would otherwise give it `0.0.0.0/
 
 ## How DNS works on the expansion VNet
 
-For `firewall_snat` and `private_nat`, the expansion VNet’s **custom DNS servers** are `hub_firewall_dns_servers` (the hub firewall DNS proxy). The VM does not use Azure-provided `168.63.129.16` unless you opt into a spoke resolver, `dns.mode = custom`, or (for `none` / `nat`) a platform forwarding ruleset.
+### DNS server priority
+
+1. `spoke_dns_resolver` inbound (explicit opt-in)
+2. `dns.mode = custom` + `dns.servers`
+3. `hub_firewall_dns_servers` when mode is `firewall_snat` or `private_nat`
+4. Azure-provided DNS (`none` / `nat`), optionally plus `dns_forwarding_ruleset_id`
+
+`none` and `nat` cannot reach the hub proxy or the central inbound. Prefer `dns_forwarding_ruleset_id` from `azure_private_dns/private_dns_resolver` (`isolated_expansion_dns_forwarding_ruleset_id`). Do not DINE-link every privatelink zone to every expansion VNet (that spends the 1,000-links-per-zone budget already used by `*-vwan-spoke`). Do not enable `spoke_dns_resolver` unless that ruleset is unavailable. See the [README private DNS section](README.md#private-dns-resolution).
+
+When switching away from `spoke_dns_resolver` or custom DNS, this module sets `dns_servers = []` so Azure actually clears `dhcpOptions.dnsServers`. `null` leaves a leftover list in place; a dead spoke-resolver IP makes the ruleset link inert.
+
+### `firewall_snat` / `private_nat`: hub firewall DNS after SNAT
+
+The expansion VNet’s **custom DNS servers** are `hub_firewall_dns_servers` (the hub firewall DNS proxy).
 
 A query for `privatelink.blob.core.windows.net` (or anything else):
 
@@ -144,17 +159,111 @@ sequenceDiagram
 
 The spoke Basic firewall is **not** a DNS proxy. It only forwards UDP/53 after SNAT. Hub policy must already allow DNS from the **spoke hop IP** (a spoke address). Do not add the isolated CIDR to hub or vWAN routes.
 
-### DNS server priority
+Inbound is also recursive, but it checks linked private zones **at each CNAME step**. A query for a public workspace URL such as `adb-….azuredatabricks.net` becomes a CNAME to `….privatelink.azuredatabricks.net`; inbound finds the DINE A record and returns the PE IP.
 
-1. `spoke_dns_resolver` inbound (explicit opt-in)
-2. `dns.mode = custom` + `dns.servers`
-3. `hub_firewall_dns_servers` when mode is `firewall_snat` or `private_nat`
-4. Azure-provided DNS (`none` / `nat`)
+### `none` / `nat`: Azure-provided DNS plus the isolated-expansion ruleset
 
-`none` and `nat` cannot reach the hub proxy. Prefer `dns_forwarding_ruleset_id` from the central resolver's isolated-expansion ruleset (`azure_private_dns/private_dns_resolver`). That ruleset is `.` → inbound; Azure-provided DNS performs the hop so the VM never opens a socket to the inbound. Do not link privatelink zones to every expansion VNet and do not enable `spoke_dns_resolver` unless that ruleset is unavailable. See the [README private DNS section](README.md#private-dns-resolution).
+The expansion VNet keeps `168.63.129.16`. It has no route to inbound and must not get a copy of every privatelink zone. The scalable object is a **DNS forwarding ruleset VNet link** (500 links per ruleset), not a zone VNet link (1,000 per zone, already used by spokes).
+
+Zone links stay **once**, on the central resolver VNet. `azure_private_dns/private_dns_resolver` publishes a second ruleset on the **existing** outbound (Azure allows two rulesets per outbound):
+
+| Ruleset | Who links to it | What it does |
+| --- | --- | --- |
+| On-prem (`*-dns-forwarding-ruleset`) | Not expansions | Corp suffixes → on-prem |
+| Isolated-expansion (`*-isolated-expansion`) | Only `*-isolated-expansion` | `.` plus explicit reserved Azure suffixes → this inbound |
+
+This module only creates the expansion VNet link (`dns_forwarding_ruleset_id`). It does not create the ruleset.
+
+Do **not** link the isolated-expansion ruleset to the resolver VNet (loop) or to `*-vwan-spoke` (spokes stay on hub firewall DNS). Do **not** put `.` → inbound on the on-prem ruleset.
+
+#### Why the ruleset is on the outbound
+
+The ruleset hangs off the **outbound** because that is what **sends** a query. Inbound is what **receives** one.
+
+| Object | Role |
+| --- | --- |
+| Inbound | VIP clients can query (hub firewall, on-prem). Expansions in `none` / `nat` cannot reach it. |
+| Outbound | Egress path used when a rule matches |
+| Ruleset | List of “this suffix → that IP” |
+| VNet link | **Who** uses the ruleset (`*-isolated-expansion`) |
+
+A ruleset is not a resolver. When a NIC on a linked VNet asks `168.63.129.16` and a rule matches, Azure DNS does not send that packet from the VM. It hands the query to the outbound on the DNS VNet; the outbound forwards it to the rule target (inbound). The VM never opens a socket to inbound. That is why `none` still works: there is no expansion route to the inbound VIP. The platform hop is outbound → inbound, inside the DNS VNet.
+
+The two rulesets share one outbound. VNet links decide which VNets see which list. The outbound is only the shared exit.
+
+#### Query walk
+
+```mermaid
+flowchart LR
+  subgraph expansion["*-isolated-expansion"]
+    nic["NIC / cluster<br/>168.63.129.16"]
+  end
+
+  subgraph dns["Central DNS VNet"]
+    az["Azure DNS + ruleset link"]
+    out["Outbound"]
+    inn["Inbound"]
+    zones["privatelink.* zones<br/>linked once"]
+  end
+
+  nic --> az
+  az -->|"explicit privatelink.* or '.'"| out
+  out --> inn
+  inn --> zones
+```
+
+1. The NIC asks Azure-provided DNS (`168.63.129.16`).
+2. Azure DNS checks private zones linked to **this** VNet — none, by design.
+3. Azure DNS applies the linked ruleset (longest suffix match).
+4. A match goes to the outbound, which forwards to inbound.
+5. Inbound’s VNet has the zones. DINE (or a PE zone group) must have written the A record. The answer is the PE IP.
+
+The isolated prefix never appears in vWAN. No per-spoke resolver. No extra RFC1918.
+
+#### Reserved suffixes and why `.` is not enough
+
+Azure **ignores** a `.` wildcard for reserved PaaS two-label names (`windows.net`, `azure.com`, `azure.net`, `windowsazure.us`, and the public names in [Azure Private Endpoint DNS](https://learn.microsoft.com/en-us/azure/private-link/private-endpoint-dns)). `azuredatabricks.net` is on that list. With only `.`, those queries stay on public Azure DNS.
+
+The isolated-expansion ruleset therefore also has **explicit** suffix rules to inbound: each DINE `privatelink.<service>.` zone, its public parent, and those reserved roots. Longest suffix wins. You cannot write `privatelink.*`. Rules match from the **right**; `privatelink` is on the **left** of `privatelink.azuredatabricks.net`. A rule of `privatelink.` would match `foo.privatelink.`, not `adb-….privatelink.azuredatabricks.net`.
+
+Explicit `privatelink.<service>.` rules are what actually override reserved names. Broad public parents (`windows.net`, `microsoft.com`) only help if Azure DNS will forward that name; they also send unmatched names in that suffix through inbound (split-horizon NXDOMAIN if the zone exists but has no record).
+
+#### Recursive CNAME chase (public Azure names)
+
+`168.63.129.16` is a **recursive** resolver. A stub that received only a CNAME would issue a second query for the target. Azure DNS follows the whole chain itself and returns the final A.
+
+Inbound (hub path) also recurses, but it consults linked private zones **at each step**, so `adb-….azuredatabricks.net` → CNAME `….privatelink.azuredatabricks.net` → PE A.
+
+Azure-provided DNS on the expansion VNet treats many public PaaS FQDNs as names it owns. It CNAME-chases on the **public** path and does **not** re-evaluate the privatelink name against the ruleset in the middle of that chase. A **direct** question for `….privatelink.azuredatabricks.net` matches the explicit rule and returns the PE IP. The public workspace URL still returns the public IP.
+
+Workloads that look up the public FQDN (classic Databricks workspace URL) therefore still need either a zone link for that one `privatelink.*` zone on the expansion VNet, or a resolver that talks to hub/inbound. The ruleset alone is enough when the client asks the privatelink name.
+
+```mermaid
+sequenceDiagram
+  participant NIC as Expansion NIC
+  participant AzDNS as Azure DNS 168.63.129.16
+  participant Out as Central outbound
+  participant In as Central inbound
+  participant Zone as privatelink.* on DNS VNet
+
+  NIC->>AzDNS: A privatelink.azuredatabricks.net
+  Note over AzDNS: No zone on expansion VNet
+  AzDNS->>Out: explicit privatelink suffix
+  Out->>In: forward to inbound
+  In->>Zone: linked private zone
+  Zone-->>In: PE A
+  In-->>AzDNS: PE A
+  AzDNS-->>NIC: PE A
+
+  NIC->>AzDNS: A adb-….azuredatabricks.net
+  Note over AzDNS: Azure-owned public name, recursive chase
+  AzDNS-->>NIC: public A via public CNAMEs
+```
 
 ## Still not this module
 
 - Hub firewall **policy** must already allow the spoke firewall or NVA SNAT IP (UDP/53 and whatever else the workload needs). Isolated expansion CIDRs must not be added to hub or vWAN routes.
 - Caller still supplies unused spoke prefixes (`/26`s for the firewall, `/28` for the NVA) and any landing-zone policy exemption to create Azure Firewall in an application subscription.
 - `spoke_route_table_id` remains an override when a spoke already uses a custom UDR. Leave it unset on a routing-intent spoke.
+- The isolated-expansion ruleset, its outbound association, and the explicit reserved-suffix rules live in `azure_private_dns/private_dns_resolver`. This module only creates the VNet link.
+- DINE (or a PE `private_dns_zone_group`) must write the A records into the central privatelink zones. A ruleset link to an empty zone still returns public names.
