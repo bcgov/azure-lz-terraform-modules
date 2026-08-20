@@ -151,7 +151,7 @@ The spoke Basic firewall is **not** a DNS proxy. It only forwards UDP/53 after S
 3. `hub_firewall_dns_servers` when mode is `firewall_snat` or `private_nat`
 4. Azure-provided DNS (`none` / `nat`)
 
-`none` and `nat` cannot reach the hub proxy. Use zone links, `dns_forwarding_ruleset_id`, or an optional spoke resolver. See the [README private DNS section](README.md#private-dns-resolution).
+`none` and `nat` cannot reach the hub proxy. Prefer `dns_forwarding_ruleset_id` from the central resolver's isolated-expansion ruleset (`azure_private_dns/private_dns_resolver`). That ruleset is `.` → inbound; Azure-provided DNS performs the hop so the VM never opens a socket to the inbound. Do not link privatelink zones to every expansion VNet and do not enable `spoke_dns_resolver` unless that ruleset is unavailable. See the [README private DNS section](README.md#private-dns-resolution).
 
 ## Still not this module
 

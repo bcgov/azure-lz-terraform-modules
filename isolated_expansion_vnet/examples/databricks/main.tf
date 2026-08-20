@@ -4,8 +4,10 @@
 # expansion VNet private_endpoints subnet. This module does not create those PEs.
 #
 # Databricks-owned artifact storage, log storage, platform Event Hubs, and
-# metastore endpoints may still require a translated path. If a prototype
-# confirms they are not reachable privately, switch egress.mode to firewall_snat.
+# metastore endpoints may still require a translated path. Without Unity
+# Catalog, treat none as a prototype only; switch egress.mode to nat if
+# HMS or artifact pull fails. Prefer dns_forwarding_ruleset_id over a
+# spoke DNS resolver.
 
 module "databricks_expansion" {
   source = "../.."
@@ -60,5 +62,6 @@ module "databricks_expansion" {
     mode = "none"
   }
 
-  spoke_dns_resolver = var.spoke_dns_resolver
+  dns_forwarding_ruleset_id = var.dns_forwarding_ruleset_id
+  spoke_dns_resolver        = var.spoke_dns_resolver
 }

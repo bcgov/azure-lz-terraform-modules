@@ -12,7 +12,7 @@ Storage / KV / SQL PEs   <----> host + container subnets
 
 Customer Azure resource Private Endpoints stay in the routable VNet and are reached over direct peering. The Databricks control-plane `databricks_ui_api` Private Endpoint must live in the workspace VNet.
 
-This example does not create the workspace or those Private Endpoints. It also does not claim that Databricks-owned artifact storage, log storage, platform Event Hubs, or metastore endpoints are privatized. If those residual dependencies still need a path, use `firewall_snat` instead of `none`. Azure-provided DNS is the default. `spoke_dns_resolver` is optional (`enabled = false` unless you need private names).
+This example does not create the workspace or those Private Endpoints. It also does not claim that Databricks-owned artifact storage, log storage, platform Event Hubs, or metastore endpoints are privatized. Without Unity Catalog, treat `none` as a prototype; switch to `nat` if HMS or artifact pull fails. Prefer `dns_forwarding_ruleset_id` from `azure_private_dns/private_dns_resolver` over `spoke_dns_resolver`.
 
 <!-- BEGIN_TF_DOCS -->
 ## Requirements
@@ -41,6 +41,7 @@ No resources.
 
 | Name | Description | Type | Default | Required |
 | ---- | ----------- | ---- | ------- | :------: |
+| <a name="input_dns_forwarding_ruleset_id"></a> [dns\_forwarding\_ruleset\_id](#input\_dns\_forwarding\_ruleset\_id) | Central isolated-expansion forwarding ruleset ID from azure\_private\_dns/private\_dns\_resolver. The expansion VNet keeps Azure-provided DNS. | `string` | `null` | no |
 | <a name="input_location"></a> [location](#input\_location) | n/a | `string` | `"canadacentral"` | no |
 | <a name="input_resource_group_name"></a> [resource\_group\_name](#input\_resource\_group\_name) | n/a | `string` | n/a | yes |
 | <a name="input_routable_vnet_address_space"></a> [routable\_vnet\_address\_space](#input\_routable\_vnet\_address\_space) | n/a | `list(string)` | n/a | yes |

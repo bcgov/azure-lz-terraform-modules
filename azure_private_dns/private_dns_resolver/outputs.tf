@@ -31,3 +31,13 @@ output "private_dns_resolver_forwarding_rules" {
     }
   }
 }
+
+output "isolated_expansion_dns_forwarding_ruleset_id" {
+  description = "Resource ID of the isolated-expansion forwarding ruleset. Pass to isolated_expansion_vnet as dns_forwarding_ruleset_id. Null when isolated_expansion_forwarding_ruleset.enabled is false. Do not link this ruleset to the resolver VNet or to *-vwan-spoke VNets."
+  value       = try(azurerm_private_dns_resolver_dns_forwarding_ruleset.isolated_expansion[0].id, null)
+}
+
+output "isolated_expansion_dns_forwarding_ruleset" {
+  description = "The isolated-expansion forwarding ruleset resource, or null when disabled."
+  value       = try(azurerm_private_dns_resolver_dns_forwarding_ruleset.isolated_expansion[0], null)
+}

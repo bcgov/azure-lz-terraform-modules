@@ -434,7 +434,7 @@ Optional DNS (any mode; off by default):
 | New forwarding ruleset only | 1 ruleset (Zone 1) | CAD 4 |
 | `spoke_dns_resolver.enabled = true` | inbound + outbound + 1 ruleset (Zone 1) | CAD 511 |
 
-A spoke resolver costs more than Firewall Basic. Prefer zone links or `dns_forwarding_ruleset_id` when `none` or `nat` only need private names.
+A spoke resolver costs more than Firewall Basic. Prefer `dns_forwarding_ruleset_id` from `azure_private_dns/private_dns_resolver` when `none` or `nat` only need private names.
 
 Retail meters used: NAT Gateway Standard CAD 0.0634/hour and CAD 0.0634/GB (global); Standard IPv4 static public IP CAD 0.0070/hour; Azure Firewall Basic deployment CAD 0.5566/hour; Standard CAD 1.7613/hour; Premium CAD 2.4658/hour; Linux B2s CAD 0.0654/hour; Standard SSD E3 LRS CAD 2.0290/month; DNS Private Resolver inbound/outbound CAD 253.629 each; ruleset CAD 3.5226.
 
@@ -456,13 +456,13 @@ None mode: expansion can reach the routable VNet, customer Private Endpoints ove
 
 Isolated expansion VNets are not vWAN spokes. In `none` and `nat` they do not receive hub firewall DNS and cannot reach the central Private DNS Resolver inbound. If those modes need privatelink or enterprise names, use the cheapest option that works:
 
-1. Link private DNS zones to the expansion VNet outside this module.
-2. Pass `dns_forwarding_ruleset_id` (a second ruleset on the existing central outbound).
+1. Pass `dns_forwarding_ruleset_id` from `azure_private_dns/private_dns_resolver` (`isolated_expansion_dns_forwarding_ruleset_id`). That is the scalable path: one ruleset link per expansion, no extra zone links.
+2. Link only the few zones this VNet must resolve locally, and only when the platform ruleset is unavailable. Do not DINE-link every privatelink zone to every expansion VNet; that burns the 1,000-links-per-zone budget already used by spokes.
 3. Enable `spoke_dns_resolver` only when those are unavailable.
 
 ### Central ruleset link (Azure-provided DNS)
 
-When the platform has published a **second** forwarding ruleset on the existing central resolver outbound, pass `dns_forwarding_ruleset_id`. The expansion VNet keeps Azure-provided DNS (`168.63.129.16`). The module only creates a ruleset virtual network link.
+`azure_private_dns/private_dns_resolver` publishes this second ruleset on the existing central outbound. Pass `isolated_expansion_dns_forwarding_ruleset_id` as `dns_forwarding_ruleset_id`. The expansion VNet keeps Azure-provided DNS (`168.63.129.16`). This module only creates a ruleset virtual network link.
 
 ```hcl
 dns_forwarding_ruleset_id = var.isolated_expansion_dns_forwarding_ruleset_id

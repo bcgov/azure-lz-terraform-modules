@@ -4,7 +4,7 @@ Isolated expansion VNet with no NAT Gateway and no firewall Internet route. Use 
 
 If residual platform endpoints still require a translated enterprise path, use `firewall_snat` instead.
 
-Azure-provided DNS is the default. `spoke_dns_resolver` remains optional: set `enabled = true` when you need private names and cannot use `dns_forwarding_ruleset_id`.
+Azure-provided DNS is the default. Pass `dns_forwarding_ruleset_id` from `azure_private_dns/private_dns_resolver` (`isolated_expansion_dns_forwarding_ruleset_id`) when you need private names. `spoke_dns_resolver` remains optional: set `enabled = true` only when that ruleset is unavailable.
 
 Copy `terraform.tfvars.example` to `terraform.tfvars` and replace placeholders before planning.
 
@@ -35,6 +35,7 @@ No resources.
 
 | Name | Description | Type | Default | Required |
 | ---- | ----------- | ---- | ------- | :------: |
+| <a name="input_dns_forwarding_ruleset_id"></a> [dns\_forwarding\_ruleset\_id](#input\_dns\_forwarding\_ruleset\_id) | Central isolated-expansion forwarding ruleset ID from azure\_private\_dns/private\_dns\_resolver. The expansion VNet keeps Azure-provided DNS. | `string` | `null` | no |
 | <a name="input_location"></a> [location](#input\_location) | Azure region for the expansion VNet. | `string` | `"canadacentral"` | no |
 | <a name="input_resource_group_name"></a> [resource\_group\_name](#input\_resource\_group\_name) | Existing network resource group name. | `string` | n/a | yes |
 | <a name="input_routable_vnet_address_space"></a> [routable\_vnet\_address\_space](#input\_routable\_vnet\_address\_space) | Address space of the enterprise-routed workload VNet. | `list(string)` | n/a | yes |

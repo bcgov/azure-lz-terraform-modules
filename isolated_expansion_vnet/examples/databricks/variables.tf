@@ -23,6 +23,12 @@ variable "routable_vnet_address_space" {
   type = list(string)
 }
 
+variable "dns_forwarding_ruleset_id" {
+  description = "Central isolated-expansion forwarding ruleset ID from azure_private_dns/private_dns_resolver. The expansion VNet keeps Azure-provided DNS."
+  type        = string
+  default     = null
+}
+
 variable "spoke_dns_resolver" {
   description = "Optional spoke DNS Private Resolver. Off by default."
   type = object({
