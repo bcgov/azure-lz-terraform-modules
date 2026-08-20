@@ -52,8 +52,8 @@ output "firewall_id" {
 }
 
 output "firewall_private_ip" {
-  description = "Spoke Azure Firewall private IP used as the SNAT/routing boundary when egress.mode is firewall_snat; otherwise null."
-  value       = local.firewall_ip
+  description = "Spoke Azure Firewall private IP used as the SNAT/routing boundary when egress.mode is firewall_snat; otherwise an empty string."
+  value       = local.firewall_ip != null ? local.firewall_ip : ""
 }
 
 output "firewall_policy_id" {
@@ -62,8 +62,8 @@ output "firewall_policy_id" {
 }
 
 output "private_nat_private_ip" {
-  description = "Spoke NVA private IP used as the SNAT/routing boundary when egress.mode is private_nat; otherwise null."
-  value       = local.private_nat_ip
+  description = "Spoke NVA private IP used as the SNAT/routing boundary when egress.mode is private_nat; otherwise an empty string. Use this directly in env maps; do not wrap it in coalesce(..., \"\")."
+  value       = local.private_nat_ip != null ? local.private_nat_ip : ""
 }
 
 output "private_nat_vm_id" {
@@ -126,8 +126,8 @@ output "network_classification" {
 }
 
 output "spoke_dns_resolver_inbound_ip" {
-  description = "Private IP of the spoke DNS resolver inbound endpoint when spoke_dns_resolver is enabled; otherwise null. The expansion VNet uses this as its custom DNS server."
-  value       = local.spoke_dns_resolver_inbound_ip
+  description = "Private IP of the spoke DNS resolver inbound endpoint when spoke_dns_resolver is enabled; otherwise an empty string. The expansion VNet uses this as its custom DNS server when the resolver is enabled. Use this directly in env maps; do not wrap it in coalesce(..., \"\")."
+  value       = local.spoke_dns_resolver_inbound_ip != null ? local.spoke_dns_resolver_inbound_ip : ""
 }
 
 output "spoke_dns_resolver_id" {

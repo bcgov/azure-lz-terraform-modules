@@ -518,7 +518,7 @@ The expansion prefix may be known by the expansion VNet, its directly peered wor
 ## Requirements
 
 | Name | Version |
-|------|---------|
+| ---- | ------- |
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >=1.9.0, < 2.0.0 |
 | <a name="requirement_azapi"></a> [azapi](#requirement\_azapi) | ~> 2.0 |
 | <a name="requirement_azurerm"></a> [azurerm](#requirement\_azurerm) | ~> 4.0 |
@@ -527,10 +527,10 @@ The expansion prefix may be known by the expansion VNet, its directly peered wor
 ## Providers
 
 | Name | Version |
-|------|---------|
-| <a name="provider_azapi"></a> [azapi](#provider\_azapi) | ~> 2.0 |
-| <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) | ~> 4.0 |
-| <a name="provider_tls"></a> [tls](#provider\_tls) | ~> 4.0 |
+| ---- | ------- |
+| <a name="provider_azapi"></a> [azapi](#provider\_azapi) | 2.12.0 |
+| <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) | 4.81.0 |
+| <a name="provider_tls"></a> [tls](#provider\_tls) | 4.3.0 |
 
 ## Modules
 
@@ -539,7 +539,7 @@ No modules.
 ## Resources
 
 | Name | Type |
-|------|------|
+| ---- | ---- |
 | [azapi_resource.firewall_subnet](https://registry.terraform.io/providers/azure/azapi/latest/docs/resources/resource) | resource |
 | [azapi_resource.private_nat_subnet](https://registry.terraform.io/providers/azure/azapi/latest/docs/resources/resource) | resource |
 | [azapi_resource.spoke_dns_subnet](https://registry.terraform.io/providers/azure/azapi/latest/docs/resources/resource) | resource |
@@ -589,7 +589,7 @@ No modules.
 ## Inputs
 
 | Name | Description | Type | Default | Required |
-|------|-------------|------|---------|:--------:|
+| ---- | ----------- | ---- | ------- | :------: |
 | <a name="input_address_space"></a> [address\_space](#input\_address\_space) | Isolated RFC1918 address space for the expansion VNet. Must not overlap the routable workload VNet, other directly peered networks, or destinations the expansion workload must reach without SNAT. This prefix must never be advertised into the enterprise routing domain. Defaults to 10.10.0.0/16. | `list(string)` | <pre>[<br/>  "10.10.0.0/16"<br/>]</pre> | no |
 | <a name="input_disallowed_address_spaces"></a> [disallowed\_address\_spaces](#input\_disallowed\_address\_spaces) | Known directly connected or otherwise incompatible CIDRs. The module fails if the expansion address space overlaps any of these prefixes. Full enterprise IPAM validation remains outside Terraform. | `list(string)` | `[]` | no |
 | <a name="input_dns"></a> [dns](#input\_dns) | DNS configuration for the expansion VNet. Azure-provided DNS is the default for none and nat. firewall\_snat and private\_nat set the expansion VNet to hub\_firewall\_dns\_servers unless this is custom or spoke\_dns\_resolver is enabled. Use custom servers only when those resolvers are reachable from the expansion VNet. When spoke\_dns\_resolver.enabled is true, leave this at the default; the module points the expansion VNet at the spoke inbound endpoint. | <pre>object({<br/>    mode    = optional(string, "azure")<br/>    servers = optional(list(string), [])<br/>  })</pre> | <pre>{<br/>  "mode": "azure"<br/>}</pre> | no |
@@ -610,21 +610,21 @@ No modules.
 ## Outputs
 
 | Name | Description |
-|------|-------------|
+| ---- | ----------- |
 | <a name="output_address_space"></a> [address\_space](#output\_address\_space) | Address space assigned to the isolated expansion Virtual Network. |
 | <a name="output_dns_forwarding_ruleset_link_id"></a> [dns\_forwarding\_ruleset\_link\_id](#output\_dns\_forwarding\_ruleset\_link\_id) | Resource ID of the expansion VNet link to dns\_forwarding\_ruleset\_id when that input is set; otherwise null. |
 | <a name="output_egress_mode"></a> [egress\_mode](#output\_egress\_mode) | Configured egress mode: nat, firewall\_snat, private\_nat, or none. |
 | <a name="output_egress_route_table_id"></a> [egress\_route\_table\_id](#output\_egress\_route\_table\_id) | Route table ID for the active egress mode. Null in NAT mode. none, private\_nat, and firewall\_snat share one table so a mode change updates routes in place instead of deleting an in-use table. Callers that create their own subnets should associate this ID. |
 | <a name="output_firewall_id"></a> [firewall\_id](#output\_firewall\_id) | Resource ID of the spoke Azure Firewall when egress.mode is firewall\_snat; otherwise null. |
 | <a name="output_firewall_policy_id"></a> [firewall\_policy\_id](#output\_firewall\_policy\_id) | Resource ID of the spoke Azure Firewall policy when egress.mode is firewall\_snat; otherwise null. |
-| <a name="output_firewall_private_ip"></a> [firewall\_private\_ip](#output\_firewall\_private\_ip) | Spoke Azure Firewall private IP used as the SNAT/routing boundary when egress.mode is firewall\_snat; otherwise null. |
+| <a name="output_firewall_private_ip"></a> [firewall\_private\_ip](#output\_firewall\_private\_ip) | Spoke Azure Firewall private IP used as the SNAT/routing boundary when egress.mode is firewall\_snat; otherwise an empty string. |
 | <a name="output_nat_gateway_id"></a> [nat\_gateway\_id](#output\_nat\_gateway\_id) | NAT Gateway resource ID when egress.mode is nat; otherwise null. |
 | <a name="output_nat_public_ips"></a> [nat\_public\_ips](#output\_nat\_public\_ips) | Public IP addresses used by the NAT Gateway when egress.mode is nat; otherwise null. |
 | <a name="output_network_classification"></a> [network\_classification](#output\_network\_classification) | Platform classification for this VNet. Isolated expansion VNets must not receive enterprise-routed spoke automation such as vWAN connections. |
 | <a name="output_nsg_ids"></a> [nsg\_ids](#output\_nsg\_ids) | Map of subnet keys to NSG resource IDs created by this module. |
 | <a name="output_peering_ids"></a> [peering\_ids](#output\_peering\_ids) | Resource IDs for both sides of the expansion-to-routable peering. |
 | <a name="output_private_nat_patch_schedule_id"></a> [private\_nat\_patch\_schedule\_id](#output\_private\_nat\_patch\_schedule\_id) | Resource ID of the Update Manager InGuestPatch schedule when egress.private\_nat.patch\_schedule is set; otherwise null. |
-| <a name="output_private_nat_private_ip"></a> [private\_nat\_private\_ip](#output\_private\_nat\_private\_ip) | Spoke NVA private IP used as the SNAT/routing boundary when egress.mode is private\_nat; otherwise null. |
+| <a name="output_private_nat_private_ip"></a> [private\_nat\_private\_ip](#output\_private\_nat\_private\_ip) | Spoke NVA private IP used as the SNAT/routing boundary when egress.mode is private\_nat; otherwise an empty string. Use this directly in env maps; do not wrap it in coalesce(..., ""). |
 | <a name="output_private_nat_subnet_id"></a> [private\_nat\_subnet\_id](#output\_private\_nat\_subnet\_id) | Resource ID of the spoke NVA subnet when egress.mode is private\_nat; otherwise null. |
 | <a name="output_private_nat_vm_id"></a> [private\_nat\_vm\_id](#output\_private\_nat\_vm\_id) | Resource ID of the private NAT NVA when egress.mode is private\_nat; otherwise null. |
 | <a name="output_required_firewall_routes"></a> [required\_firewall\_routes](#output\_required\_firewall\_routes) | Unused. firewall\_snat now creates the spoke firewall and its policy in this module. Always null. |
@@ -632,7 +632,7 @@ No modules.
 | <a name="output_required_private_snat"></a> [required\_private\_snat](#output\_required\_private\_snat) | Private SNAT contract: isolated source prefixes that must be translated to a spoke IP (Azure Firewall or NVA) before entering the enterprise routing domain. Null unless egress.mode is firewall\_snat or private\_nat. |
 | <a name="output_route_table_ids"></a> [route\_table\_ids](#output\_route\_table\_ids) | Map of the active egress mode name to its route table ID. Empty in NAT mode. none, private\_nat, and firewall\_snat resolve to the same table. Prefer egress\_route\_table\_id when associating caller-managed subnets. |
 | <a name="output_spoke_dns_resolver_id"></a> [spoke\_dns\_resolver\_id](#output\_spoke\_dns\_resolver\_id) | Resource ID of the spoke DNS Private Resolver when spoke\_dns\_resolver is enabled; otherwise null. |
-| <a name="output_spoke_dns_resolver_inbound_ip"></a> [spoke\_dns\_resolver\_inbound\_ip](#output\_spoke\_dns\_resolver\_inbound\_ip) | Private IP of the spoke DNS resolver inbound endpoint when spoke\_dns\_resolver is enabled; otherwise null. The expansion VNet uses this as its custom DNS server. |
+| <a name="output_spoke_dns_resolver_inbound_ip"></a> [spoke\_dns\_resolver\_inbound\_ip](#output\_spoke\_dns\_resolver\_inbound\_ip) | Private IP of the spoke DNS resolver inbound endpoint when spoke\_dns\_resolver is enabled; otherwise an empty string. The expansion VNet uses this as its custom DNS server when the resolver is enabled. Use this directly in env maps; do not wrap it in coalesce(..., ""). |
 | <a name="output_subnet_ids"></a> [subnet\_ids](#output\_subnet\_ids) | Map of subnet keys to subnet resource IDs. |
 | <a name="output_subnet_prefixes"></a> [subnet\_prefixes](#output\_subnet\_prefixes) | Map of subnet keys to subnet address prefixes. |
 | <a name="output_vnet_id"></a> [vnet\_id](#output\_vnet\_id) | Resource ID of the isolated expansion Virtual Network. |
