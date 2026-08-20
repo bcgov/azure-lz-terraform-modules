@@ -471,7 +471,7 @@ dns_forwarding_ruleset_id = var.isolated_expansion_dns_forwarding_ruleset_id
 Platform contract for that ruleset:
 
 - It lives on the current central outbound endpoint, not a new resolver.
-- It has one rule: `.` → central resolver inbound.
+- It forwards `.` to the central resolver inbound, plus explicit reserved Azure PaaS suffixes. Azure skips a `.` wildcard for names such as `azuredatabricks.net` and `windows.net`.
 - It is linked only to `*-isolated-expansion` VNets.
 - It must **never** be linked to the resolver VNet itself.
 - Do **not** add a “forward to inbound” rule on the existing on-prem ruleset.

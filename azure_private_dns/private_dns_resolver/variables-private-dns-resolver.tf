@@ -33,10 +33,11 @@ variable "forwarding_rules" {
 }
 
 variable "isolated_expansion_forwarding_ruleset" {
-  description = "Second forwarding ruleset on the existing outbound for *-isolated-expansion VNets. One rule: '.' → this resolver's inbound. This module does not create VNet links. Expansion modules pass the output ID as dns_forwarding_ruleset_id. Do not link this ruleset to the resolver VNet or to *-vwan-spoke VNets."
+  description = "Second forwarding ruleset on the existing outbound for *-isolated-expansion VNets. Rules: '.' → this inbound, plus explicit reserved Azure PaaS suffixes (wildcard rules skip those). This module does not create VNet links. Expansion modules pass the output ID as dns_forwarding_ruleset_id. Do not link this ruleset to the resolver VNet or to *-vwan-spoke VNets."
   type = object({
-    enabled = optional(bool, true)
-    name    = optional(string)
+    enabled            = optional(bool, true)
+    name               = optional(string)
+    additional_domains = optional(list(string), [])
   })
   default = {
     enabled = true
@@ -45,5 +46,10 @@ variable "isolated_expansion_forwarding_ruleset" {
   validation {
     condition     = var.isolated_expansion_forwarding_ruleset.name == null || can(regex("(?i)isolated-expansion", var.isolated_expansion_forwarding_ruleset.name))
     error_message = "isolated_expansion_forwarding_ruleset.name must contain 'isolated-expansion' so it is not mistaken for the on-prem ruleset or linked to *-vwan-spoke VNets."
+  }
+
+  validation {
+    condition     = !contains([for domain in try(var.isolated_expansion_forwarding_ruleset.additional_domains, []) : trimsuffix(trimspace(domain), ".")], "")
+    error_message = "isolated_expansion_forwarding_ruleset.additional_domains must not include '.' or empty values. The catch-all rule is created separately."
   }
 }

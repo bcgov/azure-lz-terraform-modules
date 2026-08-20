@@ -91,9 +91,12 @@ locals {
     []
   )
 
+  # Use [] rather than null so a later switch away from spoke_dns_resolver or
+  # custom DNS actually clears dhcpOptions.dnsServers. azurerm leaves an
+  # existing list in place when this argument is null.
   dns_servers = local.spoke_dns_resolver_enabled ? [local.spoke_dns_resolver_inbound_ip] : (
     var.dns.mode == "custom" ? var.dns.servers : (
-      local.appliance_enabled && length(local.hub_firewall_dns_servers) > 0 ? local.hub_firewall_dns_servers : null
+      local.appliance_enabled && length(local.hub_firewall_dns_servers) > 0 ? local.hub_firewall_dns_servers : []
     )
   )
 
