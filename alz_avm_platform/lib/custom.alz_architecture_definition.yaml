@@ -1,0 +1,57 @@
+# Reference documentation: https://azure.github.io/Azure-Landing-Zones/terraform/howtos/modifyingmghierarchy/
+name: avm_alz_custom # This vaule must match the architecture_name parameter in the alz module call
+management_groups:
+  - id: bcgov-managed-lz-avm
+    display_name: BCGov-Managed-LZ-AVM
+    parent_id: null
+    exists: false
+    archetypes:
+      - root_override
+  - id: decommissioned
+    display_name: Decommissioned
+    parent_id: bcgov-managed-lz-avm
+    exists: false
+    archetypes:
+      - decommissioned_override
+  - id: landingzones
+    display_name: Landing Zones
+    parent_id: bcgov-managed-lz-avm
+    exists: false
+    archetypes:
+      - landing_zones_override
+  - id: platform
+    display_name: Platform
+    parent_id: bcgov-managed-lz-avm
+    exists: false
+    archetypes:
+      - platform_override
+  - id: management
+    display_name: Management
+    parent_id: platform
+    exists: false
+    archetypes:
+      - management_override
+  - id: connectivity
+    display_name: Connectivity
+    parent_id: platform
+    exists: false
+    archetypes:
+      - connectivity_override
+  - id: identity
+    display_name: Identity
+    parent_id: platform
+    exists: false
+    archetypes:
+      - identity_override
+  - id: security
+    display_name: Security
+    parent_id: platform
+    exists: false
+    archetypes:
+      - security_override
+  - id: sandboxes
+    display_name: Sandboxes
+    parent_id: bcgov-managed-lz-avm
+    exists: false
+    archetypes:
+      - sandbox_override

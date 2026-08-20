@@ -1,0 +1,17 @@
+# Reference documentation: https://azure.github.io/Azure-Landing-Zones-Library/assets/archetype-overrides/
+
+name: "identity_override"
+base_archetype: "identity"
+policy_assignments_to_add: []
+policy_assignments_to_remove: [
+    "Deny-MgmtPorts-Internet",
+    "Deny-Public-IP",
+    "Deny-Subnet-Without-Nsg",
+    "Deploy-VM-Backup"
+]
+policy_definitions_to_add: []
+policy_definitions_to_remove: []
+policy_set_definitions_to_add: []
+policy_set_definitions_to_remove: []
+role_definitions_to_add: []
+role_definitions_to_remove: []

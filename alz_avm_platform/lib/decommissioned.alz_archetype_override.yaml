@@ -1,0 +1,14 @@
+# Reference documentation: https://azure.github.io/Azure-Landing-Zones-Library/assets/archetype-overrides/
+
+name: "decommissioned_override"
+base_archetype: "decommissioned"
+policy_assignments_to_add: []
+policy_assignments_to_remove: [
+  "Enforce-ALZ-Decomm"
+]
+policy_definitions_to_add: []
+policy_definitions_to_remove: []
+policy_set_definitions_to_add: []
+policy_set_definitions_to_remove: []
+role_definitions_to_add: []
+role_definitions_to_remove: []

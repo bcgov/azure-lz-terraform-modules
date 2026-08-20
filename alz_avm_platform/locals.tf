@@ -1,3 +1,3 @@
 locals {
-  parent_resource_id = var.parent_resource_id != "" ? var.parent_resource_id : data.azapi_client_config.current.tenant_id
+  parent_resource_id = "BCGOV-MGD-LZ" # NOTE: This is our team's "tenant root" management group that all other management groups will be created under.
 }
