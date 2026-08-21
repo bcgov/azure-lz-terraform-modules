@@ -4,7 +4,7 @@ name: "connectivity_override"
 base_archetype: "connectivity"
 policy_assignments_to_add: []
 policy_assignments_to_remove: [
-  "Enable-DDoS-VNET"
+  "Enable-DDoS-VNET" # This turns off the DDoS protection plan
 ]
 policy_definitions_to_add: []
 policy_definitions_to_remove: []

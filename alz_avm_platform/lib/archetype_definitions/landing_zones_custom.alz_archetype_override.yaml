@@ -24,7 +24,7 @@ policy_assignments_to_remove: [
   "Deploy-VMSS-ChangeTrack",
   "Deploy-VMSS-Monitoring",
   "Enable-AUM-CheckUpdates",
-  "Enable-DDoS-VNET",
+  "Enable-DDoS-VNET", # This turns off the DDoS protection plan
   "Enforce-AKS-HTTPS",
   "Enforce-ASR",
   "Enforce-Encrypt-CMK0",
