@@ -3,53 +3,53 @@ name: avm_alz_custom # This vaule must match the architecture_name parameter in 
 management_groups:
   - id: bcgov-managed-lz-avm
     display_name: BCGov-Managed-LZ-AVM
-    parent_id: null
+    parent_id: null # NOTE: This means that the Management Group will be created at the parent as defined in the module configuration (ie. parent_resource_id).
     exists: false
     archetypes:
       - root_override
-  - id: decommissioned
+  - id: bcgov-managed-lz-avm-decommissioned
     display_name: Decommissioned
     parent_id: bcgov-managed-lz-avm
     exists: false
     archetypes:
       - decommissioned_override
-  - id: landingzones
+  - id: bcgov-managed-lz-avm-landingzones
     display_name: Landing Zones
     parent_id: bcgov-managed-lz-avm
     exists: false
     archetypes:
       - landing_zones_override
-  - id: platform
+  - id: bcgov-managed-lz-avm-platform
     display_name: Platform
     parent_id: bcgov-managed-lz-avm
     exists: false
     archetypes:
       - platform_override
-  - id: management
+  - id: bcgov-managed-lz-avm-management
     display_name: Management
-    parent_id: platform
+    parent_id: bcgov-managed-lz-avm-platform
     exists: false
     archetypes:
       - management_override
-  - id: connectivity
+  - id: bcgov-managed-lz-avm-connectivity
     display_name: Connectivity
-    parent_id: platform
+    parent_id: bcgov-managed-lz-avm-platform
     exists: false
     archetypes:
       - connectivity_override
-  - id: identity
+  - id: bcgov-managed-lz-avm-identity
     display_name: Identity
-    parent_id: platform
+    parent_id: bcgov-managed-lz-avm-platform
     exists: false
     archetypes:
       - identity_override
-  - id: security
+  - id: bcgov-managed-lz-avm-security
     display_name: Security
-    parent_id: platform
+    parent_id: bcgov-managed-lz-avm-platform
     exists: false
     archetypes:
       - security_override
-  - id: sandboxes
+  - id: bcgov-managed-lz-avm-sandboxes
     display_name: Sandboxes
     parent_id: bcgov-managed-lz-avm
     exists: false
