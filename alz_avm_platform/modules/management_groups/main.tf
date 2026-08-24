@@ -7,6 +7,6 @@ module "alz" {
   location           = var.location
   parent_resource_id = local.parent_resource_id
 
-  subscription_placement = var.subscription_placement
+  # subscription_placement = var.subscription_placement
   subscription_placement_destroy_behavior = var.subscription_placement_destroy_behavior
 }

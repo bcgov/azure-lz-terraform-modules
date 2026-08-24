@@ -2,8 +2,7 @@
 
 name: "platform_override"
 base_archetype: "platform"
-policy_assignments_to_add: []
-policy_assignments_to_remove: [
+policy_assignments_to_add: [
   "DenyAction-DeleteUAMIAMA",
   "Deploy-GuestAttest",
   "Deploy-MDFC-DefSQL-AMA",
@@ -45,6 +44,7 @@ policy_assignments_to_remove: [
   "Enforce-GR-VirtualDesk0",
   "Enforce-Subnet-Private"
 ]
+policy_assignments_to_remove: []
 policy_definitions_to_add: []
 policy_definitions_to_remove: []
 policy_set_definitions_to_add: []

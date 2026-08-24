@@ -1,4 +1,15 @@
-# ALZ AVM Platform (Greenfield)
+# ALZ AVM Platform Lessons Learned
+
+We need `Owner` permissons on the subscriptions that will be moved into the new Management Group hierarchy.
+
+Error: `"Permission to write and delete on resources of type 'Microsoft.Authorization/roleAssignments' is required on the subscription or its ancestors."`
+
+
+The `module.platform_subscriptions.module.lz_vending["identity"].module.subscription[0].terraform_data.replacement[0]` triggers a replacement in Terraform plan
+
+
+
+
 
 This module creates a greenfield Azure Landing Zone platform baseline using Azure Verified Modules (AVM), with a dedicated Security subscription and Security management group.
 

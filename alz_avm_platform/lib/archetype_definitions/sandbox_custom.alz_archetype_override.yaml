@@ -2,10 +2,10 @@
 
 name: "sandbox_override"
 base_archetype: "sandbox"
-policy_assignments_to_add: []
-policy_assignments_to_remove: [
+policy_assignments_to_add: [
   "Enforce-ALZ-Sandbox"
 ]
+policy_assignments_to_remove: []
 policy_definitions_to_add: []
 policy_definitions_to_remove: []
 policy_set_definitions_to_add: []

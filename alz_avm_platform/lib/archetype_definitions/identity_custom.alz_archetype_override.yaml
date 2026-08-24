@@ -2,13 +2,13 @@
 
 name: "identity_override"
 base_archetype: "identity"
-policy_assignments_to_add: []
-policy_assignments_to_remove: [
+policy_assignments_to_add: [
     "Deny-MgmtPorts-Internet",
     "Deny-Public-IP",
     "Deny-Subnet-Without-Nsg",
     "Deploy-VM-Backup"
 ]
+policy_assignments_to_remove: []
 policy_definitions_to_add: []
 policy_definitions_to_remove: []
 policy_set_definitions_to_add: []

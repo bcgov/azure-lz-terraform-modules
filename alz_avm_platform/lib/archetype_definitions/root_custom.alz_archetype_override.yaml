@@ -2,8 +2,7 @@
 
 name: "root_override"
 base_archetype: "root"
-policy_assignments_to_add: []
-policy_assignments_to_remove: [
+policy_assignments_to_add: [
     "Audit-ResourceRGLocation",
     "Audit-TrustedLaunch",
     "Audit-UnusedResources",
@@ -22,8 +21,8 @@ policy_assignments_to_remove: [
     "Deploy-SvcHealth-BuiltIn",
     "Enforce-ACSB"
 ]
-policy_definitions_to_add: []
-policy_definitions_to_remove: [
+policy_assignments_to_remove: []
+policy_definitions_to_add: [
     "Append-AppService-httpsonly",
     "Append-AppService-latestTLS",
     "Append-KV-SoftDelete",
@@ -174,8 +173,9 @@ policy_definitions_to_remove: [
     "Modify-NSG",
     "Modify-UDR"
 ]
-policy_set_definitions_to_add: []
-policy_set_definitions_to_remove: [
+policy_definitions_to_remove: [
+]
+policy_set_definitions_to_add: [
     "Audit-TrustedLaunch",
     "Audit-UnusedResourcesCostOptimization",
     "Deny-PublicPaaSEndpoints",
@@ -219,11 +219,13 @@ policy_set_definitions_to_remove: [
     "Enforce-Guardrails-Synapse",
     "Enforce-Guardrails-VirtualDesktop"
 ]
-role_definitions_to_add: []
-role_definitions_to_remove: [
+policy_set_definitions_to_remove: []
+role_definitions_to_add: [
     "Network-Subnet-Contributor",
     "Application-Owners",
     "Network-Management",
     "Security-Operations",
     "Subscription-Owner"
+]
+role_definitions_to_remove: [
 ]

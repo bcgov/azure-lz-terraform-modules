@@ -2,8 +2,7 @@
 
 name: "landing_zones_override"
 base_archetype: "landing_zones"
-policy_assignments_to_add: []
-policy_assignments_to_remove: [
+policy_assignments_to_add: [
   "Audit-AppGW-WAF",
   "Deny-IP-forwarding",
   "Deny-MgmtPorts-Internet",
@@ -24,7 +23,6 @@ policy_assignments_to_remove: [
   "Deploy-VMSS-ChangeTrack",
   "Deploy-VMSS-Monitoring",
   "Enable-AUM-CheckUpdates",
-  "Enable-DDoS-VNET", # This turns off the DDoS protection plan
   "Enforce-AKS-HTTPS",
   "Enforce-ASR",
   "Enforce-Encrypt-CMK0",
@@ -57,6 +55,9 @@ policy_assignments_to_remove: [
   "Enforce-GR-VirtualDesk0",
   "Enforce-Subnet-Private",
   "Enforce-TLS-SSL-Q225"
+]
+policy_assignments_to_remove: [
+  "Enable-DDoS-VNET", # This turns off the DDoS protection plan
 ]
 policy_definitions_to_add: []
 policy_definitions_to_remove: []

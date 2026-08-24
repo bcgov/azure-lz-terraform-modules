@@ -2,10 +2,10 @@
 
 name: "decommissioned_override"
 base_archetype: "decommissioned"
-policy_assignments_to_add: []
-policy_assignments_to_remove: [
+policy_assignments_to_add: [
   "Enforce-ALZ-Decomm"
 ]
+policy_assignments_to_remove: []
 policy_definitions_to_add: []
 policy_definitions_to_remove: []
 policy_set_definitions_to_add: []
