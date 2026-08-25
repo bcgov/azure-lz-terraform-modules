@@ -8,12 +8,12 @@ module "lz_vending" {
   for_each = var.platform_subscriptions
 
   # subscription variables
-  subscription_alias_enabled = each.value.subscription_alias_enabled
-  subscription_alias_name    = each.value.subscription_alias_name
-  subscription_billing_scope = each.value.subscription_billing_scope
-  subscription_display_name  = each.value.subscription_display_name
-  subscription_id            = each.value.subscription_id
-  subscription_tags          = each.value.subscription_tags
+  subscription_alias_enabled   = each.value.subscription_alias_enabled
+  subscription_alias_name      = each.value.subscription_alias_name
+  subscription_billing_scope   = each.value.subscription_billing_scope
+  subscription_display_name    = each.value.subscription_display_name
+  subscription_id              = each.value.subscription_id
+  subscription_tags            = each.value.subscription_tags
   subscription_update_existing = each.value.subscription_update_existing
   subscription_workload        = each.value.subscription_workload
 

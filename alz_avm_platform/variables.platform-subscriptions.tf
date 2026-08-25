@@ -65,4 +65,3 @@ Set `subscription_update_existing` to `true` to update an existing subscription 
 DESCRIPTION
   nullable    = false
 }
-
