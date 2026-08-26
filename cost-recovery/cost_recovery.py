@@ -448,7 +448,7 @@ if __name__ == "__main__":
         "--granularity",
         type=str,
         default="Monthly",
-        choices=["Daily", "Monthly", "None"],
+        choices=["Daily", "Monthly"],
         help="Granularity of the cost report (default: Monthly)",
     )
     parser.add_argument(
