@@ -1,3 +1,4 @@
+import time
 from datetime import datetime
 from decimal import ROUND_HALF_UP, Decimal
 
@@ -22,6 +23,7 @@ def get_subscription_costs(
     start_date: str,
     end_date: str,
     granularity: str = "Monthly",
+    max_retries: int = 5
 ):
     """
     Query Azure Cost Management for subscription costs within a management group.
@@ -58,17 +60,38 @@ def get_subscription_costs(
         print(f"Scope: {scope}")
         print(f"Query parameters: {query}")
 
-        try:
-            results = cost_client.query.usage(scope=scope, parameters=query)
-            print("\nQuery executed successfully")
-        except Exception as api_error:
-            print("\nAPI Error Details:")
-            print(f"Error type: {type(api_error).__name__}")
-            if hasattr(api_error, "response"):
-                print(f"Response status: {api_error.response.status_code}")
-                print(f"Response headers: {api_error.response.headers}")
-                print(f"Response content: {api_error.response.text}")
-            raise
+        # Cost Management aggressively rate-limits per scope; back off exponentially since the
+        # API's suggested 'retry-after' value is often much shorter than the actual reset window.
+        for attempt in range(1, max_retries + 1):
+            try:
+                results = cost_client.query.usage(scope=scope, parameters=query)
+                print("\nQuery executed successfully")
+                break
+            except Exception as api_error:
+                status_code = getattr(getattr(api_error, "response", None), "status_code", None)
+                if status_code == 429 and attempt < max_retries:
+                    suggested = int(
+                        api_error.response.headers.get(
+                            "x-ms-ratelimit-microsoft.costmanagement-entity-retry-after", 5
+                        )
+                    )
+                    retry_after = min(120, max(suggested, 5) * (2 ** (attempt - 1)))
+                    remaining = api_error.response.headers.get(
+                        "x-ms-ratelimit-remaining-microsoft.costmanagement-entity-requests", "unknown"
+                    )
+                    print(
+                        f"Rate limited (HTTP 429, quota remaining: {remaining}); "
+                        f"retrying in {retry_after}s (attempt {attempt}/{max_retries})..."
+                    )
+                    time.sleep(retry_after)
+                    continue
+                print("\nAPI Error Details:")
+                print(f"Error type: {type(api_error).__name__}")
+                if hasattr(api_error, "response"):
+                    print(f"Response status: {api_error.response.status_code}")
+                    print(f"Response headers: {api_error.response.headers}")
+                    print(f"Response content: {api_error.response.text}")
+                raise
 
         # Process results into DataFrame
         cost_data = []
