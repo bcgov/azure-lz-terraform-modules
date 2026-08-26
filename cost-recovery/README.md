@@ -47,7 +47,7 @@ python cost_recovery.py -m 3
 
 ## Monthly Spend Report
 
-A single "current monthly spend" figure can be misleading for consumption-based cloud costs (spikes, seasonality, idle periods, growth/decline). The Monthly Spend Report instead reports the following metrics (grouped by icense plate across all of its subscriptions):
+A single "current monthly spend" figure can be misleading for consumption-based cloud costs (spikes, seasonality, idle periods, growth/decline). The Monthly Spend Report instead reports the following metrics (grouped by license plate across all of its subscriptions):
 
 - **Avg Monthly Spend**, **Last Month Spend**, **Peak Month Spend** — Calculated from complete billing months present in the data
 - **Variability** — A 'Coefficient of Variation'-based classification: `Stable`, `Variable`, `Burst / Seasonal`, or `Dormant` (most recent 3 months all under $1 CAD)

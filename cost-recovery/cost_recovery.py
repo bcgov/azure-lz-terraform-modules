@@ -656,7 +656,7 @@ if __name__ == "__main__":
             print(f"  - Summary Excel: {summary_xlsx}")
 
         # Avg/Last/Peak/Variability calculations all assume one data point per calendar month
-        monthly_spend_report_requested = args.registry_csv or args.monthly_spend_report
+        monthly_spend_report_requested = bool(args.registry_csv) or args.monthly_spend_report
         if monthly_spend_report_requested and granularity != "Monthly":
             print(
                 f"\nError: Monthly Spend Report requires '--granularity Monthly', but is set to '{granularity}'. Skipping report."
