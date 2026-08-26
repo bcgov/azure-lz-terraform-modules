@@ -7,7 +7,9 @@ Error: `"Permission to write and delete on resources of type 'Microsoft.Authoriz
 
 The `module.platform_subscriptions.module.lz_vending["identity"].module.subscription[0].terraform_data.replacement[0]` triggers a replacement in Terraform plan
 
-
+2. Despite the Azure Landing Zone documentation (https://azure.github.io/Azure-Landing-Zones/terraform/custom-policy/policy-assignment/) stating that YAML is a valid format for Policy Definitions, Policy Sets, and Policy Assignments, based on the following GitHub issues, the format MUST be in JSON:
+   - [[Bug]: alzlib - YAML role definition files fail to parse due to yaml.v3 ignoring json struct tags](https://github.com/Azure/Azure-Landing-Zones/issues/4225)
+     - Comment points to this PR: [docs: correct supported file formats for library assets](https://github.com/Azure/Azure-Landing-Zones-Library/pull/340)
 
 
 
