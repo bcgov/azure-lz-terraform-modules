@@ -275,6 +275,9 @@ def load_registry_csv(registry_csv_path):
 
 
 def aggregate_project_monthly_costs(cost_detail_df):
+    """
+    Roll subscription-level monthly costs up to project-level monthly totals.
+    """
     if cost_detail_df.empty:
         return pd.DataFrame(columns=["LicensePlate", "Date", "Cost"])
 
@@ -299,8 +302,9 @@ def resolve_project_expense_authority(cost_detail_df):
 
 def compute_project_spend_metrics(project_monthly_df):
     """
-    Compute Avg/Last/Peak monthly spend and Coefficient of Variation based classification per project,
-    using only actual months present in the export (never assume $0 for months with no data).
+    Compute Avg/Last/Peak monthly spend and Coefficient of Variation-based
+    classification per project, using only actual months present in the
+    export (never assume $0 for months with no data).
     """
     metrics = []
     for license_plate, group in project_monthly_df.groupby("LicensePlate"):
@@ -308,7 +312,8 @@ def compute_project_spend_metrics(project_monthly_df):
         if not monthly_costs:
             continue
 
-        # A $0.00 first month is almost always a partial billing period, not real spend, so we can exclude it from metrics.
+        # A $0.00 first month is almost always a partial billing period,
+        # not real spend, so we can exclude it from metrics.
         stats_costs = monthly_costs
         if len(monthly_costs) > 1 and round(monthly_costs[0], 2) == 0.00:
             print(f"Info: [{license_plate}] excluding $0.00 first month from statistics (first-month-zero rule).")
@@ -328,7 +333,7 @@ def compute_project_spend_metrics(project_monthly_df):
 
         cv = (std_dev / avg_monthly_spend) if avg_monthly_spend else 0.0
 
-        # Variability Classification: First check if the project is Dormant. 
+        # Variability Classification: First check if the project is Dormant.
         # Otherwise, Stable / Variable / Burst are selected based on the CV.
         last_three_months = monthly_costs[-3:]
         if len(last_three_months) == 3 and all(c < 1.0 for c in last_three_months):
@@ -341,8 +346,9 @@ def compute_project_spend_metrics(project_monthly_df):
             classification = "Burst / Seasonal"
 
         print(
-            f"Info: [{license_plate}] months={included_months} avg=${avg_monthly_spend:.2f} "
-            f"last=${last_month_spend:.2f} peak=${peak_month_spend:.2f} cv={cv:.2f} -> {classification}"
+            f"Info: [{license_plate}] months={included_months} "
+            f"avg=${avg_monthly_spend:.2f} last=${last_month_spend:.2f} "
+            f"peak=${peak_month_spend:.2f} cv={cv:.2f} -> {classification}"
         )
 
         metrics.append(
@@ -361,7 +367,8 @@ def compute_project_spend_metrics(project_monthly_df):
 
 def build_monthly_spend_report(cost_detail_df, registry_df, platform="Azure"):
     """
-    Build the Monthly Spend Report by joining project-level spend statistics with Registry export metadata on License Plate. 
+    Build the Monthly Spend Report by joining project-level spend statistics
+    with Registry export metadata on License Plate.
     """
     project_monthly = aggregate_project_monthly_costs(cost_detail_df)
     spend_metrics = compute_project_spend_metrics(project_monthly)
@@ -522,7 +529,8 @@ if __name__ == "__main__":
         # Combine the results
         df = pd.concat(dfs, ignore_index=True)
 
-        # Create summary by account coding with tax calculations (repeat logic from get_subscription_costs)
+        # Create summary by account coding with tax calculations
+        # (repeat logic from get_subscription_costs)
         summary_df = (
             df.groupby(["AccountCoding", "ExpenseAuthority"])
             .agg(
