@@ -8,4 +8,6 @@ module "alz" {
   parent_resource_id = var.parent_resource_id
 
   subscription_placement_destroy_behavior = var.subscription_placement_destroy_behavior
+
+  policy_assignments_to_modify = var.policy_assignments_to_modify
 }

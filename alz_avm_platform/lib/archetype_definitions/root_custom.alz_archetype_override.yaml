@@ -19,7 +19,8 @@ policy_assignments_to_add: [
     "Deploy-MDFC-OssDb",
     "Deploy-MDFC-SqlAtp",
     "Deploy-SvcHealth-BuiltIn",
-    "Enforce-ACSB"
+    "Enforce-ACSB",
+    "Deny-Resource-Types" # EXAMPLE
 ]
 policy_assignments_to_remove: []
 policy_definitions_to_add: [
@@ -171,7 +172,8 @@ policy_definitions_to_add: [
     "Deploy-VNET-HubSpoke",
     "Deploy-Windows-DomainJoin",
     "Modify-NSG",
-    "Modify-UDR"
+    "Modify-UDR",
+    "Deny-Resource-Types" # EXAMPLE
 ]
 policy_definitions_to_remove: [
 ]

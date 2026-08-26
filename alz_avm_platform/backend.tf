@@ -7,3 +7,5 @@ terraform {
     key                  = "azure-lz-core-avm.tfstate"
   }
 }
+
+# NOTE: This backend Storage Account (along with its Resource Group, and Container) were created manually in the Management subscription.

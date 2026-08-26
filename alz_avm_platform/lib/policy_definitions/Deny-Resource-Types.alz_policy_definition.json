@@ -1,0 +1,53 @@
+{
+  "name": "Deny-Resource-Types",
+  "type": "Microsoft.Authorization/policyDefinitions",
+  "properties": {
+    "displayName": "Only allow whitelisted Resource Types",
+    "description": "This policy restricts which resource types can be deployed, ensuring only approved Azure services are available. This is enforced by checking the resource type during deployment.",
+    "policyType": "Custom",
+    "mode": "All",
+    "metadata": {
+      "version": "1.0.0",
+      "category": "General",
+      "source": "https://github.com/Azure/Enterprise-Scale/",
+      "alzCloudEnvironments": [
+        "AzureCloud",
+        "AzureChinaCloud",
+        "AzureUSGovernment"
+      ]
+    },
+    "parameters": {
+      "effect": {
+        "type": "String",
+        "metadata": {
+          "displayName": "Effect",
+          "description": "Enable or disable the execution of the policy"
+        },
+        "allowedValues": [
+          "Audit",
+          "Deny",
+          "Disabled"
+        ],
+        "defaultValue": "Audit"
+      },
+      "deniedResourceTypes": {
+        "type": "Array",
+        "metadata": {
+          "displayName": "Denied Resource Types",
+          "description": "The list of resource types that are not allowed to be deployed. Example: Microsoft.Sql/servers, Microsoft.ClassicCompute/virtualMachines",
+          "strongType": "resourceTypes"
+        },
+        "defaultValue": []
+      }
+    },
+    "policyRule": {
+      "if": {
+        "field": "type",
+        "in": "[parameters('deniedResourceTypes')]"
+      },
+      "then": {
+        "effect": "[parameters('effect')]"
+      }
+    }
+  }
+}

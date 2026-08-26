@@ -5,6 +5,20 @@ module "management_groups" {
   architecture_name  = var.architecture_name
   location           = var.location
   parent_resource_id = var.parent_resource_id
+
+  # policy_assignments_to_modify = var.policy_assignments_to_modify
+  policy_assignments_to_modify = {
+    bcgov-managed-lz-avm = { # Management Group ID
+      policy_assignments = {
+        # TESTING: [Preview]: Deploy Microsoft Defender for Endpoint agent (Initiative)
+        Deploy-MDEndpoints = { # Policy Assignment Name
+          parameters = {
+            microsoftDefenderForEndpointWindowsVmAgentDeployEffect = jsonencode({ value = "AuditIfNotExists" })
+          }
+        }
+      }
+    }
+  }
 }
 
 module "platform_subscriptions" {
