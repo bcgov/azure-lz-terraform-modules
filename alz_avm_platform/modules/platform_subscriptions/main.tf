@@ -17,7 +17,7 @@ module "lz_vending" {
   subscription_update_existing = each.value.subscription_update_existing
   subscription_workload        = each.value.subscription_workload
 
-  # management group association variables
+  # Management Group association variables
   subscription_management_group_association_enabled = each.value.subscription_management_group_association_enabled
   subscription_management_group_id                  = each.value.subscription_management_group_id
 

@@ -40,5 +40,10 @@ No resources.
 | Name | Description |
 |------|-------------|
 | <a name="output_management_group_resource_ids"></a> [management\_group\_resource\_ids](#output\_management\_group\_resource\_ids) | A map of management group names to their resource ids. |
+| <a name="output_policy_assignment_identity_ids"></a> [policy\_assignment\_identity\_ids](#output\_policy\_assignment\_identity\_ids) | A map of policy assignment names to their identity ids. |
+| <a name="output_policy_assignment_resource_ids"></a> [policy\_assignment\_resource\_ids](#output\_policy\_assignment\_resource\_ids) | A map of policy assignment names to their resource ids. |
+| <a name="output_policy_definition_resource_ids"></a> [policy\_definition\_resource\_ids](#output\_policy\_definition\_resource\_ids) | A map of policy definition names to their resource ids. |
 | <a name="output_policy_role_assignment_resource_ids"></a> [policy\_role\_assignment\_resource\_ids](#output\_policy\_role\_assignment\_resource\_ids) | A map of policy role assignments to their resource ids. |
+| <a name="output_policy_set_definition_resource_ids"></a> [policy\_set\_definition\_resource\_ids](#output\_policy\_set\_definition\_resource\_ids) | A map of policy set definition names to their resource ids. |
+| <a name="output_role_definition_resource_ids"></a> [role\_definition\_resource\_ids](#output\_role\_definition\_resource\_ids) | A map of role definition names to their resource ids. |
 <!-- END_TF_DOCS -->
