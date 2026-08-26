@@ -115,32 +115,29 @@ def get_subscription_costs(
 
         df = pd.DataFrame(cost_data)
 
-        # Get subscription tags
+        # Get subscription tags. Tags are a property of the subscription,
+        # so fetch values for each unique subscription once and cache them
+        # instead of re-fetching for every row in the DataFrame.
         print("\nFetching subscription tags...")
-        for index, row in df.iterrows():
+        tag_cache = {}
+        for sub_id in df["SubscriptionId"].unique():
             try:
-                sub_scope=f"/subscriptions/{row['SubscriptionId']}"
-                tag_details = resource_client.tags.get_at_scope(sub_scope)
-                tags = (tag_details.properties.tags
-                        if tag_details and tag_details.properties
-                        else {}
+                tag_details = resource_client.tags.get_at_scope(f"/subscriptions/{sub_id}")
+                tags = (
+                    tag_details.properties.tags
+                    if tag_details and tag_details.properties
+                    else {}
                 )
-                df.at[index, "AccountCoding"] = (
-                    tags.get("account_coding", "Untagged")
-                    if tags
-                    else "Untagged"
-                )
-                df.at[index, "ExpenseAuthority"] = (
-                    tags.get("expense_authority", "Untagged")
-                    if tags
-                    else "Untagged"
-                )
+                tag_cache[sub_id] = {
+                    "AccountCoding": tags.get("account_coding", "Untagged") if tags else "Untagged",
+                    "ExpenseAuthority": tags.get("expense_authority", "Untagged") if tags else "Untagged",
+                }
             except Exception as e:
-                print(
-                    f"Warning: Could not fetch tags for subscription {row['SubscriptionId']}: {str(e)}"
-                )
-                df.at[index, "AccountCoding"] = "Untagged"
-                df.at[index, "ExpenseAuthority"] = "Untagged"
+                print(f"Warning: Could not fetch tags for subscription {sub_id}: {str(e)}")
+                tag_cache[sub_id] = {"AccountCoding": "Untagged", "ExpenseAuthority": "Untagged"}
+
+        df["AccountCoding"] = df["SubscriptionId"].map(lambda sub_id: tag_cache[sub_id]["AccountCoding"])
+        df["ExpenseAuthority"] = df["SubscriptionId"].map(lambda sub_id: tag_cache[sub_id]["ExpenseAuthority"])
 
         # Create summary by account coding with tax calculations
         summary_df = (
