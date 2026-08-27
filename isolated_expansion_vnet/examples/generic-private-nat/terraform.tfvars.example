@@ -1,0 +1,10 @@
+subscription_id                   = "<subscription-id>"
+resource_group_name               = "<resource-group-name>"
+routable_vnet_id                  = "/subscriptions/<subscription-id>/resourceGroups/<resource-group-name>/providers/Microsoft.Network/virtualNetworks/<routable-vnet-name>"
+routable_vnet_name                = "<routable-vnet-name>"
+routable_vnet_resource_group_name = "<resource-group-name>"
+routable_vnet_address_space       = ["10.40.32.0/21"]
+private_nat_subnet_address_prefix = "10.40.32.64/28"
+ssh_admin_group_object_id         = "<entra-admin-group-object-id>"
+hub_firewall_dns_servers          = ["<hub-firewall-dns-proxy-ip>"]
+spoke_route_table_id              = null

@@ -31,3 +31,33 @@ output "private_dns_resolver_forwarding_rules" {
     }
   }
 }
+
+output "isolated_expansion_dns_forwarding_ruleset_id" {
+  description = "Resource ID of the isolated-expansion forwarding ruleset. Pass to isolated_expansion_vnet as dns_forwarding_ruleset_id. Null when isolated_expansion_forwarding_ruleset.enabled is false. Do not link this ruleset to the resolver VNet or to *-vwan-spoke VNets."
+  value       = try(azurerm_private_dns_resolver_dns_forwarding_ruleset.isolated_expansion[0].id, null)
+}
+
+output "isolated_expansion_dns_forwarding_ruleset" {
+  description = "The isolated-expansion forwarding ruleset resource, or null when disabled."
+  value       = try(azurerm_private_dns_resolver_dns_forwarding_ruleset.isolated_expansion[0], null)
+}
+
+output "isolated_expansion_dns_forwarding_rules" {
+  description = "Map of isolated-expansion forwarding rules, including the '.' catch-all and explicit reserved Azure PaaS suffixes."
+  value = local.isolated_expansion_forwarding_ruleset_enabled ? merge(
+    {
+      all-to-inbound = {
+        id          = azurerm_private_dns_resolver_forwarding_rule.isolated_expansion_all[0].id
+        name        = azurerm_private_dns_resolver_forwarding_rule.isolated_expansion_all[0].name
+        domain_name = azurerm_private_dns_resolver_forwarding_rule.isolated_expansion_all[0].domain_name
+      }
+    },
+    {
+      for k, v in azurerm_private_dns_resolver_forwarding_rule.isolated_expansion_reserved : k => {
+        id          = v.id
+        name        = v.name
+        domain_name = v.domain_name
+      }
+    }
+  ) : {}
+}

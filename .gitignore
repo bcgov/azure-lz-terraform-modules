@@ -39,6 +39,10 @@ terraform.rc
 # Used for development
 providers.tf
 
+# Python bytecode
+__pycache__/
+*.py[cod]
+
 # ALZ Terraform Module
 .alzlib
 
