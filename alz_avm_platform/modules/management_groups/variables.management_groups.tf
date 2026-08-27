@@ -29,6 +29,12 @@ variable "subscription_placement_destroy_behavior" {
   default     = "parent"
 }
 
+variable "policy_default_values" {
+  type        = map(string)
+  default     = {}
+  description = "Policy default values to apply while resolving the Azure Landing Zones library. Each value must be JSON containing a value property."
+}
+
 variable "policy_assignments_to_modify" {
   type = map(object({
     policy_assignments = map(object({

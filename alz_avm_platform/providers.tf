@@ -10,10 +10,10 @@ provider "alz" {
       path = "platform/alz",
       ref  = "2026.08.0" # Loads ALZ library assets for https://github.com/Azure/Azure-Landing-Zones-Library/tree/platform/alz/2026.08.0/platform/alz
     },
-    # {
-    #   path = "platform/amba"
-    #   ref  = "2026.06.2" # Check the latest library version https://github.com/Azure/Azure-Landing-Zones-Library/tags
-    # },
+    {
+      path = "platform/amba"
+      ref  = "2026.06.2" # Check the latest library version https://github.com/Azure/Azure-Landing-Zones-Library/tags
+    },
     {
       custom_url = "${path.root}/lib"
     }
