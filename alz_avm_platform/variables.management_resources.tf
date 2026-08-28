@@ -3,7 +3,7 @@ variable "automation_account_name" {
   description = "The name of the Azure Automation Account to create."
 }
 
-variable "resource_group_name" {
+variable "management_resources_resource_group_name" {
   type        = string
   description = "The name of the Azure Resource Group where the resources will be created."
 }

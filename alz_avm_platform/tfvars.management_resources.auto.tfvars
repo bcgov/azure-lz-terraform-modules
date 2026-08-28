@@ -4,8 +4,8 @@ You can use this section to customize the management resources that will be depl
 */
 
 # Required Variables
-automation_account_name = "bcgov-managed-lz-avm-automation"
-resource_group_name     = "bcgov-managed-lz-avm-mgmt"
+automation_account_name                  = "bcgov-managed-lz-avm-automation"
+management_resources_resource_group_name = "bcgov-managed-lz-avm-mgmt"
 
 # Optional Variables
 data_collection_rules = {
@@ -41,7 +41,7 @@ log_analytics_solution_plans = [
     "product" : "OMSGallery/NetworkMonitoring",
     "publisher" : "Microsoft"
   }
-  # {
+  # { # This is considered a legacy solution and not available for net-new deployment (though we have it in the current environment).
   #   "product": "OMSGallery/SecurityInsights",
   #   "publisher": "Microsoft"
   # }

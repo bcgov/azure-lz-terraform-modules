@@ -14,3 +14,16 @@ variable "amba_user_assigned_managed_identity_name" {
     error_message = "The resource name must start with a letter or number, have a length between 3 and 128 characters and can only contain a combination of alphanumeric characters, hyphens and underscores."
   }
 }
+
+# NOTE: Used with the Logic App created for Azure Monitor alert processing into Jira tickets
+# variable "logic_app_resource_id" {
+#   type        = string
+#   default     = ""
+#   description = "The resource ID of the logic app."
+# }
+
+# variable "logic_app_callback_url" {
+#   type        = string
+#   default     = ""
+#   description = "The callback URL of the logic app."
+# }

@@ -15,6 +15,13 @@ module "management_groups" {
     amba_alz_resource_group_location             = jsonencode({ value = var.location })
     amba_alz_resource_group_name                 = jsonencode({ value = var.amba_resource_group_name })
     amba_alz_user_assigned_managed_identity_name = jsonencode({ value = var.amba_user_assigned_managed_identity_name })
+
+    # NOTE: Used with the Logic App created for Azure Monitor alert processing into Jira tickets
+    # amba_alz_logicapp_resource_id                  = jsonencode({ value = var.logic_app_resource_id })
+    # amba_alz_logicapp_callback_url                 = jsonencode({ value = var.logic_app_callback_url })
+
+    log_analytics_workspace_id = jsonencode({ value = provider::azapi::resource_group_resource_id(var.subscription_id_management, var.management_resources_resource_group_name, "Microsoft.OperationalInsights/workspaces", [var.log_analytics_workspace_name]) })
+    # TODO Figure out what property is needed to set security_email = "cloud.pathfinder@gov.bc.ca" 
   }
 
   # policy_assignments_to_modify = var.policy_assignments_to_modify
@@ -62,7 +69,7 @@ module "management_resources" {
   # Required Variables
   automation_account_name = var.automation_account_name
   location                = var.location
-  resource_group_name     = var.resource_group_name
+  resource_group_name     = var.management_resources_resource_group_name
 
   # Optional Variables
   automation_account_encryption                              = var.automation_account_encryption
@@ -91,6 +98,22 @@ module "management_resources" {
   tags                                                       = var.tags
   user_assigned_managed_identities                           = var.user_assigned_managed_identities
 }
+
+module "ipam" {
+  source = "./modules/ipam"
+
+  subscription_id_management = var.subscription_id_management
+
+  location                      = var.location
+  ipam_pool_resource_group_name = var.ipam_pool_resource_group_name
+  network_manager_name          = var.network_manager_name
+  scope                         = var.scope
+  ipam_pool_name                = var.ipam_pool_name
+  ipam_pool_display_name        = var.ipam_pool_display_name
+  ipam_pool_description         = var.ipam_pool_description
+  ipam_pool_address_prefixes    = var.ipam_pool_address_prefixes
+}
+
 
 # module "connectivity" {
 #   source  = "./modules/connectivity"

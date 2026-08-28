@@ -13,12 +13,14 @@
   - `Microsoft.AlertsManagement`
   - `Microsoft.Insights`
   - NOTE: Added to the platform_subscriptions module
+  - Not all Alert rules have been successfully created in the AVM management subscription
 
 ## TO DO
 
 ### Management Subscription
 
 - [ ] Create Network Manager / IP Address Pool
+  - NOTE: There is only a "proposed" AVM module for `avm-ptn-azure-ipam`
 - [ ]
 
 ### AMBA
