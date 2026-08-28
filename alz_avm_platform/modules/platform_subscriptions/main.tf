@@ -22,4 +22,7 @@ module "lz_vending" {
   subscription_management_group_id                  = each.value.subscription_management_group_id
 
   wait_for_subscription_before_subscription_operations = each.value.wait_for_subscription_before_subscription_operations
+
+  subscription_register_resource_providers_enabled      = var.subscription_register_resource_providers_enabled
+  subscription_register_resource_providers_and_features = var.subscription_register_resource_providers_and_features
 }

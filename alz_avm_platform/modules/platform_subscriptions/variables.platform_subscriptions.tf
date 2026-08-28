@@ -15,6 +15,8 @@ variable "platform_subscriptions" {
       create  = optional(string, "30s")
       destroy = optional(string, "0s")
     }), {})
+    subscription_register_resource_providers_enabled      = optional(bool, false)
+    subscription_register_resource_providers_and_features = optional(map(set(string)), {})
   }))
   default     = {}
   description = <<DESCRIPTION
@@ -64,4 +66,96 @@ Set `subscription_update_existing` to `true` to update an existing subscription 
 `wait_for_subscription_before_subscription_operations` controls the duration to wait after vending a subscription before performing subscription operations.
 DESCRIPTION
   nullable    = false
+}
+
+variable "subscription_register_resource_providers_enabled" {
+  type        = bool
+  default     = true
+  description = "Whether to register the required resource providers for the platform subscriptions."
+}
+
+variable "subscription_register_resource_providers_and_features" {
+  type = map(set(string))
+  default = {
+    # Core Resource Providers
+    "Microsoft.Authorization"       = []
+    "Microsoft.Compute"             = []
+    "Microsoft.CostManagement"      = []
+    "Microsoft.ManagedIdentity"     = []
+    "Microsoft.MarketplaceOrdering" = []
+    "Microsoft.Network"             = []
+    "Microsoft.Resources"           = []
+    "Microsoft.Storage"             = []
+
+    # Extended Resource Providers
+    "Microsoft.ApiManagement"        = []
+    "Microsoft.AppConfiguration"     = []
+    "Microsoft.AppPlatform"          = []
+    "Microsoft.Automation"           = []
+    "Microsoft.Cache"                = []
+    "Microsoft.Cdn"                  = []
+    "Microsoft.ContainerInstance"    = []
+    "Microsoft.ContainerRegistry"    = []
+    "Microsoft.ContainerService"     = []
+    "Microsoft.DBforMySQL"           = []
+    "Microsoft.DBforPostgreSQL"      = []
+    "Microsoft.DataFactory"          = []
+    "Microsoft.DataLakeAnalytics"    = []
+    "Microsoft.DataLakeStore"        = []
+    "Microsoft.DataMigration"        = []
+    "Microsoft.DataProtection"       = []
+    "Microsoft.Databricks"           = []
+    "Microsoft.DevTestLab"           = []
+    "Microsoft.Devices"              = []
+    "Microsoft.DocumentDB"           = []
+    "Microsoft.EventGrid"            = []
+    "Microsoft.EventHub"             = []
+    "Microsoft.HDInsight"            = []
+    "microsoft.insights"             = []
+    "Microsoft.KeyVault"             = []
+    "Microsoft.Kusto"                = []
+    "Microsoft.Logic"                = []
+    "Microsoft.Maintenance"          = []
+    "Microsoft.Management"           = []
+    "Microsoft.NotificationHubs"     = []
+    "Microsoft.OperationalInsights"  = []
+    "Microsoft.OperationsManagement" = []
+    "Microsoft.PowerBIDedicated"     = []
+    "Microsoft.Relay"                = []
+    "Microsoft.Security"             = []
+    "Microsoft.SecurityInsights"     = []
+    "Microsoft.ServiceBus"           = []
+    "Microsoft.ServiceFabric"        = []
+    "Microsoft.SignalRService"       = []
+    "Microsoft.Sql"                  = []
+    "Microsoft.StreamAnalytics"      = []
+    "Microsoft.Web"                  = []
+
+    # All Resource Providers
+    "Github.Network"                    = []
+    "Microsoft.AVS"                     = []
+    "Microsoft.AlertsManagement"        = []
+    "Microsoft.Blueprint"               = []
+    "Microsoft.BotService"              = []
+    "Microsoft.CognitiveServices"       = []
+    "Microsoft.CustomProviders"         = []
+    "Microsoft.Dashboard"               = []
+    "Microsoft.DesktopVirtualization"   = []
+    "Microsoft.GuestConfiguration"      = []
+    "Microsoft.HealthcareApis"          = []
+    "Microsoft.IoTCentral"              = []
+    "Microsoft.MachineLearningServices" = []
+    "Microsoft.ManagedServices"         = []
+    "Microsoft.Maps"                    = []
+    "Microsoft.Monitor"                 = []
+    "Microsoft.PolicyInsights"          = []
+    "Microsoft.RecoveryServices"        = []
+    "Microsoft.Search"                  = []
+  }
+  description = <<DESCRIPTION
+The map of resource providers to register.
+The map keys are the resource provider namespace, e.g. `Microsoft.Compute`.
+The map values are a list of provider features to enable.
+Leave the value empty to not register any resource provider features.
+DESCRIPTION
 }

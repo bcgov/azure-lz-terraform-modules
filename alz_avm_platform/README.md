@@ -8,6 +8,11 @@
    - [[Bug]: alzlib - YAML role definition files fail to parse due to yaml.v3 ignoring json struct tags](https://github.com/Azure/Azure-Landing-Zones/issues/4225)
      - Comment points to this PR: [docs: correct supported file formats for library assets](https://github.com/Azure/Azure-Landing-Zones-Library/pull/340)
 
+3. After deploying the AMBA policies, remediation needs to be triggered to create the Activity Log, Log Search, and Metric alert rules.
+  - NOTE: Specific `Resource Providers` need to be registered for the various subscriptions for the remediation to work.
+  - `Microsoft.AlertsManagement`
+  - `Microsoft.Insights`
+  - NOTE: Added to the platform_subscriptions module
 
 ## TO DO
 

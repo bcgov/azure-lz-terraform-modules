@@ -20,35 +20,35 @@ management_groups:
     exists: false
     archetypes:
       - landing_zones_override
-      # - amba_landing_zones
+      - amba_landing_zones
   - id: bcgov-managed-lz-avm-platform
     display_name: Platform
     parent_id: bcgov-managed-lz-avm
     exists: false
     archetypes:
       - platform_override
-      # - amba_platform
+      - amba_platform
   - id: bcgov-managed-lz-avm-management
     display_name: Management
     parent_id: bcgov-managed-lz-avm-platform
     exists: false
     archetypes:
       - management_override
-      # - amba_management
+      - amba_management
   - id: bcgov-managed-lz-avm-connectivity
     display_name: Connectivity
     parent_id: bcgov-managed-lz-avm-platform
     exists: false
     archetypes:
       - connectivity_override
-      # - amba_connectivity
+      - amba_connectivity
   - id: bcgov-managed-lz-avm-identity
     display_name: Identity
     parent_id: bcgov-managed-lz-avm-platform
     exists: false
     archetypes:
       - identity_override
-      # - amba_identity
+      - amba_identity
   - id: bcgov-managed-lz-avm-security
     display_name: Security
     parent_id: bcgov-managed-lz-avm-platform
