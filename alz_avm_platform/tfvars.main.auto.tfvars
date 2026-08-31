@@ -6,6 +6,8 @@ subscription_id_security     = "af6fee0c-9967-44d0-86f9-4bd603ffa174"
 
 location = "Canada Central"
 
+email_security_contact = "cloud.pathfinder@gov.bc.ca"
+
 tags = {
   "deployedBy" : "AVM"
 }

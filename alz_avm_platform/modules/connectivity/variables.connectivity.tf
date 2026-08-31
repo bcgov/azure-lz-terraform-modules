@@ -1,3 +1,8 @@
+variable "vwan_resource_group_name" {
+  type        = string
+  description = "(Required) The name of the resource group to create for the Virtual WAN."
+}
+
 variable "default_naming_convention" {
   type = object({
     virtual_wan_name                           = optional(string, "vwan-hub-$${location}-$${sequence}")
@@ -44,32 +49,6 @@ variable "default_naming_convention_sequence" {
     padding_format  = "%03d"
   }
   description = "(Optional) Defines the starting number and padded length for the sequence placeholder in naming conventions."
-}
-
-variable "enable_telemetry" {
-  type        = bool
-  default     = true
-  description = <<DESCRIPTION
-This variable controls whether or not telemetry is enabled for the module.
-For more information see <https://aka.ms/avm/telemetryinfo>.
-If it is set to false, then no telemetry will be collected.
-DESCRIPTION
-  nullable    = false
-}
-
-variable "retry" {
-  type = object({
-    error_message_regex = optional(list(string), [
-      "ReferencedResourceNotProvisioned",
-      "UpdateGatewayInProgress",
-      "CannotDeleteVirtualHubWhenItIsInUse",
-      "InUseVirtualWanCannotBeDeleted"
-    ])
-    interval_seconds     = optional(number, 10)
-    max_interval_seconds = optional(number, 180)
-  })
-  default     = {}
-  description = "Retry configuration for the resource operations"
 }
 
 variable "route_maps" {
@@ -121,23 +100,6 @@ variable "route_maps" {
     - `route_prefix` - (Optional) List of route prefixes to match.
 DESCRIPTION
   nullable    = false
-}
-
-variable "tags" {
-  type        = map(string)
-  default     = null
-  description = "(Optional) Tags of the resource."
-}
-
-variable "timeouts" {
-  type = object({
-    create = optional(string, "60m")
-    read   = optional(string, "5m")
-    update = optional(string, "60m")
-    delete = optional(string, "60m")
-  })
-  default     = {}
-  description = "Timeouts for the resource operations"
 }
 
 variable "virtual_hubs" {

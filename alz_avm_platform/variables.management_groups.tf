@@ -86,3 +86,12 @@ The key of this map is the assignment name, and the value is an object with opti
 
 DESCRIPTION
 }
+
+# NOTE: Unable to find documentation for this property. Deduced from existing CAF implementation.
+# `terraform plan` shows this is linked with the Deploy-MDFC-Config-H224 policy assignment, and the `emailSecurityContact` parameter.
+# This can be controlled either through the policy_default_values, or the policy_assignments_to_modify
+variable "email_security_contact" {
+  type        = string
+  description = "Email address for security contact. This is used in the Deploy-MDFC-Config-H224 policy assignment."
+  default     = ""
+}

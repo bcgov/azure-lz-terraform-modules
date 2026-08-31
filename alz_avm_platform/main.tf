@@ -21,7 +21,10 @@ module "management_groups" {
     # amba_alz_logicapp_callback_url                 = jsonencode({ value = var.logic_app_callback_url })
 
     log_analytics_workspace_id = jsonencode({ value = provider::azapi::resource_group_resource_id(var.subscription_id_management, var.management_resources_resource_group_name, "Microsoft.OperationalInsights/workspaces", [var.log_analytics_workspace_name]) })
-    # TODO Figure out what property is needed to set security_email = "cloud.pathfinder@gov.bc.ca"
+    # TODO Figure out what property is needed to set email_security_contact = "cloud.pathfinder@gov.bc.ca"
+    # NOTE: Unable to find documentation for this property. Deduced from existing CAF implementation.
+    # `terraform plan` shows this is linked with the bcgov-managed-lz-avm/Deploy-MDFC-Config-H224 policy assignment, and the `emailSecurityContact` parameter.
+    # email_security_contact = jsonencode({ value = var.email_security_contact })
   }
 
   # policy_assignments_to_modify = var.policy_assignments_to_modify
@@ -34,6 +37,11 @@ module "management_groups" {
             microsoftDefenderForEndpointWindowsVmAgentDeployEffect = jsonencode({ value = "AuditIfNotExists" })
           }
         },
+        Deploy-MDFC-Config-H224 = { # Policy Assignment Name
+          parameters = {
+            emailSecurityContact = jsonencode({ value = var.email_security_contact })
+          }
+        }
       }
     }
   }
@@ -114,7 +122,18 @@ module "ipam" {
   ipam_pool_address_prefixes    = var.ipam_pool_address_prefixes
 }
 
+module "connectivity" {
+  source = "./modules/connectivity"
 
-# module "connectivity" {
-#   source  = "./modules/connectivity"
-# }
+  subscription_id_connectivity = var.subscription_id_connectivity
+  location                     = var.location
+
+  vwan_resource_group_name = var.vwan_resource_group_name
+
+  # default_naming_convention = var.default_naming_convention
+  # default_naming_convention_sequence = var.default_naming_convention_sequence
+  # route_maps = var.route_maps
+  # tags = var.tags
+  virtual_hubs         = var.virtual_hubs
+  virtual_wan_settings = var.virtual_wan_settings
+}
