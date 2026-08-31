@@ -21,7 +21,7 @@ module "management_groups" {
     # amba_alz_logicapp_callback_url                 = jsonencode({ value = var.logic_app_callback_url })
 
     log_analytics_workspace_id = jsonencode({ value = provider::azapi::resource_group_resource_id(var.subscription_id_management, var.management_resources_resource_group_name, "Microsoft.OperationalInsights/workspaces", [var.log_analytics_workspace_name]) })
-    # TODO Figure out what property is needed to set security_email = "cloud.pathfinder@gov.bc.ca" 
+    # TODO Figure out what property is needed to set security_email = "cloud.pathfinder@gov.bc.ca"
   }
 
   # policy_assignments_to_modify = var.policy_assignments_to_modify

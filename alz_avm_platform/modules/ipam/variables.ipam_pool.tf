@@ -23,6 +23,11 @@ variable "ipam_pool_display_name" {
   description = "(Optional) The display name for the Network Manager IPAM Pool."
   type        = string
   default     = null
+
+  validation {
+    condition     = var.ipam_pool_display_name == null ? true : length(var.ipam_pool_display_name) >= 1 && length(var.ipam_pool_display_name) <= 64 && can(regex("^[a-zA-Z0-9_.-]+$", var.ipam_pool_display_name))
+    error_message = "ipam_pool_display_name must be between 1 and 64 characters long and can only contain letters, numbers, underscores(_), periods(.), and hyphens(-)."
+  }
 }
 
 variable "parent_pool_name" {
