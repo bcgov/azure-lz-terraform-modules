@@ -1,7 +1,7 @@
-variable "vwan_resource_group_name" {
-  type        = string
-  description = "(Required) The name of the resource group to create for the Virtual WAN."
-}
+# variable "vwan_resource_group_name" {
+#   type        = string
+#   description = "(Required) The name of the resource group to create for the Virtual WAN."
+# }
 
 variable "default_naming_convention" {
   type = object({

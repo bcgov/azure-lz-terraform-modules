@@ -128,12 +128,12 @@ module "connectivity" {
   subscription_id_connectivity = var.subscription_id_connectivity
   location                     = var.location
 
-  vwan_resource_group_name = var.vwan_resource_group_name
+  vwan_resource_group_name = local.vwan_resource_group_name
 
   # default_naming_convention = var.default_naming_convention
   # default_naming_convention_sequence = var.default_naming_convention_sequence
   # route_maps = var.route_maps
   # tags = var.tags
-  virtual_hubs         = var.virtual_hubs
-  virtual_wan_settings = var.virtual_wan_settings
+  virtual_hubs         = local.virtual_hubs
+  virtual_wan_settings = local.virtual_wan_settings
 }
