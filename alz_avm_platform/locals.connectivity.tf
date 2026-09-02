@@ -31,8 +31,8 @@ locals {
         virtual_network_gateway_express_route = false
         virtual_network_gateway_vpn           = false
         private_dns_zones                     = true
-        private_dns_resolver                  = false
-        sidecar_virtual_network               = false
+        private_dns_resolver                  = true
+        sidecar_virtual_network               = true
       }
       hub = {
         name           = "bcgov-managed-lz-avm-hub-canadacentral"
@@ -76,6 +76,7 @@ locals {
         }
         insights = {
           enabled                            = true
+          retention_in_days                 = 30
           default_log_analytics_workspace_id = "/subscriptions/7eaf8022-ff10-43bd-851b-54c11c0fb515/resourceGroups/bcgov-managed-lz-avm-mgmt/providers/Microsoft.OperationalInsights/workspaces/bcgov-managed-lz-avm-la" # NOTE: This is the log analytics workspace, which needs to pre-exist
         }
         intrusion_detection = { # IMPORTANT: This should be in the parent firewall policy.
@@ -148,10 +149,91 @@ locals {
         }
         auto_registration_zone_enabled = false
       }
-      # private_dns_resolver = {
-      #   subnet_address_prefix = "$${primary_private_dns_resolver_subnet_address_prefix}"
-      #   name                  = "$${primary_private_dns_resolver_name}"
-      # }
+      private_dns_resolver = {
+        name                                   = "inbound_endpoint"
+        resource_group_name                    = "bcgov-managed-lz-avm-privatedns-connectivity"
+        subnet_name                            = "privatedns-subnet"
+        subnet_address_prefix                  = "10.41.12.0/24"
+        default_inbound_endpoint_enabled = true
+        inbound_endpoints = {
+          inbound = {
+            name                         = "bcgov-managed-lz-avm-private-dns-resolver-inbound-endpoint"
+            subnet_name                  = "inbound_endpoint"
+            private_ip_allocation_method = "Dynamic"
+          }
+        }
+        outbound_endpoints = {
+          outbound = {
+            name         = "bcgov-managed-lz-avm-private-dns-resolver-outbound-endpoint"
+            subnet_name  = "outbound_endpoint"
+            forwarding_ruleset = {
+              ruleset = {
+                name                                         = "bcgov-managed-lz-avm-private-dns-resolver-dns-forwarding-ruleset"
+                link_with_outbound_endpoint_virtual_network = true
+                rules = {
+                  bcgov = {
+                    name        = "bcgov"
+                    domain_name = "bcgov."
+                    enabled     = true
+                    destination_ip_addresses = {
+                      primary   = "142.34.50.52"
+                      secondary = "142.34.208.8"
+                    }
+                    # target_dns_servers = [
+                    #   {
+                    #     ip_address = "142.34.50.52"
+                    #     port       = 53
+                    #   },
+                    #   {
+                    #     ip_address = "142.34.208.8"
+                    #     port       = 53
+                    #   }
+                    # ]
+                  }
+                  dmz = {
+                    name        = "dmz"
+                    domain_name = "dmz."
+                    enabled     = true
+                    destination_ip_addresses = {
+                      primary   = "142.34.50.52"
+                      secondary = "142.34.208.8"
+                    }
+                    # target_dns_servers = [
+                    #   {
+                    #     ip_address = "142.34.50.52"
+                    #     port       = 53
+                    #   },
+                    #   {
+                    #     ip_address = "142.34.208.8"
+                    #     port       = 53
+                    #   }
+                    # ]
+                  }
+                  govbcca = {
+                    name        = "govbcca"
+                    domain_name = "gov.bc.ca."
+                    enabled     = true
+                    destination_ip_addresses = {
+                      primary   = "142.34.50.52"
+                      secondary = "142.34.208.8"
+                    }
+                    # target_dns_servers = [
+                    #   {
+                    #     ip_address = "142.34.50.52"
+                    #     port       = 53
+                    #   },
+                    #   {
+                    #     ip_address = "142.34.208.8"
+                    #     port       = 53
+                    #   }
+                    # ]
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
       # bastion = {
       #   subnet_address_prefix = "$${primary_bastion_subnet_address_prefix}"
       #   name                  = "$${primary_bastion_host_name}"
@@ -159,15 +241,15 @@ locals {
       #     name = "$${primary_bastion_host_public_ip_name}"
       #   }
       # }
-      # sidecar_virtual_network = {
-      #   name          = "$${primary_sidecar_virtual_network_name}"
-      #   address_space = ["$${primary_sidecar_virtual_network_address_space}"]
-      #   /*
-      #   virtual_network_connection_settings = {
-      #     name = "private_dns_vnet_primary"  # Backwards compatibility
-      #   }
-      #   */
-      # }
+      sidecar_virtual_network = {
+        name          = "bcgov-managed-lz-avm-privatedns-spoke"
+        address_space = ["10.41.12.0/23"]
+        /*
+        virtual_network_connection_settings = {
+          name = "private_dns_vnet_primary"  # Backwards compatibility
+        }
+        */
+      }
       # }
       # secondary = {
       #   location = "$${starter_location_02}"

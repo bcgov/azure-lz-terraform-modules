@@ -37,6 +37,10 @@
 
 7. The `avm-ptn-alz-connectivity-virtual-wan` module does not expose a property to control the virtual hub private traffix additional prefixes.
 
+8. The `avm-ptn-alz-connectivity-virtual-wan` module supports one sidecar VNet per Virtual Hub, but that VNet is intended to host multiple service-specific subnets.
+
+9. 
+
 ## TO DO
 
 ### Management Subscription
