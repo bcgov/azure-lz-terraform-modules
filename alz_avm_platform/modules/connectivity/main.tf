@@ -1,5 +1,12 @@
-resource "azurerm_resource_group" "this" {
+resource "azurerm_resource_group" "vwan" {
   name     = var.vwan_resource_group_name
+  location = var.location
+
+  provider = azurerm.connectivity
+}
+
+resource "azurerm_resource_group" "dns_zones" {
+  name     = local.private_dns_zones_resource_group_name
   location = var.location
 
   provider = azurerm.connectivity
@@ -9,7 +16,7 @@ module "avm-ptn-alz-connectivity-virtual-wan" {
   source  = "Azure/avm-ptn-alz-connectivity-virtual-wan/azurerm"
   version = "0.17.1"
 
-  depends_on = [azurerm_resource_group.this]
+  depends_on = [azurerm_resource_group.vwan]
 
   providers = {
     azurerm = azurerm.connectivity

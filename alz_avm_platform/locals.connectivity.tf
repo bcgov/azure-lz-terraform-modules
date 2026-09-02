@@ -30,7 +30,7 @@ locals {
         bastion                               = false
         virtual_network_gateway_express_route = false
         virtual_network_gateway_vpn           = false
-        private_dns_zones                     = false
+        private_dns_zones                     = true
         private_dns_resolver                  = false
         sidecar_virtual_network               = false
       }
@@ -38,25 +38,27 @@ locals {
         name           = "bcgov-managed-lz-avm-hub-canadacentral"
         address_prefix = "10.41.252.0/22"
       }
-      # routing_intents = { # NOTE: Requires the firewall to be deployed
-      #   name = string
-      #   routing_policies = [
-      #     {
-      #       name = "InternetTrafficPolicy"
-      #       destinations = [
-      #         "Internet"
-      #       ]
-      #       next_hop_firewall_key = "bcgov-managed-lz-avm-fw-hub-canadacentral"
-      #     },
-      #     {
-      #       name = "PrivateTrafficPolicy"
-      #       destinations = [
-      #         "PrivateTraffic"
-      #       ]
-      #       next_hop_firewall_key = "bcgov-managed-lz-avm-fw-hub-canadacentral"
-      #     }
-      #   ]
-      # }
+      routing_intents = { # NOTE: Requires the firewall to be deployed
+        primary = {
+          name = "avm-routing-intent-name"
+          routing_policies = [
+            {
+              name = "InternetTrafficPolicy"
+              destinations = [
+                "Internet"
+              ]
+              next_hop_firewall_key = "primary" # NOTE: This must match the virtual_hubs map key, not the firewall name/ID
+            },
+            {
+              name = "PrivateTrafficPolicy"
+              destinations = [
+                "PrivateTraffic"
+              ]
+              next_hop_firewall_key = "primary" # NOTE: This must match the virtual_hubs map key, not the firewall name/ID
+            }
+          ]
+        }
+      }
       firewall = {
         name     = "bcgov-managed-lz-avm-fw-hub-canadacentral"
         sku_tier = "Premium"
@@ -139,14 +141,13 @@ locals {
       #     name = "$${primary_virtual_network_gateway_vpn_name}"
       #   }
       # }
-      # private_dns_zones = {
-      #   parent_id = "$${dns_resource_group_id}"
-      #   private_link_private_dns_zones_regex_filter = {
-      #     enabled = false
-      #   }
-      #   auto_registration_zone_enabled = "$${primary_private_dns_auto_registration_zone_enabled}"
-      #   auto_registration_zone_name    = "$${primary_auto_registration_zone_name}"
-      # }
+      private_dns_zones = {
+        parent_id = "/subscriptions/6b779108-96a1-48cd-8c7a-804c5a924d44/resourceGroups/bcgov-managed-lz-avm-dns" # must exist prior to deployment
+        private_link_private_dns_zones_regex_filter = {
+          enabled = false
+        }
+        auto_registration_zone_enabled = false
+      }
       # private_dns_resolver = {
       #   subnet_address_prefix = "$${primary_private_dns_resolver_subnet_address_prefix}"
       #   name                  = "$${primary_private_dns_resolver_name}"

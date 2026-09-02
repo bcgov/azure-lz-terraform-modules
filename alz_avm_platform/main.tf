@@ -130,7 +130,7 @@ module "connectivity" {
 
   vwan_resource_group_name = local.vwan_resource_group_name
 
-  # default_naming_convention = var.default_naming_convention
+  # default_naming_convention = var.default_naming_convention # TODO: Look into how using this affects resource naming
   # default_naming_convention_sequence = var.default_naming_convention_sequence
   # route_maps = var.route_maps
   # tags = var.tags

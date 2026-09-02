@@ -35,12 +35,13 @@
 
 6. vWAN cannot be deployed without including the deployment of a vHub, because the `avm-ptn-alz-connectivity-virtual-wan` module gates the entire `virtual_wan` submodule (the one that actually creates `azurerm_virtual_wan`) on `count = local.has_regions ? 1 : 0`, where `has_regions = length(var.virtual_hubs) > 0`. This module ties the VWAN's location/resource group to its primary hub, so a standalone vWAN with zero hubs isn't supported.
 
+7. The `avm-ptn-alz-connectivity-virtual-wan` module does not expose a property to control the virtual hub private traffix additional prefixes.
 
 ## TO DO
 
 ### Management Subscription
 
-- [ ] Create Network Manager / IP Address Pool
+- [x] Create Network Manager / IP Address Pool
   - NOTE: There is only a "proposed" AVM module for `avm-ptn-azure-ipam`
 - [ ] Independent deployment of Network Flow Logs storage
 
