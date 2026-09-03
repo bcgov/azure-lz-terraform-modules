@@ -22,6 +22,18 @@ export MODULES_REPO="$LZ_WORKDIR/azure-lz-terraform-modules"
 
 If the repo is already present, set `MODULES_REPO` to that path instead of cloning again. If cloning is needed, clone under `/tmp` and remove `LZ_WORKDIR` after the operation is complete. If `gh auth status` fails, stop and ask the user to authenticate.
 
+## Agentic Workflow Mode
+
+When this skill runs from `.github/workflows/update-terraform-providers.md`:
+
+- The repository is already checked out. Do not clone it again.
+- Do not change any `required_version`.
+- Do not clone or update `azure-lz-core-forge`, `azure-lz-vending-forge`, `azure-lz-vending-live`, or their live counterparts.
+- Do not create consumer-repo PRs.
+- Validate only in this repository: `terraform fmt -recursive`, then `terraform init -backend=false -input=false -upgrade` and `terraform validate` for each changed standalone module.
+- Use the `create-pull-request` safe output. Do not run `gh pr create`.
+- If nothing needs a bump, emit `noop`.
+
 Typical files:
 
 - `**/provider.tf`

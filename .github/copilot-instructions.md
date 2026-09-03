@@ -43,6 +43,8 @@ If validation cannot run because of Azure auth, backend access, registry/network
 
 Use `.github/skills/update-terraform-providers/SKILL.md` for provider-version work. Be careful with `caf_cccs_medium/`; do not force CAF azurerm 3.x consumers to azurerm 4.x without explicit approval.
 
+Scheduled provider updates run as a GitHub Agentic Workflow (`.github/workflows/update-terraform-providers.md`). In that mode, do not change any `required_version`, do not open consumer-repo PRs, and validate only in this repository with `terraform fmt` plus backend-disabled `init`/`validate`.
+
 ## Module Releases
 
 Use `.github/skills/release-lz-module/SKILL.md` for releases and downstream rollouts. For vending-live rollouts, use the repo's `scripts/retemplate-projects.sh` helper after updating `config.json.version` or templates, and review generated project diffs before creating a PR.
