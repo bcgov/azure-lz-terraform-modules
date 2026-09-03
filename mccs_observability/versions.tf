@@ -4,7 +4,7 @@ terraform {
   required_providers {
     azurerm = {
       source                = "hashicorp/azurerm"
-      version               = "~> 4.76"
+      version               = "~> 4.81"
       configuration_aliases = [azurerm.management]
     }
     random = {
@@ -21,7 +21,7 @@ terraform {
     }
     azuread = {
       source  = "hashicorp/azuread"
-      version = "~> 3.8"
+      version = "~> 3.9"
     }
     grafana = {
       source  = "grafana/grafana"
