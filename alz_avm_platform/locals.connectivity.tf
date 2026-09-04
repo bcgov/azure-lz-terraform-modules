@@ -62,9 +62,13 @@ locals {
       firewall = {
         name     = "bcgov-managed-lz-avm-fw-hub-canadacentral"
         sku_tier = "Premium"
+        # Pin zones explicitly; zones is ForceNew and otherwise falls back to a live Azure Locations API lookup that
+        # can resolve to (known after apply), forcing an unwanted firewall destroy/recreate on unrelated plans.
+        zones = ["1", "2", "3"]
       }
       firewall_policy = {
         name                              = "avm_lz_firewall_policy"
+        resource_group_name               = "bcgov-managed-lz-avm-fwpolicy-connectivity"
         sku                               = "Premium"
         auto_learn_private_ranges_enabled = false
         # base_policy_id = "" # NOTE: This is the parent firewall policy, which needs to pre-exist
@@ -76,7 +80,7 @@ locals {
         }
         insights = {
           enabled                            = true
-          retention_in_days                 = 30
+          retention_in_days                  = 30
           default_log_analytics_workspace_id = "/subscriptions/7eaf8022-ff10-43bd-851b-54c11c0fb515/resourceGroups/bcgov-managed-lz-avm-mgmt/providers/Microsoft.OperationalInsights/workspaces/bcgov-managed-lz-avm-la" # NOTE: This is the log analytics workspace, which needs to pre-exist
         }
         intrusion_detection = { # IMPORTANT: This should be in the parent firewall policy.
@@ -136,97 +140,61 @@ locals {
 
       # virtual_network_gateways = {
       #   express_route = {
-      #     name = "$${primary_virtual_network_gateway_express_route_name}"
+      #     name = "bcgov-managed-lz-forge-ergw-canadacentral"
       #   }
       #   vpn = {
-      #     name = "$${primary_virtual_network_gateway_vpn_name}"
+      #     name = "bcgov-managed-lz-forge-vpngw-canadacentral"
       #   }
       # }
+
       private_dns_zones = {
         parent_id = "/subscriptions/6b779108-96a1-48cd-8c7a-804c5a924d44/resourceGroups/bcgov-managed-lz-avm-dns" # must exist prior to deployment
         private_link_private_dns_zones_regex_filter = {
           enabled = false
         }
         auto_registration_zone_enabled = false
+        # NxDomainRedirect = fall back to internet (public DNS) resolution on NXDOMAIN from the private zone.
+        virtual_network_link_resolution_policy_default = "NxDomainRedirect"
       }
       private_dns_resolver = {
-        name                                   = "inbound_endpoint"
-        resource_group_name                    = "bcgov-managed-lz-avm-privatedns-connectivity"
-        subnet_name                            = "privatedns-subnet"
-        subnet_address_prefix                  = "10.41.12.0/24"
-        default_inbound_endpoint_enabled = true
+        name                  = "bcgov-managed-lz-avm-private-dns-resolver"
+        resource_group_name   = "bcgov-managed-lz-avm-privatedns-connectivity"
+        subnet_name           = "inbound_endpoint"
+        subnet_address_prefix = "10.41.12.0/24"
+        # Disabled because we define our own named inbound endpoint below (avoids a duplicate default endpoint).
+        default_inbound_endpoint_enabled = false
         inbound_endpoints = {
           inbound = {
-            name                         = "bcgov-managed-lz-avm-private-dns-resolver-inbound-endpoint"
+            name = "bcgov-managed-lz-avm-private-dns-resolver-inbound-endpoint"
+            # The module always creates a subnet named subnet_name/subnet_address_prefix above (regardless of
+            # default_inbound_endpoint_enabled), so we reuse it here instead of defining a separate, redundant
+            # "inbound_endpoint" subnet under sidecar_virtual_network.subnets.
+            # LIMITATION: this auto-created subnet has no network_security_group option in this module version,
+            # so the inbound endpoint's subnet cannot get its own NSG (unlike outbound_endpoint below).
             subnet_name                  = "inbound_endpoint"
             private_ip_allocation_method = "Dynamic"
           }
         }
         outbound_endpoints = {
           outbound = {
-            name         = "bcgov-managed-lz-avm-private-dns-resolver-outbound-endpoint"
-            subnet_name  = "outbound_endpoint"
+            name        = "bcgov-managed-lz-avm-private-dns-resolver-outbound-endpoint"
+            subnet_name = "outbound_endpoint"
+            # forwarding_ruleset is a MAP of rulesets (keyed arbitrarily), each with its own `rules` map.
+            # A bare object here (without this ruleset-key level) makes the module treat "rules" as the
+            # ruleset key, leaving `ruleset.rules` null and causing "Iteration over null value".
             forwarding_ruleset = {
-              ruleset = {
-                name                                         = "bcgov-managed-lz-avm-private-dns-resolver-dns-forwarding-ruleset"
-                link_with_outbound_endpoint_virtual_network = true
+              dns = {
+                name = "bcgov-managed-lz-avm-private-dns-resolver-dns-forwarding-ruleset"
                 rules = {
                   bcgov = {
                     name        = "bcgov"
                     domain_name = "bcgov."
                     enabled     = true
+                    # destination_ip_addresses is keyed by IP address, value is the port
                     destination_ip_addresses = {
-                      primary   = "142.34.50.52"
-                      secondary = "142.34.208.8"
+                      "142.34.50.52" = "53"
+                      "142.34.208.8" = "53"
                     }
-                    # target_dns_servers = [
-                    #   {
-                    #     ip_address = "142.34.50.52"
-                    #     port       = 53
-                    #   },
-                    #   {
-                    #     ip_address = "142.34.208.8"
-                    #     port       = 53
-                    #   }
-                    # ]
-                  }
-                  dmz = {
-                    name        = "dmz"
-                    domain_name = "dmz."
-                    enabled     = true
-                    destination_ip_addresses = {
-                      primary   = "142.34.50.52"
-                      secondary = "142.34.208.8"
-                    }
-                    # target_dns_servers = [
-                    #   {
-                    #     ip_address = "142.34.50.52"
-                    #     port       = 53
-                    #   },
-                    #   {
-                    #     ip_address = "142.34.208.8"
-                    #     port       = 53
-                    #   }
-                    # ]
-                  }
-                  govbcca = {
-                    name        = "govbcca"
-                    domain_name = "gov.bc.ca."
-                    enabled     = true
-                    destination_ip_addresses = {
-                      primary   = "142.34.50.52"
-                      secondary = "142.34.208.8"
-                    }
-                    # target_dns_servers = [
-                    #   {
-                    #     ip_address = "142.34.50.52"
-                    #     port       = 53
-                    #   },
-                    #   {
-                    #     ip_address = "142.34.208.8"
-                    #     port       = 53
-                    #   }
-                    # ]
                   }
                 }
               }
@@ -243,7 +211,23 @@ locals {
       # }
       sidecar_virtual_network = {
         name          = "bcgov-managed-lz-avm-privatedns-spoke"
+        parent_id     = "/subscriptions/6b779108-96a1-48cd-8c7a-804c5a924d44/resourceGroups/bcgov-managed-lz-avm-privatedns-connectivity"
         address_space = ["10.41.12.0/23"]
+        # No "inbound_endpoint" subnet here: the private_dns_resolver block above already creates
+        # "privatedns-subnet" (via subnet_name/subnet_address_prefix) and the inbound endpoint reuses it,
+        # so defining a second inbound subnet here would just be an unused duplicate.
+        subnets = {
+          outbound_endpoint = {
+            name             = "outbound_endpoint"
+            address_prefixes = ["10.41.13.0/24"]
+            delegations = [{
+              name = "Microsoft.Network.dnsResolvers"
+              service_delegation = {
+                name = "Microsoft.Network/dnsResolvers"
+              }
+            }]
+          }
+        }
         /*
         virtual_network_connection_settings = {
           name = "private_dns_vnet_primary"  # Backwards compatibility

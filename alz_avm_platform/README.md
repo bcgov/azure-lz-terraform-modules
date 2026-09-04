@@ -39,7 +39,15 @@
 
 8. The `avm-ptn-alz-connectivity-virtual-wan` module supports one sidecar VNet per Virtual Hub, but that VNet is intended to host multiple service-specific subnets.
 
-9. 
+9. Defining the Private DNS Resolver inbound subnet must be done via the `private_dns_resolver.inbound_endpoints` block, instead of through the `sidecar_virtual_network.subnets` block (like the `outbound_endpoints`) because the `private_dns_resolver` block always creates the inbound subnet when the resolver is enabled.
+   - That's an unavoidable side effect of the module always creating it when the resolver is enabled, not something we can suppress via config.
+   - This also prevents including the creation and association of a Network Security Group for the inbound subnet.
+
+10. The default private dns zones deployed include the zones we've had to create custom in the CAF, namely:
+    - azure_container_apps → `privatelink.{regionName}.azurecontainerapps.io`
+    - azure_ai_services → `privatelink.services.ai.azure.com`
+    - azure_managed_redis → `privatelink.redis.azure.net`
+    - azure_fabric → `privatelink.fabric.microsoft.com`
 
 ## TO DO
 
