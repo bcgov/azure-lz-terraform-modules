@@ -28,15 +28,16 @@ locals {
       enabled_resources = {
         firewall                              = true
         bastion                               = false
-        virtual_network_gateway_express_route = false
-        virtual_network_gateway_vpn           = false
+        virtual_network_gateway_express_route = true
+        virtual_network_gateway_vpn           = true
         private_dns_zones                     = true
         private_dns_resolver                  = true
         sidecar_virtual_network               = true
       }
       hub = {
-        name           = "bcgov-managed-lz-avm-hub-canadacentral"
-        address_prefix = "10.41.252.0/22"
+        name                   = "bcgov-managed-lz-avm-hub-canadacentral"
+        address_prefix         = "10.41.252.0/22"
+        hub_routing_preference = "VpnGateway" # Default: ExpressRoute
       }
       routing_intents = { # NOTE: Requires the firewall to be deployed
         primary = {
@@ -138,14 +139,14 @@ locals {
         threat_intelligence_mode = "Alert" # Possible values are Alert, Deny, Off.
       }
 
-      # virtual_network_gateways = {
-      #   express_route = {
-      #     name = "bcgov-managed-lz-forge-ergw-canadacentral"
-      #   }
-      #   vpn = {
-      #     name = "bcgov-managed-lz-forge-vpngw-canadacentral"
-      #   }
-      # }
+      virtual_network_gateways = {
+        express_route = {
+          name = "bcgov-managed-lz-forge-ergw-canadacentral"
+        }
+        vpn = {
+          name = "bcgov-managed-lz-forge-vpngw-canadacentral"
+        }
+      }
 
       private_dns_zones = {
         parent_id = "/subscriptions/6b779108-96a1-48cd-8c7a-804c5a924d44/resourceGroups/bcgov-managed-lz-avm-dns" # must exist prior to deployment
@@ -228,11 +229,12 @@ locals {
             }]
           }
         }
-        /*
+        # internet_security_enabled routes this vnet's internet-bound traffic through the hub's firewall,
+        # per the InternetTrafficPolicy routing intent above.
         virtual_network_connection_settings = {
-          name = "private_dns_vnet_primary"  # Backwards compatibility
+          name                      = "vhc-hub_to_privatedns-spoke" # Backwards compatibility
+          internet_security_enabled = true
         }
-        */
       }
       # }
       # secondary = {
