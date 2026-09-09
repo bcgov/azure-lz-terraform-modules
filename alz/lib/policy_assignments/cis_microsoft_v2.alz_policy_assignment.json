@@ -1,0 +1,29 @@
+{
+  "name": "MicrosoftCISv2",
+  "type": "Microsoft.Authorization/policyAssignments",
+  "apiVersion": "2024-04-01",
+  "properties": {
+    "displayName": "CIS Microsoft Azure Foundations Benchmark v2.0.0",
+    "description": "The Center for Internet Security (CIS) is a nonprofit entity whose mission is to 'identify, develop, validate, promote, and sustain best practice solutions for cyberdefense.' CIS benchmarks are configuration baselines and best practices for securely configuring a system. These policies address a subset of CIS Microsoft Azure Foundations Benchmark v2.0.0 controls. For more information, visit https://aka.ms/cisazure200-initiative",
+    "policyDefinitionId": "/providers/Microsoft.Authorization/policySetDefinitions/06f19060-9e68-4070-92ca-f15cc126059e",
+    "metadata": {},
+    "notScopes": [],
+    "parameters": {
+      "maximumDaysToRotate-d8cf8476-a2ec-4916-896e-992351803c44": {
+        "value": 30
+      }
+    },
+    "nonComplianceMessages": [
+      {
+        "message": "CIS Microsoft Azure Foundations Benchmark v2.0.0 controls {enforcementMode} be enforced"
+      }
+    ],
+    "scope": "/providers/Microsoft.Management/managementGroups/bcgov-managed-lz-forge",
+    "enforcementMode": "Default",
+    "overrides": []
+  },
+  "location": "canadacentral",
+  "identity": {
+    "type": "SystemAssigned"
+  }
+}

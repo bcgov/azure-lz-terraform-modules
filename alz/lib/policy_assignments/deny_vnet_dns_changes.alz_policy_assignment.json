@@ -1,0 +1,30 @@
+{
+  "name": "Deny-VNet-DNS-Changes",
+  "type": "Microsoft.Authorization/policyAssignments",
+  "apiVersion": "2019-09-01",
+  "properties": {
+    "displayName": "Deny changing VNet DNS settings from pre-defined value",
+    "description": "This Policy will prevent users from changing DNS settings on a VNet.",
+    "notScopes": [],
+    "parameters": {
+      "VNet-DNS-Settings": {
+        "value": [""]
+      },
+      "effect": {
+        "value": "Deny"
+      }
+    },
+    "policyDefinitionId": "/providers/Microsoft.Authorization/policyDefinitions/Deny-VNet-DNS-Changes",
+    "nonComplianceMessages": [
+      {
+        "message": "Changing the VNet DNS configuration is not allowed in the Landing Zones."
+      }
+    ],
+    "scope": "/providers/Microsoft.Management/managementGroups/bcgov-managed-lz-forge",
+    "enforcementMode": "Default"
+  },
+  "location": "canadacentral",
+  "identity": {
+    "type": "SystemAssigned"
+  }
+}

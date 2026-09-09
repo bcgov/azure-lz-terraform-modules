@@ -1,0 +1,39 @@
+$schema: "https://raw.githubusercontent.com/Azure/Azure-Landing-Zones-Library/main/schemas/archetype_definition.json"
+base_archetype: root
+name: root_bcgov
+policy_assignments_to_add: []
+policy_assignments_to_remove: []
+policy_definitions_to_add:
+  - Resource-Locations
+  - Inherit-Account-Code-Tag
+  - Inherit-Billing-Group-Tag
+  - Inherit-Ministry-Name-Tag
+  - Deny-Protected-Network-Resources
+  - Deny-VNet-Creation
+  - Deny-Delete-Diagnostics
+  - Deny-VNet-Address-Changes
+  - Deny-VNet-DNS-Changes
+  - Deny-New-VNet-Peerings
+  - Deploy-Private-DNS-OAI
+  - Deploy-Private-DNS-ACA
+  - Deploy-Private-DNS-CgSrv
+policy_definitions_to_remove: []
+policy_set_definitions_to_add:
+  - Deploy-Private-DNS-Zones-Custom
+  - Inherit-Sub-Tags
+policy_set_definitions_to_remove: []
+role_definitions_to_add: []
+role_definitions_to_remove: []
+archetype_config:
+  parameters:
+    Allowed-Locations:
+      listOfAllowedLocations:
+        value:
+          - canadacentral
+          - canadaeast
+      extraAllowedLocations:
+        value:
+          - canada
+    MicrosoftCISv2:
+      maximumDaysToRotate-d8cf8476-a2ec-4916-896e-992351803c44:
+        value: 30

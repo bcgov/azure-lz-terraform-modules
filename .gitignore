@@ -5,6 +5,12 @@
 *.tfstate
 *.tfstate.*
 
+# Plan files
+tfplan
+.*tfplan
+tfplan.json
+.*tfplan.json
+
 # Crash log files
 crash.log
 crash.*.log

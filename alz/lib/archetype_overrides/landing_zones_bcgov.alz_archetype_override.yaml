@@ -1,0 +1,32 @@
+$schema: "https://raw.githubusercontent.com/Azure/Azure-Landing-Zones-Library/main/schemas/archetype_definition.json"
+base_archetype: landing_zones
+name: landing_zones_bcgov
+policy_assignments_to_add: []
+policy_assignments_to_remove: []
+policy_definitions_to_add:
+  - Deny-VNet-Address-Changes
+policy_definitions_to_remove: []
+policy_set_definitions_to_add: []
+policy_set_definitions_to_remove: []
+role_definitions_to_add: []
+role_definitions_to_remove: []
+archetype_config:
+  parameters:
+    Resource-Locations:
+      listOfAllowedLocations:
+        - canadacentral
+        - canadaeast
+      extraAllowedLocations:
+        - canada
+    Deny-RSG-Locations:
+      listOfAllowedLocations:
+        - canadacentral
+        - canadaeast
+    InheritTag-Account-Coding:
+      value: account_coding
+    InheritTag-Billing-Group:
+      value: billing_group
+    InheritTag-Ministry-Name:
+      value: ministry_name
+    Deny-VNet-DNS-Changes:
+      VNet-DNS-Settings: "168.63.129.16"
