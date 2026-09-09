@@ -6,22 +6,22 @@
 | Name | Version |
 |------|---------|
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.9, < 2.0 |
-| <a name="requirement_alz"></a> [alz](#requirement\_alz) | ~> 0.17 |
-| <a name="requirement_azapi"></a> [azapi](#requirement\_azapi) | ~> 2.2 |
-| <a name="requirement_azurerm"></a> [azurerm](#requirement\_azurerm) | ~> 4.0 |
+| <a name="requirement_alz"></a> [alz](#requirement\_alz) | ~> 0.21 |
+| <a name="requirement_azapi"></a> [azapi](#requirement\_azapi) | ~> 2.10 |
+| <a name="requirement_azurerm"></a> [azurerm](#requirement\_azurerm) | ~> 4.76 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
-| <a name="provider_azapi"></a> [azapi](#provider\_azapi) | ~> 2.2 |
+| <a name="provider_azapi"></a> [azapi](#provider\_azapi) | ~> 2.10 |
 
 ## Modules
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_amba_alz"></a> [amba\_alz](#module\_amba\_alz) | Azure/avm-ptn-monitoring-amba-alz/azurerm | 0.1.1 |
-| <a name="module_amba_policy"></a> [amba\_policy](#module\_amba\_policy) | Azure/avm-ptn-alz/azurerm | 0.12.0 |
+| <a name="module_amba_alz"></a> [amba\_alz](#module\_amba\_alz) | Azure/avm-ptn-monitoring-amba-alz/azurerm | 0.3.0 |
+| <a name="module_amba_policy"></a> [amba\_policy](#module\_amba\_policy) | Azure/avm-ptn-alz/azurerm | 0.19.1 |
 
 ## Resources
 

@@ -120,3 +120,13 @@ variable "log_analytics_workspace_settings" {
   description = "Specify settings for the Log Analytics workspace."
   default     = null
 }
+
+variable "network_watcher_storage_account_resource_group" {
+  type        = string
+  description = "The name of the Resource Group where the Network Watcher Storage Account is located."
+}
+
+variable "network_watcher_storage_account_name" {
+  type        = string
+  description = "The name of the Storage Account used for Network Watcher VNet Flow Logs."
+}

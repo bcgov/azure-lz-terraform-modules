@@ -1,0 +1,72 @@
+{
+  "name": "Deny-Azure-AI-Services",
+  "type": "Microsoft.Authorization/policyAssignments",
+  "apiVersion": "2026-06-01",
+  "properties": {
+    "displayName": "Deny deployment of selected Azure AI Services",
+    "description": "This initiative denies deployment of selected Azure AI Services. Individual policy exemptions can be targeted using policy definition reference IDs.",
+    "notScopes": [],
+    "parameters": {
+      "deny_ai_foundry": {
+        "value": "Audit"
+      },
+      "deny_ai_hubs": {
+        "value": "Audit"
+      },
+      "deny_azure_openai": {
+        "value": "Audit"
+      },
+      "deny_ai_search": {
+        "value": "Audit"
+      },
+      "deny_bot_services": {
+        "value": "Audit"
+      },
+      "deny_computer_vision": {
+        "value": "Audit"
+      },
+      "deny_custom_vision": {
+        "value": "Audit"
+      },
+      "deny_content_safety": {
+        "value": "Audit"
+      },
+      "deny_document_intelligence": {
+        "value": "Audit"
+      },
+      "deny_face_api": {
+        "value": "Audit"
+      },
+      "deny_health_insights": {
+        "value": "Audit"
+      },
+      "deny_machine_learning": {
+        "value": "Audit"
+      },
+      "deny_immersive_reader": {
+        "value": "Audit"
+      },
+      "deny_language_service": {
+        "value": "Audit"
+      },
+      "deny_speech_service": {
+        "value": "Audit"
+      },
+      "deny_translator": {
+        "value": "Audit"
+      }
+    },
+    "policyDefinitionId": "${current_scope_resource_id}/providers/Microsoft.Authorization/policySetDefinitions/Deny-Azure-AI-Services-Initiative",
+    "nonComplianceMessages": [
+      {
+        "message": "Provisioning Azure AI Services in the Landing Zones is restricted to the AI Services Hub. Please see TechDocs for more information on how to request use of the AI Services Hub: https://developer.gov.bc.ca/docs/default/component/public-cloud-techdocs/azure/azure-services/azure-ai/"
+      }
+    ],
+    "scope": "${current_scope_resource_id}",
+    "enforcementMode": "Default"
+  },
+  "location": "${default_location}",
+  "identity": {
+    "type": "SystemAssigned"
+  }
+}

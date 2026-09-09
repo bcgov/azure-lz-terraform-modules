@@ -4,17 +4,30 @@ resource "azurerm_network_security_group" "inbound_endpoint" {
   resource_group_name = azurerm_resource_group.this.name
 
   # Per the Microsoft documentation (https://learn.microsoft.com/en-us/azure/architecture/networking/guide/private-link-virtual-wan-dns-single-region-workload#azure-dns-private-resolver)
-  # The Network Security Group in the subnet for the DNS Private Resolver's inbound endpoint should only allow UDP traffic from its regional hub to port 53. You should block all other inbound and outbound traffic.
+  # The Network Security Group in the subnet for the DNS Private Resolver's inbound endpoint should only allow DNS traffic from its regional hub to port 53. You should block all other inbound and outbound traffic.
   security_rule {
-    name                       = "AllowUdpFromRegionalHubVNet"
-    description                = "Allow inbound UDP traffic from the regional hub to port 53"
+    name                       = "AllowDNSUdpInbound"
+    description                = "Allow inbound UDP DNS traffic from any source to port 53"
     priority                   = 110
     direction                  = "Inbound"
     access                     = "Allow"
     protocol                   = "Udp"
     source_port_range          = "*"
     destination_port_range     = "53"
-    source_address_prefix      = data.azurerm_virtual_hub.vwan_hub.address_prefix
+    source_address_prefix      = "*"
+    destination_address_prefix = "VirtualNetwork"
+  }
+
+  security_rule {
+    name                       = "AllowDNSTcpInbound"
+    description                = "Allow inbound TCP DNS traffic from any source to port 53"
+    priority                   = 111
+    direction                  = "Inbound"
+    access                     = "Allow"
+    protocol                   = "Tcp"
+    source_port_range          = "*"
+    destination_port_range     = "53"
+    source_address_prefix      = "*"
     destination_address_prefix = "VirtualNetwork"
   }
 
@@ -55,9 +68,8 @@ resource "azurerm_virtual_network" "this" {
   name                = var.private_dns_resolver_virtual_network_name
   location            = azurerm_resource_group.this.location
   resource_group_name = azurerm_resource_group.this.name
-  address_space = [
-    azureipam_reservation.private_dns_resolver.cidr
-  ]
+  address_space       = azurerm_network_manager_ipam_pool_static_cidr.private_dns_resolver.address_prefixes
+
   dns_servers                    = var.firewall_private_ip_address
   private_endpoint_vnet_policies = "Disabled"
 
@@ -65,7 +77,7 @@ resource "azurerm_virtual_network" "this" {
   # IMPORTANT: The subnet property changed in azurerm 4.1.0 from `address_prefix` to `address_prefixes`
   subnet {
     name             = "inbound_endpoint"
-    address_prefixes = [cidrsubnet(azureipam_reservation.private_dns_resolver.cidr, 1, 0)]
+    address_prefixes = [cidrsubnet(azurerm_network_manager_ipam_pool_static_cidr.private_dns_resolver.address_prefixes[0], 1, 0)]
     security_group   = azurerm_network_security_group.inbound_endpoint.id
 
     default_outbound_access_enabled = false
@@ -90,7 +102,7 @@ resource "azurerm_virtual_network" "this" {
 
   subnet {
     name             = "outbound_endpoint"
-    address_prefixes = [cidrsubnet(azureipam_reservation.private_dns_resolver.cidr, 1, 1)]
+    address_prefixes = [cidrsubnet(azurerm_network_manager_ipam_pool_static_cidr.private_dns_resolver.address_prefixes[0], 1, 1)]
     security_group   = azurerm_network_security_group.outbound_endpoint.id
 
     default_outbound_access_enabled = false

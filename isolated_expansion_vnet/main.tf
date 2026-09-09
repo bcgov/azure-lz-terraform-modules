@@ -1,0 +1,68 @@
+# Isolated expansion VNets provide additional private RFC1918 space that is
+# usable inside Azure but must never become part of the enterprise routing
+# domain. This module therefore never creates a vWAN connection, never enables
+# gateway transit, and never advertises the expansion prefix.
+
+check "lz_vnet_name_classification" {
+  assert {
+    condition     = endswith(local.virtual_network_name, "-isolated-expansion")
+    error_message = "This landing zone's Deny-VNet-Creation policy allows isolated expansion VNets only when the name ends with -isolated-expansion. Do not use a *-vwan-spoke name; that pattern is reserved for enterprise-routed spokes."
+  }
+}
+
+check "isolated_expansion_invariants" {
+  assert {
+    condition     = !local.allow_gateway_transit && !local.use_remote_gateways
+    error_message = "Gateway transit and remote gateways are not supported for isolated expansion VNets."
+  }
+
+  assert {
+    condition     = !local.address_space_overlaps_known_ranges
+    error_message = "Expansion address_space overlaps the routable workload VNet or a disallowed address space."
+  }
+
+  assert {
+    condition     = local.subnets_contained_in_address_space
+    error_message = "One or more subnet prefixes are outside the expansion VNet address_space."
+  }
+
+  assert {
+    condition     = !local.subnets_overlap
+    error_message = "Subnet address prefixes overlap."
+  }
+
+  assert {
+    condition     = !local.spoke_dns_resolver_enabled || var.dns.mode == "azure"
+    error_message = "When spoke_dns_resolver is enabled, leave dns.mode as azure. The module sets the expansion VNet DNS servers to the spoke inbound IP."
+  }
+
+  assert {
+    condition     = !local.spoke_dns_resolver_enabled || !local.dns_forwarding_ruleset_link_enabled
+    error_message = "spoke_dns_resolver and dns_forwarding_ruleset_id are mutually exclusive. Use the spoke resolver or the central ruleset link, not both."
+  }
+
+  assert {
+    condition     = !local.private_nat_enabled || local.private_nat_subnet_in_spoke
+    error_message = "private_nat subnet_address_prefix must sit inside routable_vnet.address_space. The NVA is a spoke hop, not an expansion-VNet resource."
+  }
+
+  assert {
+    condition     = !local.firewall_enabled || local.firewall_subnet_in_spoke
+    error_message = "firewall_snat subnet prefixes must sit inside routable_vnet.address_space. The Azure Firewall is a spoke hop, not an expansion-VNet resource."
+  }
+
+  assert {
+    condition     = !local.firewall_subnets_overlap && !local.firewall_overlaps_expansion && !local.firewall_overlaps_dns && !local.firewall_overlaps_nva
+    error_message = "firewall_snat subnet prefixes overlap the expansion address space, a spoke DNS resolver subnet, the private_nat NVA subnet, or each other."
+  }
+
+  assert {
+    condition     = !local.private_nat_enabled || local.private_nat_ip_in_subnet
+    error_message = "private_nat private_ip must be a usable address in subnet_address_prefix."
+  }
+
+  assert {
+    condition     = !local.enterprise_routes_overlap_expansion
+    error_message = "enterprise_routes must not overlap the isolated expansion address_space."
+  }
+}

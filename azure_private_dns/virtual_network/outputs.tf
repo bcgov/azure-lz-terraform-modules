@@ -1,6 +1,6 @@
 output "private_dns_resolver_cidr" {
   description = "The CIDR block of the Private DNS Resolver"
-  value       = azureipam_reservation.private_dns_resolver.cidr
+  value       = azurerm_network_manager_ipam_pool_static_cidr.private_dns_resolver.address_prefixes[0]
 }
 
 output "virtual_network" {

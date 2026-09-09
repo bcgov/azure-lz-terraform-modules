@@ -8,14 +8,45 @@
       "FedRAMPModerate",
       "Deny-VNet-DNS-Changes",
       "Deny-Protected-Network",
+      "Deny-Delete-Routes",
       "Deny-VNet-Creation",
+      "Enforce-AKS-CIDRs",
+      "AKS-Security-BestPrac",
+      "AKS-Private-Cluster",
       "Deny-New-VNet-Peerings",
-      "Deny-Delete-Diagnostics"
+      "Deny-Delete-Diagnostics",
+      "Deny-AMPLS-Creation",
+      "Deny-Delete-NetworkWatch",
+      "Deny-Azure-SRE-Agent",
+      "Deny-Fabric-Capacity",
+      "Deny-Power-Platform",
+      "Deny-Azure-AI-Services"
     ],
     "policy_definitions": [
-      "Deny-VNet-Address-Changes"
+      "Deny-VNet-Address-Changes",
+      "Deny-Azure-SRE-Agent",
+      "Deny-Fabric-Capacity",
+      "Deny-Power-Platform",
+      "Deny-AI-Foundry",
+      "Deny-AI-Hubs",
+      "Deny-Azure-OpenAI",
+      "Deny-AI-Search",
+      "Deny-Bot-Services",
+      "Deny-Computer-Vision",
+      "Deny-Custom-Vision",
+      "Deny-Content-Safety",
+      "Deny-Document-Intelligence",
+      "Deny-Face-API",
+      "Deny-Health-Insights",
+      "Deny-Machine-Learning",
+      "Deny-Immersive-Reader",
+      "Deny-Language-Service",
+      "Deny-Speech-Service",
+      "Deny-Translator"
     ],
-    "policy_set_definitions": [],
+    "policy_set_definitions": [
+      "Deny-Azure-AI-Services-Initiative"
+    ],
     "role_definitions": [],
     "archetype_config": {
       "parameters": {
@@ -43,8 +74,69 @@
         "InheritTag-Ministry-Name": {
           "value": "ministry_name"
         },
+        "Deny-Protected-Network": {
+          "protectedRouteTableId": "SET using local.archetype_config_overrides",
+          "protectedSubnetId": "SET using local.archetype_config_overrides"
+        },
         "Deny-VNet-DNS-Changes": {
           "VNet-DNS-Settings": "SET using local.archetype_config_overrides"
+        },
+        "Enforce-AKS-CIDRs": {
+          "allowedPodCidrRanges": "SET using local.archetype_config_overrides",
+          "enforceServiceCidr": "SET using local.archetype_config_overrides",
+          "allowedServiceCidrRanges": "SET using local.archetype_config_overrides",
+          "effect": "SET using local.archetype_config_overrides"
+        },
+        "AKS-Security-BestPrac": {
+          "enforce_azure_cni_overlay": "SET using local.archetype_config_overrides",
+          "enforce_entra_id_integration": "SET using local.archetype_config_overrides",
+          "enforce_kubernetes_rbac": "SET using local.archetype_config_overrides",
+          "enforce_azure_rbac": "SET using local.archetype_config_overrides",
+          "enforce_disable_local_auth": "SET using local.archetype_config_overrides",
+          "enforce_workload_identity": "SET using local.archetype_config_overrides",
+          "enforce_managed_identity": "SET using local.archetype_config_overrides",
+          "enforce_oidc_issuer": "SET using local.archetype_config_overrides",
+          "enforce_secrets_store_csi": "SET using local.archetype_config_overrides",
+          "enforce_acns_security": "SET using local.archetype_config_overrides",
+          "enforce_cilium_dataplane": "SET using local.archetype_config_overrides",
+          "audit_azure_policy_addon": "SET using local.archetype_config_overrides",
+          "deploy_azure_policy_addon": "SET using local.archetype_config_overrides",
+          "deploy_image_cleaner": "SET using local.archetype_config_overrides",
+          "audit_image_cleaner": "SET using local.archetype_config_overrides"
+        },
+        "AKS-Private-Cluster": {
+          "effect": "SET using local.archetype_config_overrides"
+         },
+        "Deny-Delete-NetworkWatch": {
+          "Network-Watcher-storageId": "SET using local.archetype_config_overrides",
+          "Network-Watcher-workspaceResourceId": "SET using local.archetype_config_overrides"
+        },
+        "Deny-Azure-SRE-Agent": {
+          "effect": "SET using local.archetype_config_overrides"
+        },
+        "Deny-Fabric-Capacity": {
+          "effect": "SET using local.archetype_config_overrides"
+        },
+        "Deny-Power-Platform": {
+          "effect": "SET using local.archetype_config_overrides"
+        },
+        "Deny-Azure-AI-Services": {
+          "deny_ai_foundry": "SET using local.archetype_config_overrides",
+          "deny_ai_hubs": "SET using local.archetype_config_overrides",
+          "deny_azure_openai": "SET using local.archetype_config_overrides",
+          "deny_ai_search": "SET using local.archetype_config_overrides",
+          "deny_bot_services": "SET using local.archetype_config_overrides",
+          "deny_computer_vision": "SET using local.archetype_config_overrides",
+          "deny_custom_vision": "SET using local.archetype_config_overrides",
+          "deny_content_safety": "SET using local.archetype_config_overrides",
+          "deny_document_intelligence": "SET using local.archetype_config_overrides",
+          "deny_face_api": "SET using local.archetype_config_overrides",
+          "deny_health_insights": "SET using local.archetype_config_overrides",
+          "deny_machine_learning": "SET using local.archetype_config_overrides",
+          "deny_immersive_reader": "SET using local.archetype_config_overrides",
+          "deny_language_service": "SET using local.archetype_config_overrides",
+          "deny_speech_service": "SET using local.archetype_config_overrides",
+          "deny_translator": "SET using local.archetype_config_overrides"
         }
       },
       "access_control": {}

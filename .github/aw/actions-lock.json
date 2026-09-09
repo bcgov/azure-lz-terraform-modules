@@ -1,0 +1,14 @@
+{
+  "entries": {
+    "github/gh-aw-actions/setup@v0.88.2": {
+      "repo": "github/gh-aw-actions/setup",
+      "version": "v0.88.2",
+      "sha": "9271a1804551c0dc4fb0085a97979950aa2f8489"
+    },
+    "hashicorp/setup-terraform@v4": {
+      "repo": "hashicorp/setup-terraform",
+      "version": "v4",
+      "sha": "dfe3c3f87815947d99a8997f908cb6525fc44e9e"
+    }
+  }
+}

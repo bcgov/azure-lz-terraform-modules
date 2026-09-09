@@ -186,11 +186,21 @@
             "azureSynapseSQLODPrivateDnsZoneId": "privatelink.sql.azuresynapse.net",
             "azureVirtualDesktopHostpoolPrivateDnsZoneId": "privatelink.wvd.microsoft.com",
             "azureVirtualDesktopWorkspacePrivateDnsZoneId": "privatelink.wvd.microsoft.com",
-            "azureWebPrivateDnsZoneId": "privatelink.webpubsub.azure.com"
+            "azureWebPrivateDnsZoneId": "privatelink.webpubsub.azure.com",
+            "azureFabricPrivateDnsZoneId": "privatelink.fabric.microsoft.com"
           },
           "metadata": {
             "displayName": "DNS Zone Names",
             "description": "The list of private DNS zone names to be used for the Azure PaaS services."
+          }
+        },
+        "azureFabricPrivateDnsZoneId": {
+          "type": "string",
+          "defaultValue": "",
+          "metadata": {
+            "displayName": "azureFabricPrivateDnsZoneId",
+            "strongType": "Microsoft.Network/privateDnsZones",
+            "description": "Private DNS Zone Identifier for Microsoft Fabric workspace-level private links (privatelink.fabric.microsoft.com)"
           }
         },
         "azureFilePrivateDnsZoneId": {
@@ -1715,6 +1725,19 @@
           },
           "groupNames": [],
           "definitionVersion": "1.*.*-preview"
+        },
+        {
+          "policyDefinitionReferenceId": "DINE-Private-DNS-Microsoft-Fabric",
+          "policyDefinitionId": "${root_scope_resource_id}/providers/Microsoft.Authorization/policyDefinitions/Deploy-Private-DNS-Fbrc",
+          "parameters": {
+            "fabricPrivateDnsZoneId": {
+              "value": "[if(equals(parameters('dnsZoneSubscriptionId'), ''), parameters('azureFabricPrivateDnsZoneId'), format('/subscriptions/{0}/resourceGroups/{1}/providers/{2}/{3}', parameters('dnsZoneSubscriptionId'), toLower(parameters('dnsZoneResourceGroupName')), parameters('dnsZoneResourceType'), parameters('dnsZoneNames').azureFabricPrivateDnsZoneId))]"
+            },
+            "effect": {
+              "value": "[parameters('effect')]"
+            }
+          },
+          "groupNames": []
         }
       ],
       "policyDefinitionGroups": null

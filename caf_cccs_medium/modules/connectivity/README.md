@@ -5,12 +5,14 @@
 
 | Name | Version |
 |------|---------|
+| <a name="requirement_azapi"></a> [azapi](#requirement\_azapi) | ~> 1.13, != 1.13.0 |
 | <a name="requirement_azurerm"></a> [azurerm](#requirement\_azurerm) | 3.116.0 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
+| <a name="provider_azapi"></a> [azapi](#provider\_azapi) | ~> 1.13, != 1.13.0 |
 | <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) | 3.116.0 |
 
 ## Modules
@@ -23,6 +25,7 @@
 
 | Name | Type |
 |------|------|
+| [azapi_update_resource.vnet_link_resolution_policy](https://registry.terraform.io/providers/azure/azapi/latest/docs/resources/update_resource) | resource |
 | [azurerm_client_config.current](https://registry.terraform.io/providers/hashicorp/azurerm/3.116.0/docs/data-sources/client_config) | data source |
 
 ## Inputs
@@ -33,6 +36,7 @@
 | <a name="input_enable_ddos_protection"></a> [enable\_ddos\_protection](#input\_enable\_ddos\_protection) | Controls whether to create a DDoS Network Protection plan and link to hub virtual networks. | `bool` | n/a | yes |
 | <a name="input_firewall_child_policy_id"></a> [firewall\_child\_policy\_id](#input\_firewall\_child\_policy\_id) | Sets the value for the Firewall firewall\_policy\_id. | `string` | n/a | yes |
 | <a name="input_primary_location"></a> [primary\_location](#input\_primary\_location) | Sets the location for "primary" resources to be created in. | `string` | n/a | yes |
+| <a name="input_private_dns_resolution_policy"></a> [private\_dns\_resolution\_policy](#input\_private\_dns\_resolution\_policy) | Resolution policy for Private DNS Zone Virtual Network Links.<br/>- 'Default': Standard private DNS resolution only<br/>- 'NxDomainRedirect': Enables fallback to public DNS resolution when private DNS returns NXDOMAIN<br/><br/>Per Microsoft documentation, this is only applicable for privatelink zones and A/AAAA/CNAME queries.<br/>When set to NxDomainRedirect, Azure DNS resolver falls back to public resolution if private DNS<br/>query resolution results in non-existent domain response. | `string` | `"NxDomainRedirect"` | no |
 | <a name="input_root_id"></a> [root\_id](#input\_root\_id) | Sets the value used for generating unique resource naming within the module. | `string` | n/a | yes |
 | <a name="input_root_parent_id"></a> [root\_parent\_id](#input\_root\_parent\_id) | Sets the value for the parent management group. | `string` | n/a | yes |
 | <a name="input_secondary_location"></a> [secondary\_location](#input\_secondary\_location) | Sets the location for "secondary" resources to be created in. | `string` | n/a | yes |

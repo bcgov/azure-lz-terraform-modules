@@ -1,0 +1,58 @@
+{
+  "name": "Enforce-AKS-Kubernetes-RBAC",
+  "type": "Microsoft.Authorization/policyDefinitions",
+  "apiVersion": "2024-05-01",
+  "scope": null,
+  "properties": {
+    "displayName": "Enforce Azure Kubernetes Services (AKS) Kubernetes Role-Based Access Control (RBAC) (Kubernetes-Native Authorization)",
+    "description": "Audits or denies Azure Kubernetes Services (AKS) clusters that do not have Kubernetes Role-Based Access Control (RBAC) enabled. This policy enforces Kubernetes-native authorization based on Kubernetes Role and RoleBinding objects for users, groups, and service accounts. It is a prerequisite control and is distinct from Azure RBAC for Kubernetes authorization.",
+    "policyType": "Custom",
+    "mode": "All",
+    "metadata": {
+      "version": "1.1.0",
+      "category": "Kubernetes",
+      "changeReason": "Standardized metadata for governance traceability and consistent policy review context.",
+      "complianceIntent": "Enforce or audit this specific AKS security control according to the assignment effect parameter."
+    },
+    "parameters": {
+      "effect": {
+        "type": "String",
+        "metadata": {
+          "displayName": "Effect (Kubernetes-Native RBAC Authorization)",
+          "description": "Sets whether this policy audits, denies, or is disabled for Azure Kubernetes Services (AKS) clusters that do not enable Kubernetes-native RBAC authorization."
+        },
+        "allowedValues": [
+          "Deny",
+          "Audit",
+          "Disabled"
+        ],
+        "defaultValue": "Audit"
+      }
+    },
+    "policyRule": {
+      "if": {
+        "allOf": [
+          {
+            "field": "type",
+            "equals": "Microsoft.ContainerService/managedClusters"
+          },
+          {
+            "anyOf": [
+              {
+                "field": "Microsoft.ContainerService/managedClusters/enableRBAC",
+                "exists": "false"
+              },
+              {
+                "field": "Microsoft.ContainerService/managedClusters/enableRBAC",
+                "notEquals": true
+              }
+            ]
+          }
+        ]
+      },
+      "then": {
+        "effect": "[parameters('effect')]"
+      }
+    }
+  }
+}

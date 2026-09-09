@@ -8,6 +8,10 @@ terraform {
       version               = "3.116.0"
       configuration_aliases = [azurerm.connectivity, azurerm.management]
     }
+    azapi = {
+      source  = "azure/azapi"
+      version = "~> 1.13, != 1.13.0"
+    }
 
     assert = {
       source  = "hashicorp/assert"
@@ -19,7 +23,6 @@ terraform {
 # Get the current client configuration from the AzureRM provider
 
 data "azurerm_client_config" "current" {}
-
 
 # The following module declarations act to orchestrate the
 # independently defined module instances for core,
@@ -95,4 +98,25 @@ module "core" {
 
   policy_effect     = var.policy_effect
   VNet-DNS-Settings = var.VNet-DNS-Settings
+
+  network_watcher_storage_account_resource_group = var.network_watcher_storage_account_resource_group
+  network_watcher_storage_account_name           = var.network_watcher_storage_account_name
+
+  nsp_name                = var.nsp_name
+  nsp_resource_group_name = var.nsp_resource_group_name
+  nsp_subscription_id     = var.nsp_subscription_id
+  nsp_profile             = var.nsp_profile
+
+  enforce_aks_cidrs_parameters                 = var.enforce_aks_cidrs_parameters
+  aks_security_best_prac_parameters            = var.aks_security_best_prac_parameters
+  public_ingress_security_best_prac_parameters = var.public_ingress_security_best_prac_parameters
+  enforce_private_cluster                      = var.enforce_aks_private_cluster_parameters
+
+  sqlmi_disable_public_endpoint_parameters = var.sqlmi_disable_public_endpoint_parameters
+  sqlmi_entra_authentication_parameters    = var.sqlmi_entra_authentication_parameters
+
+  deny_azure_sre_agent_parameters   = var.deny_azure_sre_agent_parameters
+  deny_fabric_capacity_parameters   = var.deny_fabric_capacity_parameters
+  deny_azure_ai_services_parameters = var.deny_azure_ai_services_parameters
+  deny_power_platform_parameters    = var.deny_power_platform_parameters
 }

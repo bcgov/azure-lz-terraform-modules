@@ -1,11 +1,13 @@
 resource "azurerm_vpn_site" "this" {
-  name                = var.vpn_site_name
-  resource_group_name = var.resource_group_name
-  location            = var.location
-  virtual_wan_id      = var.virtual_wan_id
+  for_each = { for site in var.vpn_site : site.name => site }
+
+  name                = each.value.name
+  resource_group_name = each.value.resource_group_name
+  location            = each.value.location
+  virtual_wan_id      = each.value.virtual_wan_id
 
   dynamic "link" {
-    for_each = var.link
+    for_each = each.value.link != null ? each.value.link : []
 
     content {
       name          = link.value.name
@@ -25,12 +27,12 @@ resource "azurerm_vpn_site" "this" {
     }
   }
 
-  address_cidrs = var.address_cidrs
-  device_model  = var.device_model
-  device_vendor = var.device_vendor
+  address_cidrs = each.value.address_cidrs
+  device_model  = each.value.device_model
+  device_vendor = each.value.device_vendor
 
   dynamic "o365_policy" {
-    for_each = var.o365_policy != null ? [var.o365_policy] : []
+    for_each = each.value.o365_policy != null ? [each.value.o365_policy] : []
 
     content {
       dynamic "traffic_category" {
@@ -45,5 +47,5 @@ resource "azurerm_vpn_site" "this" {
     }
   }
 
-  tags = var.tags
+  tags = each.value.tags
 }

@@ -21,8 +21,13 @@ variable "lz_management_group_id" {
 }
 
 variable "vwan_hub_resource_id" {
-  description = "The resource ID for the virtual WAN hub"
+  description = "The resource ID for the virtual WAN hub (required only if any subscription enables networking)"
   type        = string
+  default     = null
+  validation {
+    condition     = var.vwan_hub_resource_id != null || length([for v in var.subscriptions : v if try(v.network.enabled, false)]) == 0
+    error_message = "vwan_hub_resource_id must be provided when any subscription has networking enabled."
+  }
 }
 
 variable "license_plate" {
@@ -45,11 +50,12 @@ variable "subscriptions" {
     name : string
     display_name : string
     budget : optional(number, 0)
-    network : object({
+    network : optional(object({
       enabled : bool
-      address_space : list(string)
+      address_space : optional(list(string))
+      address_sizes : optional(map(string))
       dns_servers : optional(list(string))
-    })
+    }))
     tags : optional(map(string), {})
   }))
 }
@@ -66,4 +72,24 @@ variable "deny_vnet_address_change_policy_definition_id" {
   description = "The ID of the policy definition to deny changes to virtual network address spaces"
   type        = string
   default     = null
+}
+
+variable "vnet_flow_logs_storage_account_id" {
+  description = "Storage account ID for storing VNet flow logs"
+  type        = string
+}
+
+variable "workspace_id" {
+  description = "Log Analytics workspace ID for traffic analytics"
+  type        = string
+}
+
+variable "workspace_resource_id" {
+  description = "Log Analytics workspace resource ID for traffic analytics"
+  type        = string
+}
+
+variable "network_manager_ipam_pool_id" {
+  type        = string
+  description = "IPAM Pool id"
 }

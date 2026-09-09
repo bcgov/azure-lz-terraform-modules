@@ -67,3 +67,163 @@ variable "VNet-DNS-Settings" {
   type        = list(any)
   description = "Sets the VNet DNS settings for the policy assignment."
 }
+
+variable "enforce_aks_cidrs_parameters" {
+  type = object({
+    allowedPodCidrRanges     = list(string)
+    enforceServiceCidr       = bool
+    allowedServiceCidrRanges = list(string)
+    effect                   = string
+  })
+  description = "Parameter values for the Enforce-AKS-CIDRs policy assignment."
+}
+
+variable "aks_security_best_prac_parameters" {
+  type = object({
+    enforce_azure_cni_overlay    = string
+    enforce_entra_id_integration = string
+    enforce_kubernetes_rbac      = string
+    enforce_azure_rbac           = string
+    enforce_disable_local_auth   = string
+    enforce_workload_identity    = string
+    enforce_managed_identity     = string
+    enforce_oidc_issuer          = string
+    enforce_secrets_store_csi    = string
+    enforce_acns_security        = string
+    enforce_cilium_dataplane     = string
+    audit_azure_policy_addon     = string
+    deploy_azure_policy_addon    = string
+    deploy_image_cleaner         = string
+    audit_image_cleaner          = string
+  })
+  description = "Parameter values for the AKS-Security-BestPrac initiative assignment."
+}
+
+variable "public_ingress_security_best_prac_parameters" {
+  type = object({
+    app_gateway_deployed_with_azure_waf_effect          = optional(string, "Audit")
+    app_gateway_resource_logs_effect                    = optional(string, "AuditIfNotExists")
+    app_gateway_waf_request_body_inspection_effect      = optional(string, "Audit")
+    app_gateway_log_analytics_effect                    = optional(string, "AuditIfNotExists")
+    app_gateway_log_category_group                      = optional(string, "allLogs")
+    app_gateway_waf_enabled_effect                      = optional(string, "Audit")
+    app_gateway_bot_protection_effect                   = optional(string, "Audit")
+    app_gateway_for_containers_security_policies_effect = optional(string, "AuditIfNotExists")
+    load_balancer_log_analytics_effect                  = optional(string, "AuditIfNotExists")
+    load_balancer_log_category_group                    = optional(string, "allLogs")
+    diagnostic_setting_name                             = optional(string, "setByPolicy-LogAnalytics")
+    diagnostic_resource_location_list                   = optional(list(string), ["*"])
+    api_management_encrypted_protocols_effect           = optional(string, "Audit")
+    front_door_premium_tier_effect                      = optional(string, "Audit")
+    front_door_resource_logs_effect                     = optional(string, "AuditIfNotExists")
+    front_door_min_tls_version_effect                   = optional(string, "Audit")
+    front_door_plus_waf_resource_logs_effect            = optional(string, "AuditIfNotExists")
+    front_door_waf_request_body_inspection_effect       = optional(string, "Audit")
+    front_door_waf_enabled_effect                       = optional(string, "Audit")
+    front_door_bot_protection_effect                    = optional(string, "Audit")
+    front_door_rate_limit_effect                        = optional(string, "Audit")
+    front_door_private_connectivity_effect              = optional(string, "Audit")
+    front_door_waf_mode_effect                          = optional(string, "Audit")
+    front_door_waf_mode_requirement                     = optional(string, "Detection")
+  })
+  description = "Parameter values for the Public-Ingress-SecPrac initiative assignment."
+  default     = {}
+}
+
+variable "enforce_private_cluster" {
+  type = object({
+    effect = string
+  })
+  description = "Parameter value for the Enforce-AKS-Private-Cluster policy assignment."
+}
+
+variable "network_watcher_storage_account_resource_group" {
+  type        = string
+  description = "The Resource Group of the Storage Account used for Network Watcher VNet Flow Logs."
+}
+
+variable "network_watcher_storage_account_name" {
+  type        = string
+  description = "The Storage Account name used for Network Watcher VNet Flow Logs."
+}
+
+variable "nsp_name" {
+  type        = string
+  description = "Name of the Network Security Perimeter (NSP) to associate resources with."
+  default     = ""
+}
+
+variable "nsp_resource_group_name" {
+  type        = string
+  description = "Resource group name where the Network Security Perimeter (NSP) exists."
+  default     = ""
+}
+
+variable "nsp_subscription_id" {
+  type        = string
+  description = "Subscription ID where the Network Security Perimeter (NSP) exists."
+  default     = ""
+}
+
+variable "nsp_profile" {
+  type        = string
+  description = "Name of the NSP profile."
+  default     = ""
+}
+
+variable "sqlmi_disable_public_endpoint_parameters" {
+  type = object({
+    effect = string
+  })
+  description = "Parameter values for the SQLMI-Disable-PublicData policy assignment."
+}
+
+variable "sqlmi_entra_authentication_parameters" {
+  type = object({
+    effect = string
+  })
+  description = "Parameter values for the SQLMI-Entra-AuthN policy assignment."
+}
+
+variable "deny_azure_sre_agent_parameters" {
+  type = object({
+    effect = string
+  })
+  description = "Parameter values for the Deny-Azure-SRE-Agent policy assignment."
+}
+
+variable "deny_fabric_capacity_parameters" {
+  type = object({
+    effect = string
+  })
+  description = "Parameter values for the Deny-Fabric-Capacity policy assignment."
+}
+
+variable "deny_power_platform_parameters" {
+  type = object({
+    effect = string
+  })
+  description = "Parameter values for the Deny-Power-Platform policy assignment."
+}
+
+variable "deny_azure_ai_services_parameters" {
+  type = object({
+    deny_ai_foundry            = string
+    deny_ai_hubs               = string
+    deny_azure_openai          = string
+    deny_ai_search             = string
+    deny_bot_services          = string
+    deny_computer_vision       = string
+    deny_custom_vision         = string
+    deny_content_safety        = string
+    deny_document_intelligence = string
+    deny_face_api              = string
+    deny_health_insights       = string
+    deny_machine_learning      = string
+    deny_immersive_reader      = string
+    deny_language_service      = string
+    deny_speech_service        = string
+    deny_translator            = string
+  })
+  description = "Parameter values for the Deny-Azure-AI-Services initiative assignment."
+}

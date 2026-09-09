@@ -1,0 +1,21 @@
+{
+  "name": "AKS-CIS-Benchmark",
+  "type": "Microsoft.Authorization/policyAssignments",
+  "apiVersion": "2024-04-01",
+  "properties": {
+    "displayName": "Security control recommendations of Center for Internet Security (CIS) Kubernetes benchmark",
+    "description": "This initiative includes the policies for the security recommendation for Center for Internet Security (CIS) Kubernetes benchmark, you can use this initiative to stay compliant with CIS Kubernetes benchmark. For more information of CIS compliance, visit: https://aka.ms/aks/cis-kubernetes",
+    "policyDefinitionId": "/providers/Microsoft.Authorization/policySetDefinitions/4fd005fd-51be-478f-a8fb-149d48b20d48",
+    "metadata": {},
+    "notScopes": [],
+    "parameters": {},
+    "nonComplianceMessages": [],
+    "scope": "${current_scope_resource_id}",
+    "enforcementMode": "Default",
+    "overrides": []
+  },
+  "location": "${default_location}",
+  "identity": {
+    "type": "SystemAssigned"
+  }
+}

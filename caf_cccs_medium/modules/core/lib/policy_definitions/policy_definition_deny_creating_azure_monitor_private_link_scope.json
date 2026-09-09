@@ -1,0 +1,60 @@
+{
+  "name": "Deny-AMPLS-Creation",
+  "type": "Microsoft.Authorization/policyDefinitions",
+  "apiVersion": "2024-05-01",
+  "scope": null,
+  "properties": {
+    "displayName": "Prevent Creating Azure Monitor Private Link Scope (AMPLS)",
+    "description": "This Policy will prevent users from creating an Azure Monitor Private Link Scope (AMPLS) on their Log Analytics Workspaces.",
+    "policyType": "Custom",
+    "mode": "All",
+    "metadata": {
+      "version": "1.0.0",
+      "category": "Monitoring"
+    },
+    "parameters": {
+      "effect": {
+        "type": "String",
+        "metadata": {
+          "displayName": "Effect",
+          "description": "Deny, Audit or Disabled the execution of the Policy"
+        },
+        "allowedValues": [
+          "Deny",
+          "Audit",
+          "Disabled"
+        ],
+        "defaultValue": "Deny"
+      }
+    },
+    "policyRule": {
+      "if": {
+        "anyOf": [
+          {
+            "field": "type",
+            "equals": "microsoft.insights/privatelinkscopes"
+          },
+          {
+            "field": "type",
+            "equals": "microsoft.insights/privatelinkscopes/scopedResources"
+          },
+          {
+            "allOf": [
+              {
+                "field": "type",
+                "equals": "microsoft.operationalinsights/workspaces"
+              },
+              {
+                "field": "Microsoft.OperationalInsights/workspaces/privateLinkScopedResources[*]",
+                "exists": true
+              }
+            ]
+          }
+        ]
+      },
+      "then": {
+        "effect": "[parameters('effect')]"
+      }
+    }
+  }
+}

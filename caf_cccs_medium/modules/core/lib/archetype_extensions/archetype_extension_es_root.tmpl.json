@@ -8,10 +8,16 @@
       "Deploy-Private-DNS-APIM",
       "Deploy-Private-DNS-CgSrv",
       "Deploy-Private-DNS-ACA",
+      "Deploy-Private-DNS-Redis",
       "Deny-AppGw-Without-Tls",
       "Deploy-Private-DNS-PSQL",
       "MicrosoftCISv2",
-      "NIST-SP-800-53-Rev5"
+      "NIST-SP-800-53-Rev5",
+      "AKS-CIS-Benchmark",
+      "AKS-Best-Practices",
+      "SQLMI-Entra-AuthN",
+      "SQLMI-Disable-PublicData",
+      "Public-Ingress-SecPrac"
     ],
     "policy_definitions": [
       "Inherit-Account-Code-Tag",
@@ -19,18 +25,41 @@
       "Inherit-Ministry-Name-Tag",
       "Deploy-Private-DNS-CgSrv",
       "Deploy-Private-DNS-ACA",
+      "Deploy-Private-DNS-Redis",
+      "Deploy-Private-DNS-Fbrc",
       "Deny-VNet-DNS-Changes",
       "Deny-Protected-Network-Resources",
+      "Deny-Deleting-Protected-Route-Resources",
+      "Deny-Delete-NetworkWatcher",
       "Deny-VNet-Creation",
       "Deny-New-VNet-Peerings",
       "Deny-Delete-Diagnostics",
-      "Resource-Locations"
+      "Resource-Locations",
+      "Deny-AMPLS-Creation",
+      "Enforce-AKS-CIDRs",
+      "Enforce-AKS-Azure-CNI-Overlay",
+      "Enforce-AKS-Azure-RBAC",
+      "Enforce-AKS-Secrets-Store-CSI",
+      "Enforce-AKS-ACNS-Security",
+      "Enforce-AKS-Cilium-Dataplane",
+      "Enforce-AKS-OIDC-Issuer",
+      "Enforce-AKS-Entra-ID-Integration",
+      "Enforce-AKS-Kubernetes-RBAC",
+      "Enforce-AKS-Workload-Identity",
+      "Enforce-AKS-Managed-Identity",
+      "Deploy-NSP-Resource-Association"
     ],
     "policy_set_definitions": [
       "Deploy-Private-DNS-Zones-Custom",
-      "Inherit-Sub-Tags"
+      "Inherit-Sub-Tags",
+      "AKS-Security-Best-Practices",
+      "Public-Ingress-Security-Best-Practices"
     ],
-    "role_definitions": [],
+    "role_definitions": [
+      "IP-Address-Lookup-Reader",
+      "AKS Private DNS Record Writer",
+      "Terraform Deployment Read/Export"
+    ],
     "archetype_config": {
       "parameters": {
         "CanadaFederalPBMM": {
@@ -58,6 +87,49 @@
         },
         "Deploy-Private-DNS-ACA": {
           "defaultPrivateDnsZoneId": "SET using local.archetype_config_overrides"
+        },
+        "Deploy-Private-DNS-Redis": {
+          "managedRedisPrivateDnsZoneId": "SET using local.archetype_config_overrides",
+          "redisEnterprisePrivateDnsZoneId": "SET using local.archetype_config_overrides"
+        },
+        "Deploy-NSP-Association": {
+          "networkSecurityPerimeterName": "SET using local.archetype_config_overrides",
+          "networkSecurityPerimeterResourceGroupName": "SET using local.archetype_config_overrides",
+          "networkSecurityPerimeterSubscriptionId": "SET using local.archetype_config_overrides",
+          "networkSecurityPerimeterProfileId": "SET using local.archetype_config_overrides"
+        },
+        "SQLMI-Disable-PublicData": {
+          "effect": "SET using local.archetype_config_overrides"
+        },
+        "SQLMI-Entra-AuthN": {
+          "effect": "SET using local.archetype_config_overrides"
+        },
+        "Public-Ingress-SecPrac": {
+          "app_gateway_deployed_with_azure_waf_effect": "SET using local.archetype_config_overrides",
+          "app_gateway_resource_logs_effect": "SET using local.archetype_config_overrides",
+          "app_gateway_waf_request_body_inspection_effect": "SET using local.archetype_config_overrides",
+          "app_gateway_log_analytics_effect": "SET using local.archetype_config_overrides",
+          "app_gateway_log_category_group": "SET using local.archetype_config_overrides",
+          "app_gateway_waf_enabled_effect": "SET using local.archetype_config_overrides",
+          "app_gateway_bot_protection_effect": "SET using local.archetype_config_overrides",
+          "app_gateway_for_containers_security_policies_effect": "SET using local.archetype_config_overrides",
+          "load_balancer_log_analytics_effect": "SET using local.archetype_config_overrides",
+          "load_balancer_log_category_group": "SET using local.archetype_config_overrides",
+          "diagnostic_setting_name": "SET using local.archetype_config_overrides",
+          "log_analytics_workspace_resource_id": "SET using local.archetype_config_overrides",
+          "diagnostic_resource_location_list": "SET using local.archetype_config_overrides",
+          "api_management_encrypted_protocols_effect": "SET using local.archetype_config_overrides",
+          "front_door_premium_tier_effect": "SET using local.archetype_config_overrides",
+          "front_door_resource_logs_effect": "SET using local.archetype_config_overrides",
+          "front_door_min_tls_version_effect": "SET using local.archetype_config_overrides",
+          "front_door_plus_waf_resource_logs_effect": "SET using local.archetype_config_overrides",
+          "front_door_waf_request_body_inspection_effect": "SET using local.archetype_config_overrides",
+          "front_door_waf_enabled_effect": "SET using local.archetype_config_overrides",
+          "front_door_bot_protection_effect": "SET using local.archetype_config_overrides",
+          "front_door_rate_limit_effect": "SET using local.archetype_config_overrides",
+          "front_door_private_connectivity_effect": "SET using local.archetype_config_overrides",
+          "front_door_waf_mode_effect": "SET using local.archetype_config_overrides",
+          "front_door_waf_mode_requirement": "SET using local.archetype_config_overrides"
         }
       },
       "access_control": {}
