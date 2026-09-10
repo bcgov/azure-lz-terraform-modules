@@ -9,7 +9,7 @@ The MCCS Observability Platform provides:
 - **Single Pane of Glass**: Consolidated view of all MCCS connections across Azure ExpressRoute (and AWS Direct Connect in Phase 2)
 - **Proactive Monitoring**: Real-time alerting on connectivity issues before user impact
 - **Rapid Troubleshooting**: Centralized diagnostics to reduce mean time to resolution (MTTR)
-- **Network Documentation**: Authoritative source of truth for circuit inventory and topology via Netbox
+- **Network Documentation**: Circuit inventory defined as code in Terraform
 
 ## Architecture
 
@@ -18,21 +18,16 @@ The MCCS Observability Platform provides:
 │                         MCCS OBSERVABILITY PLATFORM                         │
 ├─────────────────────────────────────────────────────────────────────────────┤
 │                                                                             │
-│  Data Sources          Collection & Storage           Visualization         │
-│  ─────────────         ──────────────────────         ─────────────         │
-│  ExpressRoute    ───►  Log Analytics Workspace  ───►  Azure Managed         │
-│  Circuits              Prometheus (ACI)               Grafana               │
-│  Gateways              PostgreSQL Flexible                                  │
-│                        Server (Netbox DB)                                   │
-│                                                                             │
-│  Alerting                        Secrets                                    │
-│  ────────                        ───────                                    │
-│  Logic App ───► Teams            Key Vault                                  │
-│           ───► Jira JSM          (RBAC-enabled)                             │
-│                                                                             │
-│  Network Source of Truth                                                    │
-│  ───────────────────────                                                    │
-│  Netbox (ACI) - Circuit Records, Provider Info, IP Management               │
+│  Data Sources              Collection & Storage        Visualization        │
+│  ─────────────             ────────────────────        ─────────────        │
+│  ExpressRoute    ───►      Log Analytics Workspace ──► Azure Managed        │
+│  Circuits                                              Grafana              │
+│  Gateways                                                                          │
+│                                                                                   │
+│  Alerting                          Secrets                                        │
+│  ────────                          ───────                                        │
+│  Logic App ───► Teams              Key Vault                                      │
+│           ───► Jira JSM            (RBAC-enabled)                                 │
 │                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
@@ -42,9 +37,6 @@ The MCCS Observability Platform provides:
 | Component | Description |
 |-----------|-------------|
 | **Azure Managed Grafana** | Visualization and dashboards with Entra ID authentication |
-| **PostgreSQL Flexible Server** | Zone-redundant database for Netbox |
-| **Netbox (ACI)** | Network source of truth for circuit inventory |
-| **Prometheus (ACI)** | Metrics collection for Netbox data and Phase 2 AWS |
 | **Log Analytics Workspace** | Diagnostic data storage |
 | **Key Vault** | Secrets management with RBAC |
 | **Logic App** | Alert routing to Teams and Jira JSM |
@@ -79,7 +71,7 @@ module "mccs_observability" {
   network_manager_ipam_pool_id = "/subscriptions/.../providers/Microsoft.Network/networkManagers/.../ipamPools/..."
 
   # Private DNS Zone (CAF Central)
-  central_postgresql_dns_zone_id = "/subscriptions/.../privatelink.postgres.database.azure.com"
+  central_keyvault_dns_zone_id = "/subscriptions/.../privatelink.vaultcore.azure.net"
 
   # Identity
   cloud_team_group_id = "00000000-0000-0000-0000-000000000000"
@@ -102,9 +94,6 @@ module "mccs_observability" {
   jira_user_email    = "automation@gov.bc.ca"
   jira_api_token     = var.jira_api_token
   jira_project_key   = "MCCS"
-
-  # Netbox
-  netbox_admin_email = "cloud-team@gov.bc.ca"
 }
 ```
 
@@ -135,7 +124,6 @@ module "mccs_observability" {
 | Name | Description | Type |
 |------|-------------|------|
 | `environment` | Environment name (prod, dev, staging, test) | `string` |
-| `central_postgresql_dns_zone_id` | CAF central PostgreSQL DNS zone ID | `string` |
 | `cloud_team_group_id` | Entra ID group for Cloud Team | `string` |
 | `expressroute_circuits` | Map of ExpressRoute circuits to monitor | `map(object)` |
 | `teams_webhook_url` | Microsoft Teams webhook URL | `string` |
@@ -153,7 +141,6 @@ module "mccs_observability" {
 | `vnet_address_space` | VNet address space /24 (required when use_ipam=false) | `string` | `null` |
 | `vnet_name` | Override for VNet name | `string` | `null` |
 | `jira_project_key` | Jira project key | `string` |
-| `netbox_admin_email` | Netbox admin email | `string` |
 
 ### Optional Variables
 
@@ -164,7 +151,6 @@ module "mccs_observability" {
 | `service_desk_group_id` | Entra ID group for Service Desk | `string` | `null` |
 | `enable_alerting` | Enable alerting infrastructure | `bool` | `true` |
 | `grafana_sku` | Grafana SKU (Standard/Essential) | `string` | `"Standard"` |
-| `postgresql_high_availability` | Enable PostgreSQL HA | `bool` | `true` |
 | `tags` | Additional resource tags | `map(string)` | `null` |
 
 ## Outputs
@@ -173,49 +159,16 @@ module "mccs_observability" {
 |------|-------------|
 | `resource_group_name` | The name of the resource group |
 | `grafana_endpoint` | The Grafana endpoint URL |
-| `netbox_private_ip` | The private IP of the Netbox container |
-| `prometheus_private_ip` | The private IP of the Prometheus container |
-| `postgresql_fqdn` | The PostgreSQL server FQDN |
 | `key_vault_uri` | The Key Vault URI |
 | `log_analytics_workspace_id` | The Log Analytics Workspace ID |
 
 ## Post-Deployment Steps
 
-### 1. Upload Prometheus Configuration
-
-```bash
-az storage file upload \
-  --account-name <storage-account-name> \
-  --share-name prometheus-config \
-  --source shared/prometheus-config/prometheus.yml \
-  --path prometheus.yml
-```
-
-### 2. Configure Netbox API Token
-
-After Netbox is running, create an API token for the Prometheus exporter:
-
-1. Access Netbox at `http://<netbox-private-ip>:8080`
-2. Login with admin credentials (from Key Vault)
-3. Navigate to Admin → API Tokens
-4. Create a new token
-5. Update the `netbox-exporter` container with the token
-
-### 3. Populate Netbox Inventory
-
-Use the Netbox API or UI to add:
-
-- Sites (Kamloops DC, Calgary DC)
-- Providers (Telus, Shaw, AWS)
-- Circuits (ExpressRoute and Direct Connect)
-- IP addressing information
-
-### 4. Verify Grafana Data Sources
+### 1. Verify Grafana Data Sources
 
 1. Access Grafana via the private endpoint
 2. Verify Azure Monitor data source is connected
-3. Add Prometheus data source pointing to `http://<prometheus-ip>:9090`
-4. Dashboards are automatically provisioned (see below)
+3. Dashboards are automatically provisioned (see below)
 
 ## Grafana Dashboards
 
@@ -225,7 +178,6 @@ The module provisions the following dashboards automatically when `enable_grafan
 |-----------|-----|-------------|
 | **MCCS Overview** | `mccs-overview` | Consolidated view of all ExpressRoute circuits with BGP/ARP availability, bandwidth utilization, and active alerts |
 | **ExpressRoute Health** | `expressroute-health` | Detailed health metrics for individual circuits including packet drops, gateway CPU, and troubleshooting guide |
-| **Circuit Inventory** | `circuit-inventory` | Network documentation from Netbox showing circuit records, providers, and site information |
 
 ### Dashboard Features
 
@@ -241,15 +193,6 @@ The module provisions the following dashboards automatically when `enable_grafan
 - Packet drop monitoring
 - Gateway CPU utilization and route counts
 - Embedded troubleshooting reference guide
-
-**Circuit Inventory:**
-- Circuit count summary by cloud provider
-- Total bandwidth capacity
-- Detailed circuit tables (ExpressRoute and Direct Connect)
-- Site and provider information
-- Quick links to Netbox and Azure Portal
-
-> **Note:** The Circuit Inventory dashboard currently displays static documentation. To enable live circuit data from Netbox, a Netbox Exporter sidecar container needs to be added to expose circuit inventory as Prometheus metrics. See [Future Enhancements](#future-enhancements) for details.
 
 ### Dashboard Variables
 
@@ -291,9 +234,8 @@ module "mccs_observability" {
 ### Customizing Dashboards
 
 Dashboard JSON files are stored in `dashboards/`:
-- `mccs_overview.json`
-- `expressroute_health.json`
-- `circuit_inventory.json`
+- `mccs_overview.json.tftpl`
+- `expressroute_health.json.tftpl`
 
 To customize dashboards:
 1. Export modified dashboard from Grafana UI
@@ -326,44 +268,26 @@ To customize dashboards:
 - Cross-cloud correlation dashboards
 - Unified alerting across Azure and AWS
 
-### Netbox Exporter for Live Circuit Inventory
-
-The Circuit Inventory dashboard currently displays static documentation. To enable live data from Netbox:
-
-1. Add a **netbox-exporter** sidecar container (`prometheus-community/netbox-exporter`) to the Netbox container group
-2. Configure the exporter with Netbox API token for authentication
-3. Update Prometheus scrape configuration to collect `netbox_circuits_*` metrics
-4. Update the Circuit Inventory dashboard to query Prometheus for live circuit data
-
-This will enable:
-- Real-time circuit status from Netbox
-- Dynamic provider and site information
-- Automatic dashboard updates when circuits are added/modified in Netbox
-
 <!-- BEGIN_TF_DOCS -->
 ## Requirements
 
 | Name | Version |
-|------|---------|
+| ---- | ------- |
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >=1.9.0, < 2.0.0 |
 | <a name="requirement_azuread"></a> [azuread](#requirement\_azuread) | ~> 3.8 |
 | <a name="requirement_azurerm"></a> [azurerm](#requirement\_azurerm) | ~> 4.76 |
 | <a name="requirement_grafana"></a> [grafana](#requirement\_grafana) | ~> 3.0 |
-| <a name="requirement_local"></a> [local](#requirement\_local) | ~> 2.0 |
 | <a name="requirement_random"></a> [random](#requirement\_random) | ~> 3.0 |
-| <a name="requirement_time"></a> [time](#requirement\_time) | ~> 0.11 |
 
 ## Providers
 
 | Name | Version |
-|------|---------|
-| <a name="provider_azuread"></a> [azuread](#provider\_azuread) | ~> 3.8 |
-| <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) | ~> 4.76 |
-| <a name="provider_azurerm.management"></a> [azurerm.management](#provider\_azurerm.management) | ~> 4.76 |
-| <a name="provider_grafana"></a> [grafana](#provider\_grafana) | ~> 3.0 |
-| <a name="provider_local"></a> [local](#provider\_local) | ~> 2.0 |
-| <a name="provider_random"></a> [random](#provider\_random) | ~> 3.0 |
-| <a name="provider_time"></a> [time](#provider\_time) | ~> 0.11 |
+| ---- | ------- |
+| <a name="provider_azuread"></a> [azuread](#provider\_azuread) | 3.9.0 |
+| <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) | 4.81.0 |
+| <a name="provider_azurerm.management"></a> [azurerm.management](#provider\_azurerm.management) | 4.81.0 |
+| <a name="provider_grafana"></a> [grafana](#provider\_grafana) | 3.25.9 |
+| <a name="provider_random"></a> [random](#provider\_random) | 3.9.0 |
 
 ## Modules
 
@@ -372,18 +296,12 @@ No modules.
 ## Resources
 
 | Name | Type |
-|------|------|
-| [azurerm_container_group.netbox](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/container_group) | resource |
-| [azurerm_container_group.prometheus](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/container_group) | resource |
+| ---- | ---- |
 | [azurerm_dashboard_grafana.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/dashboard_grafana) | resource |
 | [azurerm_key_vault.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/key_vault) | resource |
 | [azurerm_key_vault_secret.grafana_service_account_token](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/key_vault_secret) | resource |
 | [azurerm_key_vault_secret.jira_api_token](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/key_vault_secret) | resource |
 | [azurerm_key_vault_secret.jumpbox_admin_password](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/key_vault_secret) | resource |
-| [azurerm_key_vault_secret.netbox_admin_password](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/key_vault_secret) | resource |
-| [azurerm_key_vault_secret.netbox_api_token](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/key_vault_secret) | resource |
-| [azurerm_key_vault_secret.netbox_secret_key](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/key_vault_secret) | resource |
-| [azurerm_key_vault_secret.postgresql_admin_password](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/key_vault_secret) | resource |
 | [azurerm_key_vault_secret.teams_webhook_url](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/key_vault_secret) | resource |
 | [azurerm_log_analytics_solution.container_insights](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/log_analytics_solution) | resource |
 | [azurerm_log_analytics_workspace.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/log_analytics_workspace) | resource |
@@ -398,11 +316,6 @@ No modules.
 | [azurerm_monitor_diagnostic_setting.keyvault](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/monitor_diagnostic_setting) | resource |
 | [azurerm_monitor_diagnostic_setting.log_analytics](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/monitor_diagnostic_setting) | resource |
 | [azurerm_monitor_diagnostic_setting.logic_app](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/monitor_diagnostic_setting) | resource |
-| [azurerm_monitor_diagnostic_setting.netbox](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/monitor_diagnostic_setting) | resource |
-| [azurerm_monitor_diagnostic_setting.postgresql](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/monitor_diagnostic_setting) | resource |
-| [azurerm_monitor_diagnostic_setting.prometheus](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/monitor_diagnostic_setting) | resource |
-| [azurerm_monitor_diagnostic_setting.storage_netbox](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/monitor_diagnostic_setting) | resource |
-| [azurerm_monitor_diagnostic_setting.storage_prometheus](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/monitor_diagnostic_setting) | resource |
 | [azurerm_monitor_metric_alert.arp_availability](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/monitor_metric_alert) | resource |
 | [azurerm_monitor_metric_alert.bandwidth_critical](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/monitor_metric_alert) | resource |
 | [azurerm_monitor_metric_alert.bandwidth_warning](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/monitor_metric_alert) | resource |
@@ -412,20 +325,11 @@ No modules.
 | [azurerm_network_interface.jumpbox](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/network_interface) | resource |
 | [azurerm_network_interface_security_group_association.jumpbox](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/network_interface_security_group_association) | resource |
 | [azurerm_network_manager_ipam_pool_static_cidr.mccs_observability](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/network_manager_ipam_pool_static_cidr) | resource |
-| [azurerm_network_security_group.containers](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/network_security_group) | resource |
 | [azurerm_network_security_group.jumpbox](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/network_security_group) | resource |
-| [azurerm_network_security_group.postgresql](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/network_security_group) | resource |
 | [azurerm_network_security_group.private_endpoints](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/network_security_group) | resource |
-| [azurerm_postgresql_flexible_server.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/postgresql_flexible_server) | resource |
-| [azurerm_postgresql_flexible_server_configuration.connection_throttling](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/postgresql_flexible_server_configuration) | resource |
-| [azurerm_postgresql_flexible_server_configuration.log_connections](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/postgresql_flexible_server_configuration) | resource |
-| [azurerm_postgresql_flexible_server_configuration.log_disconnections](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/postgresql_flexible_server_configuration) | resource |
-| [azurerm_postgresql_flexible_server_database.netbox](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/postgresql_flexible_server_database) | resource |
 | [azurerm_private_endpoint.grafana](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/private_endpoint) | resource |
 | [azurerm_private_endpoint.keyvault](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/private_endpoint) | resource |
 | [azurerm_resource_group.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/resource_group) | resource |
-| [azurerm_role_assignment.aci_keyvault_secrets_user](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/role_assignment) | resource |
-| [azurerm_role_assignment.aci_storage_contributor](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/role_assignment) | resource |
 | [azurerm_role_assignment.cloud_team_contributor](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/role_assignment) | resource |
 | [azurerm_role_assignment.cloud_team_grafana_admin](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/role_assignment) | resource |
 | [azurerm_role_assignment.cloud_team_secrets_officer](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/role_assignment) | resource |
@@ -438,41 +342,22 @@ No modules.
 | [azurerm_role_assignment.noc_team_grafana_editor](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/role_assignment) | resource |
 | [azurerm_role_assignment.service_desk_grafana_viewer](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/role_assignment) | resource |
 | [azurerm_role_assignment.terraform_spn_secrets_officer](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/role_assignment) | resource |
-| [azurerm_storage_account.netbox](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/storage_account) | resource |
-| [azurerm_storage_account.prometheus](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/storage_account) | resource |
-| [azurerm_storage_share.netbox_media](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/storage_share) | resource |
-| [azurerm_storage_share.prometheus_config](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/storage_share) | resource |
-| [azurerm_storage_share.prometheus_data](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/storage_share) | resource |
-| [azurerm_storage_share_file.prometheus_alert_rules](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/storage_share_file) | resource |
-| [azurerm_storage_share_file.prometheus_config](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/storage_share_file) | resource |
-| [azurerm_subnet.containers](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/subnet) | resource |
-| [azurerm_subnet.postgresql](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/subnet) | resource |
 | [azurerm_subnet.private_endpoints](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/subnet) | resource |
-| [azurerm_subnet_network_security_group_association.containers](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/subnet_network_security_group_association) | resource |
-| [azurerm_subnet_network_security_group_association.postgresql](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/subnet_network_security_group_association) | resource |
 | [azurerm_subnet_network_security_group_association.private_endpoints](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/subnet_network_security_group_association) | resource |
 | [azurerm_user_assigned_identity.aci](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/user_assigned_identity) | resource |
 | [azurerm_virtual_hub_connection.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/virtual_hub_connection) | resource |
 | [azurerm_virtual_machine_extension.aad_login](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/virtual_machine_extension) | resource |
 | [azurerm_virtual_network.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/virtual_network) | resource |
 | [azurerm_windows_virtual_machine.jumpbox](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/windows_virtual_machine) | resource |
-| [grafana_dashboard.circuit_inventory](https://registry.terraform.io/providers/grafana/grafana/latest/docs/resources/dashboard) | resource |
 | [grafana_dashboard.expressroute_health](https://registry.terraform.io/providers/grafana/grafana/latest/docs/resources/dashboard) | resource |
 | [grafana_dashboard.mccs_overview](https://registry.terraform.io/providers/grafana/grafana/latest/docs/resources/dashboard) | resource |
 | [grafana_data_source.azure_monitor](https://registry.terraform.io/providers/grafana/grafana/latest/docs/resources/data_source) | resource |
 | [grafana_data_source.log_analytics](https://registry.terraform.io/providers/grafana/grafana/latest/docs/resources/data_source) | resource |
-| [grafana_data_source.prometheus](https://registry.terraform.io/providers/grafana/grafana/latest/docs/resources/data_source) | resource |
 | [grafana_folder.mccs](https://registry.terraform.io/providers/grafana/grafana/latest/docs/resources/folder) | resource |
 | [grafana_service_account.terraform](https://registry.terraform.io/providers/grafana/grafana/latest/docs/resources/service_account) | resource |
 | [grafana_service_account_token.terraform](https://registry.terraform.io/providers/grafana/grafana/latest/docs/resources/service_account_token) | resource |
-| [local_file.prometheus_config](https://registry.terraform.io/providers/hashicorp/local/latest/docs/resources/file) | resource |
 | [random_password.jumpbox_admin](https://registry.terraform.io/providers/hashicorp/random/latest/docs/resources/password) | resource |
-| [random_password.netbox_admin](https://registry.terraform.io/providers/hashicorp/random/latest/docs/resources/password) | resource |
-| [random_password.netbox_api_token](https://registry.terraform.io/providers/hashicorp/random/latest/docs/resources/password) | resource |
-| [random_password.netbox_secret_key](https://registry.terraform.io/providers/hashicorp/random/latest/docs/resources/password) | resource |
-| [random_password.postgresql_admin](https://registry.terraform.io/providers/hashicorp/random/latest/docs/resources/password) | resource |
 | [random_string.suffix](https://registry.terraform.io/providers/hashicorp/random/latest/docs/resources/string) | resource |
-| [time_sleep.wait_for_storage_firewall](https://registry.terraform.io/providers/hashicorp/time/latest/docs/resources/sleep) | resource |
 | [azuread_group.cloud_team](https://registry.terraform.io/providers/hashicorp/azuread/latest/docs/data-sources/group) | data source |
 | [azurerm_client_config.current](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/data-sources/client_config) | data source |
 | [azurerm_express_route_circuit.circuits](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/data-sources/express_route_circuit) | data source |
@@ -481,18 +366,17 @@ No modules.
 ## Inputs
 
 | Name | Description | Type | Default | Required |
-|------|-------------|------|---------|:--------:|
+| ---- | ----------- | ---- | ------- | :------: |
 | <a name="input_action_group_name"></a> [action\_group\_name](#input\_action\_group\_name) | Override for the Action Group name. If not provided, a name will be generated. | `string` | `null` | no |
 | <a name="input_alert_evaluation_frequency"></a> [alert\_evaluation\_frequency](#input\_alert\_evaluation\_frequency) | How often alert rules are evaluated. | `string` | `"PT5M"` | no |
 | <a name="input_alert_window_size"></a> [alert\_window\_size](#input\_alert\_window\_size) | The time window for alert evaluation. | `string` | `"PT5M"` | no |
-| <a name="input_allowed_ip_addresses"></a> [allowed\_ip\_addresses](#input\_allowed\_ip\_addresses) | List of IP addresses or CIDR ranges allowed to access Key Vault and Storage Accounts through public endpoints. Used for Terraform runners or admin access. | `list(string)` | `[]` | no |
+| <a name="input_allowed_ip_addresses"></a> [allowed\_ip\_addresses](#input\_allowed\_ip\_addresses) | List of IP addresses or CIDR ranges allowed to access Key Vault through its public endpoint. Used for Terraform runners or admin access. | `list(string)` | `[]` | no |
 | <a name="input_arp_availability_threshold"></a> [arp\_availability\_threshold](#input\_arp\_availability\_threshold) | ARP availability percentage threshold for critical alerts. | `number` | `100` | no |
 | <a name="input_bandwidth_critical_threshold"></a> [bandwidth\_critical\_threshold](#input\_bandwidth\_critical\_threshold) | Bandwidth utilization percentage threshold for critical alerts. | `number` | `95` | no |
 | <a name="input_bandwidth_warning_threshold"></a> [bandwidth\_warning\_threshold](#input\_bandwidth\_warning\_threshold) | Bandwidth utilization percentage threshold for warning alerts. | `number` | `80` | no |
 | <a name="input_bgp_availability_threshold"></a> [bgp\_availability\_threshold](#input\_bgp\_availability\_threshold) | BGP availability percentage threshold for critical alerts. | `number` | `100` | no |
 | <a name="input_central_grafana_dns_zone_id"></a> [central\_grafana\_dns\_zone\_id](#input\_central\_grafana\_dns\_zone\_id) | The resource ID of the central Private DNS Zone for Grafana (privatelink.grafana.azure.com). | `string` | `null` | no |
 | <a name="input_central_keyvault_dns_zone_id"></a> [central\_keyvault\_dns\_zone\_id](#input\_central\_keyvault\_dns\_zone\_id) | The resource ID of the central Private DNS Zone for Key Vault (privatelink.vaultcore.azure.net). | `string` | `null` | no |
-| <a name="input_central_postgresql_dns_zone_id"></a> [central\_postgresql\_dns\_zone\_id](#input\_central\_postgresql\_dns\_zone\_id) | The resource ID of the central Private DNS Zone for PostgreSQL (privatelink.postgres.database.azure.com). | `string` | n/a | yes |
 | <a name="input_cloud_team_email"></a> [cloud\_team\_email](#input\_cloud\_team\_email) | The email address for the Cloud Team (fallback for alerts). | `string` | n/a | yes |
 | <a name="input_cloud_team_group_name"></a> [cloud\_team\_group\_name](#input\_cloud\_team\_group\_name) | The display name of the Entra ID group for the Cloud Team (e.g., 'PIM\_DO\_PuC\_Ops\_Infra\_O'). Used to look up the group and grant Grafana Admin, Key Vault Secrets Officer, and Contributor access. | `string` | n/a | yes |
 | <a name="input_create_grafana_service_account"></a> [create\_grafana\_service\_account](#input\_create\_grafana\_service\_account) | Whether to create a Grafana service account for Terraform automation. Set to true on first deployment, then false after token is stored. | `bool` | `false` | no |
@@ -530,28 +414,10 @@ No modules.
 | <a name="input_log_analytics_sku"></a> [log\_analytics\_sku](#input\_log\_analytics\_sku) | The SKU for Log Analytics Workspace. | `string` | `"PerGB2018"` | no |
 | <a name="input_log_analytics_workspace_name"></a> [log\_analytics\_workspace\_name](#input\_log\_analytics\_workspace\_name) | Override for the Log Analytics Workspace name. If not provided, a name will be generated. | `string` | `null` | no |
 | <a name="input_logic_app_name"></a> [logic\_app\_name](#input\_logic\_app\_name) | Override for the Logic App name. If not provided, a name will be generated. | `string` | `null` | no |
-| <a name="input_netbox_admin_email"></a> [netbox\_admin\_email](#input\_netbox\_admin\_email) | The email address for the Netbox admin user. | `string` | n/a | yes |
-| <a name="input_netbox_cpu"></a> [netbox\_cpu](#input\_netbox\_cpu) | The number of CPU cores for Netbox container. | `number` | `1` | no |
-| <a name="input_netbox_image"></a> [netbox\_image](#input\_netbox\_image) | The Docker image for Netbox. | `string` | `"netboxcommunity/netbox:v3.7"` | no |
-| <a name="input_netbox_memory"></a> [netbox\_memory](#input\_netbox\_memory) | The memory in GB for Netbox container. | `number` | `2` | no |
 | <a name="input_network_manager_ipam_pool_id"></a> [network\_manager\_ipam\_pool\_id](#input\_network\_manager\_ipam\_pool\_id) | The resource ID of the Azure Network Manager IPAM Pool for IP address allocation. Required when use\_ipam is true. | `string` | `null` | no |
 | <a name="input_noc_team_group_id"></a> [noc\_team\_group\_id](#input\_noc\_team\_group\_id) | The Object ID of the Entra ID group for the NOC Team (Grafana Editor). | `string` | `null` | no |
-| <a name="input_postgresql_admin_username"></a> [postgresql\_admin\_username](#input\_postgresql\_admin\_username) | The administrator username for PostgreSQL. | `string` | `"pgadmin"` | no |
-| <a name="input_postgresql_backup_retention_days"></a> [postgresql\_backup\_retention\_days](#input\_postgresql\_backup\_retention\_days) | The number of days to retain PostgreSQL backups. | `number` | `35` | no |
-| <a name="input_postgresql_geo_redundant_backup"></a> [postgresql\_geo\_redundant\_backup](#input\_postgresql\_geo\_redundant\_backup) | Whether to enable geo-redundant backups for PostgreSQL. | `bool` | `true` | no |
-| <a name="input_postgresql_high_availability"></a> [postgresql\_high\_availability](#input\_postgresql\_high\_availability) | Whether to enable zone-redundant high availability for PostgreSQL. | `bool` | `true` | no |
-| <a name="input_postgresql_server_name"></a> [postgresql\_server\_name](#input\_postgresql\_server\_name) | Override for the PostgreSQL Flexible Server name. If not provided, a name will be generated. | `string` | `null` | no |
-| <a name="input_postgresql_sku_name"></a> [postgresql\_sku\_name](#input\_postgresql\_sku\_name) | The SKU name for PostgreSQL Flexible Server. | `string` | `"GP_Standard_D2s_v3"` | no |
-| <a name="input_postgresql_storage_mb"></a> [postgresql\_storage\_mb](#input\_postgresql\_storage\_mb) | The storage size in MB for PostgreSQL. | `number` | `32768` | no |
-| <a name="input_postgresql_version"></a> [postgresql\_version](#input\_postgresql\_version) | The version of PostgreSQL to deploy. | `string` | `"15"` | no |
-| <a name="input_prometheus_cpu"></a> [prometheus\_cpu](#input\_prometheus\_cpu) | The number of CPU cores for Prometheus container. | `number` | `1` | no |
-| <a name="input_prometheus_image"></a> [prometheus\_image](#input\_prometheus\_image) | The Docker image for Prometheus. | `string` | `"prom/prometheus:v2.48.0"` | no |
-| <a name="input_prometheus_memory"></a> [prometheus\_memory](#input\_prometheus\_memory) | The memory in GB for Prometheus container. | `number` | `2` | no |
-| <a name="input_prometheus_retention_days"></a> [prometheus\_retention\_days](#input\_prometheus\_retention\_days) | The number of days to retain Prometheus metrics. | `number` | `15` | no |
-| <a name="input_redis_image"></a> [redis\_image](#input\_redis\_image) | The Docker image for Redis (Netbox cache). | `string` | `"redis:7-alpine"` | no |
 | <a name="input_resource_group_name"></a> [resource\_group\_name](#input\_resource\_group\_name) | Override for the resource group name. If not provided, a name will be generated. | `string` | `null` | no |
 | <a name="input_service_desk_group_id"></a> [service\_desk\_group\_id](#input\_service\_desk\_group\_id) | The Object ID of the Entra ID group for Service Desk (Grafana Viewer). | `string` | `null` | no |
-| <a name="input_storage_account_name"></a> [storage\_account\_name](#input\_storage\_account\_name) | Override for the Storage Account name. If not provided, a name will be generated. | `string` | `null` | no |
 | <a name="input_subscription_id_connectivity"></a> [subscription\_id\_connectivity](#input\_subscription\_id\_connectivity) | The subscription ID for the connectivity subscription where resources will be deployed. | `string` | `null` | no |
 | <a name="input_subscription_id_management"></a> [subscription\_id\_management](#input\_subscription\_id\_management) | The subscription ID for the management subscription. | `string` | `null` | no |
 | <a name="input_tags"></a> [tags](#input\_tags) | A map of tags to apply to all resources. | `map(string)` | `{}` | no |
@@ -565,11 +431,10 @@ No modules.
 ## Outputs
 
 | Name | Description |
-|------|-------------|
+| ---- | ----------- |
 | <a name="output_action_group_id"></a> [action\_group\_id](#output\_action\_group\_id) | The ID of the alert action group. |
 | <a name="output_azure_monitor_workspace_id"></a> [azure\_monitor\_workspace\_id](#output\_azure\_monitor\_workspace\_id) | The ID of the Azure Monitor Workspace. |
 | <a name="output_azure_monitor_workspace_name"></a> [azure\_monitor\_workspace\_name](#output\_azure\_monitor\_workspace\_name) | The name of the Azure Monitor Workspace. |
-| <a name="output_grafana_dashboard_circuit_inventory_url"></a> [grafana\_dashboard\_circuit\_inventory\_url](#output\_grafana\_dashboard\_circuit\_inventory\_url) | The URL for the Circuit Inventory dashboard. |
 | <a name="output_grafana_dashboard_expressroute_health_url"></a> [grafana\_dashboard\_expressroute\_health\_url](#output\_grafana\_dashboard\_expressroute\_health\_url) | The URL for the ExpressRoute Health dashboard. |
 | <a name="output_grafana_dashboard_folder_uid"></a> [grafana\_dashboard\_folder\_uid](#output\_grafana\_dashboard\_folder\_uid) | The UID of the MCCS Grafana dashboard folder (null if dashboards not provisioned). |
 | <a name="output_grafana_dashboard_mccs_overview_url"></a> [grafana\_dashboard\_mccs\_overview\_url](#output\_grafana\_dashboard\_mccs\_overview\_url) | The URL for the MCCS Overview dashboard. |
@@ -593,19 +458,8 @@ No modules.
 | <a name="output_logic_app_callback_url"></a> [logic\_app\_callback\_url](#output\_logic\_app\_callback\_url) | The callback URL for the Logic App HTTP trigger. |
 | <a name="output_logic_app_id"></a> [logic\_app\_id](#output\_logic\_app\_id) | The ID of the Logic App. |
 | <a name="output_logic_app_managed_identity_id"></a> [logic\_app\_managed\_identity\_id](#output\_logic\_app\_managed\_identity\_id) | The ID of the Logic App managed identity. |
-| <a name="output_netbox_private_ip"></a> [netbox\_private\_ip](#output\_netbox\_private\_ip) | The private IP address of the Netbox container instance. Use this for Prometheus scraping and Grafana data source configuration. |
-| <a name="output_netbox_storage_account_name"></a> [netbox\_storage\_account\_name](#output\_netbox\_storage\_account\_name) | The name of the Netbox storage account. |
-| <a name="output_netbox_url"></a> [netbox\_url](#output\_netbox\_url) | The URL for accessing Netbox (using private IP). |
-| <a name="output_postgresql_fqdn"></a> [postgresql\_fqdn](#output\_postgresql\_fqdn) | The FQDN of the PostgreSQL Flexible Server. |
-| <a name="output_postgresql_server_id"></a> [postgresql\_server\_id](#output\_postgresql\_server\_id) | The ID of the PostgreSQL Flexible Server. |
-| <a name="output_postgresql_server_name"></a> [postgresql\_server\_name](#output\_postgresql\_server\_name) | The name of the PostgreSQL Flexible Server. |
-| <a name="output_prometheus_private_ip"></a> [prometheus\_private\_ip](#output\_prometheus\_private\_ip) | The private IP address of the Prometheus container instance. |
-| <a name="output_prometheus_storage_account_name"></a> [prometheus\_storage\_account\_name](#output\_prometheus\_storage\_account\_name) | The name of the Prometheus storage account. |
-| <a name="output_prometheus_url"></a> [prometheus\_url](#output\_prometheus\_url) | The URL for accessing Prometheus (using private IP). |
 | <a name="output_resource_group_id"></a> [resource\_group\_id](#output\_resource\_group\_id) | The ID of the resource group. |
 | <a name="output_resource_group_name"></a> [resource\_group\_name](#output\_resource\_group\_name) | The name of the resource group. |
-| <a name="output_subnet_containers_id"></a> [subnet\_containers\_id](#output\_subnet\_containers\_id) | The ID of the container instances subnet. |
-| <a name="output_subnet_postgresql_id"></a> [subnet\_postgresql\_id](#output\_subnet\_postgresql\_id) | The ID of the PostgreSQL subnet. |
 | <a name="output_subnet_private_endpoints_id"></a> [subnet\_private\_endpoints\_id](#output\_subnet\_private\_endpoints\_id) | The ID of the private endpoints subnet. |
 | <a name="output_subnets"></a> [subnets](#output\_subnets) | Map of all created subnets with IDs and CIDRs. |
 | <a name="output_virtual_hub_connection_id"></a> [virtual\_hub\_connection\_id](#output\_virtual\_hub\_connection\_id) | The ID of the Virtual Hub Connection. |

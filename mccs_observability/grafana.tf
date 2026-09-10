@@ -1,5 +1,6 @@
 #------------------------------------------------------------------------------
-# Azure Monitor Workspace (for Prometheus metrics integration with Grafana)
+# Azure Monitor Workspace (backing Grafana's Prometheus integration; future
+# destination for Azure Managed Prometheus remote write)
 #------------------------------------------------------------------------------
 
 resource "azurerm_monitor_workspace" "this" {
@@ -33,7 +34,8 @@ resource "azurerm_dashboard_grafana" "this" {
     type = "SystemAssigned"
   }
 
-  # Azure Monitor Workspace integration (for Prometheus metrics)
+  # Azure Monitor Workspace integration (enables Grafana's built-in
+  # Prometheus data source and future Azure Managed Prometheus ingestion)
   azure_monitor_workspace_integrations {
     resource_id = azurerm_monitor_workspace.this.id
   }
@@ -64,9 +66,6 @@ resource "azurerm_monitor_diagnostic_setting" "grafana" {
 # Note: Data sources are configured via Grafana API or provisioning
 # The following resources set up the required permissions and connections
 #------------------------------------------------------------------------------
-
-# Prometheus data source requires network connectivity
-# This is handled by the private endpoint and VNet integration
 
 # Azure Monitor data source is automatically available with the managed identity
 # and the role assignments in identity.tf

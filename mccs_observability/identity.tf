@@ -88,21 +88,3 @@ resource "azurerm_role_assignment" "service_desk_grafana_viewer" {
   role_definition_name = "Grafana Viewer"
   principal_id         = var.service_desk_group_id
 }
-
-#------------------------------------------------------------------------------
-# RBAC for Container Instance Managed Identity
-#------------------------------------------------------------------------------
-
-# ACI identity needs access to Key Vault secrets
-resource "azurerm_role_assignment" "aci_keyvault_secrets_user" {
-  scope                = azurerm_key_vault.this.id
-  role_definition_name = "Key Vault Secrets User"
-  principal_id         = azurerm_user_assigned_identity.aci.principal_id
-}
-
-# ACI identity needs access to storage for Prometheus data
-resource "azurerm_role_assignment" "aci_storage_contributor" {
-  scope                = azurerm_storage_account.prometheus.id
-  role_definition_name = "Storage Blob Data Contributor"
-  principal_id         = azurerm_user_assigned_identity.aci.principal_id
-}

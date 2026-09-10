@@ -78,27 +78,6 @@ resource "grafana_dashboard" "expressroute_health" {
 }
 
 #------------------------------------------------------------------------------
-# Dashboard: Circuit Inventory
-# Network documentation from Netbox
-#------------------------------------------------------------------------------
-
-resource "grafana_dashboard" "circuit_inventory" {
-  count = local.can_provision_dashboards ? 1 : 0
-
-  folder    = grafana_folder.mccs[0].id
-  overwrite = true
-
-  config_json = templatefile("${path.module}/dashboards/circuit_inventory.json.tftpl", {
-    subscription_id        = local.subscription_id_connectivity
-    default_resource_group = local.default_expressroute_resource_group
-    circuits               = var.expressroute_circuits
-    netbox_url             = "http://${azurerm_container_group.netbox.ip_address}:8080"
-  })
-
-  depends_on = [grafana_folder.mccs]
-}
-
-#------------------------------------------------------------------------------
 # Grafana Data Source: Azure Monitor
 # Automatically configured with the Grafana managed identity
 #------------------------------------------------------------------------------
@@ -148,31 +127,6 @@ resource "grafana_data_source" "log_analytics" {
     clientId                     = azurerm_dashboard_grafana.this.identity[0].principal_id
     logAnalyticsDefaultWorkspace = azurerm_log_analytics_workspace.this.id
     azureLogAnalyticsSameAs      = false
-  })
-
-  depends_on = [azurerm_dashboard_grafana.this]
-}
-
-#------------------------------------------------------------------------------
-# Grafana Data Source: Prometheus
-# For custom metrics from Netbox exporter and future AWS integration
-#------------------------------------------------------------------------------
-
-resource "grafana_data_source" "prometheus" {
-  count = local.can_provision_dashboards ? 1 : 0
-
-  name = "Prometheus - MCCS"
-  type = "prometheus"
-
-  url = "http://${azurerm_container_group.prometheus.ip_address}:9090"
-
-  json_data_encoded = jsonencode({
-    httpMethod        = "POST"
-    timeInterval      = "30s"
-    queryTimeout      = "60s"
-    manageAlerts      = false
-    prometheusType    = "Prometheus"
-    prometheusVersion = "2.48.0"
   })
 
   depends_on = [azurerm_dashboard_grafana.this]

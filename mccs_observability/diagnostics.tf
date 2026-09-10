@@ -77,38 +77,6 @@ resource "azurerm_monitor_diagnostic_setting" "keyvault" {
 }
 
 #------------------------------------------------------------------------------
-# Diagnostic Settings for Storage Accounts
-#------------------------------------------------------------------------------
-
-resource "azurerm_monitor_diagnostic_setting" "storage_netbox" {
-  name                       = "diag-${azurerm_storage_account.netbox.name}"
-  target_resource_id         = azurerm_storage_account.netbox.id
-  log_analytics_workspace_id = azurerm_log_analytics_workspace.this.id
-
-  enabled_metric {
-    category = "Transaction"
-  }
-
-  enabled_metric {
-    category = "Capacity"
-  }
-}
-
-resource "azurerm_monitor_diagnostic_setting" "storage_prometheus" {
-  name                       = "diag-${azurerm_storage_account.prometheus.name}"
-  target_resource_id         = azurerm_storage_account.prometheus.id
-  log_analytics_workspace_id = azurerm_log_analytics_workspace.this.id
-
-  enabled_metric {
-    category = "Transaction"
-  }
-
-  enabled_metric {
-    category = "Capacity"
-  }
-}
-
-#------------------------------------------------------------------------------
 # Resource Health Alerts (Optional)
 # These provide notifications when Azure itself has issues affecting resources
 #------------------------------------------------------------------------------

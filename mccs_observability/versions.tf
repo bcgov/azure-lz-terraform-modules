@@ -11,14 +11,6 @@ terraform {
       source  = "hashicorp/random"
       version = "~> 3.0"
     }
-    local = {
-      source  = "hashicorp/local"
-      version = "~> 2.0"
-    }
-    time = {
-      source  = "hashicorp/time"
-      version = "~> 0.11"
-    }
     azuread = {
       source  = "hashicorp/azuread"
       version = "~> 3.8"
