@@ -9,7 +9,7 @@ The MCCS Observability Platform provides:
 - **Single Pane of Glass**: Consolidated view of all MCCS connections across Azure ExpressRoute (and AWS Direct Connect in Phase 2)
 - **Proactive Monitoring**: Real-time alerting on connectivity issues before user impact
 - **Rapid Troubleshooting**: Centralized diagnostics to reduce mean time to resolution (MTTR)
-- **Network Documentation**: Authoritative source of truth for circuit inventory and topology via Netbox
+- **Network Documentation**: Circuit inventory defined as code in Terraform
 
 ## Architecture
 
@@ -18,21 +18,16 @@ The MCCS Observability Platform provides:
 │                         MCCS OBSERVABILITY PLATFORM                         │
 ├─────────────────────────────────────────────────────────────────────────────┤
 │                                                                             │
-│  Data Sources          Collection & Storage           Visualization         │
-│  ─────────────         ──────────────────────         ─────────────         │
-│  ExpressRoute    ───►  Log Analytics Workspace  ───►  Azure Managed         │
-│  Circuits              Prometheus (ACI)               Grafana               │
-│  Gateways              PostgreSQL Flexible                                  │
-│                        Server (Netbox DB)                                   │
-│                                                                             │
-│  Alerting                        Secrets                                    │
-│  ────────                        ───────                                    │
-│  Logic App ───► Teams            Key Vault                                  │
-│           ───► Jira JSM          (RBAC-enabled)                             │
-│                                                                             │
-│  Network Source of Truth                                                    │
-│  ───────────────────────                                                    │
-│  Netbox (ACI) - Circuit Records, Provider Info, IP Management               │
+│  Data Sources              Collection & Storage        Visualization        │
+│  ─────────────             ────────────────────        ─────────────        │
+│  ExpressRoute    ───►      Log Analytics Workspace ──► Azure Managed        │
+│  Circuits                                              Grafana              │
+│  Gateways                                                                          │
+│                                                                                   │
+│  Alerting                          Secrets                                        │
+│  ────────                          ───────                                        │
+│  Logic App ───► Teams              Key Vault                                      │
+│           ───► Jira JSM            (RBAC-enabled)                                 │
 │                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
@@ -42,9 +37,6 @@ The MCCS Observability Platform provides:
 | Component | Description |
 |-----------|-------------|
 | **Azure Managed Grafana** | Visualization and dashboards with Entra ID authentication |
-| **PostgreSQL Flexible Server** | Zone-redundant database for Netbox |
-| **Netbox (ACI)** | Network source of truth for circuit inventory |
-| **Prometheus (ACI)** | Metrics collection for Netbox data and Phase 2 AWS |
 | **Log Analytics Workspace** | Diagnostic data storage |
 | **Key Vault** | Secrets management with RBAC |
 | **Logic App** | Alert routing to Teams and Jira JSM |
@@ -79,7 +71,7 @@ module "mccs_observability" {
   network_manager_ipam_pool_id = "/subscriptions/.../providers/Microsoft.Network/networkManagers/.../ipamPools/..."
 
   # Private DNS Zone (CAF Central)
-  central_postgresql_dns_zone_id = "/subscriptions/.../privatelink.postgres.database.azure.com"
+  central_keyvault_dns_zone_id = "/subscriptions/.../privatelink.vaultcore.azure.net"
 
   # Identity
   cloud_team_group_id = "00000000-0000-0000-0000-000000000000"
@@ -103,8 +95,13 @@ module "mccs_observability" {
   jira_api_token     = var.jira_api_token
   jira_project_key   = "MCCS"
 
-  # Netbox
-  netbox_admin_email = "cloud-team@gov.bc.ca"
+  # Optional: VPN gateways (vWAN hub VPN gateways) for Landing Zone Operations dashboards
+  vpn_gateways = {
+    "vgw-cc-hub-01" = {
+      gateway_name        = "vgw-canadacentral-01"
+      resource_group_name = "rg-connectivity"
+    }
+  }
 }
 ```
 
@@ -135,7 +132,6 @@ module "mccs_observability" {
 | Name | Description | Type |
 |------|-------------|------|
 | `environment` | Environment name (prod, dev, staging, test) | `string` |
-| `central_postgresql_dns_zone_id` | CAF central PostgreSQL DNS zone ID | `string` |
 | `cloud_team_group_id` | Entra ID group for Cloud Team | `string` |
 | `expressroute_circuits` | Map of ExpressRoute circuits to monitor | `map(object)` |
 | `teams_webhook_url` | Microsoft Teams webhook URL | `string` |
@@ -153,7 +149,6 @@ module "mccs_observability" {
 | `vnet_address_space` | VNet address space /24 (required when use_ipam=false) | `string` | `null` |
 | `vnet_name` | Override for VNet name | `string` | `null` |
 | `jira_project_key` | Jira project key | `string` |
-| `netbox_admin_email` | Netbox admin email | `string` |
 
 ### Optional Variables
 
@@ -164,7 +159,6 @@ module "mccs_observability" {
 | `service_desk_group_id` | Entra ID group for Service Desk | `string` | `null` |
 | `enable_alerting` | Enable alerting infrastructure | `bool` | `true` |
 | `grafana_sku` | Grafana SKU (Standard/Essential) | `string` | `"Standard"` |
-| `postgresql_high_availability` | Enable PostgreSQL HA | `bool` | `true` |
 | `tags` | Additional resource tags | `map(string)` | `null` |
 
 ## Outputs
@@ -173,59 +167,38 @@ module "mccs_observability" {
 |------|-------------|
 | `resource_group_name` | The name of the resource group |
 | `grafana_endpoint` | The Grafana endpoint URL |
-| `netbox_private_ip` | The private IP of the Netbox container |
-| `prometheus_private_ip` | The private IP of the Prometheus container |
-| `postgresql_fqdn` | The PostgreSQL server FQDN |
 | `key_vault_uri` | The Key Vault URI |
 | `log_analytics_workspace_id` | The Log Analytics Workspace ID |
 
 ## Post-Deployment Steps
 
-### 1. Upload Prometheus Configuration
-
-```bash
-az storage file upload \
-  --account-name <storage-account-name> \
-  --share-name prometheus-config \
-  --source shared/prometheus-config/prometheus.yml \
-  --path prometheus.yml
-```
-
-### 2. Configure Netbox API Token
-
-After Netbox is running, create an API token for the Prometheus exporter:
-
-1. Access Netbox at `http://<netbox-private-ip>:8080`
-2. Login with admin credentials (from Key Vault)
-3. Navigate to Admin → API Tokens
-4. Create a new token
-5. Update the `netbox-exporter` container with the token
-
-### 3. Populate Netbox Inventory
-
-Use the Netbox API or UI to add:
-
-- Sites (Kamloops DC, Calgary DC)
-- Providers (Telus, Shaw, AWS)
-- Circuits (ExpressRoute and Direct Connect)
-- IP addressing information
-
-### 4. Verify Grafana Data Sources
+### 1. Verify Grafana Data Sources
 
 1. Access Grafana via the private endpoint
 2. Verify Azure Monitor data source is connected
-3. Add Prometheus data source pointing to `http://<prometheus-ip>:9090`
-4. Dashboards are automatically provisioned (see below)
+3. Dashboards are automatically provisioned (see below)
 
 ## Grafana Dashboards
 
 The module provisions the following dashboards automatically when `enable_grafana_dashboards = true`:
 
+**Folder: MCCS Observability** (multi-cloud connectivity)
+
 | Dashboard | UID | Description |
 |-----------|-----|-------------|
 | **MCCS Overview** | `mccs-overview` | Consolidated view of all ExpressRoute circuits with BGP/ARP availability, bandwidth utilization, and active alerts |
 | **ExpressRoute Health** | `expressroute-health` | Detailed health metrics for individual circuits including packet drops, gateway CPU, and troubleshooting guide |
-| **Circuit Inventory** | `circuit-inventory` | Network documentation from Netbox showing circuit records, providers, and site information |
+
+**Folder: Landing Zone Operations** (broader platform views for landing zone administrators)
+
+| Dashboard | UID | Description |
+|-----------|-----|-------------|
+| **Virtual WAN Hub Health** | `vwan-hub-health` | Hub router capacity (Routing Infrastructure Units), spoke VM utilization, data processed, and hub BGP/route health — targets the vWAN hub in `virtual_hub_id` |
+| **VPN Gateway Health** | `vpn-gateway-health` | S2S VPN tunnel bandwidth, ingress/egress packet drops, BGP peers/routes, and tunnel/route diagnostic events (only provisioned when `vpn_gateways` is provided) |
+| **Platform Changes (Activity Log)** | `platform-changes` | Subscription control-plane change feed: administrative operations, RBAC changes, failed operations, and service health events from activity logs routed to the workspace (only provisioned when `enable_activity_log_diagnostics` is true) |
+| **Resource Inventory & Policy** | `resource-inventory-policy` | Resource counts by type/location, recently created resources, and policy compliance summary via Azure Resource Graph |
+| **Security Posture (Defender)** | `security-posture` | Defender for Cloud secure score and unhealthy security assessments via Azure Resource Graph (requires Defender for Cloud, free CSPM tier, on the subscription) |
+| **Key Vault Access** | `key-vault-access` | Key Vault audit events: secret access, denied attempts (403), distinct callers, hourly operation trends, and recent access feed |
 
 ### Dashboard Features
 
@@ -240,16 +213,9 @@ The module provisions the following dashboards automatically when `enable_grafan
 - Inbound/outbound bandwidth with threshold indicators
 - Packet drop monitoring
 - Gateway CPU utilization and route counts
+- Gateway throughput and routes learned from peer
+- Peering route change trend and recent gateway diagnostic events from Log Analytics (GatewayDiagnosticLog / PeeringRouteLog)
 - Embedded troubleshooting reference guide
-
-**Circuit Inventory:**
-- Circuit count summary by cloud provider
-- Total bandwidth capacity
-- Detailed circuit tables (ExpressRoute and Direct Connect)
-- Site and provider information
-- Quick links to Netbox and Azure Portal
-
-> **Note:** The Circuit Inventory dashboard currently displays static documentation. To enable live circuit data from Netbox, a Netbox Exporter sidecar container needs to be added to expose circuit inventory as Prometheus metrics. See [Future Enhancements](#future-enhancements) for details.
 
 ### Dashboard Variables
 
@@ -291,9 +257,8 @@ module "mccs_observability" {
 ### Customizing Dashboards
 
 Dashboard JSON files are stored in `dashboards/`:
-- `mccs_overview.json`
-- `expressroute_health.json`
-- `circuit_inventory.json`
+- `mccs_overview.json.tftpl`
+- `expressroute_health.json.tftpl`
 
 To customize dashboards:
 1. Export modified dashboard from Grafana UI
@@ -308,7 +273,11 @@ To customize dashboards:
 | ARP Availability Down | < 100% for 5 min | Sev0 (Critical) | Teams + Jira |
 | Bandwidth High | > 80% for 15 min | Sev2 (Warning) | Teams |
 | Bandwidth Critical | > 95% for 5 min | Sev1 (Error) | Teams |
-| Gateway Unhealthy | Unhealthy state | Sev0 (Critical) | Teams + Jira |
+| Gateway Unhealthy | BGP peer status < 1 | Sev0 (Critical) | Teams + Jira |
+
+> **Current limitation:** the Logic App alert router forwards the raw alert to the action
+> group (email receiver). The Teams and Jira actions are not yet implemented in Terraform,
+> so those columns describe the intended routing rather than the deployed behaviour.
 
 ## Security
 
@@ -326,28 +295,14 @@ To customize dashboards:
 - Cross-cloud correlation dashboards
 - Unified alerting across Azure and AWS
 
-### Netbox Exporter for Live Circuit Inventory
-
-The Circuit Inventory dashboard currently displays static documentation. To enable live data from Netbox:
-
-1. Add a **netbox-exporter** sidecar container (`prometheus-community/netbox-exporter`) to the Netbox container group
-2. Configure the exporter with Netbox API token for authentication
-3. Update Prometheus scrape configuration to collect `netbox_circuits_*` metrics
-4. Update the Circuit Inventory dashboard to query Prometheus for live circuit data
-
-This will enable:
-- Real-time circuit status from Netbox
-- Dynamic provider and site information
-- Automatic dashboard updates when circuits are added/modified in Netbox
-
 <!-- BEGIN_TF_DOCS -->
 ## Requirements
 
 | Name | Version |
 | ---- | ------- |
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >=1.9.0, < 2.0.0 |
-| <a name="requirement_azuread"></a> [azuread](#requirement\_azuread) | ~> 3.9 |
-| <a name="requirement_azurerm"></a> [azurerm](#requirement\_azurerm) | ~> 4.81 |
+| <a name="requirement_azuread"></a> [azuread](#requirement\_azuread) | ~> 3.8 |
+| <a name="requirement_azurerm"></a> [azurerm](#requirement\_azurerm) | ~> 4.76 |
 | <a name="requirement_grafana"></a> [grafana](#requirement\_grafana) | ~> 3.0 |
 | <a name="requirement_random"></a> [random](#requirement\_random) | ~> 3.0 |
 
@@ -454,7 +409,7 @@ No modules.
 | <a name="input_action_group_name"></a> [action\_group\_name](#input\_action\_group\_name) | Override for the Action Group name. If not provided, a name will be generated. | `string` | `null` | no |
 | <a name="input_alert_evaluation_frequency"></a> [alert\_evaluation\_frequency](#input\_alert\_evaluation\_frequency) | How often alert rules are evaluated. | `string` | `"PT5M"` | no |
 | <a name="input_alert_window_size"></a> [alert\_window\_size](#input\_alert\_window\_size) | The time window for alert evaluation. | `string` | `"PT5M"` | no |
-| <a name="input_allowed_ip_addresses"></a> [allowed\_ip\_addresses](#input\_allowed\_ip\_addresses) | List of IP addresses or CIDR ranges allowed to reach the Key Vault public endpoint and the jump box NSG. Used for Terraform runners or admin access. | `list(string)` | `[]` | no |
+| <a name="input_allowed_ip_addresses"></a> [allowed\_ip\_addresses](#input\_allowed\_ip\_addresses) | List of IP addresses or CIDR ranges allowed to access Key Vault through its public endpoint. Used for Terraform runners or admin access. | `list(string)` | `[]` | no |
 | <a name="input_arp_availability_threshold"></a> [arp\_availability\_threshold](#input\_arp\_availability\_threshold) | ARP availability percentage threshold for critical alerts. | `number` | `100` | no |
 | <a name="input_bandwidth_critical_threshold"></a> [bandwidth\_critical\_threshold](#input\_bandwidth\_critical\_threshold) | Bandwidth utilization percentage threshold for critical alerts. | `number` | `95` | no |
 | <a name="input_bandwidth_warning_threshold"></a> [bandwidth\_warning\_threshold](#input\_bandwidth\_warning\_threshold) | Bandwidth utilization percentage threshold for warning alerts. | `number` | `80` | no |
