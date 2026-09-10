@@ -21,3 +21,11 @@ data "azurerm_virtual_network_gateway" "gateways" {
   name                = each.value.gateway_name
   resource_group_name = each.value.resource_group_name
 }
+
+# Reference existing VPN gateways (vWAN hub VPN gateways) for diagnostics
+data "azurerm_vpn_gateway" "vpn_gateways" {
+  for_each = var.vpn_gateways
+
+  name                = each.value.gateway_name
+  resource_group_name = each.value.resource_group_name
+}

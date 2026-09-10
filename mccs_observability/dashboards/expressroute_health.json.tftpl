@@ -1279,7 +1279,7 @@
         "type": "grafana-azure-monitor-datasource",
         "uid": "$${datasource}"
       },
-      "description": "Number of VMs behind the ExpressRoute Gateway",
+      "description": "Routes the ExpressRoute gateway advertises to the circuit peer; a sustained drop indicates routing or peering issues",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -1380,12 +1380,423 @@
       "type": "timeseries"
     },
     {
+  "collapsed": false,
+  "gridPos": {
+    "h": 1,
+    "w": 24,
+    "x": 0,
+    "y": 42
+  },
+  "id": 20,
+  "panels": [],
+  "title": "Gateway Traffic & Route Diagnostics",
+  "type": "row"
+},
+    {
+  "datasource": {
+    "type": "grafana-azure-monitor-datasource",
+    "uid": "$${datasource}"
+  },
+  "description": "Total bits per second received on the ExpressRoute gateway instances",
+  "fieldConfig": {
+    "defaults": {
+      "defaults": {
+        "color": {
+          "mode": "palette-classic"
+        },
+        "custom": {
+          "axisBorderShow": false,
+          "axisCenteredZero": false,
+          "axisColorMode": "text",
+          "axisLabel": "",
+          "axisPlacement": "auto",
+          "barAlignment": 0,
+          "drawStyle": "line",
+          "fillOpacity": 10,
+          "gradientMode": "none",
+          "hideFrom": {
+            "legend": false,
+            "tooltip": false,
+            "viz": false
+          },
+          "insertNulls": false,
+          "lineInterpolation": "linear",
+          "lineWidth": 2,
+          "pointSize": 5,
+          "scaleDistribution": {
+            "type": "linear"
+          },
+          "showPoints": "never",
+          "spanNulls": false,
+          "stacking": {
+            "group": "A",
+            "mode": "none"
+          },
+          "thresholdsStyle": {
+            "mode": "off"
+          }
+        },
+        "mappings": [],
+        "thresholds": {
+          "mode": "absolute",
+          "steps": [
+            {
+              "color": "green",
+              "value": null
+            }
+          ]
+        },
+        "unit": "bps"
+      },
+      "overrides": []
+    },
+    "overrides": []
+  },
+  "gridPos": {
+    "h": 8,
+    "w": 12,
+    "x": 0,
+    "y": 43
+  },
+  "id": 21,
+  "options": {
+    "legend": {
+      "calcs": [
+        "mean",
+        "max"
+      ],
+      "displayMode": "table",
+      "placement": "bottom",
+      "showLegend": true
+    },
+    "tooltip": {
+      "mode": "multi",
+      "sort": "desc"
+    }
+  },
+  "pluginVersion": "11.0.0",
+  "targets": [
+    {
+      "azureMonitor": {
+        "aggregation": "Average",
+        "dimensionFilters": [],
+        "metricName": "ExpressRouteGatewayBitsPerSecond",
+        "metricNamespace": "microsoft.network/virtualnetworkgateways",
+        "resourceGroup": "$${resource_group}",
+        "resources": [
+          {
+            "resourceGroup": "$${resource_group}",
+            "resourceName": "$${gateway}"
+          }
+        ],
+        "timeGrain": "PT5M"
+      },
+      "datasource": {
+        "type": "grafana-azure-monitor-datasource",
+        "uid": "$${datasource}"
+      },
+      "queryType": "Azure Monitor",
+      "refId": "A",
+      "subscription": "$${subscription}"
+    }
+  ],
+  "title": "Gateway Throughput",
+  "type": "timeseries"
+},
+    {
+  "datasource": {
+    "type": "grafana-azure-monitor-datasource",
+    "uid": "$${datasource}"
+  },
+  "description": "Routes the gateway learns from peers; a sustained drop to zero means the remote side stopped advertising routes",
+  "fieldConfig": {
+    "defaults": {
+      "defaults": {
+        "color": {
+          "mode": "palette-classic"
+        },
+        "custom": {
+          "axisBorderShow": false,
+          "axisCenteredZero": false,
+          "axisColorMode": "text",
+          "axisLabel": "",
+          "axisPlacement": "auto",
+          "barAlignment": 0,
+          "drawStyle": "line",
+          "fillOpacity": 10,
+          "gradientMode": "none",
+          "hideFrom": {
+            "legend": false,
+            "tooltip": false,
+            "viz": false
+          },
+          "insertNulls": false,
+          "lineInterpolation": "linear",
+          "lineWidth": 2,
+          "pointSize": 5,
+          "scaleDistribution": {
+            "type": "linear"
+          },
+          "showPoints": "never",
+          "spanNulls": false,
+          "stacking": {
+            "group": "A",
+            "mode": "none"
+          },
+          "thresholdsStyle": {
+            "mode": "off"
+          }
+        },
+        "mappings": [],
+        "thresholds": {
+          "mode": "absolute",
+          "steps": [
+            {
+              "color": "green",
+              "value": null
+            }
+          ]
+        },
+        "unit": "short"
+      },
+      "overrides": []
+    },
+    "overrides": []
+  },
+  "gridPos": {
+    "h": 8,
+    "w": 12,
+    "x": 12,
+    "y": 43
+  },
+  "id": 22,
+  "options": {
+    "legend": {
+      "calcs": [
+        "mean",
+        "max"
+      ],
+      "displayMode": "table",
+      "placement": "bottom",
+      "showLegend": true
+    },
+    "tooltip": {
+      "mode": "multi",
+      "sort": "desc"
+    }
+  },
+  "pluginVersion": "11.0.0",
+  "targets": [
+    {
+      "azureMonitor": {
+        "aggregation": "Maximum",
+        "dimensionFilters": [],
+        "metricName": "ExpressRouteGatewayCountOfRoutesLearnedFromPeer",
+        "metricNamespace": "microsoft.network/virtualnetworkgateways",
+        "resourceGroup": "$${resource_group}",
+        "resources": [
+          {
+            "resourceGroup": "$${resource_group}",
+            "resourceName": "$${gateway}"
+          }
+        ],
+        "timeGrain": "PT5M"
+      },
+      "datasource": {
+        "type": "grafana-azure-monitor-datasource",
+        "uid": "$${datasource}"
+      },
+      "queryType": "Azure Monitor",
+      "refId": "A",
+      "subscription": "$${subscription}"
+    }
+  ],
+  "title": "Routes Learned from Peer",
+  "type": "timeseries"
+},
+    {
+  "datasource": {
+    "type": "grafana-azure-monitor-datasource",
+    "uid": "$${datasource}"
+  },
+  "description": "Frequency of route changes from PeeringRouteLog - sustained churn indicates instability",
+  "fieldConfig": {
+    "defaults": {
+      "defaults": {
+        "color": {
+          "mode": "palette-classic"
+        },
+        "custom": {
+          "axisBorderShow": false,
+          "axisCenteredZero": false,
+          "axisColorMode": "text",
+          "axisLabel": "",
+          "axisPlacement": "auto",
+          "barAlignment": 0,
+          "drawStyle": "line",
+          "fillOpacity": 10,
+          "gradientMode": "none",
+          "hideFrom": {
+            "legend": false,
+            "tooltip": false,
+            "viz": false
+          },
+          "insertNulls": false,
+          "lineInterpolation": "linear",
+          "lineWidth": 2,
+          "pointSize": 5,
+          "scaleDistribution": {
+            "type": "linear"
+          },
+          "showPoints": "never",
+          "spanNulls": false,
+          "stacking": {
+            "group": "A",
+            "mode": "none"
+          },
+          "thresholdsStyle": {
+            "mode": "off"
+          }
+        },
+        "mappings": [],
+        "thresholds": {
+          "mode": "absolute",
+          "steps": [
+            {
+              "color": "green",
+              "value": null
+            }
+          ]
+        },
+        "unit": "short"
+      },
+      "overrides": []
+    },
+    "overrides": []
+  },
+  "gridPos": {
+    "h": 8,
+    "w": 12,
+    "x": 0,
+    "y": 51
+  },
+  "id": 23,
+  "options": {
+    "legend": {
+      "calcs": [
+        "mean",
+        "max"
+      ],
+      "displayMode": "table",
+      "placement": "bottom",
+      "showLegend": true
+    },
+    "tooltip": {
+      "mode": "multi",
+      "sort": "desc"
+    }
+  },
+  "pluginVersion": "11.0.0",
+  "targets": [
+    {
+      "azureLogAnalytics": {
+        "query": "AzureDiagnostics\n| where Category == \"PeeringRouteLog\"\n| summarize RouteChanges = count() by bin(TimeGenerated, 15m)\n| order by TimeGenerated asc",
+        "resultFormat": "time_series"
+      },
+      "datasource": {
+        "type": "grafana-azure-monitor-datasource",
+        "uid": "$${log_analytics_uid}"
+      },
+      "queryType": "Azure Log Analytics",
+      "refId": "A"
+    }
+  ],
+  "title": "Peering Route Changes (Log Analytics)",
+  "type": "timeseries"
+},
+    {
+  "datasource": {
+    "type": "grafana-azure-monitor-datasource",
+    "uid": "$${log_analytics_uid}"
+  },
+  "description": "Latest gateway diagnostic events from GatewayDiagnosticLog in the Log Analytics workspace",
+  "fieldConfig": {
+    "defaults": {
+      "color": {
+        "mode": "thresholds"
+      },
+      "custom": {
+        "align": "auto",
+        "cellOptions": {
+          "type": "auto"
+        },
+        "filterable": true,
+        "inspect": true
+      },
+      "mappings": [],
+      "thresholds": {
+        "mode": "absolute",
+        "steps": [
+          {
+            "color": "green",
+            "value": null
+          }
+        ]
+      }
+    },
+    "overrides": []
+  },
+  "gridPos": {
+    "h": 8,
+    "w": 12,
+    "x": 12,
+    "y": 51
+  },
+  "id": 24,
+  "options": {
+    "cellHeight": "sm",
+    "footer": {
+      "countRows": false,
+      "fields": "",
+      "reducer": [
+        "sum"
+      ],
+      "show": false
+    },
+    "showHeader": true,
+    "sortBy": [
+      {
+        "desc": true,
+        "displayName": "TimeGenerated"
+      }
+    ]
+  },
+  "pluginVersion": "11.0.0",
+  "targets": [
+    {
+      "azureLogAnalytics": {
+        "query": "AzureDiagnostics\n| where Category == \"GatewayDiagnosticLog\"\n| project TimeGenerated, ResourceGroup, OperationName, Level\n| order by TimeGenerated desc\n| take 50",
+        "resultFormat": "table"
+      },
+      "datasource": {
+        "type": "grafana-azure-monitor-datasource",
+        "uid": "$${log_analytics_uid}"
+      },
+      "queryType": "Azure Log Analytics",
+      "refId": "A"
+    }
+  ],
+  "title": "Recent Gateway Diagnostic Events",
+  "type": "table"
+},
+
+    {
       "collapsed": false,
       "gridPos": {
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 42
+        "y": 59
       },
       "id": 18,
       "panels": [],
@@ -1402,7 +1813,7 @@
         "h": 10,
         "w": 24,
         "x": 0,
-        "y": 43
+        "y": 60
       },
       "id": 19,
       "options": {

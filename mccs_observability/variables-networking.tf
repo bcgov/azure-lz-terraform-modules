@@ -69,11 +69,6 @@ variable "internet_security_enabled" {
 # Private DNS Zone Variables
 #------------------------------------------------------------------------------
 
-variable "central_postgresql_dns_zone_id" {
-  type        = string
-  description = "The resource ID of the central Private DNS Zone for PostgreSQL (privatelink.postgres.database.azure.com)."
-}
-
 variable "central_keyvault_dns_zone_id" {
   type        = string
   description = "The resource ID of the central Private DNS Zone for Key Vault (privatelink.vaultcore.azure.net)."
@@ -98,7 +93,7 @@ variable "create_private_dns_zone_groups" {
 
 variable "allowed_ip_addresses" {
   type        = list(string)
-  description = "List of IP addresses or CIDR ranges allowed to access Key Vault and Storage Accounts through public endpoints. Used for Terraform runners or admin access."
+  description = "List of IP addresses or CIDR ranges allowed to access Key Vault through its public endpoint. Used for Terraform runners or admin access."
   default     = []
 
   validation {

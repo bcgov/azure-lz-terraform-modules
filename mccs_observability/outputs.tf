@@ -58,16 +58,6 @@ output "virtual_hub_connection_id" {
 # Subnet Outputs
 #------------------------------------------------------------------------------
 
-output "subnet_containers_id" {
-  description = "The ID of the container instances subnet."
-  value       = azurerm_subnet.containers.id
-}
-
-output "subnet_postgresql_id" {
-  description = "The ID of the PostgreSQL subnet."
-  value       = azurerm_subnet.postgresql.id
-}
-
 output "subnet_private_endpoints_id" {
   description = "The ID of the private endpoints subnet."
   value       = azurerm_subnet.private_endpoints.id
@@ -76,14 +66,6 @@ output "subnet_private_endpoints_id" {
 output "subnets" {
   description = "Map of all created subnets with IDs and CIDRs."
   value = {
-    containers = {
-      id   = azurerm_subnet.containers.id
-      cidr = local.container_subnet_cidr
-    }
-    postgresql = {
-      id   = azurerm_subnet.postgresql.id
-      cidr = local.postgresql_subnet_cidr
-    }
     private_endpoints = {
       id   = azurerm_subnet.private_endpoints.id
       cidr = local.private_endpoint_subnet_cidr
@@ -128,25 +110,6 @@ output "log_analytics_workspace_primary_key" {
   description = "The primary shared key of the Log Analytics Workspace."
   value       = azurerm_log_analytics_workspace.this.primary_shared_key
   sensitive   = true
-}
-
-#------------------------------------------------------------------------------
-# PostgreSQL Outputs
-#------------------------------------------------------------------------------
-
-output "postgresql_server_id" {
-  description = "The ID of the PostgreSQL Flexible Server."
-  value       = azurerm_postgresql_flexible_server.this.id
-}
-
-output "postgresql_fqdn" {
-  description = "The FQDN of the PostgreSQL Flexible Server."
-  value       = azurerm_postgresql_flexible_server.this.fqdn
-}
-
-output "postgresql_server_name" {
-  description = "The name of the PostgreSQL Flexible Server."
-  value       = azurerm_postgresql_flexible_server.this.name
 }
 
 #------------------------------------------------------------------------------
@@ -208,42 +171,18 @@ output "grafana_dashboard_expressroute_health_url" {
   value       = length(grafana_dashboard.expressroute_health) > 0 ? "${azurerm_dashboard_grafana.this.endpoint}/d/expressroute-health/expressroute-health" : null
 }
 
-output "grafana_dashboard_circuit_inventory_url" {
-  description = "The URL for the Circuit Inventory dashboard."
-  value       = length(grafana_dashboard.circuit_inventory) > 0 ? "${azurerm_dashboard_grafana.this.endpoint}/d/circuit-inventory/circuit-inventory" : null
-}
-
 output "grafana_dashboards" {
   description = "Map of all provisioned Grafana dashboard URLs (null if dashboards not provisioned)."
   value = length(grafana_dashboard.mccs_overview) > 0 ? {
     mccs_overview       = "${azurerm_dashboard_grafana.this.endpoint}/d/mccs-overview/mccs-overview"
     expressroute_health = "${azurerm_dashboard_grafana.this.endpoint}/d/expressroute-health/expressroute-health"
-    circuit_inventory   = "${azurerm_dashboard_grafana.this.endpoint}/d/circuit-inventory/circuit-inventory"
+    vwan_hub_health     = length(grafana_dashboard.vwan_hub_health) > 0 ? "${azurerm_dashboard_grafana.this.endpoint}/d/vwan-hub-health/vwan-hub-health" : null
+    vpn_gateway_health  = length(grafana_dashboard.vpn_gateway_health) > 0 ? "${azurerm_dashboard_grafana.this.endpoint}/d/vpn-gateway-health/vpn-gateway-health" : null
+    platform_changes    = length(grafana_dashboard.platform_changes) > 0 ? "${azurerm_dashboard_grafana.this.endpoint}/d/platform-changes/platform-changes" : null
+    resource_inventory  = length(grafana_dashboard.resource_inventory_policy) > 0 ? "${azurerm_dashboard_grafana.this.endpoint}/d/resource-inventory-policy/resource-inventory-policy" : null
+    security_posture    = length(grafana_dashboard.security_posture) > 0 ? "${azurerm_dashboard_grafana.this.endpoint}/d/security-posture/security-posture" : null
+    key_vault_access    = length(grafana_dashboard.key_vault_access) > 0 ? "${azurerm_dashboard_grafana.this.endpoint}/d/key-vault-access/key-vault-access" : null
   } : null
-}
-
-#------------------------------------------------------------------------------
-# Container Instance Outputs
-#------------------------------------------------------------------------------
-
-output "netbox_private_ip" {
-  description = "The private IP address of the Netbox container instance. Use this for Prometheus scraping and Grafana data source configuration."
-  value       = azurerm_container_group.netbox.ip_address
-}
-
-output "netbox_url" {
-  description = "The URL for accessing Netbox (using private IP)."
-  value       = "http://${azurerm_container_group.netbox.ip_address}:8080"
-}
-
-output "prometheus_private_ip" {
-  description = "The private IP address of the Prometheus container instance."
-  value       = azurerm_container_group.prometheus.ip_address
-}
-
-output "prometheus_url" {
-  description = "The URL for accessing Prometheus (using private IP)."
-  value       = "http://${azurerm_container_group.prometheus.ip_address}:9090"
 }
 
 #------------------------------------------------------------------------------
@@ -278,20 +217,6 @@ output "grafana_managed_identity_id" {
 output "logic_app_managed_identity_id" {
   description = "The ID of the Logic App managed identity."
   value       = var.enable_alerting ? azurerm_logic_app_workflow.alert_router[0].identity[0].principal_id : null
-}
-
-#------------------------------------------------------------------------------
-# Storage Outputs
-#------------------------------------------------------------------------------
-
-output "prometheus_storage_account_name" {
-  description = "The name of the Prometheus storage account."
-  value       = azurerm_storage_account.prometheus.name
-}
-
-output "netbox_storage_account_name" {
-  description = "The name of the Netbox storage account."
-  value       = azurerm_storage_account.netbox.name
 }
 
 #------------------------------------------------------------------------------

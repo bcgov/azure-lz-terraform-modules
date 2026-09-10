@@ -1,0 +1,58 @@
+{
+  "name": "Enforce-AKS-Entra-ID-Integration",
+  "type": "Microsoft.Authorization/policyDefinitions",
+  "apiVersion": "2024-05-01",
+  "scope": null,
+  "properties": {
+    "displayName": "Enforce Azure Kubernetes Services (AKS) Microsoft Entra ID Integration",
+    "description": "Audits or denies Azure Kubernetes Services (AKS) clusters that do not have Microsoft Entra ID integration managed by Azure Kubernetes Services (AKS). Entra ID integration allows Kubernetes role-based access control (RBAC) to use Entra ID identities and directory group memberships for cluster access management.",
+    "policyType": "Custom",
+    "mode": "All",
+    "metadata": {
+      "version": "1.1.0",
+      "category": "Kubernetes",
+      "changeReason": "Standardized metadata for governance traceability and consistent policy review context.",
+      "complianceIntent": "Enforce or audit this specific AKS security control according to the assignment effect parameter."
+    },
+    "parameters": {
+      "effect": {
+        "type": "String",
+        "metadata": {
+          "displayName": "Effect",
+          "description": "Deny, Audit or Disabled the execution of the Policy"
+        },
+        "allowedValues": [
+          "Deny",
+          "Audit",
+          "Disabled"
+        ],
+        "defaultValue": "Audit"
+      }
+    },
+    "policyRule": {
+      "if": {
+        "allOf": [
+          {
+            "field": "type",
+            "equals": "Microsoft.ContainerService/managedClusters"
+          },
+          {
+            "anyOf": [
+              {
+                "field": "Microsoft.ContainerService/managedClusters/aadProfile.managed",
+                "exists": "false"
+              },
+              {
+                "field": "Microsoft.ContainerService/managedClusters/aadProfile.managed",
+                "notEquals": true
+              }
+            ]
+          }
+        ]
+      },
+      "then": {
+        "effect": "[parameters('effect')]"
+      }
+    }
+  }
+}

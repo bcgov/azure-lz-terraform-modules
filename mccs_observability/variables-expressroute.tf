@@ -27,6 +27,15 @@ variable "expressroute_gateways" {
   default     = {}
 }
 
+variable "vpn_gateways" {
+  type = map(object({
+    gateway_name        = string
+    resource_group_name = string
+  }))
+  description = "Map of VPN gateways to monitor (Microsoft.Network/vpnGateways, e.g. vWAN hub VPN gateways)."
+  default     = {}
+}
+
 variable "enable_expressroute_diagnostics" {
   type        = bool
   description = "Whether to enable diagnostic settings on ExpressRoute circuits and gateways."

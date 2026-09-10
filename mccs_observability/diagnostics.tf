@@ -55,6 +55,76 @@ resource "azurerm_monitor_diagnostic_setting" "expressroute_gateways" {
 }
 
 #------------------------------------------------------------------------------
+# Diagnostic Settings for the Subscription (Activity Log)
+#
+# Routes subscription-level activity log categories (administrative
+# changes, service/resource health, policy) into the workspace to power
+# the Platform Changes dashboard for landing zone administrators.
+#------------------------------------------------------------------------------
+
+resource "azurerm_monitor_diagnostic_setting" "activity_log" {
+  count = var.enable_activity_log_diagnostics ? 1 : 0
+
+  name                       = "diag-mccs-activity-log"
+  target_resource_id         = "/subscriptions/${local.subscription_id_connectivity}"
+  log_analytics_workspace_id = azurerm_log_analytics_workspace.this.id
+
+  enabled_log {
+    category = "Administrative"
+  }
+
+  enabled_log {
+    category = "ServiceHealth"
+  }
+
+  enabled_log {
+    category = "ResourceHealth"
+  }
+
+  enabled_log {
+    category = "Security"
+  }
+
+  enabled_log {
+    category = "Policy"
+  }
+}
+
+#------------------------------------------------------------------------------
+# Diagnostic Settings for VPN Gateways (vWAN hub VPN gateways)
+#------------------------------------------------------------------------------
+
+resource "azurerm_monitor_diagnostic_setting" "vpn_gateways" {
+  for_each = var.vpn_gateways
+
+  name                       = "diag-mccs-${each.key}"
+  target_resource_id         = data.azurerm_vpn_gateway.vpn_gateways[each.key].id
+  log_analytics_workspace_id = azurerm_log_analytics_workspace.this.id
+
+  # VPN Gateway Diagnostic Logs
+  enabled_log {
+    category = "GatewayDiagnosticLog"
+  }
+
+  enabled_log {
+    category = "TunnelDiagnosticLog"
+  }
+
+  enabled_log {
+    category = "RouteDiagnosticLog"
+  }
+
+  enabled_log {
+    category = "IKEDiagnosticLog"
+  }
+
+  # Gateway Metrics
+  enabled_metric {
+    category = "AllMetrics"
+  }
+}
+
+#------------------------------------------------------------------------------
 # Diagnostic Settings for Key Vault
 #------------------------------------------------------------------------------
 
@@ -73,38 +143,6 @@ resource "azurerm_monitor_diagnostic_setting" "keyvault" {
 
   enabled_metric {
     category = "AllMetrics"
-  }
-}
-
-#------------------------------------------------------------------------------
-# Diagnostic Settings for Storage Accounts
-#------------------------------------------------------------------------------
-
-resource "azurerm_monitor_diagnostic_setting" "storage_netbox" {
-  name                       = "diag-${azurerm_storage_account.netbox.name}"
-  target_resource_id         = azurerm_storage_account.netbox.id
-  log_analytics_workspace_id = azurerm_log_analytics_workspace.this.id
-
-  enabled_metric {
-    category = "Transaction"
-  }
-
-  enabled_metric {
-    category = "Capacity"
-  }
-}
-
-resource "azurerm_monitor_diagnostic_setting" "storage_prometheus" {
-  name                       = "diag-${azurerm_storage_account.prometheus.name}"
-  target_resource_id         = azurerm_storage_account.prometheus.id
-  log_analytics_workspace_id = azurerm_log_analytics_workspace.this.id
-
-  enabled_metric {
-    category = "Transaction"
-  }
-
-  enabled_metric {
-    category = "Capacity"
   }
 }
 

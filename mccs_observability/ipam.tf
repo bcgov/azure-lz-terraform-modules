@@ -4,9 +4,7 @@
 # Allocates IP address space from Azure Network Manager IPAM Pool
 # for the MCCS Observability Platform subnets.
 #
-# Allocation: /24 (256 addresses) split into three /26 subnets:
-# - Container instances subnet: /26 (64 addresses)
-# - PostgreSQL subnet: /26 (64 addresses)
+# Allocation: /24 (256 addresses) split into /26 subnets:
 # - Private endpoints subnet: /26 (64 addresses)
 #------------------------------------------------------------------------------
 
@@ -16,7 +14,7 @@ resource "azurerm_network_manager_ipam_pool_static_cidr" "mccs_observability" {
 
   name                               = "mccs-observability-${var.environment}"
   ipam_pool_id                       = var.network_manager_ipam_pool_id
-  number_of_ip_addresses_to_allocate = 256 # /24 for three /26 subnets
+  number_of_ip_addresses_to_allocate = 256 # /24 for /26 subnets
 
   lifecycle {
     precondition {

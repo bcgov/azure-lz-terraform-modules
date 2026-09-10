@@ -81,4 +81,11 @@ resource "azurerm_vpn_gateway_connection" "this" {
       remote_address_ranges = traffic_selector_policy.value.remote_address_ranges
     }
   }
+
+  # Branch connection routing (route maps / hub route tables) is owned by
+  # azure_vwan/routing via azapi_update_resource. Ignore drift here so VPN
+  # stack applies do not clear or fight that configuration.
+  lifecycle {
+    ignore_changes = [routing]
+  }
 }

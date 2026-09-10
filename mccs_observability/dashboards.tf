@@ -34,6 +34,22 @@ resource "grafana_folder" "mccs" {
 }
 
 #------------------------------------------------------------------------------
+# Grafana Folder for Landing Zone Operations Dashboards
+#
+# Broader landing-zone views for administrators (vWAN hub health, VPN
+# connectivity) alongside the MCCS multi-cloud connectivity folder.
+#------------------------------------------------------------------------------
+
+resource "grafana_folder" "lz_operations" {
+  count = local.can_provision_dashboards ? 1 : 0
+
+  title = "Landing Zone Operations"
+  uid   = "lz-operations"
+
+  depends_on = [azurerm_dashboard_grafana.this]
+}
+
+#------------------------------------------------------------------------------
 # Dashboard: MCCS Overview
 # Consolidated view of all ExpressRoute and Direct Connect circuits
 #------------------------------------------------------------------------------
@@ -72,27 +88,7 @@ resource "grafana_dashboard" "expressroute_health" {
     default_resource_group = local.default_expressroute_resource_group
     circuit_names          = local.expressroute_circuit_names
     circuits               = var.expressroute_circuits
-  })
-
-  depends_on = [grafana_folder.mccs]
-}
-
-#------------------------------------------------------------------------------
-# Dashboard: Circuit Inventory
-# Network documentation from Netbox
-#------------------------------------------------------------------------------
-
-resource "grafana_dashboard" "circuit_inventory" {
-  count = local.can_provision_dashboards ? 1 : 0
-
-  folder    = grafana_folder.mccs[0].id
-  overwrite = true
-
-  config_json = templatefile("${path.module}/dashboards/circuit_inventory.json.tftpl", {
-    subscription_id        = local.subscription_id_connectivity
-    default_resource_group = local.default_expressroute_resource_group
-    circuits               = var.expressroute_circuits
-    netbox_url             = "http://${azurerm_container_group.netbox.ip_address}:8080"
+    log_analytics_uid      = grafana_data_source.log_analytics[0].uid
   })
 
   depends_on = [grafana_folder.mccs]
@@ -145,34 +141,8 @@ resource "grafana_data_source" "log_analytics" {
     subscriptionId               = local.subscription_id_connectivity
     azureAuthType                = "msi"
     tenantId                     = data.azurerm_client_config.current.tenant_id
-    clientId                     = azurerm_dashboard_grafana.this.identity[0].principal_id
     logAnalyticsDefaultWorkspace = azurerm_log_analytics_workspace.this.id
     azureLogAnalyticsSameAs      = false
-  })
-
-  depends_on = [azurerm_dashboard_grafana.this]
-}
-
-#------------------------------------------------------------------------------
-# Grafana Data Source: Prometheus
-# For custom metrics from Netbox exporter and future AWS integration
-#------------------------------------------------------------------------------
-
-resource "grafana_data_source" "prometheus" {
-  count = local.can_provision_dashboards ? 1 : 0
-
-  name = "Prometheus - MCCS"
-  type = "prometheus"
-
-  url = "http://${azurerm_container_group.prometheus.ip_address}:9090"
-
-  json_data_encoded = jsonencode({
-    httpMethod        = "POST"
-    timeInterval      = "30s"
-    queryTimeout      = "60s"
-    manageAlerts      = false
-    prometheusType    = "Prometheus"
-    prometheusVersion = "2.48.0"
   })
 
   depends_on = [azurerm_dashboard_grafana.this]
@@ -220,4 +190,133 @@ resource "azurerm_key_vault_secret" "grafana_service_account_token" {
     azurerm_role_assignment.cloud_team_secrets_officer,
     azurerm_private_endpoint.keyvault
   ]
+}
+
+#------------------------------------------------------------------------------
+# Landing Zone Operations: Dashboard - Virtual WAN Hub Health
+#
+# Hub router capacity (Routing Infrastructure Units), spoke VM utilization,
+# data processed, and hub BGP/route health. Targets the vWAN hub the
+# observability VNet connects to (var.virtual_hub_id).
+#------------------------------------------------------------------------------
+
+resource "grafana_dashboard" "vwan_hub_health" {
+  count = local.can_provision_dashboards ? 1 : 0
+
+  folder    = grafana_folder.lz_operations[0].id
+  overwrite = true
+
+  config_json = templatefile("${path.module}/dashboards/vwan_hub_health.json.tftpl", {
+    subscription_id        = local.subscription_id_connectivity
+    default_resource_group = local.virtual_hub_resource_group
+    hub_name               = local.virtual_hub_name
+  })
+
+  depends_on = [grafana_folder.lz_operations]
+}
+
+#------------------------------------------------------------------------------
+# Landing Zone Operations: Dashboard - VPN Gateway Health
+#
+# S2S VPN tunnel bandwidth, packet drops, BGP routes, and diagnostic logs.
+# Only provisioned when vpn_gateways is provided.
+#------------------------------------------------------------------------------
+
+resource "grafana_dashboard" "vpn_gateway_health" {
+  count = local.can_provision_dashboards && length(var.vpn_gateways) > 0 ? 1 : 0
+
+  folder    = grafana_folder.lz_operations[0].id
+  overwrite = true
+
+  config_json = templatefile("${path.module}/dashboards/vpn_gateway_health.json.tftpl", {
+    subscription_id        = local.subscription_id_connectivity
+    default_resource_group = local.default_vpn_gateway_resource_group
+    gateway_names          = local.vpn_gateway_names
+    log_analytics_uid      = grafana_data_source.log_analytics[0].uid
+  })
+
+  depends_on = [grafana_folder.lz_operations]
+}
+
+#------------------------------------------------------------------------------
+# Landing Zone Operations: Dashboard - Platform Changes (Activity Log)
+#
+# Subscription control-plane change feed from activity logs routed to
+# the workspace by the activity log diagnostic setting.
+#------------------------------------------------------------------------------
+
+resource "grafana_dashboard" "platform_changes" {
+  count = local.can_provision_dashboards && var.enable_activity_log_diagnostics ? 1 : 0
+
+  folder    = grafana_folder.lz_operations[0].id
+  overwrite = true
+
+  config_json = templatefile("${path.module}/dashboards/platform_changes.json.tftpl", {
+    subscription_id   = local.subscription_id_connectivity
+    log_analytics_uid = grafana_data_source.log_analytics[0].uid
+  })
+
+  depends_on = [grafana_folder.lz_operations]
+}
+
+#------------------------------------------------------------------------------
+# Landing Zone Operations: Dashboard - Resource Inventory & Policy
+#
+# Resource counts, recently created resources, and policy compliance via
+# Azure Resource Graph through the Azure Monitor data source.
+#------------------------------------------------------------------------------
+
+resource "grafana_dashboard" "resource_inventory_policy" {
+  count = local.can_provision_dashboards ? 1 : 0
+
+  folder    = grafana_folder.lz_operations[0].id
+  overwrite = true
+
+  config_json = templatefile("${path.module}/dashboards/resource_inventory_policy.json.tftpl", {
+    subscription_id = local.subscription_id_connectivity
+  })
+
+  depends_on = [grafana_folder.lz_operations]
+}
+
+#------------------------------------------------------------------------------
+# Landing Zone Operations: Dashboard - Security Posture (Defender)
+#
+# Defender for Cloud secure score and unhealthy security assessments
+# via Azure Resource Graph. Requires Defender for Cloud (free
+# foundational CSPM tier) to be enabled on the subscription.
+#------------------------------------------------------------------------------
+
+resource "grafana_dashboard" "security_posture" {
+  count = local.can_provision_dashboards ? 1 : 0
+
+  folder    = grafana_folder.lz_operations[0].id
+  overwrite = true
+
+  config_json = templatefile("${path.module}/dashboards/security_posture.json.tftpl", {
+    subscription_id = local.subscription_id_connectivity
+  })
+
+  depends_on = [grafana_folder.lz_operations]
+}
+
+#------------------------------------------------------------------------------
+# Landing Zone Operations: Dashboard - Key Vault Access
+#
+# Key Vault audit events (secret access, denied attempts, callers) from
+# the AuditEvent diagnostic data already routed to the workspace.
+#------------------------------------------------------------------------------
+
+resource "grafana_dashboard" "key_vault_access" {
+  count = local.can_provision_dashboards ? 1 : 0
+
+  folder    = grafana_folder.lz_operations[0].id
+  overwrite = true
+
+  config_json = templatefile("${path.module}/dashboards/key_vault_access.json.tftpl", {
+    subscription_id   = local.subscription_id_connectivity
+    log_analytics_uid = grafana_data_source.log_analytics[0].uid
+  })
+
+  depends_on = [grafana_folder.lz_operations]
 }

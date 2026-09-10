@@ -5,11 +5,11 @@
   "scope": null,
   "properties": {
     "displayName": "Deny New VNet Peerings",
-    "description": "",
+    "description": "Denies creation of VNet peerings except vWAN hub peerings (RemoteVnetToHubPeering*) and isolated expansion peerings (isolated-expansion-*).",
     "policyType": "Custom",
     "mode": "All",
     "metadata": {
-      "version": "1.0.0",
+      "version": "1.1.0",
       "category": "Networking"
     },
     "parameters": {
@@ -37,6 +37,10 @@
           {
             "field": "name",
             "notLike": "RemoteVnetToHubPeering*"
+          },
+          {
+            "field": "name",
+            "notLike": "isolated-expansion-*"
           }
         ]
       },

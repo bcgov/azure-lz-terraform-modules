@@ -1,0 +1,45 @@
+name: "Policy Doc Parse Config"
+description: "Parse wiki configuration and emit workflow matrix outputs."
+inputs:
+  environment:
+    description: "Environment key in github-config.jsonc."
+    required: true
+outputs:
+  wikiCount:
+    description: "Number of configured wikis."
+    value: ${{ steps.parse.outputs.wikiCount }}
+  wikis:
+    description: "JSON array used by matrix strategy."
+    value: ${{ steps.parse.outputs.wikis }}
+runs:
+  using: composite
+  steps:
+    - id: parse
+      name: Parse wiki configuration
+      shell: bash
+      run: |
+        set -euo pipefail
+
+        script_path="azure_policy_lens/scripts/pipelines/policy-documentation/github-policy-doc-parse-config-file.ps1"
+        config_file="azure_policy_lens/configurations/github-config.jsonc"
+        schema_file="azure_policy_lens/configurations/github-config.schema.json"
+
+        if [[ ! -f "$script_path" ]]; then
+          echo "Required script not found: $script_path" >&2
+          exit 1
+        fi
+
+        if [[ ! -f "$config_file" ]]; then
+          echo "Configuration file not found: $config_file" >&2
+          exit 1
+        fi
+
+        if [[ ! -f "$schema_file" ]]; then
+          echo "Configuration schema file not found: $schema_file" >&2
+          exit 1
+        fi
+
+        pwsh -File "$script_path" \
+          -configFilePath "$config_file" \
+          -configSchemaFilePath "$schema_file" \
+          -environment '${{ inputs.environment }}'

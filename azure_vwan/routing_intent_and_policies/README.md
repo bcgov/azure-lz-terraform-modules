@@ -13,7 +13,7 @@ RESPONSE 400: 400 Bad Request │ ERROR CODE: CannotModifyRoutingPolicyInternalR
 {
   "error": {
     "code": "CannotModifyRoutingPolicyInternalRoutes",
-    "message": "Cannot add, update or delete route /subscriptions/09bd024b-fbda-417d-b8db-694680c2b44e/resourceGroups/bcgov-managed-lz-forge-connectivity/providers/Microsoft.Network/virtualHubs/bcgov-managed-lz-forge-hub-canadacentral/hubRouteTables/defaultRouteTable created by Routing Intent.",
+    "message": "Cannot add, update or delete route /subscriptions/<subscription-id>/resourceGroups/<resource-group-name>/providers/Microsoft.Network/virtualHubs/<virtual-hub-name>/hubRouteTables/defaultRouteTable created by Routing Intent.",
     "details": []
   }
 }
@@ -29,14 +29,14 @@ However, when calling the module directly, we can successfully update the routin
 | Name | Version |
 |------|---------|
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >=1.9.0, < 2.0.0 |
-| <a name="requirement_azapi"></a> [azapi](#requirement\_azapi) | ~> 2.0, != 1.13.0 |
-| <a name="requirement_azurerm"></a> [azurerm](#requirement\_azurerm) | ~> 4.0 |
+| <a name="requirement_azapi"></a> [azapi](#requirement\_azapi) | ~> 2.10 |
+| <a name="requirement_azurerm"></a> [azurerm](#requirement\_azurerm) | ~> 4.76 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
-| <a name="provider_azapi"></a> [azapi](#provider\_azapi) | ~> 2.0, != 1.13.0 |
+| <a name="provider_azapi"></a> [azapi](#provider\_azapi) | ~> 2.10 |
 
 ## Modules
 

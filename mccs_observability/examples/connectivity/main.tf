@@ -33,7 +33,6 @@ module "mccs_observability" {
   internet_security_enabled = var.internet_security_enabled
 
   # Private DNS Zones for Private Endpoints
-  central_postgresql_dns_zone_id = var.central_postgresql_dns_zone_id
   central_keyvault_dns_zone_id   = var.central_keyvault_dns_zone_id
   central_grafana_dns_zone_id    = var.central_grafana_dns_zone_id
   create_private_dns_zone_groups = false # Using DINE policy
@@ -56,9 +55,6 @@ module "mccs_observability" {
   jira_user_email   = var.jira_user_email
   jira_api_token    = var.jira_api_token
   jira_project_key  = var.jira_project_key
-
-  # Component configuration
-  netbox_admin_email = var.netbox_admin_email
 
   # Tags
   tags = var.tags

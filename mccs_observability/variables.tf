@@ -74,23 +74,6 @@ variable "grafana_name" {
   default     = null
 }
 
-variable "postgresql_server_name" {
-  type        = string
-  description = "Override for the PostgreSQL Flexible Server name. If not provided, a name will be generated."
-  default     = null
-}
-
-variable "storage_account_name" {
-  type        = string
-  description = "Override for the Storage Account name. If not provided, a name will be generated."
-  default     = null
-
-  validation {
-    condition     = var.storage_account_name == null || (length(var.storage_account_name) >= 3 && length(var.storage_account_name) <= 24)
-    error_message = "Storage Account name must be between 3 and 24 characters."
-  }
-}
-
 variable "action_group_name" {
   type        = string
   description = "Override for the Action Group name. If not provided, a name will be generated."
