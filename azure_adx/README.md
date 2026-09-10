@@ -47,15 +47,15 @@ The ADX cluster is designed with the following components:
 
 | Name | Version |
 |------|---------|
-| <a name="requirement_azapi"></a> [azapi](#requirement\_azapi) | ~> 2.10 |
-| <a name="requirement_azurerm"></a> [azurerm](#requirement\_azurerm) | ~> 4.76 |
+| <a name="requirement_azapi"></a> [azapi](#requirement\_azapi) | ~> 2.12 |
+| <a name="requirement_azurerm"></a> [azurerm](#requirement\_azurerm) | ~> 4.81 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
-| <a name="provider_azapi"></a> [azapi](#provider\_azapi) | ~> 2.10 |
-| <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) | ~> 4.76 |
+| <a name="provider_azapi"></a> [azapi](#provider\_azapi) | ~> 2.12 |
+| <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) | ~> 4.81 |
 
 ## Modules
 
