@@ -192,6 +192,8 @@ The module provisions the following dashboards automatically when `enable_grafan
 - Inbound/outbound bandwidth with threshold indicators
 - Packet drop monitoring
 - Gateway CPU utilization and route counts
+- Gateway throughput and routes learned from peer
+- Peering route change trend and recent gateway diagnostic events from Log Analytics (GatewayDiagnosticLog / PeeringRouteLog)
 - Embedded troubleshooting reference guide
 
 ### Dashboard Variables

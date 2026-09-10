@@ -72,6 +72,7 @@ resource "grafana_dashboard" "expressroute_health" {
     default_resource_group = local.default_expressroute_resource_group
     circuit_names          = local.expressroute_circuit_names
     circuits               = var.expressroute_circuits
+    log_analytics_uid      = grafana_data_source.log_analytics[0].uid
   })
 
   depends_on = [grafana_folder.mccs]
@@ -124,7 +125,6 @@ resource "grafana_data_source" "log_analytics" {
     subscriptionId               = local.subscription_id_connectivity
     azureAuthType                = "msi"
     tenantId                     = data.azurerm_client_config.current.tenant_id
-    clientId                     = azurerm_dashboard_grafana.this.identity[0].principal_id
     logAnalyticsDefaultWorkspace = azurerm_log_analytics_workspace.this.id
     azureLogAnalyticsSameAs      = false
   })
