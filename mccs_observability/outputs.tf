@@ -180,6 +180,8 @@ output "grafana_dashboards" {
     vpn_gateway_health  = length(grafana_dashboard.vpn_gateway_health) > 0 ? "${azurerm_dashboard_grafana.this.endpoint}/d/vpn-gateway-health/vpn-gateway-health" : null
     platform_changes    = length(grafana_dashboard.platform_changes) > 0 ? "${azurerm_dashboard_grafana.this.endpoint}/d/platform-changes/platform-changes" : null
     resource_inventory  = length(grafana_dashboard.resource_inventory_policy) > 0 ? "${azurerm_dashboard_grafana.this.endpoint}/d/resource-inventory-policy/resource-inventory-policy" : null
+    security_posture    = length(grafana_dashboard.security_posture) > 0 ? "${azurerm_dashboard_grafana.this.endpoint}/d/security-posture/security-posture" : null
+    key_vault_access    = length(grafana_dashboard.key_vault_access) > 0 ? "${azurerm_dashboard_grafana.this.endpoint}/d/key-vault-access/key-vault-access" : null
   } : null
 }
 

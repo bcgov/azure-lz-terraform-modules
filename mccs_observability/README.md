@@ -197,6 +197,8 @@ The module provisions the following dashboards automatically when `enable_grafan
 | **VPN Gateway Health** | `vpn-gateway-health` | S2S VPN tunnel bandwidth, ingress/egress packet drops, BGP peers/routes, and tunnel/route diagnostic events (only provisioned when `vpn_gateways` is provided) |
 | **Platform Changes (Activity Log)** | `platform-changes` | Subscription control-plane change feed: administrative operations, RBAC changes, failed operations, and service health events from activity logs routed to the workspace (only provisioned when `enable_activity_log_diagnostics` is true) |
 | **Resource Inventory & Policy** | `resource-inventory-policy` | Resource counts by type/location, recently created resources, and policy compliance summary via Azure Resource Graph |
+| **Security Posture (Defender)** | `security-posture` | Defender for Cloud secure score and unhealthy security assessments via Azure Resource Graph (requires Defender for Cloud, free CSPM tier, on the subscription) |
+| **Key Vault Access** | `key-vault-access` | Key Vault audit events: secret access, denied attempts (403), distinct callers, hourly operation trends, and recent access feed |
 
 ### Dashboard Features
 
@@ -375,9 +377,11 @@ No modules.
 | [azurerm_virtual_network.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/virtual_network) | resource |
 | [azurerm_windows_virtual_machine.jumpbox](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/windows_virtual_machine) | resource |
 | [grafana_dashboard.expressroute_health](https://registry.terraform.io/providers/grafana/grafana/latest/docs/resources/dashboard) | resource |
+| [grafana_dashboard.key_vault_access](https://registry.terraform.io/providers/grafana/grafana/latest/docs/resources/dashboard) | resource |
 | [grafana_dashboard.mccs_overview](https://registry.terraform.io/providers/grafana/grafana/latest/docs/resources/dashboard) | resource |
 | [grafana_dashboard.platform_changes](https://registry.terraform.io/providers/grafana/grafana/latest/docs/resources/dashboard) | resource |
 | [grafana_dashboard.resource_inventory_policy](https://registry.terraform.io/providers/grafana/grafana/latest/docs/resources/dashboard) | resource |
+| [grafana_dashboard.security_posture](https://registry.terraform.io/providers/grafana/grafana/latest/docs/resources/dashboard) | resource |
 | [grafana_dashboard.vpn_gateway_health](https://registry.terraform.io/providers/grafana/grafana/latest/docs/resources/dashboard) | resource |
 | [grafana_dashboard.vwan_hub_health](https://registry.terraform.io/providers/grafana/grafana/latest/docs/resources/dashboard) | resource |
 | [grafana_data_source.azure_monitor](https://registry.terraform.io/providers/grafana/grafana/latest/docs/resources/data_source) | resource |

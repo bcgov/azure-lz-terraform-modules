@@ -278,3 +278,45 @@ resource "grafana_dashboard" "resource_inventory_policy" {
 
   depends_on = [grafana_folder.lz_operations]
 }
+
+#------------------------------------------------------------------------------
+# Landing Zone Operations: Dashboard - Security Posture (Defender)
+#
+# Defender for Cloud secure score and unhealthy security assessments
+# via Azure Resource Graph. Requires Defender for Cloud (free
+# foundational CSPM tier) to be enabled on the subscription.
+#------------------------------------------------------------------------------
+
+resource "grafana_dashboard" "security_posture" {
+  count = local.can_provision_dashboards ? 1 : 0
+
+  folder    = grafana_folder.lz_operations[0].id
+  overwrite = true
+
+  config_json = templatefile("${path.module}/dashboards/security_posture.json.tftpl", {
+    subscription_id = local.subscription_id_connectivity
+  })
+
+  depends_on = [grafana_folder.lz_operations]
+}
+
+#------------------------------------------------------------------------------
+# Landing Zone Operations: Dashboard - Key Vault Access
+#
+# Key Vault audit events (secret access, denied attempts, callers) from
+# the AuditEvent diagnostic data already routed to the workspace.
+#------------------------------------------------------------------------------
+
+resource "grafana_dashboard" "key_vault_access" {
+  count = local.can_provision_dashboards ? 1 : 0
+
+  folder    = grafana_folder.lz_operations[0].id
+  overwrite = true
+
+  config_json = templatefile("${path.module}/dashboards/key_vault_access.json.tftpl", {
+    subscription_id   = local.subscription_id_connectivity
+    log_analytics_uid = grafana_data_source.log_analytics[0].uid
+  })
+
+  depends_on = [grafana_folder.lz_operations]
+}
