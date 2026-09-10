@@ -273,21 +273,24 @@ resource "azurerm_monitor_metric_alert" "bandwidth_critical" {
 # Alert Rules for ExpressRoute Gateways
 #------------------------------------------------------------------------------
 
-# Gateway Health Alert (Critical - Sev0)
+# Gateway BGP Peer Health Alert (Critical - Sev0)
+# Note: BgpPeerStatus reports 1 (connected) / 0 (not connected) per BGP peer.
+# There is no 'ExpressRouteGatewayHealthState' metric on virtual network
+# gateways, so BGP peer status is the correct gateway health signal.
 resource "azurerm_monitor_metric_alert" "gateway_health" {
   for_each = var.enable_alerting ? var.expressroute_gateways : {}
 
-  name                = "MCCS Gateway Unhealthy - ${each.key}"
+  name                = "MCCS Gateway BGP Down - ${each.key}"
   resource_group_name = azurerm_resource_group.this.name
   scopes              = [data.azurerm_virtual_network_gateway.gateways[each.key].id]
-  description         = "ExpressRoute gateway ${each.key} is unhealthy."
+  description         = "BGP peer status dropped below ${var.bgp_availability_threshold}% on ${each.key} ExpressRoute gateway."
   severity            = 0 # Sev0 - Critical
   frequency           = var.alert_evaluation_frequency
   window_size         = var.alert_window_size
 
   criteria {
     metric_namespace = "Microsoft.Network/virtualNetworkGateways"
-    metric_name      = "ExpressRouteGatewayHealthState"
+    metric_name      = "BgpPeerStatus"
     aggregation      = "Average"
     operator         = "LessThan"
     threshold        = 1

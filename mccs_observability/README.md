@@ -252,7 +252,7 @@ To customize dashboards:
 | ARP Availability Down | < 100% for 5 min | Sev0 (Critical) | Teams + Jira |
 | Bandwidth High | > 80% for 15 min | Sev2 (Warning) | Teams |
 | Bandwidth Critical | > 95% for 5 min | Sev1 (Error) | Teams |
-| Gateway Unhealthy | Unhealthy state | Sev0 (Critical) | Teams + Jira |
+| Gateway Unhealthy | BGP peer status < 1 | Sev0 (Critical) | Teams + Jira |
 
 ## Security
 
