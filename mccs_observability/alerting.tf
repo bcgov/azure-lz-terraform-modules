@@ -283,7 +283,7 @@ resource "azurerm_monitor_metric_alert" "gateway_health" {
   name                = "MCCS Gateway BGP Down - ${each.key}"
   resource_group_name = azurerm_resource_group.this.name
   scopes              = [data.azurerm_virtual_network_gateway.gateways[each.key].id]
-  description         = "BGP peer status dropped below ${var.bgp_availability_threshold}% on ${each.key} ExpressRoute gateway."
+  description         = "One or more BGP peers are down on the ${each.key} ExpressRoute gateway (BgpPeerStatus below 1)."
   severity            = 0 # Sev0 - Critical
   frequency           = var.alert_evaluation_frequency
   window_size         = var.alert_window_size

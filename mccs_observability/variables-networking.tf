@@ -93,7 +93,7 @@ variable "create_private_dns_zone_groups" {
 
 variable "allowed_ip_addresses" {
   type        = list(string)
-  description = "List of IP addresses or CIDR ranges allowed to access Key Vault through its public endpoint. Used for Terraform runners or admin access."
+  description = "List of IP addresses or CIDR ranges allowed to reach the Key Vault public endpoint and the jump box NSG. Used for Terraform runners or admin access."
   default     = []
 
   validation {

@@ -25,7 +25,9 @@
       "icon": "external link",
       "includeVars": true,
       "keepTime": true,
-      "tags": ["mccs"],
+      "tags": [
+        "mccs"
+      ],
       "targetBlank": true,
       "title": "MCCS Dashboards",
       "tooltip": "",
@@ -114,7 +116,9 @@
         "justifyMode": "auto",
         "orientation": "auto",
         "reduceOptions": {
-          "calcs": ["lastNotNull"],
+          "calcs": [
+            "lastNotNull"
+          ],
           "fields": "",
           "values": false
         },
@@ -216,7 +220,9 @@
         "justifyMode": "auto",
         "orientation": "auto",
         "reduceOptions": {
-          "calcs": ["lastNotNull"],
+          "calcs": [
+            "lastNotNull"
+          ],
           "fields": "",
           "values": false
         },
@@ -301,7 +307,9 @@
         "justifyMode": "auto",
         "orientation": "auto",
         "reduceOptions": {
-          "calcs": ["lastNotNull"],
+          "calcs": [
+            "lastNotNull"
+          ],
           "fields": "",
           "values": false
         },
@@ -386,7 +394,9 @@
         "justifyMode": "auto",
         "orientation": "auto",
         "reduceOptions": {
-          "calcs": ["lastNotNull"],
+          "calcs": [
+            "lastNotNull"
+          ],
           "fields": "",
           "values": false
         },
@@ -506,7 +516,11 @@
       "id": 7,
       "options": {
         "legend": {
-          "calcs": ["lastNotNull", "min", "mean"],
+          "calcs": [
+            "lastNotNull",
+            "min",
+            "mean"
+          ],
           "displayMode": "table",
           "placement": "bottom",
           "showLegend": true
@@ -623,7 +637,11 @@
       "id": 8,
       "options": {
         "legend": {
-          "calcs": ["lastNotNull", "min", "mean"],
+          "calcs": [
+            "lastNotNull",
+            "min",
+            "mean"
+          ],
           "displayMode": "table",
           "placement": "bottom",
           "showLegend": true
@@ -755,7 +773,11 @@
       "id": 10,
       "options": {
         "legend": {
-          "calcs": ["mean", "max", "lastNotNull"],
+          "calcs": [
+            "mean",
+            "max",
+            "lastNotNull"
+          ],
           "displayMode": "table",
           "placement": "bottom",
           "showLegend": true
@@ -868,7 +890,11 @@
       "id": 11,
       "options": {
         "legend": {
-          "calcs": ["mean", "max", "lastNotNull"],
+          "calcs": [
+            "mean",
+            "max",
+            "lastNotNull"
+          ],
           "displayMode": "table",
           "placement": "bottom",
           "showLegend": true
@@ -994,7 +1020,10 @@
       "id": 13,
       "options": {
         "legend": {
-          "calcs": ["sum", "max"],
+          "calcs": [
+            "sum",
+            "max"
+          ],
           "displayMode": "table",
           "placement": "bottom",
           "showLegend": true
@@ -1107,7 +1136,10 @@
       "id": 14,
       "options": {
         "legend": {
-          "calcs": ["sum", "max"],
+          "calcs": [
+            "sum",
+            "max"
+          ],
           "displayMode": "table",
           "placement": "bottom",
           "showLegend": true
@@ -1235,7 +1267,10 @@
       "id": 16,
       "options": {
         "legend": {
-          "calcs": ["mean", "max"],
+          "calcs": [
+            "mean",
+            "max"
+          ],
           "displayMode": "table",
           "placement": "bottom",
           "showLegend": true
@@ -1340,7 +1375,10 @@
       "id": 17,
       "options": {
         "legend": {
-          "calcs": ["lastNotNull", "max"],
+          "calcs": [
+            "lastNotNull",
+            "max"
+          ],
           "displayMode": "table",
           "placement": "bottom",
           "showLegend": true
@@ -1380,416 +1418,406 @@
       "type": "timeseries"
     },
     {
-  "collapsed": false,
-  "gridPos": {
-    "h": 1,
-    "w": 24,
-    "x": 0,
-    "y": 42
-  },
-  "id": 20,
-  "panels": [],
-  "title": "Gateway Traffic & Route Diagnostics",
-  "type": "row"
-},
-    {
-  "datasource": {
-    "type": "grafana-azure-monitor-datasource",
-    "uid": "$${datasource}"
-  },
-  "description": "Total bits per second received on the ExpressRoute gateway instances",
-  "fieldConfig": {
-    "defaults": {
-      "defaults": {
-        "color": {
-          "mode": "palette-classic"
-        },
-        "custom": {
-          "axisBorderShow": false,
-          "axisCenteredZero": false,
-          "axisColorMode": "text",
-          "axisLabel": "",
-          "axisPlacement": "auto",
-          "barAlignment": 0,
-          "drawStyle": "line",
-          "fillOpacity": 10,
-          "gradientMode": "none",
-          "hideFrom": {
-            "legend": false,
-            "tooltip": false,
-            "viz": false
-          },
-          "insertNulls": false,
-          "lineInterpolation": "linear",
-          "lineWidth": 2,
-          "pointSize": 5,
-          "scaleDistribution": {
-            "type": "linear"
-          },
-          "showPoints": "never",
-          "spanNulls": false,
-          "stacking": {
-            "group": "A",
-            "mode": "none"
-          },
-          "thresholdsStyle": {
-            "mode": "off"
-          }
-        },
-        "mappings": [],
-        "thresholds": {
-          "mode": "absolute",
-          "steps": [
-            {
-              "color": "green",
-              "value": null
-            }
-          ]
-        },
-        "unit": "bps"
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 42
       },
-      "overrides": []
+      "id": 20,
+      "panels": [],
+      "title": "Gateway Traffic & Route Diagnostics",
+      "type": "row"
     },
-    "overrides": []
-  },
-  "gridPos": {
-    "h": 8,
-    "w": 12,
-    "x": 0,
-    "y": 43
-  },
-  "id": 21,
-  "options": {
-    "legend": {
-      "calcs": [
-        "mean",
-        "max"
-      ],
-      "displayMode": "table",
-      "placement": "bottom",
-      "showLegend": true
-    },
-    "tooltip": {
-      "mode": "multi",
-      "sort": "desc"
-    }
-  },
-  "pluginVersion": "11.0.0",
-  "targets": [
     {
-      "azureMonitor": {
-        "aggregation": "Average",
-        "dimensionFilters": [],
-        "metricName": "ExpressRouteGatewayBitsPerSecond",
-        "metricNamespace": "microsoft.network/virtualnetworkgateways",
-        "resourceGroup": "$${resource_group}",
-        "resources": [
-          {
-            "resourceGroup": "$${resource_group}",
-            "resourceName": "$${gateway}"
-          }
-        ],
-        "timeGrain": "PT5M"
-      },
       "datasource": {
         "type": "grafana-azure-monitor-datasource",
         "uid": "$${datasource}"
       },
-      "queryType": "Azure Monitor",
-      "refId": "A",
-      "subscription": "$${subscription}"
-    }
-  ],
-  "title": "Gateway Throughput",
-  "type": "timeseries"
-},
-    {
-  "datasource": {
-    "type": "grafana-azure-monitor-datasource",
-    "uid": "$${datasource}"
-  },
-  "description": "Routes the gateway learns from peers; a sustained drop to zero means the remote side stopped advertising routes",
-  "fieldConfig": {
-    "defaults": {
-      "defaults": {
-        "color": {
-          "mode": "palette-classic"
-        },
-        "custom": {
-          "axisBorderShow": false,
-          "axisCenteredZero": false,
-          "axisColorMode": "text",
-          "axisLabel": "",
-          "axisPlacement": "auto",
-          "barAlignment": 0,
-          "drawStyle": "line",
-          "fillOpacity": 10,
-          "gradientMode": "none",
-          "hideFrom": {
-            "legend": false,
-            "tooltip": false,
-            "viz": false
+      "description": "Total bits per second received on the ExpressRoute gateway instances",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
           },
-          "insertNulls": false,
-          "lineInterpolation": "linear",
-          "lineWidth": 2,
-          "pointSize": 5,
-          "scaleDistribution": {
-            "type": "linear"
-          },
-          "showPoints": "never",
-          "spanNulls": false,
-          "stacking": {
-            "group": "A",
-            "mode": "none"
-          },
-          "thresholdsStyle": {
-            "mode": "off"
-          }
-        },
-        "mappings": [],
-        "thresholds": {
-          "mode": "absolute",
-          "steps": [
-            {
-              "color": "green",
-              "value": null
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 10,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 2,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
             }
-          ]
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "bps"
         },
-        "unit": "short"
+        "overrides": []
       },
-      "overrides": []
-    },
-    "overrides": []
-  },
-  "gridPos": {
-    "h": 8,
-    "w": 12,
-    "x": 12,
-    "y": 43
-  },
-  "id": 22,
-  "options": {
-    "legend": {
-      "calcs": [
-        "mean",
-        "max"
-      ],
-      "displayMode": "table",
-      "placement": "bottom",
-      "showLegend": true
-    },
-    "tooltip": {
-      "mode": "multi",
-      "sort": "desc"
-    }
-  },
-  "pluginVersion": "11.0.0",
-  "targets": [
-    {
-      "azureMonitor": {
-        "aggregation": "Maximum",
-        "dimensionFilters": [],
-        "metricName": "ExpressRouteGatewayCountOfRoutesLearnedFromPeer",
-        "metricNamespace": "microsoft.network/virtualnetworkgateways",
-        "resourceGroup": "$${resource_group}",
-        "resources": [
-          {
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 43
+      },
+      "id": 21,
+      "options": {
+        "legend": {
+          "calcs": [
+            "mean",
+            "max"
+          ],
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      },
+      "pluginVersion": "11.0.0",
+      "targets": [
+        {
+          "azureMonitor": {
+            "aggregation": "Average",
+            "dimensionFilters": [],
+            "metricName": "ExpressRouteGatewayBitsPerSecond",
+            "metricNamespace": "microsoft.network/virtualnetworkgateways",
             "resourceGroup": "$${resource_group}",
-            "resourceName": "$${gateway}"
-          }
-        ],
-        "timeGrain": "PT5M"
-      },
+            "resources": [
+              {
+                "resourceGroup": "$${resource_group}",
+                "resourceName": "$${gateway}"
+              }
+            ],
+            "timeGrain": "PT5M"
+          },
+          "datasource": {
+            "type": "grafana-azure-monitor-datasource",
+            "uid": "$${datasource}"
+          },
+          "queryType": "Azure Monitor",
+          "refId": "A",
+          "subscription": "$${subscription}"
+        }
+      ],
+      "title": "Gateway Throughput",
+      "type": "timeseries"
+    },
+    {
       "datasource": {
         "type": "grafana-azure-monitor-datasource",
         "uid": "$${datasource}"
       },
-      "queryType": "Azure Monitor",
-      "refId": "A",
-      "subscription": "$${subscription}"
-    }
-  ],
-  "title": "Routes Learned from Peer",
-  "type": "timeseries"
-},
-    {
-  "datasource": {
-    "type": "grafana-azure-monitor-datasource",
-    "uid": "$${datasource}"
-  },
-  "description": "Frequency of route changes from PeeringRouteLog - sustained churn indicates instability",
-  "fieldConfig": {
-    "defaults": {
-      "defaults": {
-        "color": {
-          "mode": "palette-classic"
-        },
-        "custom": {
-          "axisBorderShow": false,
-          "axisCenteredZero": false,
-          "axisColorMode": "text",
-          "axisLabel": "",
-          "axisPlacement": "auto",
-          "barAlignment": 0,
-          "drawStyle": "line",
-          "fillOpacity": 10,
-          "gradientMode": "none",
-          "hideFrom": {
-            "legend": false,
-            "tooltip": false,
-            "viz": false
+      "description": "Routes the gateway learns from peers; a sustained drop to zero means the remote side stopped advertising routes",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
           },
-          "insertNulls": false,
-          "lineInterpolation": "linear",
-          "lineWidth": 2,
-          "pointSize": 5,
-          "scaleDistribution": {
-            "type": "linear"
-          },
-          "showPoints": "never",
-          "spanNulls": false,
-          "stacking": {
-            "group": "A",
-            "mode": "none"
-          },
-          "thresholdsStyle": {
-            "mode": "off"
-          }
-        },
-        "mappings": [],
-        "thresholds": {
-          "mode": "absolute",
-          "steps": [
-            {
-              "color": "green",
-              "value": null
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 10,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 2,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
             }
-          ]
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "short"
         },
-        "unit": "short"
+        "overrides": []
       },
-      "overrides": []
-    },
-    "overrides": []
-  },
-  "gridPos": {
-    "h": 8,
-    "w": 12,
-    "x": 0,
-    "y": 51
-  },
-  "id": 23,
-  "options": {
-    "legend": {
-      "calcs": [
-        "mean",
-        "max"
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 43
+      },
+      "id": 22,
+      "options": {
+        "legend": {
+          "calcs": [
+            "mean",
+            "max"
+          ],
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      },
+      "pluginVersion": "11.0.0",
+      "targets": [
+        {
+          "azureMonitor": {
+            "aggregation": "Maximum",
+            "dimensionFilters": [],
+            "metricName": "ExpressRouteGatewayCountOfRoutesLearnedFromPeer",
+            "metricNamespace": "microsoft.network/virtualnetworkgateways",
+            "resourceGroup": "$${resource_group}",
+            "resources": [
+              {
+                "resourceGroup": "$${resource_group}",
+                "resourceName": "$${gateway}"
+              }
+            ],
+            "timeGrain": "PT5M"
+          },
+          "datasource": {
+            "type": "grafana-azure-monitor-datasource",
+            "uid": "$${datasource}"
+          },
+          "queryType": "Azure Monitor",
+          "refId": "A",
+          "subscription": "$${subscription}"
+        }
       ],
-      "displayMode": "table",
-      "placement": "bottom",
-      "showLegend": true
+      "title": "Routes Learned from Peer",
+      "type": "timeseries"
     },
-    "tooltip": {
-      "mode": "multi",
-      "sort": "desc"
-    }
-  },
-  "pluginVersion": "11.0.0",
-  "targets": [
     {
-      "azureLogAnalytics": {
-        "query": "AzureDiagnostics\n| where Category == \"PeeringRouteLog\"\n| summarize RouteChanges = count() by bin(TimeGenerated, 15m)\n| order by TimeGenerated asc",
-        "resultFormat": "time_series"
-      },
       "datasource": {
         "type": "grafana-azure-monitor-datasource",
-        "uid": "$${log_analytics_uid}"
+        "uid": "${log_analytics_uid}"
       },
-      "queryType": "Azure Log Analytics",
-      "refId": "A"
-    }
-  ],
-  "title": "Peering Route Changes (Log Analytics)",
-  "type": "timeseries"
-},
-    {
-  "datasource": {
-    "type": "grafana-azure-monitor-datasource",
-    "uid": "$${log_analytics_uid}"
-  },
-  "description": "Latest gateway diagnostic events from GatewayDiagnosticLog in the Log Analytics workspace",
-  "fieldConfig": {
-    "defaults": {
-      "color": {
-        "mode": "thresholds"
-      },
-      "custom": {
-        "align": "auto",
-        "cellOptions": {
-          "type": "auto"
+      "description": "Frequency of route changes from PeeringRouteLog - sustained churn indicates instability",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 10,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 2,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "short"
         },
-        "filterable": true,
-        "inspect": true
+        "overrides": []
       },
-      "mappings": [],
-      "thresholds": {
-        "mode": "absolute",
-        "steps": [
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 51
+      },
+      "id": 23,
+      "options": {
+        "legend": {
+          "calcs": [
+            "mean",
+            "max"
+          ],
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      },
+      "pluginVersion": "11.0.0",
+      "targets": [
+        {
+          "azureLogAnalytics": {
+            "query": "AzureDiagnostics\n| where Category == \"PeeringRouteLog\"\n| summarize RouteChanges = count() by bin(TimeGenerated, 15m)\n| order by TimeGenerated asc",
+            "resultFormat": "time_series"
+          },
+          "datasource": {
+            "type": "grafana-azure-monitor-datasource",
+            "uid": "${log_analytics_uid}"
+          },
+          "queryType": "Azure Log Analytics",
+          "refId": "A"
+        }
+      ],
+      "title": "Peering Route Changes (Log Analytics)",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "grafana-azure-monitor-datasource",
+        "uid": "${log_analytics_uid}"
+      },
+      "description": "Latest gateway diagnostic events from GatewayDiagnosticLog in the Log Analytics workspace",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "align": "auto",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "filterable": true,
+            "inspect": true
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 51
+      },
+      "id": 24,
+      "options": {
+        "cellHeight": "sm",
+        "footer": {
+          "countRows": false,
+          "fields": "",
+          "reducer": [
+            "sum"
+          ],
+          "show": false
+        },
+        "showHeader": true,
+        "sortBy": [
           {
-            "color": "green",
-            "value": null
+            "desc": true,
+            "displayName": "TimeGenerated"
           }
         ]
-      }
-    },
-    "overrides": []
-  },
-  "gridPos": {
-    "h": 8,
-    "w": 12,
-    "x": 12,
-    "y": 51
-  },
-  "id": 24,
-  "options": {
-    "cellHeight": "sm",
-    "footer": {
-      "countRows": false,
-      "fields": "",
-      "reducer": [
-        "sum"
+      },
+      "pluginVersion": "11.0.0",
+      "targets": [
+        {
+          "azureLogAnalytics": {
+            "query": "AzureDiagnostics\n| where Category == \"GatewayDiagnosticLog\"\n| project TimeGenerated, ResourceGroup, OperationName, Level\n| order by TimeGenerated desc\n| take 50",
+            "resultFormat": "table"
+          },
+          "datasource": {
+            "type": "grafana-azure-monitor-datasource",
+            "uid": "${log_analytics_uid}"
+          },
+          "queryType": "Azure Log Analytics",
+          "refId": "A"
+        }
       ],
-      "show": false
+      "title": "Recent Gateway Diagnostic Events",
+      "type": "table"
     },
-    "showHeader": true,
-    "sortBy": [
-      {
-        "desc": true,
-        "displayName": "TimeGenerated"
-      }
-    ]
-  },
-  "pluginVersion": "11.0.0",
-  "targets": [
-    {
-      "azureLogAnalytics": {
-        "query": "AzureDiagnostics\n| where Category == \"GatewayDiagnosticLog\"\n| project TimeGenerated, ResourceGroup, OperationName, Level\n| order by TimeGenerated desc\n| take 50",
-        "resultFormat": "table"
-      },
-      "datasource": {
-        "type": "grafana-azure-monitor-datasource",
-        "uid": "$${log_analytics_uid}"
-      },
-      "queryType": "Azure Log Analytics",
-      "refId": "A"
-    }
-  ],
-  "title": "Recent Gateway Diagnostic Events",
-  "type": "table"
-},
-
     {
       "collapsed": false,
       "gridPos": {
@@ -1831,7 +1859,12 @@
     }
   ],
   "schemaVersion": 39,
-  "tags": ["mccs", "expressroute", "health", "detailed"],
+  "tags": [
+    "mccs",
+    "expressroute",
+    "health",
+    "detailed"
+  ],
   "templating": {
     "list": [
       {
@@ -1907,8 +1940,8 @@
       {
         "current": {
           "selected": true,
-          "text": "%{ if length(circuit_names) > 0 }${circuit_names[0]}%{ else }%{ endif }",
-          "value": "%{ if length(circuit_names) > 0 }${circuit_names[0]}%{ else }%{ endif }"
+          "text": "%{ if length(circuit_names) > 0 }$${circuit_names[0]}%{ else }%{ endif }",
+          "value": "%{ if length(circuit_names) > 0 }$${circuit_names[0]}%{ else }%{ endif }"
         },
         "datasource": {
           "type": "grafana-azure-monitor-datasource",
@@ -1967,7 +2000,18 @@
     "to": "now"
   },
   "timepicker": {
-    "refresh_intervals": ["5s", "10s", "30s", "1m", "5m", "15m", "30m", "1h", "2h", "1d"]
+    "refresh_intervals": [
+      "5s",
+      "10s",
+      "30s",
+      "1m",
+      "5m",
+      "15m",
+      "30m",
+      "1h",
+      "2h",
+      "1d"
+    ]
   },
   "timezone": "browser",
   "title": "ExpressRoute Health",

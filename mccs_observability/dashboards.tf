@@ -231,7 +231,6 @@ resource "grafana_dashboard" "vpn_gateway_health" {
   config_json = templatefile("${path.module}/dashboards/vpn_gateway_health.json.tftpl", {
     subscription_id        = local.subscription_id_connectivity
     default_resource_group = local.default_vpn_gateway_resource_group
-    gateway_names          = local.vpn_gateway_names
     log_analytics_uid      = grafana_data_source.log_analytics[0].uid
   })
 
