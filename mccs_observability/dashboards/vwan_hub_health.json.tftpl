@@ -1,0 +1,1092 @@
+{
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": {
+          "type": "grafana",
+          "uid": "-- Grafana --"
+        },
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "type": "dashboard"
+      }
+    ]
+  },
+  "description": "Virtual WAN hub router capacity, spoke utilization, data processed, and hub BGP health",
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 1,
+  "links": [],
+  "panels": [
+    {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 0
+      },
+      "id": 1,
+      "panels": [],
+      "title": "Hub Capacity",
+      "type": "row"
+    },
+    {
+      "datasource": {
+        "type": "grafana-azure-monitor-datasource",
+        "uid": "$${datasource}"
+      },
+      "description": "Hub router capacity units - determines supported spoke VM count and bandwidth",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 8,
+        "x": 0,
+        "y": 1
+      },
+      "id": 2,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "pluginVersion": "11.0.0",
+      "targets": [
+        {
+          "azureMonitor": {
+            "aggregation": "Maximum",
+            "dimensionFilters": [],
+            "metricName": "RoutingInfrastructureUnits",
+            "metricNamespace": "microsoft.network/virtualhubs",
+            "resourceGroup": "$${resource_group}",
+            "resources": [
+              {
+                "resourceGroup": "$${resource_group}",
+                "resourceName": "${hub_name}"
+              }
+            ],
+            "timeGrain": "PT5M"
+          },
+          "datasource": {
+            "type": "grafana-azure-monitor-datasource",
+            "uid": "$${datasource}"
+          },
+          "queryType": "Azure Monitor",
+          "refId": "A",
+          "subscription": "$${subscription}"
+        }
+      ],
+      "title": "Routing Infrastructure Units",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "grafana-azure-monitor-datasource",
+        "uid": "$${datasource}"
+      },
+      "description": "Deployed spoke VMs as a percentage of hub router capacity",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "yellow",
+                "value": 70
+              },
+              {
+                "color": "red",
+                "value": 90
+              }
+            ]
+          },
+          "unit": "percent"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 8,
+        "x": 8,
+        "y": 1
+      },
+      "id": 3,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "pluginVersion": "11.0.0",
+      "targets": [
+        {
+          "azureMonitor": {
+            "aggregation": "Maximum",
+            "dimensionFilters": [],
+            "metricName": "SpokeVMUtilization",
+            "metricNamespace": "microsoft.network/virtualhubs",
+            "resourceGroup": "$${resource_group}",
+            "resources": [
+              {
+                "resourceGroup": "$${resource_group}",
+                "resourceName": "${hub_name}"
+              }
+            ],
+            "timeGrain": "PT5M"
+          },
+          "datasource": {
+            "type": "grafana-azure-monitor-datasource",
+            "uid": "$${datasource}"
+          },
+          "queryType": "Azure Monitor",
+          "refId": "A",
+          "subscription": "$${subscription}"
+        }
+      ],
+      "title": "Spoke VM Utilization",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "grafana-azure-monitor-datasource",
+        "uid": "$${datasource}"
+      },
+      "description": "Total data processed by the virtual hub router over the selected period",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "bytes"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 8,
+        "x": 16,
+        "y": 1
+      },
+      "id": 4,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "pluginVersion": "11.0.0",
+      "targets": [
+        {
+          "azureMonitor": {
+            "aggregation": "Total",
+            "dimensionFilters": [],
+            "metricName": "VirtualHubDataProcessed",
+            "metricNamespace": "microsoft.network/virtualhubs",
+            "resourceGroup": "$${resource_group}",
+            "resources": [
+              {
+                "resourceGroup": "$${resource_group}",
+                "resourceName": "${hub_name}"
+              }
+            ],
+            "timeGrain": "PT5M"
+          },
+          "datasource": {
+            "type": "grafana-azure-monitor-datasource",
+            "uid": "$${datasource}"
+          },
+          "queryType": "Azure Monitor",
+          "refId": "A",
+          "subscription": "$${subscription}"
+        }
+      ],
+      "title": "Data Processed (Total)",
+      "type": "stat"
+    },
+    {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 5
+      },
+      "id": 5,
+      "panels": [],
+      "title": "Capacity Trends",
+      "type": "row"
+    },
+    {
+      "datasource": {
+        "type": "grafana-azure-monitor-datasource",
+        "uid": "$${datasource}"
+      },
+      "description": "Hub routing infrastructure units over time",
+      "fieldConfig": {
+        "defaults": {
+          "defaults": {
+            "color": {
+              "mode": "palette-classic"
+            },
+            "custom": {
+              "axisBorderShow": false,
+              "axisCenteredZero": false,
+              "axisColorMode": "text",
+              "axisLabel": "",
+              "axisPlacement": "auto",
+              "barAlignment": 0,
+              "drawStyle": "line",
+              "fillOpacity": 10,
+              "gradientMode": "none",
+              "hideFrom": {
+                "legend": false,
+                "tooltip": false,
+                "viz": false
+              },
+              "insertNulls": false,
+              "lineInterpolation": "linear",
+              "lineWidth": 2,
+              "pointSize": 5,
+              "scaleDistribution": {
+                "type": "linear"
+              },
+              "showPoints": "never",
+              "spanNulls": false,
+              "stacking": {
+                "group": "A",
+                "mode": "none"
+              },
+              "thresholdsStyle": {
+                "mode": "off"
+              }
+            },
+            "mappings": [],
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green",
+                  "value": null
+                }
+              ]
+            },
+            "unit": "short"
+          },
+          "overrides": []
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 6
+      },
+      "id": 6,
+      "options": {
+        "legend": {
+          "calcs": [
+            "mean",
+            "max"
+          ],
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      },
+      "pluginVersion": "11.0.0",
+      "targets": [
+        {
+          "azureMonitor": {
+            "aggregation": "Maximum",
+            "dimensionFilters": [],
+            "metricName": "RoutingInfrastructureUnits",
+            "metricNamespace": "microsoft.network/virtualhubs",
+            "resourceGroup": "$${resource_group}",
+            "resources": [
+              {
+                "resourceGroup": "$${resource_group}",
+                "resourceName": "${hub_name}"
+              }
+            ],
+            "timeGrain": "PT5M"
+          },
+          "datasource": {
+            "type": "grafana-azure-monitor-datasource",
+            "uid": "$${datasource}"
+          },
+          "queryType": "Azure Monitor",
+          "refId": "A",
+          "subscription": "$${subscription}"
+        }
+      ],
+      "title": "Routing Infrastructure Units",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "grafana-azure-monitor-datasource",
+        "uid": "$${datasource}"
+      },
+      "description": "Percentage of spoke VM capacity supported by the hub router",
+      "fieldConfig": {
+        "defaults": {
+          "defaults": {
+            "color": {
+              "mode": "palette-classic"
+            },
+            "custom": {
+              "axisBorderShow": false,
+              "axisCenteredZero": false,
+              "axisColorMode": "text",
+              "axisLabel": "",
+              "axisPlacement": "auto",
+              "barAlignment": 0,
+              "drawStyle": "line",
+              "fillOpacity": 10,
+              "gradientMode": "none",
+              "hideFrom": {
+                "legend": false,
+                "tooltip": false,
+                "viz": false
+              },
+              "insertNulls": false,
+              "lineInterpolation": "linear",
+              "lineWidth": 2,
+              "pointSize": 5,
+              "scaleDistribution": {
+                "type": "linear"
+              },
+              "showPoints": "never",
+              "spanNulls": false,
+              "stacking": {
+                "group": "A",
+                "mode": "none"
+              },
+              "thresholdsStyle": {
+                "mode": "off"
+              }
+            },
+            "mappings": [],
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green",
+                  "value": null
+                }
+              ]
+            },
+            "unit": "percent"
+          },
+          "overrides": []
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 6
+      },
+      "id": 7,
+      "options": {
+        "legend": {
+          "calcs": [
+            "mean",
+            "max"
+          ],
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      },
+      "pluginVersion": "11.0.0",
+      "targets": [
+        {
+          "azureMonitor": {
+            "aggregation": "Maximum",
+            "dimensionFilters": [],
+            "metricName": "SpokeVMUtilization",
+            "metricNamespace": "microsoft.network/virtualhubs",
+            "resourceGroup": "$${resource_group}",
+            "resources": [
+              {
+                "resourceGroup": "$${resource_group}",
+                "resourceName": "${hub_name}"
+              }
+            ],
+            "timeGrain": "PT5M"
+          },
+          "datasource": {
+            "type": "grafana-azure-monitor-datasource",
+            "uid": "$${datasource}"
+          },
+          "queryType": "Azure Monitor",
+          "refId": "A",
+          "subscription": "$${subscription}"
+        }
+      ],
+      "title": "Spoke VM Utilization",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "grafana-azure-monitor-datasource",
+        "uid": "$${datasource}"
+      },
+      "description": "Traffic traversing the virtual hub router (VNet-to-VNet and branch-to-VNet)",
+      "fieldConfig": {
+        "defaults": {
+          "defaults": {
+            "color": {
+              "mode": "palette-classic"
+            },
+            "custom": {
+              "axisBorderShow": false,
+              "axisCenteredZero": false,
+              "axisColorMode": "text",
+              "axisLabel": "",
+              "axisPlacement": "auto",
+              "barAlignment": 0,
+              "drawStyle": "line",
+              "fillOpacity": 10,
+              "gradientMode": "none",
+              "hideFrom": {
+                "legend": false,
+                "tooltip": false,
+                "viz": false
+              },
+              "insertNulls": false,
+              "lineInterpolation": "linear",
+              "lineWidth": 2,
+              "pointSize": 5,
+              "scaleDistribution": {
+                "type": "linear"
+              },
+              "showPoints": "never",
+              "spanNulls": false,
+              "stacking": {
+                "group": "A",
+                "mode": "none"
+              },
+              "thresholdsStyle": {
+                "mode": "off"
+              }
+            },
+            "mappings": [],
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green",
+                  "value": null
+                }
+              ]
+            },
+            "unit": "bytes"
+          },
+          "overrides": []
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 12,
+        "x": 0,
+        "y": 14
+      },
+      "id": 8,
+      "options": {
+        "legend": {
+          "calcs": [
+            "mean",
+            "max"
+          ],
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      },
+      "pluginVersion": "11.0.0",
+      "targets": [
+        {
+          "azureMonitor": {
+            "aggregation": "Total",
+            "dimensionFilters": [],
+            "metricName": "VirtualHubDataProcessed",
+            "metricNamespace": "microsoft.network/virtualhubs",
+            "resourceGroup": "$${resource_group}",
+            "resources": [
+              {
+                "resourceGroup": "$${resource_group}",
+                "resourceName": "${hub_name}"
+              }
+            ],
+            "timeGrain": "PT5M"
+          },
+          "datasource": {
+            "type": "grafana-azure-monitor-datasource",
+            "uid": "$${datasource}"
+          },
+          "queryType": "Azure Monitor",
+          "refId": "A",
+          "subscription": "$${subscription}"
+        }
+      ],
+      "title": "Data Processed by Hub Router",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "datasource",
+        "uid": "grafana"
+      },
+      "description": "",
+      "gridPos": {
+        "h": 6,
+        "w": 24,
+        "x": 0,
+        "y": 21
+      },
+      "id": 9,
+      "options": {
+        "code": {
+          "language": "plaintext",
+          "showLineNumbers": false,
+          "showMiniMap": false
+        },
+        "content": "**Routing Infrastructure Units (RIU)** determine hub router capacity:\n\n| RIU | Throughput | Supported Spoke VMs |\n|-----|------------|---------------------|\n| 1 | 1 Gbps | 500 |\n| 2 | 2 Gbps | 2,000 |\n| 3 | 3 Gbps | 5,000 |\n| 4-5 | 4-5 Gbps | 10,000-10,001+ |\n\n- **Spoke VM Utilization** near 100% means you must increase RIU before adding spokes.\n- **Data Processed** only covers flows traversing the hub router; with routing intent, most traffic is handled by the firewall instead.",
+        "mode": "markdown"
+      },
+      "pluginVersion": "11.0.0",
+      "title": "About Routing Infrastructure Units",
+      "type": "text"
+    },
+    {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 27
+      },
+      "id": 10,
+      "panels": [],
+      "title": "Hub BGP & Routes",
+      "type": "row"
+    },
+    {
+      "datasource": {
+        "type": "grafana-azure-monitor-datasource",
+        "uid": "$${datasource}"
+      },
+      "description": "1 = connected, 0 = not connected; split by peer IP in Azure Monitor if needed",
+      "fieldConfig": {
+        "defaults": {
+          "defaults": {
+            "color": {
+              "mode": "palette-classic"
+            },
+            "custom": {
+              "axisBorderShow": false,
+              "axisCenteredZero": false,
+              "axisColorMode": "text",
+              "axisLabel": "",
+              "axisPlacement": "auto",
+              "barAlignment": 0,
+              "drawStyle": "line",
+              "fillOpacity": 10,
+              "gradientMode": "none",
+              "hideFrom": {
+                "legend": false,
+                "tooltip": false,
+                "viz": false
+              },
+              "insertNulls": false,
+              "lineInterpolation": "linear",
+              "lineWidth": 2,
+              "pointSize": 5,
+              "scaleDistribution": {
+                "type": "linear"
+              },
+              "showPoints": "never",
+              "spanNulls": false,
+              "stacking": {
+                "group": "A",
+                "mode": "none"
+              },
+              "thresholdsStyle": {
+                "mode": "off"
+              }
+            },
+            "mappings": [],
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green",
+                  "value": null
+                }
+              ]
+            },
+            "unit": "short"
+          },
+          "overrides": []
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 28
+      },
+      "id": 11,
+      "options": {
+        "legend": {
+          "calcs": [
+            "mean",
+            "max"
+          ],
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      },
+      "pluginVersion": "11.0.0",
+      "targets": [
+        {
+          "azureMonitor": {
+            "aggregation": "Maximum",
+            "dimensionFilters": [],
+            "metricName": "BgpPeerStatus",
+            "metricNamespace": "microsoft.network/virtualhubs",
+            "resourceGroup": "$${resource_group}",
+            "resources": [
+              {
+                "resourceGroup": "$${resource_group}",
+                "resourceName": "${hub_name}"
+              }
+            ],
+            "timeGrain": "PT5M"
+          },
+          "datasource": {
+            "type": "grafana-azure-monitor-datasource",
+            "uid": "$${datasource}"
+          },
+          "queryType": "Azure Monitor",
+          "refId": "A",
+          "subscription": "$${subscription}"
+        }
+      ],
+      "title": "BGP Peer Status",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "grafana-azure-monitor-datasource",
+        "uid": "$${datasource}"
+      },
+      "description": "Routes the hub router advertises to peers (ER/VPN/NVA)",
+      "fieldConfig": {
+        "defaults": {
+          "defaults": {
+            "color": {
+              "mode": "palette-classic"
+            },
+            "custom": {
+              "axisBorderShow": false,
+              "axisCenteredZero": false,
+              "axisColorMode": "text",
+              "axisLabel": "",
+              "axisPlacement": "auto",
+              "barAlignment": 0,
+              "drawStyle": "line",
+              "fillOpacity": 10,
+              "gradientMode": "none",
+              "hideFrom": {
+                "legend": false,
+                "tooltip": false,
+                "viz": false
+              },
+              "insertNulls": false,
+              "lineInterpolation": "linear",
+              "lineWidth": 2,
+              "pointSize": 5,
+              "scaleDistribution": {
+                "type": "linear"
+              },
+              "showPoints": "never",
+              "spanNulls": false,
+              "stacking": {
+                "group": "A",
+                "mode": "none"
+              },
+              "thresholdsStyle": {
+                "mode": "off"
+              }
+            },
+            "mappings": [],
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green",
+                  "value": null
+                }
+              ]
+            },
+            "unit": "short"
+          },
+          "overrides": []
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 28
+      },
+      "id": 12,
+      "options": {
+        "legend": {
+          "calcs": [
+            "mean",
+            "max"
+          ],
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      },
+      "pluginVersion": "11.0.0",
+      "targets": [
+        {
+          "azureMonitor": {
+            "aggregation": "Maximum",
+            "dimensionFilters": [],
+            "metricName": "CountOfRoutesAdvertisedToPeer",
+            "metricNamespace": "microsoft.network/virtualhubs",
+            "resourceGroup": "$${resource_group}",
+            "resources": [
+              {
+                "resourceGroup": "$${resource_group}",
+                "resourceName": "${hub_name}"
+              }
+            ],
+            "timeGrain": "PT5M"
+          },
+          "datasource": {
+            "type": "grafana-azure-monitor-datasource",
+            "uid": "$${datasource}"
+          },
+          "queryType": "Azure Monitor",
+          "refId": "A",
+          "subscription": "$${subscription}"
+        }
+      ],
+      "title": "Routes Advertised to Peer",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "grafana-azure-monitor-datasource",
+        "uid": "$${datasource}"
+      },
+      "description": "Routes the hub router learns from peers (ER/VPN/NVA)",
+      "fieldConfig": {
+        "defaults": {
+          "defaults": {
+            "color": {
+              "mode": "palette-classic"
+            },
+            "custom": {
+              "axisBorderShow": false,
+              "axisCenteredZero": false,
+              "axisColorMode": "text",
+              "axisLabel": "",
+              "axisPlacement": "auto",
+              "barAlignment": 0,
+              "drawStyle": "line",
+              "fillOpacity": 10,
+              "gradientMode": "none",
+              "hideFrom": {
+                "legend": false,
+                "tooltip": false,
+                "viz": false
+              },
+              "insertNulls": false,
+              "lineInterpolation": "linear",
+              "lineWidth": 2,
+              "pointSize": 5,
+              "scaleDistribution": {
+                "type": "linear"
+              },
+              "showPoints": "never",
+              "spanNulls": false,
+              "stacking": {
+                "group": "A",
+                "mode": "none"
+              },
+              "thresholdsStyle": {
+                "mode": "off"
+              }
+            },
+            "mappings": [],
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green",
+                  "value": null
+                }
+              ]
+            },
+            "unit": "short"
+          },
+          "overrides": []
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 12,
+        "x": 0,
+        "y": 36
+      },
+      "id": 13,
+      "options": {
+        "legend": {
+          "calcs": [
+            "mean",
+            "max"
+          ],
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      },
+      "pluginVersion": "11.0.0",
+      "targets": [
+        {
+          "azureMonitor": {
+            "aggregation": "Maximum",
+            "dimensionFilters": [],
+            "metricName": "CountOfRoutesLearnedFromPeer",
+            "metricNamespace": "microsoft.network/virtualhubs",
+            "resourceGroup": "$${resource_group}",
+            "resources": [
+              {
+                "resourceGroup": "$${resource_group}",
+                "resourceName": "${hub_name}"
+              }
+            ],
+            "timeGrain": "PT5M"
+          },
+          "datasource": {
+            "type": "grafana-azure-monitor-datasource",
+            "uid": "$${datasource}"
+          },
+          "queryType": "Azure Monitor",
+          "refId": "A",
+          "subscription": "$${subscription}"
+        }
+      ],
+      "title": "Routes Learned from Peer",
+      "type": "timeseries"
+    }
+  ],
+  "refresh": "1m",
+  "schemaVersion": 39,
+  "tags": [
+    "mccs",
+    "lz-operations"
+  ],
+  "templating": {
+    "list": [
+      {
+        "current": {},
+        "hide": 0,
+        "includeAll": false,
+        "label": "Data Source",
+        "multi": false,
+        "name": "datasource",
+        "options": [],
+        "query": "grafana-azure-monitor-datasource",
+        "queryValue": "",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "type": "datasource"
+      },
+      {
+        "current": {
+          "selected": true,
+          "text": "${subscription_id}",
+          "value": "${subscription_id}"
+        },
+        "datasource": {
+          "type": "grafana-azure-monitor-datasource",
+          "uid": "$${datasource}"
+        },
+        "definition": "",
+        "hide": 0,
+        "includeAll": false,
+        "label": "Subscription",
+        "multi": false,
+        "name": "subscription",
+        "options": [],
+        "query": {
+          "queryType": "Azure Subscriptions",
+          "refId": "A"
+        },
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "type": "query"
+      },
+      {
+        "current": {
+          "selected": true,
+          "text": "${default_resource_group}",
+          "value": "${default_resource_group}"
+        },
+        "datasource": {
+          "type": "grafana-azure-monitor-datasource",
+          "uid": "$${datasource}"
+        },
+        "definition": "",
+        "hide": 0,
+        "includeAll": false,
+        "label": "Resource Group",
+        "multi": false,
+        "name": "resource_group",
+        "options": [],
+        "query": {
+          "queryType": "Azure Resource Groups",
+          "refId": "A",
+          "subscription": "$${subscription}"
+        },
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "type": "query"
+      }
+    ]
+  },
+  "time": {
+    "from": "now-6h",
+    "to": "now"
+  },
+  "timepicker": {
+    "refresh_intervals": [
+      "5s",
+      "10s",
+      "30s",
+      "1m",
+      "5m",
+      "15m",
+      "30m",
+      "1h",
+      "2h",
+      "1d"
+    ]
+  },
+  "timezone": "browser",
+  "title": "Virtual WAN Hub Health",
+  "uid": "vwan-hub-health",
+  "version": 1,
+  "weekStart": ""
+}

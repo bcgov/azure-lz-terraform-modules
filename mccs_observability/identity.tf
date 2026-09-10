@@ -38,6 +38,22 @@ resource "azurerm_role_assignment" "grafana_gateway_reader" {
   principal_id         = azurerm_dashboard_grafana.this.identity[0].principal_id
 }
 
+# Grafana needs Reader on the Virtual WAN hub for hub metrics
+resource "azurerm_role_assignment" "grafana_virtual_hub_reader" {
+  scope                = var.virtual_hub_id
+  role_definition_name = "Reader"
+  principal_id         = azurerm_dashboard_grafana.this.identity[0].principal_id
+}
+
+# Grafana needs Reader on VPN gateways for metrics
+resource "azurerm_role_assignment" "grafana_vpn_gateway_reader" {
+  for_each = local.vpn_gateway_ids
+
+  scope                = each.value
+  role_definition_name = "Reader"
+  principal_id         = azurerm_dashboard_grafana.this.identity[0].principal_id
+}
+
 # Grafana needs access to Log Analytics
 resource "azurerm_role_assignment" "grafana_log_analytics_reader" {
   scope                = azurerm_log_analytics_workspace.this.id

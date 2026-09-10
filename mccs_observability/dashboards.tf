@@ -34,6 +34,22 @@ resource "grafana_folder" "mccs" {
 }
 
 #------------------------------------------------------------------------------
+# Grafana Folder for Landing Zone Operations Dashboards
+#
+# Broader landing-zone views for administrators (vWAN hub health, VPN
+# connectivity) alongside the MCCS multi-cloud connectivity folder.
+#------------------------------------------------------------------------------
+
+resource "grafana_folder" "lz_operations" {
+  count = local.can_provision_dashboards ? 1 : 0
+
+  title = "Landing Zone Operations"
+  uid   = "lz-operations"
+
+  depends_on = [azurerm_dashboard_grafana.this]
+}
+
+#------------------------------------------------------------------------------
 # Dashboard: MCCS Overview
 # Consolidated view of all ExpressRoute and Direct Connect circuits
 #------------------------------------------------------------------------------
@@ -174,4 +190,50 @@ resource "azurerm_key_vault_secret" "grafana_service_account_token" {
     azurerm_role_assignment.cloud_team_secrets_officer,
     azurerm_private_endpoint.keyvault
   ]
+}
+
+#------------------------------------------------------------------------------
+# Landing Zone Operations: Dashboard - Virtual WAN Hub Health
+#
+# Hub router capacity (Routing Infrastructure Units), spoke VM utilization,
+# data processed, and hub BGP/route health. Targets the vWAN hub the
+# observability VNet connects to (var.virtual_hub_id).
+#------------------------------------------------------------------------------
+
+resource "grafana_dashboard" "vwan_hub_health" {
+  count = local.can_provision_dashboards ? 1 : 0
+
+  folder    = grafana_folder.lz_operations[0].id
+  overwrite = true
+
+  config_json = templatefile("${path.module}/dashboards/vwan_hub_health.json.tftpl", {
+    subscription_id        = local.subscription_id_connectivity
+    default_resource_group = local.virtual_hub_resource_group
+    hub_name               = local.virtual_hub_name
+  })
+
+  depends_on = [grafana_folder.lz_operations]
+}
+
+#------------------------------------------------------------------------------
+# Landing Zone Operations: Dashboard - VPN Gateway Health
+#
+# S2S VPN tunnel bandwidth, packet drops, BGP routes, and diagnostic logs.
+# Only provisioned when vpn_gateways is provided.
+#------------------------------------------------------------------------------
+
+resource "grafana_dashboard" "vpn_gateway_health" {
+  count = local.can_provision_dashboards && length(var.vpn_gateways) > 0 ? 1 : 0
+
+  folder    = grafana_folder.lz_operations[0].id
+  overwrite = true
+
+  config_json = templatefile("${path.module}/dashboards/vpn_gateway_health.json.tftpl", {
+    subscription_id        = local.subscription_id_connectivity
+    default_resource_group = local.default_vpn_gateway_resource_group
+    gateway_names          = local.vpn_gateway_names
+    log_analytics_uid      = grafana_data_source.log_analytics[0].uid
+  })
+
+  depends_on = [grafana_folder.lz_operations]
 }

@@ -55,6 +55,40 @@ resource "azurerm_monitor_diagnostic_setting" "expressroute_gateways" {
 }
 
 #------------------------------------------------------------------------------
+# Diagnostic Settings for VPN Gateways (vWAN hub VPN gateways)
+#------------------------------------------------------------------------------
+
+resource "azurerm_monitor_diagnostic_setting" "vpn_gateways" {
+  for_each = var.vpn_gateways
+
+  name                       = "diag-mccs-${each.key}"
+  target_resource_id         = data.azurerm_vpn_gateway.vpn_gateways[each.key].id
+  log_analytics_workspace_id = azurerm_log_analytics_workspace.this.id
+
+  # VPN Gateway Diagnostic Logs
+  enabled_log {
+    category = "GatewayDiagnosticLog"
+  }
+
+  enabled_log {
+    category = "TunnelDiagnosticLog"
+  }
+
+  enabled_log {
+    category = "RouteDiagnosticLog"
+  }
+
+  enabled_log {
+    category = "IKEDiagnosticLog"
+  }
+
+  # Gateway Metrics
+  enabled_metric {
+    category = "AllMetrics"
+  }
+}
+
+#------------------------------------------------------------------------------
 # Diagnostic Settings for Key Vault
 #------------------------------------------------------------------------------
 

@@ -94,6 +94,14 @@ module "mccs_observability" {
   jira_user_email    = "automation@gov.bc.ca"
   jira_api_token     = var.jira_api_token
   jira_project_key   = "MCCS"
+
+  # Optional: VPN gateways (vWAN hub VPN gateways) for Landing Zone Operations dashboards
+  vpn_gateways = {
+    "vgw-cc-hub-01" = {
+      gateway_name        = "vgw-canadacentral-01"
+      resource_group_name = "rg-connectivity"
+    }
+  }
 }
 ```
 
@@ -174,10 +182,19 @@ module "mccs_observability" {
 
 The module provisions the following dashboards automatically when `enable_grafana_dashboards = true`:
 
+**Folder: MCCS Observability** (multi-cloud connectivity)
+
 | Dashboard | UID | Description |
 |-----------|-----|-------------|
 | **MCCS Overview** | `mccs-overview` | Consolidated view of all ExpressRoute circuits with BGP/ARP availability, bandwidth utilization, and active alerts |
 | **ExpressRoute Health** | `expressroute-health` | Detailed health metrics for individual circuits including packet drops, gateway CPU, and troubleshooting guide |
+
+**Folder: Landing Zone Operations** (broader platform views for landing zone administrators)
+
+| Dashboard | UID | Description |
+|-----------|-----|-------------|
+| **Virtual WAN Hub Health** | `vwan-hub-health` | Hub router capacity (Routing Infrastructure Units), spoke VM utilization, data processed, and hub BGP/route health — targets the vWAN hub in `virtual_hub_id` |
+| **VPN Gateway Health** | `vpn-gateway-health` | S2S VPN tunnel bandwidth, ingress/egress packet drops, BGP peers/routes, and tunnel/route diagnostic events (only provisioned when `vpn_gateways` is provided) |
 
 ### Dashboard Features
 
@@ -318,6 +335,7 @@ No modules.
 | [azurerm_monitor_diagnostic_setting.keyvault](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/monitor_diagnostic_setting) | resource |
 | [azurerm_monitor_diagnostic_setting.log_analytics](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/monitor_diagnostic_setting) | resource |
 | [azurerm_monitor_diagnostic_setting.logic_app](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/monitor_diagnostic_setting) | resource |
+| [azurerm_monitor_diagnostic_setting.vpn_gateways](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/monitor_diagnostic_setting) | resource |
 | [azurerm_monitor_metric_alert.arp_availability](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/monitor_metric_alert) | resource |
 | [azurerm_monitor_metric_alert.bandwidth_critical](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/monitor_metric_alert) | resource |
 | [azurerm_monitor_metric_alert.bandwidth_warning](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/monitor_metric_alert) | resource |
@@ -340,6 +358,8 @@ No modules.
 | [azurerm_role_assignment.grafana_gateway_reader](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/role_assignment) | resource |
 | [azurerm_role_assignment.grafana_log_analytics_reader](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/role_assignment) | resource |
 | [azurerm_role_assignment.grafana_monitoring_reader](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/role_assignment) | resource |
+| [azurerm_role_assignment.grafana_virtual_hub_reader](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/role_assignment) | resource |
+| [azurerm_role_assignment.grafana_vpn_gateway_reader](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/role_assignment) | resource |
 | [azurerm_role_assignment.logic_app_secrets_user](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/role_assignment) | resource |
 | [azurerm_role_assignment.noc_team_grafana_editor](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/role_assignment) | resource |
 | [azurerm_role_assignment.service_desk_grafana_viewer](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/role_assignment) | resource |
@@ -353,8 +373,11 @@ No modules.
 | [azurerm_windows_virtual_machine.jumpbox](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/windows_virtual_machine) | resource |
 | [grafana_dashboard.expressroute_health](https://registry.terraform.io/providers/grafana/grafana/latest/docs/resources/dashboard) | resource |
 | [grafana_dashboard.mccs_overview](https://registry.terraform.io/providers/grafana/grafana/latest/docs/resources/dashboard) | resource |
+| [grafana_dashboard.vpn_gateway_health](https://registry.terraform.io/providers/grafana/grafana/latest/docs/resources/dashboard) | resource |
+| [grafana_dashboard.vwan_hub_health](https://registry.terraform.io/providers/grafana/grafana/latest/docs/resources/dashboard) | resource |
 | [grafana_data_source.azure_monitor](https://registry.terraform.io/providers/grafana/grafana/latest/docs/resources/data_source) | resource |
 | [grafana_data_source.log_analytics](https://registry.terraform.io/providers/grafana/grafana/latest/docs/resources/data_source) | resource |
+| [grafana_folder.lz_operations](https://registry.terraform.io/providers/grafana/grafana/latest/docs/resources/folder) | resource |
 | [grafana_folder.mccs](https://registry.terraform.io/providers/grafana/grafana/latest/docs/resources/folder) | resource |
 | [grafana_service_account.terraform](https://registry.terraform.io/providers/grafana/grafana/latest/docs/resources/service_account) | resource |
 | [grafana_service_account_token.terraform](https://registry.terraform.io/providers/grafana/grafana/latest/docs/resources/service_account_token) | resource |
@@ -364,6 +387,7 @@ No modules.
 | [azurerm_client_config.current](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/data-sources/client_config) | data source |
 | [azurerm_express_route_circuit.circuits](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/data-sources/express_route_circuit) | data source |
 | [azurerm_virtual_network_gateway.gateways](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/data-sources/virtual_network_gateway) | data source |
+| [azurerm_vpn_gateway.vpn_gateways](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/data-sources/vpn_gateway) | data source |
 
 ## Inputs
 
@@ -429,6 +453,7 @@ No modules.
 | <a name="input_virtual_hub_id"></a> [virtual\_hub\_id](#input\_virtual\_hub\_id) | The resource ID of the Virtual WAN Hub to connect the VNet to. | `string` | n/a | yes |
 | <a name="input_vnet_address_space"></a> [vnet\_address\_space](#input\_vnet\_address\_space) | The address space for the VNet (e.g., 10.100.0.0/24). Required when use\_ipam is false. Will be split into /26 subnets. | `string` | `null` | no |
 | <a name="input_vnet_name"></a> [vnet\_name](#input\_vnet\_name) | Override for the VNet name. If not provided, a name will be generated. | `string` | `null` | no |
+| <a name="input_vpn_gateways"></a> [vpn\_gateways](#input\_vpn\_gateways) | Map of VPN gateways to monitor (Microsoft.Network/vpnGateways, e.g. vWAN hub VPN gateways). | <pre>map(object({<br/>    gateway_name        = string<br/>    resource_group_name = string<br/>  }))</pre> | `{}` | no |
 
 ## Outputs
 

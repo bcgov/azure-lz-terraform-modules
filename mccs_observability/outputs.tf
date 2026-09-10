@@ -176,6 +176,8 @@ output "grafana_dashboards" {
   value = length(grafana_dashboard.mccs_overview) > 0 ? {
     mccs_overview       = "${azurerm_dashboard_grafana.this.endpoint}/d/mccs-overview/mccs-overview"
     expressroute_health = "${azurerm_dashboard_grafana.this.endpoint}/d/expressroute-health/expressroute-health"
+    vwan_hub_health     = length(grafana_dashboard.vwan_hub_health) > 0 ? "${azurerm_dashboard_grafana.this.endpoint}/d/vwan-hub-health/vwan-hub-health" : null
+    vpn_gateway_health  = length(grafana_dashboard.vpn_gateway_health) > 0 ? "${azurerm_dashboard_grafana.this.endpoint}/d/vpn-gateway-health/vpn-gateway-health" : null
   } : null
 }
 

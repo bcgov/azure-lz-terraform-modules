@@ -72,6 +72,22 @@ locals {
     for k, v in data.azurerm_virtual_network_gateway.gateways : k => v.id
   }
 
+  # Virtual WAN hub the observability VNet connects to (parsed from its resource ID)
+  # /subscriptions/<sub>/resourceGroups/<rg>/providers/Microsoft.Network/virtualHubs/<name>
+  virtual_hub_name           = element(split("/", var.virtual_hub_id), length(split("/", var.virtual_hub_id)) - 1)
+  virtual_hub_resource_group = element(split("/", var.virtual_hub_id), 4)
+
+  # VPN gateway IDs for easier reference
+  vpn_gateway_ids = {
+    for k, v in data.azurerm_vpn_gateway.vpn_gateways : k => v.id
+  }
+
+  vpn_gateway_names = [
+    for k, v in var.vpn_gateways : v.gateway_name
+  ]
+
+  default_vpn_gateway_resource_group = length(local.vpn_gateway_names) > 0 ? [for k, v in var.vpn_gateways : v.resource_group_name][0] : ""
+
   # Dashboard configuration - extract unique resource groups and circuit names
   expressroute_resource_groups = distinct([
     for k, v in var.expressroute_circuits : v.resource_group_name
