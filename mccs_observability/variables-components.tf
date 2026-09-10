@@ -23,6 +23,12 @@ variable "log_analytics_retention_days" {
   }
 }
 
+variable "enable_activity_log_diagnostics" {
+  type        = bool
+  description = "Whether to route subscription activity logs (administrative changes, service/resource health, policy) to the Log Analytics workspace."
+  default     = true
+}
+
 #------------------------------------------------------------------------------
 # Key Vault
 #------------------------------------------------------------------------------

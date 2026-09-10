@@ -178,6 +178,8 @@ output "grafana_dashboards" {
     expressroute_health = "${azurerm_dashboard_grafana.this.endpoint}/d/expressroute-health/expressroute-health"
     vwan_hub_health     = length(grafana_dashboard.vwan_hub_health) > 0 ? "${azurerm_dashboard_grafana.this.endpoint}/d/vwan-hub-health/vwan-hub-health" : null
     vpn_gateway_health  = length(grafana_dashboard.vpn_gateway_health) > 0 ? "${azurerm_dashboard_grafana.this.endpoint}/d/vpn-gateway-health/vpn-gateway-health" : null
+    platform_changes    = length(grafana_dashboard.platform_changes) > 0 ? "${azurerm_dashboard_grafana.this.endpoint}/d/platform-changes/platform-changes" : null
+    resource_inventory  = length(grafana_dashboard.resource_inventory_policy) > 0 ? "${azurerm_dashboard_grafana.this.endpoint}/d/resource-inventory-policy/resource-inventory-policy" : null
   } : null
 }
 

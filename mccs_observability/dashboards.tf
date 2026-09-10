@@ -237,3 +237,44 @@ resource "grafana_dashboard" "vpn_gateway_health" {
 
   depends_on = [grafana_folder.lz_operations]
 }
+
+#------------------------------------------------------------------------------
+# Landing Zone Operations: Dashboard - Platform Changes (Activity Log)
+#
+# Subscription control-plane change feed from activity logs routed to
+# the workspace by the activity log diagnostic setting.
+#------------------------------------------------------------------------------
+
+resource "grafana_dashboard" "platform_changes" {
+  count = local.can_provision_dashboards && var.enable_activity_log_diagnostics ? 1 : 0
+
+  folder    = grafana_folder.lz_operations[0].id
+  overwrite = true
+
+  config_json = templatefile("${path.module}/dashboards/platform_changes.json.tftpl", {
+    subscription_id   = local.subscription_id_connectivity
+    log_analytics_uid = grafana_data_source.log_analytics[0].uid
+  })
+
+  depends_on = [grafana_folder.lz_operations]
+}
+
+#------------------------------------------------------------------------------
+# Landing Zone Operations: Dashboard - Resource Inventory & Policy
+#
+# Resource counts, recently created resources, and policy compliance via
+# Azure Resource Graph through the Azure Monitor data source.
+#------------------------------------------------------------------------------
+
+resource "grafana_dashboard" "resource_inventory_policy" {
+  count = local.can_provision_dashboards ? 1 : 0
+
+  folder    = grafana_folder.lz_operations[0].id
+  overwrite = true
+
+  config_json = templatefile("${path.module}/dashboards/resource_inventory_policy.json.tftpl", {
+    subscription_id = local.subscription_id_connectivity
+  })
+
+  depends_on = [grafana_folder.lz_operations]
+}

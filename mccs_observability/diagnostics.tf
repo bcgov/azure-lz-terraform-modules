@@ -55,6 +55,42 @@ resource "azurerm_monitor_diagnostic_setting" "expressroute_gateways" {
 }
 
 #------------------------------------------------------------------------------
+# Diagnostic Settings for the Subscription (Activity Log)
+#
+# Routes subscription-level activity log categories (administrative
+# changes, service/resource health, policy) into the workspace to power
+# the Platform Changes dashboard for landing zone administrators.
+#------------------------------------------------------------------------------
+
+resource "azurerm_monitor_diagnostic_setting" "activity_log" {
+  count = var.enable_activity_log_diagnostics ? 1 : 0
+
+  name                       = "diag-mccs-activity-log"
+  target_resource_id         = "/subscriptions/${local.subscription_id_connectivity}"
+  log_analytics_workspace_id = azurerm_log_analytics_workspace.this.id
+
+  enabled_log {
+    category = "Administrative"
+  }
+
+  enabled_log {
+    category = "ServiceHealth"
+  }
+
+  enabled_log {
+    category = "ResourceHealth"
+  }
+
+  enabled_log {
+    category = "Security"
+  }
+
+  enabled_log {
+    category = "Policy"
+  }
+}
+
+#------------------------------------------------------------------------------
 # Diagnostic Settings for VPN Gateways (vWAN hub VPN gateways)
 #------------------------------------------------------------------------------
 
