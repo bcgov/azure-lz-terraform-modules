@@ -135,6 +135,7 @@
             "resourceGroup": "$${resource_group}",
             "resources": [
               {
+                "subscription": "$${subscription}",
                 "resourceGroup": "$${resource_group}",
                 "resourceName": "$${circuit}"
               }
@@ -239,6 +240,7 @@
             "resourceGroup": "$${resource_group}",
             "resources": [
               {
+                "subscription": "$${subscription}",
                 "resourceGroup": "$${resource_group}",
                 "resourceName": "$${circuit}"
               }
@@ -326,6 +328,7 @@
             "resourceGroup": "$${resource_group}",
             "resources": [
               {
+                "subscription": "$${subscription}",
                 "resourceGroup": "$${resource_group}",
                 "resourceName": "$${circuit}"
               }
@@ -413,6 +416,7 @@
             "resourceGroup": "$${resource_group}",
             "resources": [
               {
+                "subscription": "$${subscription}",
                 "resourceGroup": "$${resource_group}",
                 "resourceName": "$${circuit}"
               }
@@ -547,6 +551,7 @@
             "resourceGroup": "$${resource_group}",
             "resources": [
               {
+                "subscription": "$${subscription}",
                 "resourceGroup": "$${resource_group}",
                 "resourceName": "$${circuit}"
               }
@@ -668,6 +673,7 @@
             "resourceGroup": "$${resource_group}",
             "resources": [
               {
+                "subscription": "$${subscription}",
                 "resourceGroup": "$${resource_group}",
                 "resourceName": "$${circuit}"
               }
@@ -798,6 +804,7 @@
             "resourceGroup": "$${resource_group}",
             "resources": [
               {
+                "subscription": "$${subscription}",
                 "resourceGroup": "$${resource_group}",
                 "resourceName": "$${circuit}"
               }
@@ -915,6 +922,7 @@
             "resourceGroup": "$${resource_group}",
             "resources": [
               {
+                "subscription": "$${subscription}",
                 "resourceGroup": "$${resource_group}",
                 "resourceName": "$${circuit}"
               }
@@ -1044,6 +1052,7 @@
             "resourceGroup": "$${resource_group}",
             "resources": [
               {
+                "subscription": "$${subscription}",
                 "resourceGroup": "$${resource_group}",
                 "resourceName": "$${circuit}"
               }
@@ -1160,6 +1169,7 @@
             "resourceGroup": "$${resource_group}",
             "resources": [
               {
+                "subscription": "$${subscription}",
                 "resourceGroup": "$${resource_group}",
                 "resourceName": "$${circuit}"
               }
@@ -1287,11 +1297,12 @@
             "aggregation": "Average",
             "dimensionFilters": [],
             "metricName": "ExpressRouteGatewayCpuUtilization",
-            "metricNamespace": "microsoft.network/virtualnetworkgateways",
-            "resourceGroup": "$${resource_group}",
+            "metricNamespace": "${gateway_metric_namespace}",
+            "resourceGroup": "$${gateway_resource_group}",
             "resources": [
               {
-                "resourceGroup": "$${resource_group}",
+                "subscription": "$${subscription}",
+                "resourceGroup": "$${gateway_resource_group}",
                 "resourceName": "$${gateway}"
               }
             ],
@@ -1395,11 +1406,12 @@
             "aggregation": "Maximum",
             "dimensionFilters": [],
             "metricName": "ExpressRouteGatewayCountOfRoutesAdvertisedToPeer",
-            "metricNamespace": "microsoft.network/virtualnetworkgateways",
-            "resourceGroup": "$${resource_group}",
+            "metricNamespace": "${gateway_metric_namespace}",
+            "resourceGroup": "$${gateway_resource_group}",
             "resources": [
               {
-                "resourceGroup": "$${resource_group}",
+                "subscription": "$${subscription}",
+                "resourceGroup": "$${gateway_resource_group}",
                 "resourceName": "$${gateway}"
               }
             ],
@@ -1516,11 +1528,12 @@
             "aggregation": "Average",
             "dimensionFilters": [],
             "metricName": "ExpressRouteGatewayBitsPerSecond",
-            "metricNamespace": "microsoft.network/virtualnetworkgateways",
-            "resourceGroup": "$${resource_group}",
+            "metricNamespace": "${gateway_metric_namespace}",
+            "resourceGroup": "$${gateway_resource_group}",
             "resources": [
               {
-                "resourceGroup": "$${resource_group}",
+                "subscription": "$${subscription}",
+                "resourceGroup": "$${gateway_resource_group}",
                 "resourceName": "$${gateway}"
               }
             ],
@@ -1624,11 +1637,12 @@
             "aggregation": "Maximum",
             "dimensionFilters": [],
             "metricName": "ExpressRouteGatewayCountOfRoutesLearnedFromPeer",
-            "metricNamespace": "microsoft.network/virtualnetworkgateways",
-            "resourceGroup": "$${resource_group}",
+            "metricNamespace": "${gateway_metric_namespace}",
+            "resourceGroup": "$${gateway_resource_group}",
             "resources": [
               {
-                "resourceGroup": "$${resource_group}",
+                "subscription": "$${subscription}",
+                "resourceGroup": "$${gateway_resource_group}",
                 "resourceName": "$${gateway}"
               }
             ],
@@ -1730,7 +1744,8 @@
         {
           "azureLogAnalytics": {
             "query": "AzureDiagnostics\n| where Category == \"PeeringRouteLog\"\n| summarize RouteChanges = count() by bin(TimeGenerated, 15m)\n| order by TimeGenerated asc",
-            "resultFormat": "time_series"
+            "resultFormat": "time_series",
+            "resources": ["${log_analytics_workspace_id}"]
           },
           "datasource": {
             "type": "grafana-azure-monitor-datasource",
@@ -1805,7 +1820,8 @@
         {
           "azureLogAnalytics": {
             "query": "AzureDiagnostics\n| where Category == \"GatewayDiagnosticLog\"\n| project TimeGenerated, ResourceGroup, OperationName, Level\n| order by TimeGenerated desc\n| take 50",
-            "resultFormat": "table"
+            "resultFormat": "table",
+            "resources": ["${log_analytics_workspace_id}"]
           },
           "datasource": {
             "type": "grafana-azure-monitor-datasource",
@@ -1868,8 +1884,12 @@
   "templating": {
     "list": [
       {
-        "current": {},
-        "hide": 0,
+        "current": {
+          "selected": true,
+          "text": "Azure Monitor",
+          "value": "azure-monitor-oob"
+        },
+        "hide": 2,
         "includeAll": false,
         "label": "Data Source",
         "multi": false,
@@ -1893,7 +1913,7 @@
           "uid": "$${datasource}"
         },
         "definition": "",
-        "hide": 0,
+        "hide": 2,
         "includeAll": false,
         "label": "Subscription",
         "multi": false,
@@ -1920,7 +1940,7 @@
           "uid": "$${datasource}"
         },
         "definition": "",
-        "hide": 0,
+        "hide": 2,
         "includeAll": false,
         "label": "Resource Group",
         "multi": false,
@@ -1948,7 +1968,7 @@
           "uid": "$${datasource}"
         },
         "definition": "",
-        "hide": 0,
+        "hide": 2,
         "includeAll": false,
         "label": "Circuit",
         "multi": false,
@@ -1968,13 +1988,45 @@
         "type": "query"
       },
       {
-        "current": {},
+        "current": {
+          "selected": true,
+          "text": "${default_gateway_resource_group}",
+          "value": "${default_gateway_resource_group}"
+        },
         "datasource": {
           "type": "grafana-azure-monitor-datasource",
           "uid": "$${datasource}"
         },
         "definition": "",
-        "hide": 0,
+        "hide": 2,
+        "includeAll": false,
+        "label": "Gateway Resource Group",
+        "multi": false,
+        "name": "gateway_resource_group",
+        "options": [],
+        "query": {
+          "queryType": "Azure Resource Groups",
+          "refId": "A",
+          "subscription": "$${subscription}"
+        },
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "type": "query"
+      },
+      {
+        "current": {
+          "selected": true,
+          "text": "${default_gateway_name}",
+          "value": "${default_gateway_name}"
+        },
+        "datasource": {
+          "type": "grafana-azure-monitor-datasource",
+          "uid": "$${datasource}"
+        },
+        "definition": "",
+        "hide": 2,
         "includeAll": false,
         "label": "Gateway",
         "multi": false,
@@ -1982,9 +2034,9 @@
         "options": [],
         "query": {
           "queryType": "Azure Resource Names",
-          "metricNamespace": "microsoft.network/virtualnetworkgateways",
+          "metricNamespace": "${gateway_metric_namespace}",
           "refId": "A",
-          "resourceGroup": "$${resource_group}",
+          "resourceGroup": "$${gateway_resource_group}",
           "subscription": "$${subscription}"
         },
         "refresh": 1,

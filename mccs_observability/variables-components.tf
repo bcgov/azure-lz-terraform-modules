@@ -29,6 +29,12 @@ variable "enable_activity_log_diagnostics" {
   default     = true
 }
 
+variable "activity_log_workspace_id" {
+  type        = string
+  description = "Log Analytics workspace resource ID used by the Platform Changes dashboard. Defaults to this module's workspace. Point this at the CAF/platform workspace when activity logs are already shipped there."
+  default     = null
+}
+
 #------------------------------------------------------------------------------
 # Key Vault
 #------------------------------------------------------------------------------

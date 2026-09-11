@@ -91,6 +91,7 @@
             "resourceGroup": "$${resource_group}",
             "resources": [
               {
+                "subscription": "$${subscription}",
                 "resourceGroup": "$${resource_group}",
                 "resourceName": "$${gateway}"
               }
@@ -166,6 +167,7 @@
             "resourceGroup": "$${resource_group}",
             "resources": [
               {
+                "subscription": "$${subscription}",
                 "resourceGroup": "$${resource_group}",
                 "resourceName": "$${gateway}"
               }
@@ -241,6 +243,7 @@
             "resourceGroup": "$${resource_group}",
             "resources": [
               {
+                "subscription": "$${subscription}",
                 "resourceGroup": "$${resource_group}",
                 "resourceName": "$${gateway}"
               }
@@ -362,6 +365,7 @@
             "resourceGroup": "$${resource_group}",
             "resources": [
               {
+                "subscription": "$${subscription}",
                 "resourceGroup": "$${resource_group}",
                 "resourceName": "$${gateway}"
               }
@@ -470,6 +474,7 @@
             "resourceGroup": "$${resource_group}",
             "resources": [
               {
+                "subscription": "$${subscription}",
                 "resourceGroup": "$${resource_group}",
                 "resourceName": "$${gateway}"
               }
@@ -591,6 +596,7 @@
             "resourceGroup": "$${resource_group}",
             "resources": [
               {
+                "subscription": "$${subscription}",
                 "resourceGroup": "$${resource_group}",
                 "resourceName": "$${gateway}"
               }
@@ -699,6 +705,7 @@
             "resourceGroup": "$${resource_group}",
             "resources": [
               {
+                "subscription": "$${subscription}",
                 "resourceGroup": "$${resource_group}",
                 "resourceName": "$${gateway}"
               }
@@ -820,6 +827,7 @@
             "resourceGroup": "$${resource_group}",
             "resources": [
               {
+                "subscription": "$${subscription}",
                 "resourceGroup": "$${resource_group}",
                 "resourceName": "$${gateway}"
               }
@@ -928,6 +936,7 @@
             "resourceGroup": "$${resource_group}",
             "resources": [
               {
+                "subscription": "$${subscription}",
                 "resourceGroup": "$${resource_group}",
                 "resourceName": "$${gateway}"
               }
@@ -1020,8 +1029,9 @@
       "targets": [
         {
           "azureLogAnalytics": {
-            "query": "AzureDiagnostics\n| where Category == \"TunnelDiagnosticLog\"\n| project TimeGenerated, ResourceGroup, OperationName, Level\n| order by TimeGenerated desc\n| take 50",
-            "resultFormat": "table"
+            "query": "AzureDiagnostics\n| where Category in (\"TunnelDiagnosticLog\", \"IKEDiagnosticLog\", \"GatewayDiagnosticLog\")\n| project TimeGenerated, Category, ResourceGroup, OperationName, Level\n| order by TimeGenerated desc\n| take 50",
+            "resultFormat": "table",
+            "resources": ["${log_analytics_workspace_id}"]
           },
           "datasource": {
             "type": "grafana-azure-monitor-datasource",
@@ -1096,7 +1106,8 @@
         {
           "azureLogAnalytics": {
             "query": "AzureDiagnostics\n| where Category == \"RouteDiagnosticLog\"\n| project TimeGenerated, ResourceGroup, OperationName, Level\n| order by TimeGenerated desc\n| take 50",
-            "resultFormat": "table"
+            "resultFormat": "table",
+            "resources": ["${log_analytics_workspace_id}"]
           },
           "datasource": {
             "type": "grafana-azure-monitor-datasource",
@@ -1119,8 +1130,12 @@
   "templating": {
     "list": [
       {
-        "current": {},
-        "hide": 0,
+        "current": {
+          "selected": true,
+          "text": "Azure Monitor",
+          "value": "azure-monitor-oob"
+        },
+        "hide": 2,
         "includeAll": false,
         "label": "Data Source",
         "multi": false,
@@ -1129,7 +1144,7 @@
         "query": "grafana-azure-monitor-datasource",
         "queryValue": "",
         "refresh": 1,
-        "regex": "",
+        "regex": "/^Azure Monitor$/",
         "skipUrlSync": false,
         "type": "datasource"
       },
@@ -1144,7 +1159,7 @@
           "uid": "$${datasource}"
         },
         "definition": "",
-        "hide": 0,
+        "hide": 2,
         "includeAll": false,
         "label": "Subscription",
         "multi": false,
@@ -1171,9 +1186,11 @@
           "uid": "$${datasource}"
         },
         "definition": "",
-        "hide": 0,
+        "hide": 2,
         "includeAll": false,
         "label": "Resource Group",
+        "multi": false,
+        "name": "resource_group",
         "options": [],
         "query": {
           "queryType": "Azure Resource Groups",
@@ -1189,22 +1206,18 @@
       {
         "current": {
           "selected": true,
-          "text": [
-            "All"
-          ],
-          "value": [
-            "$__all"
-          ]
+          "text": "${default_gateway_name}",
+          "value": "${default_gateway_name}"
         },
         "datasource": {
           "type": "grafana-azure-monitor-datasource",
           "uid": "$${datasource}"
         },
         "definition": "",
-        "hide": 0,
-        "includeAll": true,
+        "hide": 2,
+        "includeAll": false,
         "label": "VPN Gateway",
-        "multi": true,
+        "multi": false,
         "name": "gateway",
         "options": [],
         "query": {

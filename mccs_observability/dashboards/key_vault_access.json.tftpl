@@ -85,7 +85,8 @@
         {
           "azureLogAnalytics": {
             "query": "AzureDiagnostics | where ResourceProvider == 'MICROSOFT.KEYVAULT' | where Category == 'AuditEvent' | where OperationName in ('SecretGet', 'SecretList') and TimeGenerated > ago(24h) | summarize Access = count()",
-            "resultFormat": "table"
+            "resultFormat": "table",
+            "resources": ["${log_analytics_workspace_id}"]
           },
           "datasource": {
             "type": "grafana-azure-monitor-datasource",
@@ -157,7 +158,8 @@
         {
           "azureLogAnalytics": {
             "query": "AzureDiagnostics | where ResourceProvider == 'MICROSOFT.KEYVAULT' | where Category == 'AuditEvent' | where ResultSignature == '403' and TimeGenerated > ago(24h) | summarize Denied = count()",
-            "resultFormat": "table"
+            "resultFormat": "table",
+            "resources": ["${log_analytics_workspace_id}"]
           },
           "datasource": {
             "type": "grafana-azure-monitor-datasource",
@@ -221,7 +223,8 @@
         {
           "azureLogAnalytics": {
             "query": "AzureDiagnostics | where ResourceProvider == 'MICROSOFT.KEYVAULT' | where Category == 'AuditEvent' | where TimeGenerated > ago(24h) | summarize Callers = dcount(Identity)",
-            "resultFormat": "table"
+            "resultFormat": "table",
+            "resources": ["${log_analytics_workspace_id}"]
           },
           "datasource": {
             "type": "grafana-azure-monitor-datasource",
@@ -331,7 +334,8 @@
         {
           "azureLogAnalytics": {
             "query": "AzureDiagnostics | where ResourceProvider == 'MICROSOFT.KEYVAULT' | where Category == 'AuditEvent' | summarize Operations = count() by bin(TimeGenerated, 1h), OperationName | order by TimeGenerated asc",
-            "resultFormat": "time_series"
+            "resultFormat": "time_series",
+            "resources": ["${log_analytics_workspace_id}"]
           },
           "datasource": {
             "type": "grafana-azure-monitor-datasource",
@@ -419,7 +423,8 @@
         {
           "azureLogAnalytics": {
             "query": "AzureDiagnostics | where ResourceProvider == 'MICROSOFT.KEYVAULT' | where Category == 'AuditEvent' | project TimeGenerated, Caller = Identity, IP = callerIPAddress, Operation = OperationName, Result = ResultSignature | order by TimeGenerated desc | take 100",
-            "resultFormat": "table"
+            "resultFormat": "table",
+            "resources": ["${log_analytics_workspace_id}"]
           },
           "datasource": {
             "type": "grafana-azure-monitor-datasource",
@@ -462,8 +467,12 @@
   "templating": {
     "list": [
       {
-        "current": {},
-        "hide": 0,
+        "current": {
+          "selected": true,
+          "text": "Azure Monitor",
+          "value": "azure-monitor-oob"
+        },
+        "hide": 2,
         "includeAll": false,
         "label": "Data Source",
         "multi": false,
@@ -487,7 +496,7 @@
           "uid": "$${datasource}"
         },
         "definition": "",
-        "hide": 0,
+        "hide": 2,
         "includeAll": false,
         "label": "Subscription",
         "multi": false,

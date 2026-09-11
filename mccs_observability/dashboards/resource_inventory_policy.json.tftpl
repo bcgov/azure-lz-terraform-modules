@@ -93,7 +93,7 @@
           },
           "queryType": "Azure Resource Graph",
           "refId": "table",
-          "subscription": "$${subscription}"
+          "subscriptions": ${arg_subscriptions}
         }
       ],
       "title": "Total Resources",
@@ -169,7 +169,7 @@
           },
           "queryType": "Azure Resource Graph",
           "refId": "A",
-          "subscription": "$${subscription}"
+          "subscriptions": ${arg_subscriptions}
         }
       ],
       "title": "Resources by Type",
@@ -245,7 +245,7 @@
           },
           "queryType": "Azure Resource Graph",
           "refId": "A",
-          "subscription": "$${subscription}"
+          "subscriptions": ${arg_subscriptions}
         }
       ],
       "title": "Resources by Location",
@@ -321,7 +321,7 @@
           },
           "queryType": "Azure Resource Graph",
           "refId": "A",
-          "subscription": "$${subscription}"
+          "subscriptions": ${arg_subscriptions}
         }
       ],
       "title": "Recently Created Resources",
@@ -410,7 +410,7 @@
           },
           "queryType": "Azure Resource Graph",
           "refId": "A",
-          "subscription": "$${subscription}"
+          "subscriptions": ${arg_subscriptions}
         }
       ],
       "title": "Compliance Summary",
@@ -486,7 +486,7 @@
           },
           "queryType": "Azure Resource Graph",
           "refId": "A",
-          "subscription": "$${subscription}"
+          "subscriptions": ${arg_subscriptions}
         }
       ],
       "title": "Non-Compliant Resources",
@@ -511,7 +511,7 @@
           "showLineNumbers": false,
           "showMiniMap": false
         },
-        "content": "**Data source:** Azure Resource Graph via the Azure Monitor data source. The Grafana managed identity uses Monitoring Reader (`*/read`) on the selected subscription.\n\n- Switch the **Subscription** variable to any subscription the identity can read.\n- Policy compliance reflects the latest policy state snapshots ingested by Resource Graph (refreshed continuously, not real-time).\n- `Recently Created` uses `timeCreated` which is populated by Resource Graph for most resource types.",
+        "content": "**Data source:** Azure Resource Graph via the built-in Azure Monitor data source. Use **Azure Monitor**, not Azure Monitor - MCCS. Resource Graph queries the landing-zone management group subscriptions discovered at apply time.\n\n- Policy compliance reflects the latest policy state snapshots ingested by Resource Graph (refreshed continuously, not real-time).\n- `Recently Created` uses `timeCreated` which is populated by Resource Graph for most resource types.",
         "mode": "markdown"
       },
       "pluginVersion": "11.0.0",
@@ -522,8 +522,12 @@
   "templating": {
     "list": [
       {
-        "current": {},
-        "hide": 0,
+        "current": {
+          "selected": true,
+          "text": "Azure Monitor",
+          "value": "azure-monitor-oob"
+        },
+        "hide": 2,
         "includeAll": false,
         "label": "Data Source",
         "multi": false,
@@ -532,25 +536,29 @@
         "query": "grafana-azure-monitor-datasource",
         "queryValue": "",
         "refresh": 1,
-        "regex": "",
+        "regex": "/^Azure Monitor$/",
         "skipUrlSync": false,
         "type": "datasource"
       },
       {
         "current": {
           "selected": true,
-          "text": "${subscription_id}",
-          "value": "${subscription_id}"
+          "text": [
+            "All"
+          ],
+          "value": [
+            "$__all"
+          ]
         },
         "datasource": {
           "type": "grafana-azure-monitor-datasource",
           "uid": "$${datasource}"
         },
         "definition": "",
-        "hide": 0,
-        "includeAll": false,
+        "hide": 2,
+        "includeAll": true,
         "label": "Subscription",
-        "multi": false,
+        "multi": true,
         "name": "subscription",
         "options": [],
         "query": {

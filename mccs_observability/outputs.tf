@@ -182,6 +182,8 @@ output "grafana_dashboards" {
     resource_inventory  = length(grafana_dashboard.resource_inventory_policy) > 0 ? "${azurerm_dashboard_grafana.this.endpoint}/d/resource-inventory-policy/resource-inventory-policy" : null
     security_posture    = length(grafana_dashboard.security_posture) > 0 ? "${azurerm_dashboard_grafana.this.endpoint}/d/security-posture/security-posture" : null
     key_vault_access    = length(grafana_dashboard.key_vault_access) > 0 ? "${azurerm_dashboard_grafana.this.endpoint}/d/key-vault-access/key-vault-access" : null
+    landing_zone_home   = length(grafana_dashboard.landing_zone_home) > 0 ? "${azurerm_dashboard_grafana.this.endpoint}/d/landing-zone-home/landing-zone-home" : null
+    azure_firewall      = length(grafana_dashboard.azure_firewall_health) > 0 ? "${azurerm_dashboard_grafana.this.endpoint}/d/azure-firewall-health/azure-firewall-health" : null
   } : null
 }
 

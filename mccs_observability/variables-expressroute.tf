@@ -23,7 +23,16 @@ variable "expressroute_gateways" {
     gateway_name        = string
     resource_group_name = string
   }))
-  description = "Map of ExpressRoute gateways to monitor."
+  description = "Map of classic Virtual Network ExpressRoute gateways (Microsoft.Network/virtualNetworkGateways) to monitor."
+  default     = {}
+}
+
+variable "virtual_hub_express_route_gateways" {
+  type = map(object({
+    gateway_name        = string
+    resource_group_name = string
+  }))
+  description = "Map of vWAN hub ExpressRoute gateways (Microsoft.Network/expressRouteGateways) to monitor. This landing zone uses these, not classic virtual network gateways."
   default     = {}
 }
 
@@ -33,6 +42,15 @@ variable "vpn_gateways" {
     resource_group_name = string
   }))
   description = "Map of VPN gateways to monitor (Microsoft.Network/vpnGateways, e.g. vWAN hub VPN gateways)."
+  default     = {}
+}
+
+variable "azure_firewalls" {
+  type = map(object({
+    firewall_name       = string
+    resource_group_name = string
+  }))
+  description = "Map of Azure Firewalls to monitor (typically the vWAN hub firewall)."
   default     = {}
 }
 

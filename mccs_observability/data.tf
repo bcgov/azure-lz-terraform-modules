@@ -1,5 +1,10 @@
 data "azurerm_client_config" "current" {}
 
+data "azurerm_management_group" "grafana_scope" {
+  count = var.grafana_monitoring_management_group_id != null ? 1 : 0
+  name  = var.grafana_monitoring_management_group_id
+}
+
 # Look up Cloud Team Entra ID group by display name
 data "azuread_group" "cloud_team" {
   display_name     = var.cloud_team_group_name
@@ -27,5 +32,12 @@ data "azurerm_vpn_gateway" "vpn_gateways" {
   for_each = var.vpn_gateways
 
   name                = each.value.gateway_name
+  resource_group_name = each.value.resource_group_name
+}
+
+data "azurerm_firewall" "azure_firewalls" {
+  for_each = var.azure_firewalls
+
+  name                = each.value.firewall_name
   resource_group_name = each.value.resource_group_name
 }

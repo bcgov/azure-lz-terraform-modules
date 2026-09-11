@@ -24,3 +24,9 @@ variable "terraform_spn_object_id" {
   description = "The Object ID of the Terraform Service Principal for Key Vault access."
   default     = null
 }
+
+variable "grafana_monitoring_management_group_id" {
+  type        = string
+  description = "Management group ID that the Grafana managed identity can read (Monitoring Reader and Reader). When set, dashboards can query every subscription under that group. When null, access is limited to the connectivity subscription."
+  default     = null
+}

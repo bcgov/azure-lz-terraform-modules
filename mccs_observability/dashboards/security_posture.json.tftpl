@@ -39,7 +39,7 @@
         "type": "grafana-azure-monitor-datasource",
         "uid": "$${datasource}"
       },
-      "description": "Microsoft Defender for Cloud secure score percentage for the selected subscription",
+      "description": "Weighted Microsoft Defender for Cloud secure score across Azure landing-zone subscriptions (excludes AWS/GCP connectors)",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -92,7 +92,7 @@
       "targets": [
         {
           "azureResourceGraph": {
-            "query": "securityresources | where type == 'microsoft.security/securescores' | extend Pct = todouble(properties.score.percentage) | project Pct",
+            "query": "securityresources | where type == 'microsoft.security/securescores' | where name == 'ascScore' | where tostring(properties.environment) == 'Azure' | where isempty(resourceGroup) | extend wCurrent = todouble(properties.score.current) * todouble(properties.weight) | extend wMax = todouble(properties.score.max) * todouble(properties.weight) | summarize current = sum(wCurrent), max = sum(wMax) | project Pct = current / max",
             "resultFormat": "table"
           },
           "datasource": {
@@ -101,7 +101,7 @@
           },
           "queryType": "Azure Resource Graph",
           "refId": "A",
-          "subscription": "$${subscription}"
+          "subscriptions": ${arg_subscriptions}
         }
       ],
       "title": "Secure Score",
@@ -165,7 +165,7 @@
       "targets": [
         {
           "azureResourceGraph": {
-            "query": "securityresources | where type == 'microsoft.security/assessments' | extend State = tostring(properties.status.code), Name = tostring(properties.displayName) | where State == 'Unhealthy' | summarize UnhealthyRecommendations = dcount(Name)",
+            "query": "securityresources | where type == 'microsoft.security/assessments' | where tostring(properties.resourceDetails.Source) == 'Azure' | where tostring(properties.status.code) == 'Unhealthy' | summarize UnhealthyRecommendations = dcount(name)",
             "resultFormat": "table"
           },
           "datasource": {
@@ -174,7 +174,7 @@
           },
           "queryType": "Azure Resource Graph",
           "refId": "A",
-          "subscription": "$${subscription}"
+          "subscriptions": ${arg_subscriptions}
         }
       ],
       "title": "Unhealthy Recommendations",
@@ -238,7 +238,7 @@
       "targets": [
         {
           "azureResourceGraph": {
-            "query": "securityresources | where type == 'microsoft.security/assessments' | extend State = tostring(properties.status.code), Resource = tostring(properties.resourceDetails.id) | where State == 'Unhealthy' | summarize UnhealthyResources = dcount(Resource)",
+            "query": "securityresources | where type =~ 'microsoft.security/assessments' | where tostring(properties.resourceDetails.Source) =~ 'Azure' | extend State = tostring(properties.status.code), Resource = tostring(properties.resourceDetails.Id) | where State == 'Unhealthy' and isnotempty(Resource) | summarize UnhealthyResources = dcount(Resource)",
             "resultFormat": "table"
           },
           "datasource": {
@@ -247,7 +247,7 @@
           },
           "queryType": "Azure Resource Graph",
           "refId": "A",
-          "subscription": "$${subscription}"
+          "subscriptions": ${arg_subscriptions}
         }
       ],
       "title": "Unhealthy Resources",
@@ -258,7 +258,7 @@
         "type": "grafana-azure-monitor-datasource",
         "uid": "$${datasource}"
       },
-      "description": "Unhealthy assessments rated High or Critical severity",
+      "description": "Count of unhealthy High or Critical assessment rows (not distinct resources). Azure LZ currently has High findings only.",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -311,7 +311,7 @@
       "targets": [
         {
           "azureResourceGraph": {
-            "query": "securityresources | where type == 'microsoft.security/assessments' | extend State = tostring(properties.status.code), Severity = tostring(properties.metadata.severity) | where State == 'Unhealthy' and Severity in ('High', 'Critical') | summarize Findings = count()",
+            "query": "securityresources | where type =~ 'microsoft.security/assessments' | where tostring(properties.resourceDetails.Source) =~ 'Azure' | extend State = tostring(properties.status.code), Severity = tostring(properties.metadata.severity) | where State == 'Unhealthy' and Severity in ('High', 'Critical') | summarize Findings = count()",
             "resultFormat": "table"
           },
           "datasource": {
@@ -320,11 +320,77 @@
           },
           "queryType": "Azure Resource Graph",
           "refId": "A",
-          "subscription": "$${subscription}"
+          "subscriptions": ${arg_subscriptions}
         }
       ],
       "title": "High/Critical Findings",
       "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "grafana-azure-monitor-datasource",
+        "uid": "$${datasource}"
+      },
+      "description": "Per-subscription Defender secure score. The headline score is sum(current × weight) / sum(max × weight) across these rows.",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "align": "auto",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "filterable": true,
+            "inspect": true
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Score"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "percentunit"
+              },
+              {
+                "id": "decimals",
+                "value": 1
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 24,
+        "x": 0,
+        "y": 5
+      },
+      "id": 310,
+      "options": {
+        "cellHeight": "sm",
+        "showHeader": true
+      },
+      "pluginVersion": "11.0.0",
+      "targets": [
+        {
+          "azureResourceGraph": {
+            "query": "securityresources | where type == 'microsoft.security/securescores' | where name == 'ascScore' | where tostring(properties.environment) == 'Azure' | where isempty(resourceGroup) | extend Current = todouble(properties.score.current), Max = todouble(properties.score.max), Weight = todouble(properties.weight), Score = todouble(properties.score.percentage) | join kind=leftouter (resourcecontainers | where type == 'microsoft.resources/subscriptions' | project subscriptionId, Subscription = name) on subscriptionId | project Subscription, Current, Max, Weight, Score | order by Score desc",
+            "resultFormat": "table"
+          },
+          "datasource": {
+            "type": "grafana-azure-monitor-datasource",
+            "uid": "$${datasource}"
+          },
+          "queryType": "Azure Resource Graph",
+          "refId": "A",
+          "subscriptions": ${arg_subscriptions}
+        }
+      ],
+      "title": "Secure Score by Subscription",
+      "type": "table"
     },
     {
       "collapsed": false,
@@ -332,7 +398,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 5
+        "y": 12
       },
       "id": 306,
       "panels": [],
@@ -375,7 +441,7 @@
         "h": 10,
         "w": 24,
         "x": 0,
-        "y": 6
+        "y": 13
       },
       "id": 307,
       "options": {
@@ -400,7 +466,7 @@
       "targets": [
         {
           "azureResourceGraph": {
-            "query": "securityresources | where type == 'microsoft.security/assessments' | extend State = tostring(properties.status.code), Name = tostring(properties.displayName), Severity = tostring(properties.metadata.severity) | where State == 'Unhealthy' | summarize UnhealthyResources = count() by Name, Severity | order by UnhealthyResources desc | take 50",
+            "query": "securityresources | where type =~ 'microsoft.security/assessments' | where tostring(properties.resourceDetails.Source) =~ 'Azure' | extend State = tostring(properties.status.code), Name = tostring(properties.displayName), Severity = tostring(properties.metadata.severity) | where State == 'Unhealthy' | summarize UnhealthyResources = count() by Name, Severity | order by UnhealthyResources desc | take 50",
             "resultFormat": "table"
           },
           "datasource": {
@@ -409,7 +475,7 @@
           },
           "queryType": "Azure Resource Graph",
           "refId": "A",
-          "subscription": "$${subscription}"
+          "subscriptions": ${arg_subscriptions}
         }
       ],
       "title": "Top Unhealthy Recommendations",
@@ -445,13 +511,32 @@
             ]
           }
         },
-        "overrides": []
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Resource"
+            },
+            "properties": [
+              {
+                "id": "links",
+                "value": [
+                  {
+                    "targetBlank": true,
+                    "title": "Open in Azure portal",
+                    "url": "https://portal.azure.com/#resource$${__data.fields.Resource}"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
       },
       "gridPos": {
         "h": 10,
         "w": 24,
         "x": 0,
-        "y": 16
+        "y": 23
       },
       "id": 308,
       "options": {
@@ -476,7 +561,7 @@
       "targets": [
         {
           "azureResourceGraph": {
-            "query": "securityresources | where type == 'microsoft.security/assessments' | extend State = tostring(properties.status.code), Name = tostring(properties.displayName), Severity = tostring(properties.metadata.severity), Resource = tostring(properties.resourceDetails.id) | where State == 'Unhealthy' and Severity in ('High', 'Critical') | project Name, Severity, Resource | order by Severity, Name | take 100",
+            "query": "securityresources | where type == 'microsoft.security/assessments' | where tostring(properties.resourceDetails.Source) == 'Azure' | where tostring(properties.status.code) == 'Unhealthy' | where tostring(properties.metadata.severity) in ('High', 'Critical') | extend Name = tostring(properties.displayName), Severity = tostring(properties.metadata.severity), Resource = tostring(properties.resourceDetails.Id), ResourceName = tostring(split(tostring(properties.resourceDetails.Id), '/')[-1]) | project Name, Severity, ResourceName, Resource | order by Name, ResourceName | take 100",
             "resultFormat": "table"
           },
           "datasource": {
@@ -485,7 +570,7 @@
           },
           "queryType": "Azure Resource Graph",
           "refId": "A",
-          "subscription": "$${subscription}"
+          "subscriptions": ${arg_subscriptions}
         }
       ],
       "title": "High/Critical Unhealthy Resources",
@@ -501,7 +586,7 @@
         "h": 6,
         "w": 24,
         "x": 0,
-        "y": 26
+        "y": 33
       },
       "id": 309,
       "options": {
@@ -510,7 +595,7 @@
           "showLineNumbers": false,
           "showMiniMap": false
         },
-        "content": "**Data source:** Azure Resource Graph via the Azure Monitor data source (`securityresources` table).\n\n- Requires Microsoft Defender for Cloud to be enabled on the subscription (the free foundational CSPM tier is sufficient for secure score and assessments).\n- Secure score reflects the latest Defender assessment snapshot, not real time.\n- Switch the **Subscription** variable to any subscription the Grafana identity can read.",
+        "content": "**Data source:** Azure Resource Graph `securityresources`, scoped to the landing-zone subscriptions, Azure environment only.\n\n- Headline secure score is Defender's weighted rollup: `sum(current × weight) / sum(max × weight)`. The per-subscription table must add up to that headline.\n- AWS/GCP connector scores in the management subscription are excluded.\n- Unhealthy Recommendations counts distinct assessment keys (not display names).\n- High/Critical Findings is a count of unhealthy assessment rows (not distinct resources). There are currently no Critical-severity Azure findings.\n- Resource IDs link to the Azure portal.",
         "mode": "markdown"
       },
       "pluginVersion": "11.0.0",
@@ -521,8 +606,12 @@
   "templating": {
     "list": [
       {
-        "current": {},
-        "hide": 0,
+        "current": {
+          "selected": true,
+          "text": "Azure Monitor",
+          "value": "azure-monitor-oob"
+        },
+        "hide": 2,
         "includeAll": false,
         "label": "Data Source",
         "multi": false,
@@ -531,25 +620,29 @@
         "query": "grafana-azure-monitor-datasource",
         "queryValue": "",
         "refresh": 1,
-        "regex": "",
+        "regex": "/^Azure Monitor$/",
         "skipUrlSync": false,
         "type": "datasource"
       },
       {
         "current": {
           "selected": true,
-          "text": "${subscription_id}",
-          "value": "${subscription_id}"
+          "text": [
+            "All"
+          ],
+          "value": [
+            "$__all"
+          ]
         },
         "datasource": {
           "type": "grafana-azure-monitor-datasource",
           "uid": "$${datasource}"
         },
         "definition": "",
-        "hide": 0,
-        "includeAll": false,
+        "hide": 2,
+        "includeAll": true,
         "label": "Subscription",
-        "multi": false,
+        "multi": true,
         "name": "subscription",
         "options": [],
         "query": {

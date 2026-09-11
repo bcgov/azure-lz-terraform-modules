@@ -366,10 +366,13 @@ No modules.
 | [azurerm_role_assignment.cloud_team_grafana_admin](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/role_assignment) | resource |
 | [azurerm_role_assignment.cloud_team_secrets_officer](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/role_assignment) | resource |
 | [azurerm_role_assignment.cloud_team_vm_admin](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/role_assignment) | resource |
+| [azurerm_role_assignment.grafana_activity_log_workspace_reader](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/role_assignment) | resource |
 | [azurerm_role_assignment.grafana_expressroute_reader](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/role_assignment) | resource |
+| [azurerm_role_assignment.grafana_firewall_reader](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/role_assignment) | resource |
 | [azurerm_role_assignment.grafana_gateway_reader](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/role_assignment) | resource |
 | [azurerm_role_assignment.grafana_log_analytics_reader](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/role_assignment) | resource |
 | [azurerm_role_assignment.grafana_monitoring_reader](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/role_assignment) | resource |
+| [azurerm_role_assignment.grafana_reader](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/role_assignment) | resource |
 | [azurerm_role_assignment.grafana_virtual_hub_reader](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/role_assignment) | resource |
 | [azurerm_role_assignment.grafana_vpn_gateway_reader](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/role_assignment) | resource |
 | [azurerm_role_assignment.logic_app_secrets_user](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/role_assignment) | resource |
@@ -382,8 +385,10 @@ No modules.
 | [azurerm_virtual_machine_extension.aad_login](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/virtual_machine_extension) | resource |
 | [azurerm_virtual_network.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/virtual_network) | resource |
 | [azurerm_windows_virtual_machine.jumpbox](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/windows_virtual_machine) | resource |
+| [grafana_dashboard.azure_firewall_health](https://registry.terraform.io/providers/grafana/grafana/latest/docs/resources/dashboard) | resource |
 | [grafana_dashboard.expressroute_health](https://registry.terraform.io/providers/grafana/grafana/latest/docs/resources/dashboard) | resource |
 | [grafana_dashboard.key_vault_access](https://registry.terraform.io/providers/grafana/grafana/latest/docs/resources/dashboard) | resource |
+| [grafana_dashboard.landing_zone_home](https://registry.terraform.io/providers/grafana/grafana/latest/docs/resources/dashboard) | resource |
 | [grafana_dashboard.mccs_overview](https://registry.terraform.io/providers/grafana/grafana/latest/docs/resources/dashboard) | resource |
 | [grafana_dashboard.platform_changes](https://registry.terraform.io/providers/grafana/grafana/latest/docs/resources/dashboard) | resource |
 | [grafana_dashboard.resource_inventory_policy](https://registry.terraform.io/providers/grafana/grafana/latest/docs/resources/dashboard) | resource |
@@ -392,8 +397,10 @@ No modules.
 | [grafana_dashboard.vwan_hub_health](https://registry.terraform.io/providers/grafana/grafana/latest/docs/resources/dashboard) | resource |
 | [grafana_data_source.azure_monitor](https://registry.terraform.io/providers/grafana/grafana/latest/docs/resources/data_source) | resource |
 | [grafana_data_source.log_analytics](https://registry.terraform.io/providers/grafana/grafana/latest/docs/resources/data_source) | resource |
+| [grafana_folder.home](https://registry.terraform.io/providers/grafana/grafana/latest/docs/resources/folder) | resource |
 | [grafana_folder.lz_operations](https://registry.terraform.io/providers/grafana/grafana/latest/docs/resources/folder) | resource |
 | [grafana_folder.mccs](https://registry.terraform.io/providers/grafana/grafana/latest/docs/resources/folder) | resource |
+| [grafana_folder.security](https://registry.terraform.io/providers/grafana/grafana/latest/docs/resources/folder) | resource |
 | [grafana_service_account.terraform](https://registry.terraform.io/providers/grafana/grafana/latest/docs/resources/service_account) | resource |
 | [grafana_service_account_token.terraform](https://registry.terraform.io/providers/grafana/grafana/latest/docs/resources/service_account_token) | resource |
 | [random_password.jumpbox_admin](https://registry.terraform.io/providers/hashicorp/random/latest/docs/resources/password) | resource |
@@ -401,7 +408,9 @@ No modules.
 | [azuread_group.cloud_team](https://registry.terraform.io/providers/hashicorp/azuread/latest/docs/data-sources/group) | data source |
 | [azurerm_client_config.current](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/data-sources/client_config) | data source |
 | [azurerm_express_route_circuit.circuits](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/data-sources/express_route_circuit) | data source |
+| [azurerm_firewall.azure_firewalls](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/data-sources/firewall) | data source |
 | [azurerm_key_vault_secret.grafana_token](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/data-sources/key_vault_secret) | data source |
+| [azurerm_management_group.grafana_scope](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/data-sources/management_group) | data source |
 | [azurerm_virtual_network_gateway.gateways](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/data-sources/virtual_network_gateway) | data source |
 | [azurerm_vpn_gateway.vpn_gateways](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/data-sources/vpn_gateway) | data source |
 
@@ -410,10 +419,12 @@ No modules.
 | Name | Description | Type | Default | Required |
 | ---- | ----------- | ---- | ------- | :------: |
 | <a name="input_action_group_name"></a> [action\_group\_name](#input\_action\_group\_name) | Override for the Action Group name. If not provided, a name will be generated. | `string` | `null` | no |
+| <a name="input_activity_log_workspace_id"></a> [activity\_log\_workspace\_id](#input\_activity\_log\_workspace\_id) | Log Analytics workspace resource ID used by the Platform Changes dashboard. Defaults to this module's workspace. Point this at the CAF/platform workspace when activity logs are already shipped there. | `string` | `null` | no |
 | <a name="input_alert_evaluation_frequency"></a> [alert\_evaluation\_frequency](#input\_alert\_evaluation\_frequency) | How often alert rules are evaluated. | `string` | `"PT5M"` | no |
 | <a name="input_alert_window_size"></a> [alert\_window\_size](#input\_alert\_window\_size) | The time window for alert evaluation. | `string` | `"PT5M"` | no |
 | <a name="input_allowed_ip_addresses"></a> [allowed\_ip\_addresses](#input\_allowed\_ip\_addresses) | List of IP addresses or CIDR ranges allowed to reach the Key Vault public endpoint and the jump box NSG. Used for Terraform runners or admin access. | `list(string)` | `[]` | no |
 | <a name="input_arp_availability_threshold"></a> [arp\_availability\_threshold](#input\_arp\_availability\_threshold) | ARP availability percentage threshold for critical alerts. | `number` | `100` | no |
+| <a name="input_azure_firewalls"></a> [azure\_firewalls](#input\_azure\_firewalls) | Map of Azure Firewalls to monitor (typically the vWAN hub firewall). | <pre>map(object({<br/>    firewall_name       = string<br/>    resource_group_name = string<br/>  }))</pre> | `{}` | no |
 | <a name="input_bandwidth_critical_threshold"></a> [bandwidth\_critical\_threshold](#input\_bandwidth\_critical\_threshold) | Bandwidth utilization percentage threshold for critical alerts. | `number` | `95` | no |
 | <a name="input_bandwidth_warning_threshold"></a> [bandwidth\_warning\_threshold](#input\_bandwidth\_warning\_threshold) | Bandwidth utilization percentage threshold for warning alerts. | `number` | `80` | no |
 | <a name="input_bgp_availability_threshold"></a> [bgp\_availability\_threshold](#input\_bgp\_availability\_threshold) | BGP availability percentage threshold for critical alerts. | `number` | `100` | no |
@@ -432,9 +443,10 @@ No modules.
 | <a name="input_enable_grafana_dashboards"></a> [enable\_grafana\_dashboards](#input\_enable\_grafana\_dashboards) | Whether to provision Grafana dashboards via Terraform. | `bool` | `true` | no |
 | <a name="input_environment"></a> [environment](#input\_environment) | The environment name (e.g., prod, dev, staging). | `string` | n/a | yes |
 | <a name="input_expressroute_circuits"></a> [expressroute\_circuits](#input\_expressroute\_circuits) | Map of ExpressRoute circuits to monitor. | <pre>map(object({<br/>    circuit_name        = string<br/>    resource_group_name = string<br/>    bandwidth_mbps      = number<br/>    location            = string<br/>    provider_name       = optional(string, "Unknown")<br/>  }))</pre> | n/a | yes |
-| <a name="input_expressroute_gateways"></a> [expressroute\_gateways](#input\_expressroute\_gateways) | Map of ExpressRoute gateways to monitor. | <pre>map(object({<br/>    gateway_name        = string<br/>    resource_group_name = string<br/>  }))</pre> | `{}` | no |
+| <a name="input_expressroute_gateways"></a> [expressroute\_gateways](#input\_expressroute\_gateways) | Map of classic Virtual Network ExpressRoute gateways (Microsoft.Network/virtualNetworkGateways) to monitor. | <pre>map(object({<br/>    gateway_name        = string<br/>    resource_group_name = string<br/>  }))</pre> | `{}` | no |
 | <a name="input_grafana_api_key_enabled"></a> [grafana\_api\_key\_enabled](#input\_grafana\_api\_key\_enabled) | Whether to enable API key authentication for Grafana. | `bool` | `true` | no |
 | <a name="input_grafana_deterministic_outbound_ip"></a> [grafana\_deterministic\_outbound\_ip](#input\_grafana\_deterministic\_outbound\_ip) | Whether to enable deterministic outbound IP for Grafana. | `bool` | `true` | no |
+| <a name="input_grafana_monitoring_management_group_id"></a> [grafana\_monitoring\_management\_group\_id](#input\_grafana\_monitoring\_management\_group\_id) | Management group ID that the Grafana managed identity can read (Monitoring Reader and Reader). When set, dashboards can query every subscription under that group. When null, access is limited to the connectivity subscription. | `string` | `null` | no |
 | <a name="input_grafana_name"></a> [grafana\_name](#input\_grafana\_name) | Override for the Azure Managed Grafana name. If not provided, a name will be generated. | `string` | `null` | no |
 | <a name="input_grafana_public_network_access"></a> [grafana\_public\_network\_access](#input\_grafana\_public\_network\_access) | Whether to enable public network access to Grafana. | `bool` | `false` | no |
 | <a name="input_grafana_service_account_token"></a> [grafana\_service\_account\_token](#input\_grafana\_service\_account\_token) | Grafana service account token for dashboard provisioning. Optional: when omitted, the module reads the grafana-service-account-token secret from the module's Key Vault instead. | `string` | `""` | no |
@@ -467,6 +479,7 @@ No modules.
 | <a name="input_teams_webhook_url"></a> [teams\_webhook\_url](#input\_teams\_webhook\_url) | The Microsoft Teams incoming webhook URL for alert notifications. | `string` | n/a | yes |
 | <a name="input_terraform_spn_object_id"></a> [terraform\_spn\_object\_id](#input\_terraform\_spn\_object\_id) | The Object ID of the Terraform Service Principal for Key Vault access. | `string` | `null` | no |
 | <a name="input_use_ipam"></a> [use\_ipam](#input\_use\_ipam) | Whether to use Azure Network Manager IPAM for IP address allocation. If true, network\_manager\_ipam\_pool\_id is required. If false, vnet\_address\_space is required. | `bool` | `true` | no |
+| <a name="input_virtual_hub_express_route_gateways"></a> [virtual\_hub\_express\_route\_gateways](#input\_virtual\_hub\_express\_route\_gateways) | Map of vWAN hub ExpressRoute gateways (Microsoft.Network/expressRouteGateways) to monitor. This landing zone uses these, not classic virtual network gateways. | <pre>map(object({<br/>    gateway_name        = string<br/>    resource_group_name = string<br/>  }))</pre> | `{}` | no |
 | <a name="input_virtual_hub_id"></a> [virtual\_hub\_id](#input\_virtual\_hub\_id) | The resource ID of the Virtual WAN Hub to connect the VNet to. | `string` | n/a | yes |
 | <a name="input_vnet_address_space"></a> [vnet\_address\_space](#input\_vnet\_address\_space) | The address space for the VNet (e.g., 10.100.0.0/24). Required when use\_ipam is false. Will be split into /26 subnets. | `string` | `null` | no |
 | <a name="input_vnet_name"></a> [vnet\_name](#input\_vnet\_name) | Override for the VNet name. If not provided, a name will be generated. | `string` | `null` | no |

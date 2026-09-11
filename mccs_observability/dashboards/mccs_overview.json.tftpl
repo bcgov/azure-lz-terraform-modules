@@ -114,6 +114,7 @@
             "resourceGroup": "$${resource_group}",
             "resources": [
               {
+                "subscription": "$${subscription}",
                 "resourceGroup": "$${resource_group}",
                 "resourceName": "$${circuit}"
               }
@@ -193,6 +194,7 @@
             "resourceGroup": "$${resource_group}",
             "resources": [
               {
+                "subscription": "$${subscription}",
                 "resourceGroup": "$${resource_group}",
                 "resourceName": "$${circuit}"
               }
@@ -272,6 +274,7 @@
             "resourceGroup": "$${resource_group}",
             "resources": [
               {
+                "subscription": "$${subscription}",
                 "resourceGroup": "$${resource_group}",
                 "resourceName": "$${circuit}"
               }
@@ -349,6 +352,7 @@
             "resourceGroup": "$${resource_group}",
             "resources": [
               {
+                "subscription": "$${subscription}",
                 "resourceGroup": "$${resource_group}",
                 "resourceName": "$${circuit}"
               }
@@ -435,6 +439,7 @@
             "resourceGroup": "$${resource_group}",
             "resources": [
               {
+                "subscription": "$${subscription}",
                 "resourceGroup": "$${resource_group}",
                 "resourceName": "$${circuit}"
               }
@@ -560,6 +565,7 @@
             "resourceGroup": "$${resource_group}",
             "resources": [
               {
+                "subscription": "$${subscription}",
                 "resourceGroup": "$${resource_group}",
                 "resourceName": "$${circuit}"
               }
@@ -674,6 +680,7 @@
             "resourceGroup": "$${resource_group}",
             "resources": [
               {
+                "subscription": "$${subscription}",
                 "resourceGroup": "$${resource_group}",
                 "resourceName": "$${circuit}"
               }
@@ -782,6 +789,7 @@
             "resourceGroup": "$${resource_group}",
             "resources": [
               {
+                "subscription": "$${subscription}",
                 "resourceGroup": "$${resource_group}",
                 "resourceName": "$${circuit}"
               }
@@ -890,6 +898,7 @@
             "resourceGroup": "$${resource_group}",
             "resources": [
               {
+                "subscription": "$${subscription}",
                 "resourceGroup": "$${resource_group}",
                 "resourceName": "$${circuit}"
               }
@@ -1011,6 +1020,7 @@
             "resourceGroup": "$${resource_group}",
             "resources": [
               {
+                "subscription": "$${subscription}",
                 "resourceGroup": "$${resource_group}",
                 "resourceName": "$${circuit}"
               }
@@ -1119,6 +1129,7 @@
             "resourceGroup": "$${resource_group}",
             "resources": [
               {
+                "subscription": "$${subscription}",
                 "resourceGroup": "$${resource_group}",
                 "resourceName": "$${circuit}"
               }
@@ -1328,6 +1339,7 @@
             "resourceGroup": "$${resource_group}",
             "resources": [
               {
+                "subscription": "$${subscription}",
                 "resourceGroup": "$${resource_group}",
                 "resourceName": "$${circuit}"
               }
@@ -1351,6 +1363,7 @@
             "resourceGroup": "$${resource_group}",
             "resources": [
               {
+                "subscription": "$${subscription}",
                 "resourceGroup": "$${resource_group}",
                 "resourceName": "$${circuit}"
               }
@@ -1375,6 +1388,7 @@
             "resourceGroup": "$${resource_group}",
             "resources": [
               {
+                "subscription": "$${subscription}",
                 "resourceGroup": "$${resource_group}",
                 "resourceName": "$${circuit}"
               }
@@ -1399,6 +1413,7 @@
             "resourceGroup": "$${resource_group}",
             "resources": [
               {
+                "subscription": "$${subscription}",
                 "resourceGroup": "$${resource_group}",
                 "resourceName": "$${circuit}"
               }
@@ -1449,8 +1464,12 @@
   "templating": {
     "list": [
       {
-        "current": {},
-        "hide": 0,
+        "current": {
+          "selected": true,
+          "text": "Azure Monitor",
+          "value": "azure-monitor-oob"
+        },
+        "hide": 2,
         "includeAll": false,
         "label": "Data Source",
         "multi": false,
@@ -1474,7 +1493,7 @@
           "uid": "$${datasource}"
         },
         "definition": "",
-        "hide": 0,
+        "hide": 2,
         "includeAll": false,
         "label": "Subscription",
         "multi": false,
@@ -1501,7 +1520,7 @@
           "uid": "$${datasource}"
         },
         "definition": "",
-        "hide": 0,
+        "hide": 2,
         "includeAll": false,
         "label": "Resource Group",
         "multi": false,
@@ -1521,22 +1540,18 @@
       {
         "current": {
           "selected": true,
-          "text": [
-            "All"
-          ],
-          "value": [
-            "$__all"
-          ]
+          "text": "%{ if length(circuit_names) > 0 }${circuit_names[0]}%{ else }%{ endif }",
+          "value": "%{ if length(circuit_names) > 0 }${circuit_names[0]}%{ else }%{ endif }"
         },
         "datasource": {
           "type": "grafana-azure-monitor-datasource",
           "uid": "$${datasource}"
         },
         "definition": "",
-        "hide": 0,
-        "includeAll": true,
+        "hide": 2,
+        "includeAll": false,
         "label": "Circuit",
-        "multi": true,
+        "multi": false,
         "name": "circuit",
         "options": [],
         "query": {

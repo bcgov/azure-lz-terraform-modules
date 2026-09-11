@@ -85,7 +85,8 @@
         {
           "azureLogAnalytics": {
             "query": "AzureActivity | where CategoryValue == 'Administrative' and TimeGenerated > ago(24h) | summarize Events = count()",
-            "resultFormat": "table"
+            "resultFormat": "table",
+            "resources": ["${log_analytics_workspace_id}"]
           },
           "datasource": {
             "type": "grafana-azure-monitor-datasource",
@@ -157,7 +158,8 @@
         {
           "azureLogAnalytics": {
             "query": "AzureActivity | where CategoryValue == 'Administrative' and ActivityStatusValue == 'Failed' and TimeGenerated > ago(24h) | summarize Failed = count()",
-            "resultFormat": "table"
+            "resultFormat": "table",
+            "resources": ["${log_analytics_workspace_id}"]
           },
           "datasource": {
             "type": "grafana-azure-monitor-datasource",
@@ -221,7 +223,8 @@
         {
           "azureLogAnalytics": {
             "query": "AzureActivity | where OperationNameValue contains 'ROLEASSIGNMENTS' and TimeGenerated > ago(7d) | summarize Changes = count()",
-            "resultFormat": "table"
+            "resultFormat": "table",
+            "resources": ["${log_analytics_workspace_id}"]
           },
           "datasource": {
             "type": "grafana-azure-monitor-datasource",
@@ -331,7 +334,8 @@
         {
           "azureLogAnalytics": {
             "query": "AzureActivity | where CategoryValue == 'Administrative' | summarize Events = count() by bin(TimeGenerated, 1h) | order by TimeGenerated asc",
-            "resultFormat": "time_series"
+            "resultFormat": "time_series",
+            "resources": ["${log_analytics_workspace_id}"]
           },
           "datasource": {
             "type": "grafana-azure-monitor-datasource",
@@ -428,7 +432,8 @@
         {
           "azureLogAnalytics": {
             "query": "AzureActivity | where CategoryValue == 'Administrative' and ActivityStatusValue == 'Failed' | summarize Failed = count() by bin(TimeGenerated, 1h)",
-            "resultFormat": "time_series"
+            "resultFormat": "time_series",
+            "resources": ["${log_analytics_workspace_id}"]
           },
           "datasource": {
             "type": "grafana-azure-monitor-datasource",
@@ -516,7 +521,8 @@
         {
           "azureLogAnalytics": {
             "query": "AzureActivity | where CategoryValue == 'Administrative' | project TimeGenerated, Caller, Operation = OperationNameValue, ResourceGroup, Status = ActivityStatusValue | order by TimeGenerated desc | take 100",
-            "resultFormat": "table"
+            "resultFormat": "table",
+            "resources": ["${log_analytics_workspace_id}"]
           },
           "datasource": {
             "type": "grafana-azure-monitor-datasource",
@@ -591,7 +597,8 @@
         {
           "azureLogAnalytics": {
             "query": "AzureActivity | where OperationNameValue contains 'ROLEASSIGNMENTS' | project TimeGenerated, Caller, Operation = OperationNameValue, ResourceGroup, Status = ActivityStatusValue | order by TimeGenerated desc | take 100",
-            "resultFormat": "table"
+            "resultFormat": "table",
+            "resources": ["${log_analytics_workspace_id}"]
           },
           "datasource": {
             "type": "grafana-azure-monitor-datasource",
@@ -666,7 +673,8 @@
         {
           "azureLogAnalytics": {
             "query": "AzureActivity | where ActivityStatusValue == 'Failed' | project TimeGenerated, Caller, Operation = OperationNameValue, ResourceGroup, Status = ActivityStatusValue | order by TimeGenerated desc | take 100",
-            "resultFormat": "table"
+            "resultFormat": "table",
+            "resources": ["${log_analytics_workspace_id}"]
           },
           "datasource": {
             "type": "grafana-azure-monitor-datasource",
@@ -741,7 +749,8 @@
         {
           "azureLogAnalytics": {
             "query": "AzureActivity | where CategoryValue == 'ServiceHealth' | project TimeGenerated, Operation = OperationNameValue, Level, ResourceId | order by TimeGenerated desc | take 50",
-            "resultFormat": "table"
+            "resultFormat": "table",
+            "resources": ["${log_analytics_workspace_id}"]
           },
           "datasource": {
             "type": "grafana-azure-monitor-datasource",
@@ -784,8 +793,12 @@
   "templating": {
     "list": [
       {
-        "current": {},
-        "hide": 0,
+        "current": {
+          "selected": true,
+          "text": "Azure Monitor",
+          "value": "azure-monitor-oob"
+        },
+        "hide": 2,
         "includeAll": false,
         "label": "Data Source",
         "multi": false,
@@ -809,7 +822,7 @@
           "uid": "$${datasource}"
         },
         "definition": "",
-        "hide": 0,
+        "hide": 2,
         "includeAll": false,
         "label": "Subscription",
         "multi": false,

@@ -2,10 +2,19 @@
 # RBAC Assignments for Grafana Managed Identity
 #------------------------------------------------------------------------------
 
-# Grafana needs Monitoring Reader on the connectivity subscription
+# Grafana needs Monitoring Reader for Azure Monitor metrics/logs, and Reader
+# for Azure Resource Graph. Both are assigned at the landing zone management
+# group when grafana_monitoring_management_group_id is set; otherwise they
+# stay on the connectivity subscription.
 resource "azurerm_role_assignment" "grafana_monitoring_reader" {
-  scope                = "/subscriptions/${local.subscription_id_connectivity}"
+  scope                = local.grafana_monitoring_scope
   role_definition_name = "Monitoring Reader"
+  principal_id         = azurerm_dashboard_grafana.this.identity[0].principal_id
+}
+
+resource "azurerm_role_assignment" "grafana_reader" {
+  scope                = local.grafana_monitoring_scope
+  role_definition_name = "Reader"
   principal_id         = azurerm_dashboard_grafana.this.identity[0].principal_id
 }
 
@@ -43,9 +52,27 @@ resource "azurerm_role_assignment" "grafana_vpn_gateway_reader" {
   principal_id         = azurerm_dashboard_grafana.this.identity[0].principal_id
 }
 
+resource "azurerm_role_assignment" "grafana_firewall_reader" {
+  for_each = local.azure_firewall_ids
+
+  scope                = each.value
+  role_definition_name = "Reader"
+  principal_id         = azurerm_dashboard_grafana.this.identity[0].principal_id
+}
+
 # Grafana needs access to Log Analytics
 resource "azurerm_role_assignment" "grafana_log_analytics_reader" {
   scope                = azurerm_log_analytics_workspace.this.id
+  role_definition_name = "Log Analytics Reader"
+  principal_id         = azurerm_dashboard_grafana.this.identity[0].principal_id
+}
+
+# When Platform Changes reads the CAF/platform workspace instead of this
+# module's workspace, grant the same reader there.
+resource "azurerm_role_assignment" "grafana_activity_log_workspace_reader" {
+  count = var.activity_log_workspace_id != null && var.activity_log_workspace_id != azurerm_log_analytics_workspace.this.id ? 1 : 0
+
+  scope                = var.activity_log_workspace_id
   role_definition_name = "Log Analytics Reader"
   principal_id         = azurerm_dashboard_grafana.this.identity[0].principal_id
 }

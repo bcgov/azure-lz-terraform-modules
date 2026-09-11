@@ -90,6 +90,34 @@ locals {
 
   default_vpn_gateway_resource_group = length(local.vpn_gateway_names) > 0 ? [for k, v in var.vpn_gateways : v.resource_group_name][0] : ""
 
+  azure_firewall_ids = {
+    for k, v in data.azurerm_firewall.azure_firewalls : k => v.id
+  }
+
+  azure_firewall_names = [
+    for k, v in var.azure_firewalls : v.firewall_name
+  ]
+
+  default_firewall_resource_group = length(local.azure_firewall_names) > 0 ? [for k, v in var.azure_firewalls : v.resource_group_name][0] : ""
+
+  virtual_hub_express_route_gateway_names = [
+    for k, v in var.virtual_hub_express_route_gateways : v.gateway_name
+  ]
+
+  default_virtual_hub_express_route_gateway_resource_group = length(var.virtual_hub_express_route_gateways) > 0 ? [for k, v in var.virtual_hub_express_route_gateways : v.resource_group_name][0] : local.virtual_hub_resource_group
+
+  # vWAN hub ER gateways are Microsoft.Network/expressRouteGateways, not
+  # classic virtualNetworkGateways. The ExpressRoute Health gateway picker
+  # and metric namespace follow whichever map is populated.
+  express_route_gateway_metric_namespace = length(var.virtual_hub_express_route_gateways) > 0 ? "microsoft.network/expressroutegateways" : "microsoft.network/virtualnetworkgateways"
+
+  activity_log_workspace_id = coalesce(var.activity_log_workspace_id, azurerm_log_analytics_workspace.this.id)
+
+  # Concrete subscription GUIDs for Azure Resource Graph. The plugin does
+  # not treat subscriptions: ["$__all"] as "every readable subscription" —
+  # ARG gets a literal $__all and returns no data.
+  grafana_arg_subscription_ids = var.grafana_monitoring_management_group_id != null ? sort(tolist(data.azurerm_management_group.grafana_scope[0].all_subscription_ids)) : [local.subscription_id_connectivity]
+
   # Dashboard configuration - extract unique resource groups and circuit names
   expressroute_resource_groups = distinct([
     for k, v in var.expressroute_circuits : v.resource_group_name
@@ -101,5 +129,9 @@ locals {
 
   # First circuit's resource group as default (for dashboard variable default)
   default_expressroute_resource_group = length(local.expressroute_resource_groups) > 0 ? local.expressroute_resource_groups[0] : ""
+
+  # Grafana Azure Monitor / Resource Graph scope. MG-level access lets the
+  # managed identity list every subscription under the landing zone.
+  grafana_monitoring_scope = var.grafana_monitoring_management_group_id != null ? "/providers/Microsoft.Management/managementGroups/${var.grafana_monitoring_management_group_id}" : "/subscriptions/${local.subscription_id_connectivity}"
 
 }

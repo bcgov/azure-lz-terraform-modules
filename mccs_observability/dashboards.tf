@@ -26,6 +26,12 @@ locals {
   grafana_auth = local.grafana_token_from_var ? var.grafana_service_account_token : (
     local.grafana_token_from_keyvault ? data.azurerm_key_vault_secret.grafana_token[0].value : "placeholder"
   )
+
+  # Azure Managed Grafana's built-in Azure Monitor source (MSI). Custom
+  # grafana_data_source copies use a Grafana 12-incompatible credential
+  # shape and break Log Analytics unless they also set azureCredentials.
+  azure_monitor_uid          = "azure-monitor-oob"
+  log_analytics_workspace_id = azurerm_log_analytics_workspace.this.id
 }
 
 # Read the stored service account token when none was passed in
@@ -48,29 +54,68 @@ provider "grafana" {
 # Grafana Folder for MCCS Dashboards
 #------------------------------------------------------------------------------
 
+resource "grafana_folder" "home" {
+  count = local.can_provision_dashboards ? 1 : 0
+
+  title = "Landing Zone Home"
+  uid   = "lz-home"
+
+  depends_on = [azurerm_dashboard_grafana.this]
+}
+
 resource "grafana_folder" "mccs" {
   count = local.can_provision_dashboards ? 1 : 0
 
-  title = "MCCS Observability"
+  title = "Connectivity"
   uid   = "mccs-observability"
 
   depends_on = [azurerm_dashboard_grafana.this]
 }
 
-#------------------------------------------------------------------------------
-# Grafana Folder for Landing Zone Operations Dashboards
-#
-# Broader landing-zone views for administrators (vWAN hub health, VPN
-# connectivity) alongside the MCCS multi-cloud connectivity folder.
-#------------------------------------------------------------------------------
-
 resource "grafana_folder" "lz_operations" {
   count = local.can_provision_dashboards ? 1 : 0
 
-  title = "Landing Zone Operations"
+  title = "Platform"
   uid   = "lz-operations"
 
   depends_on = [azurerm_dashboard_grafana.this]
+}
+
+resource "grafana_folder" "security" {
+  count = local.can_provision_dashboards ? 1 : 0
+
+  title = "Security"
+  uid   = "lz-security"
+
+  depends_on = [azurerm_dashboard_grafana.this]
+}
+
+#------------------------------------------------------------------------------
+# Dashboard: Landing Zone Home
+#------------------------------------------------------------------------------
+
+resource "grafana_dashboard" "landing_zone_home" {
+  count = local.can_provision_dashboards ? 1 : 0
+
+  folder    = grafana_folder.home[0].id
+  overwrite = true
+
+  config_json = templatefile("${path.module}/dashboards/landing_zone_home.json.tftpl", {
+    subscription_id           = local.subscription_id_connectivity
+    azure_monitor_uid         = local.azure_monitor_uid
+    arg_subscriptions         = jsonencode(local.grafana_arg_subscription_ids)
+    activity_log_workspace_id = local.activity_log_workspace_id
+    er_resource_group         = local.default_expressroute_resource_group
+    er_circuit_name           = length(local.expressroute_circuit_names) > 0 ? local.expressroute_circuit_names[0] : ""
+    hub_resource_group        = local.virtual_hub_resource_group
+    hub_name                  = local.virtual_hub_name
+    vpn_resource_group        = local.default_vpn_gateway_resource_group
+    vpn_gateway_name          = length(local.vpn_gateway_names) > 0 ? local.vpn_gateway_names[0] : ""
+    fw_resource_group         = local.default_firewall_resource_group
+    fw_name                   = length(local.azure_firewall_names) > 0 ? local.azure_firewall_names[0] : ""
+  })
+
+  depends_on = [grafana_folder.home]
 }
 
 #------------------------------------------------------------------------------
@@ -87,10 +132,12 @@ resource "grafana_dashboard" "mccs_overview" {
   # Use templatefile() to inject known circuit configuration
   # Grafana template variables are escaped with $${...}
   config_json = templatefile("${path.module}/dashboards/mccs_overview.json.tftpl", {
-    subscription_id        = local.subscription_id_connectivity
-    default_resource_group = local.default_expressroute_resource_group
-    circuit_names          = local.expressroute_circuit_names
-    circuits               = var.expressroute_circuits
+    subscription_id            = local.subscription_id_connectivity
+    default_resource_group     = local.default_expressroute_resource_group
+    circuit_names              = local.expressroute_circuit_names
+    circuits                   = var.expressroute_circuits
+    azure_monitor_uid          = local.azure_monitor_uid
+    log_analytics_workspace_id = local.log_analytics_workspace_id
   })
 
   depends_on = [grafana_folder.mccs]
@@ -108,11 +155,16 @@ resource "grafana_dashboard" "expressroute_health" {
   overwrite = true
 
   config_json = templatefile("${path.module}/dashboards/expressroute_health.json.tftpl", {
-    subscription_id        = local.subscription_id_connectivity
-    default_resource_group = local.default_expressroute_resource_group
-    circuit_names          = local.expressroute_circuit_names
-    circuits               = var.expressroute_circuits
-    log_analytics_uid      = grafana_data_source.log_analytics[0].uid
+    subscription_id                = local.subscription_id_connectivity
+    default_resource_group         = local.default_expressroute_resource_group
+    default_gateway_resource_group = local.default_virtual_hub_express_route_gateway_resource_group
+    gateway_metric_namespace       = local.express_route_gateway_metric_namespace
+    default_gateway_name           = length(local.virtual_hub_express_route_gateway_names) > 0 ? local.virtual_hub_express_route_gateway_names[0] : ""
+    circuit_names                  = local.expressroute_circuit_names
+    circuits                       = var.expressroute_circuits
+    azure_monitor_uid              = local.azure_monitor_uid
+    log_analytics_uid              = local.azure_monitor_uid
+    log_analytics_workspace_id     = local.log_analytics_workspace_id
   })
 
   depends_on = [grafana_folder.mccs]
@@ -134,13 +186,13 @@ resource "grafana_data_source" "azure_monitor" {
   type = "grafana-azure-monitor-datasource"
 
   json_data_encoded = jsonencode({
+    azureCredentials = {
+      authType = "msi"
+    }
     cloudName               = "azuremonitor"
     subscriptionId          = local.subscription_id_connectivity
-    azureAuthType           = "msi"
     tenantId                = data.azurerm_client_config.current.tenant_id
     azureLogAnalyticsSameAs = true
-    # Note: When using MSI auth, no clientId is needed - Azure Managed Grafana
-    # automatically uses its system-assigned managed identity
   })
 
   # Don't set as default - the built-in Azure Monitor data source is the default
@@ -161,12 +213,14 @@ resource "grafana_data_source" "log_analytics" {
   type = "grafana-azure-monitor-datasource"
 
   json_data_encoded = jsonencode({
+    azureCredentials = {
+      authType = "msi"
+    }
     cloudName                    = "azuremonitor"
     subscriptionId               = local.subscription_id_connectivity
-    azureAuthType                = "msi"
     tenantId                     = data.azurerm_client_config.current.tenant_id
     logAnalyticsDefaultWorkspace = azurerm_log_analytics_workspace.this.id
-    azureLogAnalyticsSameAs      = false
+    azureLogAnalyticsSameAs      = true
   })
 
   depends_on = [azurerm_dashboard_grafana.this]
@@ -227,16 +281,18 @@ resource "azurerm_key_vault_secret" "grafana_service_account_token" {
 resource "grafana_dashboard" "vwan_hub_health" {
   count = local.can_provision_dashboards ? 1 : 0
 
-  folder    = grafana_folder.lz_operations[0].id
+  folder    = grafana_folder.mccs[0].id
   overwrite = true
 
   config_json = templatefile("${path.module}/dashboards/vwan_hub_health.json.tftpl", {
-    subscription_id        = local.subscription_id_connectivity
-    default_resource_group = local.virtual_hub_resource_group
-    hub_name               = local.virtual_hub_name
+    subscription_id            = local.subscription_id_connectivity
+    default_resource_group     = local.virtual_hub_resource_group
+    hub_name                   = local.virtual_hub_name
+    azure_monitor_uid          = local.azure_monitor_uid
+    log_analytics_workspace_id = local.log_analytics_workspace_id
   })
 
-  depends_on = [grafana_folder.lz_operations]
+  depends_on = [grafana_folder.mccs]
 }
 
 #------------------------------------------------------------------------------
@@ -249,16 +305,41 @@ resource "grafana_dashboard" "vwan_hub_health" {
 resource "grafana_dashboard" "vpn_gateway_health" {
   count = local.can_provision_dashboards && length(var.vpn_gateways) > 0 ? 1 : 0
 
-  folder    = grafana_folder.lz_operations[0].id
+  folder    = grafana_folder.mccs[0].id
   overwrite = true
 
   config_json = templatefile("${path.module}/dashboards/vpn_gateway_health.json.tftpl", {
-    subscription_id        = local.subscription_id_connectivity
-    default_resource_group = local.default_vpn_gateway_resource_group
-    log_analytics_uid      = grafana_data_source.log_analytics[0].uid
+    subscription_id            = local.subscription_id_connectivity
+    default_resource_group     = local.default_vpn_gateway_resource_group
+    default_gateway_name       = local.vpn_gateway_names[0]
+    azure_monitor_uid          = local.azure_monitor_uid
+    log_analytics_uid          = local.azure_monitor_uid
+    log_analytics_workspace_id = local.log_analytics_workspace_id
   })
 
-  depends_on = [grafana_folder.lz_operations]
+  depends_on = [grafana_folder.mccs]
+}
+
+#------------------------------------------------------------------------------
+# Connectivity: Dashboard - Azure Firewall
+#------------------------------------------------------------------------------
+
+resource "grafana_dashboard" "azure_firewall_health" {
+  count = local.can_provision_dashboards && length(var.azure_firewalls) > 0 ? 1 : 0
+
+  folder    = grafana_folder.mccs[0].id
+  overwrite = true
+
+  config_json = templatefile("${path.module}/dashboards/azure_firewall_health.json.tftpl", {
+    subscription_id            = local.subscription_id_connectivity
+    default_resource_group     = local.default_firewall_resource_group
+    default_firewall_name      = local.azure_firewall_names[0]
+    azure_monitor_uid          = local.azure_monitor_uid
+    log_analytics_uid          = local.azure_monitor_uid
+    log_analytics_workspace_id = local.activity_log_workspace_id
+  })
+
+  depends_on = [grafana_folder.mccs]
 }
 
 #------------------------------------------------------------------------------
@@ -275,8 +356,10 @@ resource "grafana_dashboard" "platform_changes" {
   overwrite = true
 
   config_json = templatefile("${path.module}/dashboards/platform_changes.json.tftpl", {
-    subscription_id   = local.subscription_id_connectivity
-    log_analytics_uid = grafana_data_source.log_analytics[0].uid
+    subscription_id            = local.subscription_id_connectivity
+    azure_monitor_uid          = local.azure_monitor_uid
+    log_analytics_uid          = local.azure_monitor_uid
+    log_analytics_workspace_id = local.activity_log_workspace_id
   })
 
   depends_on = [grafana_folder.lz_operations]
@@ -296,7 +379,9 @@ resource "grafana_dashboard" "resource_inventory_policy" {
   overwrite = true
 
   config_json = templatefile("${path.module}/dashboards/resource_inventory_policy.json.tftpl", {
-    subscription_id = local.subscription_id_connectivity
+    subscription_id   = local.subscription_id_connectivity
+    azure_monitor_uid = local.azure_monitor_uid
+    arg_subscriptions = jsonencode(local.grafana_arg_subscription_ids)
   })
 
   depends_on = [grafana_folder.lz_operations]
@@ -313,14 +398,16 @@ resource "grafana_dashboard" "resource_inventory_policy" {
 resource "grafana_dashboard" "security_posture" {
   count = local.can_provision_dashboards ? 1 : 0
 
-  folder    = grafana_folder.lz_operations[0].id
+  folder    = grafana_folder.security[0].id
   overwrite = true
 
   config_json = templatefile("${path.module}/dashboards/security_posture.json.tftpl", {
-    subscription_id = local.subscription_id_connectivity
+    subscription_id   = local.subscription_id_connectivity
+    azure_monitor_uid = local.azure_monitor_uid
+    arg_subscriptions = jsonencode(local.grafana_arg_subscription_ids)
   })
 
-  depends_on = [grafana_folder.lz_operations]
+  depends_on = [grafana_folder.security]
 }
 
 #------------------------------------------------------------------------------
@@ -333,13 +420,15 @@ resource "grafana_dashboard" "security_posture" {
 resource "grafana_dashboard" "key_vault_access" {
   count = local.can_provision_dashboards ? 1 : 0
 
-  folder    = grafana_folder.lz_operations[0].id
+  folder    = grafana_folder.security[0].id
   overwrite = true
 
   config_json = templatefile("${path.module}/dashboards/key_vault_access.json.tftpl", {
-    subscription_id   = local.subscription_id_connectivity
-    log_analytics_uid = grafana_data_source.log_analytics[0].uid
+    subscription_id            = local.subscription_id_connectivity
+    azure_monitor_uid          = local.azure_monitor_uid
+    log_analytics_uid          = local.azure_monitor_uid
+    log_analytics_workspace_id = local.log_analytics_workspace_id
   })
 
-  depends_on = [grafana_folder.lz_operations]
+  depends_on = [grafana_folder.security]
 }

@@ -91,6 +91,7 @@
             "resourceGroup": "$${resource_group}",
             "resources": [
               {
+                "subscription": "$${subscription}",
                 "resourceGroup": "$${resource_group}",
                 "resourceName": "${hub_name}"
               }
@@ -174,6 +175,7 @@
             "resourceGroup": "$${resource_group}",
             "resources": [
               {
+                "subscription": "$${subscription}",
                 "resourceGroup": "$${resource_group}",
                 "resourceName": "${hub_name}"
               }
@@ -249,6 +251,7 @@
             "resourceGroup": "$${resource_group}",
             "resources": [
               {
+                "subscription": "$${subscription}",
                 "resourceGroup": "$${resource_group}",
                 "resourceName": "${hub_name}"
               }
@@ -370,6 +373,7 @@
             "resourceGroup": "$${resource_group}",
             "resources": [
               {
+                "subscription": "$${subscription}",
                 "resourceGroup": "$${resource_group}",
                 "resourceName": "${hub_name}"
               }
@@ -478,6 +482,7 @@
             "resourceGroup": "$${resource_group}",
             "resources": [
               {
+                "subscription": "$${subscription}",
                 "resourceGroup": "$${resource_group}",
                 "resourceName": "${hub_name}"
               }
@@ -586,6 +591,7 @@
             "resourceGroup": "$${resource_group}",
             "resources": [
               {
+                "subscription": "$${subscription}",
                 "resourceGroup": "$${resource_group}",
                 "resourceName": "${hub_name}"
               }
@@ -733,6 +739,7 @@
             "resourceGroup": "$${resource_group}",
             "resources": [
               {
+                "subscription": "$${subscription}",
                 "resourceGroup": "$${resource_group}",
                 "resourceName": "${hub_name}"
               }
@@ -841,6 +848,7 @@
             "resourceGroup": "$${resource_group}",
             "resources": [
               {
+                "subscription": "$${subscription}",
                 "resourceGroup": "$${resource_group}",
                 "resourceName": "${hub_name}"
               }
@@ -949,6 +957,7 @@
             "resourceGroup": "$${resource_group}",
             "resources": [
               {
+                "subscription": "$${subscription}",
                 "resourceGroup": "$${resource_group}",
                 "resourceName": "${hub_name}"
               }
@@ -977,8 +986,12 @@
   "templating": {
     "list": [
       {
-        "current": {},
-        "hide": 0,
+        "current": {
+          "selected": true,
+          "text": "Azure Monitor",
+          "value": "azure-monitor-oob"
+        },
+        "hide": 2,
         "includeAll": false,
         "label": "Data Source",
         "multi": false,
@@ -1002,7 +1015,7 @@
           "uid": "$${datasource}"
         },
         "definition": "",
-        "hide": 0,
+        "hide": 2,
         "includeAll": false,
         "label": "Subscription",
         "multi": false,
@@ -1029,7 +1042,7 @@
           "uid": "$${datasource}"
         },
         "definition": "",
-        "hide": 0,
+        "hide": 2,
         "includeAll": false,
         "label": "Resource Group",
         "multi": false,
