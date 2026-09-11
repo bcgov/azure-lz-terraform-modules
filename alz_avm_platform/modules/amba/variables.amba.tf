@@ -84,3 +84,8 @@ variable "amba_user_assigned_managed_identity_name" {
     error_message = "The resource name must start with a letter or number, have a length between 3 and 128 characters and can only contain a combination of alphanumeric characters, hyphens and underscores."
   }
 }
+
+# variable "root_management_group_name" {
+#   type = string
+#   description = "The name (ID) of the management group."
+# }
