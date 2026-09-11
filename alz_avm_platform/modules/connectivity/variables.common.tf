@@ -4,6 +4,12 @@ variable "subscription_id_connectivity" {
   default     = ""
 }
 
+variable "subscription_id_management" {
+  type        = string
+  description = "Subscription ID to use for \"management\" resources."
+  default     = ""
+}
+
 variable "location" {
   description = "(Required) The Azure Region where the resource should exist."
   type        = string

@@ -1,14 +1,14 @@
 locals {
-  address_ranges_yaml = file("${path.module}/address_ranges.yaml")
-  address_ranges_map  = yamldecode(local.address_ranges_yaml)
+  subscription_id_connectivity = "6b779108-96a1-48cd-8c7a-804c5a924d44"
+  subscription_id_identity     = "561b8413-cd9f-4b91-8745-c5937d8b3a61"
+  subscription_id_management   = "7eaf8022-ff10-43bd-851b-54c11c0fb515"
+  subscription_id_security     = "af6fee0c-9967-44d0-86f9-4bd603ffa174"
 
-  rfc_1918_address_ranges   = local.address_ranges_map["rfc_1918_address_ranges"]
-  onpremises_address_ranges = local.address_ranges_map["onpremises_address_ranges"]
-  azure_address_ranges      = local.address_ranges_map["azure_address_ranges"]
+  location = "Canada Central"
 
-  onprem_dns_server_ips                     = local.address_ranges_map["onprem_dns_server_ips"]
-  github_actions_ip_ranges                  = local.address_ranges_map["github_actions_ip_ranges"]
-  github_enterprise_ip_ranges               = local.address_ranges_map["github_enterprise_ip_ranges"]
-  github_runners_vnet_address_range         = local.address_ranges_map["github_runners_vnet_address_range"]
-  github_runners_target_vnet_address_ranges = local.address_ranges_map["github_runners_target_vnet_address_ranges"]
+  email_security_contact = "cloud.pathfinder@gov.bc.ca"
+
+  tags = {
+    "deployedBy" : "AVM"
+  }
 }

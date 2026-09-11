@@ -17,3 +17,11 @@ module "alz" {
   policy_default_values        = var.policy_default_values
   policy_assignments_to_modify = var.policy_assignments_to_modify
 }
+
+module "platform_subscriptions" { # TODO: Move to management sub-module
+  source = "../platform_subscriptions"
+
+  # Required Configuration
+  location               = var.location
+  platform_subscriptions = var.platform_subscriptions
+}

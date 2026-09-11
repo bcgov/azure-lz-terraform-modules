@@ -10,7 +10,7 @@ module "avm-ptn-alz-management" {
   # Required Variables
   automation_account_name = var.automation_account_name
   location                = var.location
-  resource_group_name     = var.resource_group_name
+  resource_group_name     = var.management_resources_resource_group_name
 
   # Optional Variables
   automation_account_encryption                              = var.automation_account_encryption
@@ -20,7 +20,6 @@ module "avm-ptn-alz-management" {
   automation_account_public_network_access_enabled           = var.automation_account_public_network_access_enabled
   automation_account_sku_name                                = var.automation_account_sku_name
   data_collection_rules                                      = var.data_collection_rules
-  enable_telemetry                                           = var.enable_telemetry
   linked_automation_account_creation_enabled                 = var.linked_automation_account_creation_enabled
   log_analytics_solution_plans                               = var.log_analytics_solution_plans
   log_analytics_workspace_allow_resource_only_permissions    = var.log_analytics_workspace_allow_resource_only_permissions
@@ -37,7 +36,5 @@ module "avm-ptn-alz-management" {
   log_analytics_workspace_sku                                = var.log_analytics_workspace_sku
   resource_group_creation_enabled                            = var.resource_group_creation_enabled
   sentinel_onboarding                                        = var.sentinel_onboarding
-  tags                                                       = var.tags
-  timeouts                                                   = var.timeouts
   user_assigned_managed_identities                           = var.user_assigned_managed_identities
 }

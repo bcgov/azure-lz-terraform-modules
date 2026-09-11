@@ -1,11 +1,11 @@
-# output "management_groups" {
-#   value = module.management_groups
-# }
-
-output "management_group_resource_ids" {
-  description = "A map of management group names to their resource ids."
-  value       = module.management_groups.management_group_resource_ids
+output "management_groups" {
+  value = module.management_groups
 }
+
+# output "management_group_resource_ids" {
+#   description = "A map of management group names to their resource ids."
+#   value       = module.management_groups.management_group_resource_ids
+# }
 
 # output "policy_assignment_identity_ids" {
 #   description = "A map of policy assignment names to their identity ids."
