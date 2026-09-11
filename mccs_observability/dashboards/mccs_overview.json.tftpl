@@ -67,6 +67,14 @@
               {
                 "color": "green",
                 "value": null
+              },
+              {
+                "color": "yellow",
+                "value": 1
+              },
+              {
+                "color": "red",
+                "value": 1000
               }
             ]
           },
@@ -287,7 +295,7 @@
         "type": "grafana-azure-monitor-datasource",
         "uid": "$${datasource}"
       },
-      "description": "Highest bandwidth utilization across all circuits",
+      "description": "Average inbound traffic across selected circuits (bits/sec)",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -302,22 +310,10 @@
               {
                 "color": "green",
                 "value": null
-              },
-              {
-                "color": "yellow",
-                "value": 70
-              },
-              {
-                "color": "orange",
-                "value": 80
-              },
-              {
-                "color": "red",
-                "value": 95
               }
             ]
           },
-          "unit": "percent"
+          "unit": "bps"
         },
         "overrides": []
       },
@@ -368,25 +364,8 @@
           "subscription": "$${subscription}"
         }
       ],
-      "title": "Peak Bandwidth Utilization",
-      "transformations": [
-        {
-          "id": "calculateField",
-          "options": {
-            "alias": "Utilization %",
-            "binary": {
-              "left": "BitsInPerSecond",
-              "operator": "/",
-              "reducer": "sum",
-              "right": "1000000000"
-            },
-            "mode": "binary",
-            "reduce": {
-              "reducer": "sum"
-            }
-          }
-        }
-      ],
+      "title": "Inbound Bandwidth (avg)",
+      "transformations": [],
       "type": "stat"
     },
     {
@@ -414,11 +393,11 @@
               },
               {
                 "color": "red",
-                "value": 3
+                "value": 1000
               }
             ]
           },
-          "unit": "short"
+          "unit": "bps"
         },
         "overrides": []
       },
@@ -1005,7 +984,7 @@
         "x": 0,
         "y": 23
       },
-      "id": 13,
+      "id": 18,
       "options": {
         "legend": {
           "calcs": [
@@ -1113,7 +1092,7 @@
         "x": 12,
         "y": 23
       },
-      "id": 17,
+      "id": 19,
       "options": {
         "legend": {
           "calcs": [

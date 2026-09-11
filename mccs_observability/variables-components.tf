@@ -109,7 +109,7 @@ variable "grafana_service_account_token" {
 
 variable "create_grafana_service_account" {
   type        = bool
-  description = "Whether to create a Grafana service account for Terraform automation. Set to true on first deployment, then false after token is stored."
+  description = "Whether to also create a Grafana service account through the Grafana API. The API needs an existing token, so the first bootstrap must be done manually in the Grafana UI; keep false once the token is provided."
   default     = false
 }
 

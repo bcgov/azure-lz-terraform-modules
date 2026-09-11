@@ -69,6 +69,13 @@ resource "azurerm_monitor_diagnostic_setting" "activity_log" {
   target_resource_id         = "/subscriptions/${local.subscription_id_connectivity}"
   log_analytics_workspace_id = azurerm_log_analytics_workspace.this.id
 
+  lifecycle {
+    precondition {
+      condition     = local.subscription_id_connectivity == data.azurerm_client_config.current.subscription_id
+      error_message = "subscription_id_connectivity must match the subscription of the default azurerm provider, because the activity log diagnostic setting is created through that provider."
+    }
+  }
+
   enabled_log {
     category = "Administrative"
   }

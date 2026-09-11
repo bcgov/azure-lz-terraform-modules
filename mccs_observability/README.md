@@ -301,8 +301,8 @@ To customize dashboards:
 | Name | Version |
 | ---- | ------- |
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >=1.9.0, < 2.0.0 |
-| <a name="requirement_azuread"></a> [azuread](#requirement\_azuread) | ~> 3.8 |
-| <a name="requirement_azurerm"></a> [azurerm](#requirement\_azurerm) | ~> 4.76 |
+| <a name="requirement_azuread"></a> [azuread](#requirement\_azuread) | ~> 3.9 |
+| <a name="requirement_azurerm"></a> [azurerm](#requirement\_azurerm) | ~> 4.81 |
 | <a name="requirement_grafana"></a> [grafana](#requirement\_grafana) | ~> 3.0 |
 | <a name="requirement_random"></a> [random](#requirement\_random) | ~> 3.0 |
 
@@ -330,7 +330,6 @@ No modules.
 | [azurerm_key_vault_secret.jira_api_token](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/key_vault_secret) | resource |
 | [azurerm_key_vault_secret.jumpbox_admin_password](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/key_vault_secret) | resource |
 | [azurerm_key_vault_secret.teams_webhook_url](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/key_vault_secret) | resource |
-| [azurerm_log_analytics_solution.container_insights](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/log_analytics_solution) | resource |
 | [azurerm_log_analytics_workspace.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/log_analytics_workspace) | resource |
 | [azurerm_logic_app_action_custom.parse_alert](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/logic_app_action_custom) | resource |
 | [azurerm_logic_app_trigger_http_request.alert_trigger](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/logic_app_trigger_http_request) | resource |
@@ -375,7 +374,6 @@ No modules.
 | [azurerm_role_assignment.terraform_spn_secrets_officer](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/role_assignment) | resource |
 | [azurerm_subnet.private_endpoints](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/subnet) | resource |
 | [azurerm_subnet_network_security_group_association.private_endpoints](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/subnet_network_security_group_association) | resource |
-| [azurerm_user_assigned_identity.aci](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/user_assigned_identity) | resource |
 | [azurerm_virtual_hub_connection.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/virtual_hub_connection) | resource |
 | [azurerm_virtual_machine_extension.aad_login](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/virtual_machine_extension) | resource |
 | [azurerm_virtual_network.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/virtual_network) | resource |
@@ -409,7 +407,7 @@ No modules.
 | <a name="input_action_group_name"></a> [action\_group\_name](#input\_action\_group\_name) | Override for the Action Group name. If not provided, a name will be generated. | `string` | `null` | no |
 | <a name="input_alert_evaluation_frequency"></a> [alert\_evaluation\_frequency](#input\_alert\_evaluation\_frequency) | How often alert rules are evaluated. | `string` | `"PT5M"` | no |
 | <a name="input_alert_window_size"></a> [alert\_window\_size](#input\_alert\_window\_size) | The time window for alert evaluation. | `string` | `"PT5M"` | no |
-| <a name="input_allowed_ip_addresses"></a> [allowed\_ip\_addresses](#input\_allowed\_ip\_addresses) | List of IP addresses or CIDR ranges allowed to access Key Vault through its public endpoint. Used for Terraform runners or admin access. | `list(string)` | `[]` | no |
+| <a name="input_allowed_ip_addresses"></a> [allowed\_ip\_addresses](#input\_allowed\_ip\_addresses) | List of IP addresses or CIDR ranges allowed to reach the Key Vault public endpoint and the jump box NSG. Used for Terraform runners or admin access. | `list(string)` | `[]` | no |
 | <a name="input_arp_availability_threshold"></a> [arp\_availability\_threshold](#input\_arp\_availability\_threshold) | ARP availability percentage threshold for critical alerts. | `number` | `100` | no |
 | <a name="input_bandwidth_critical_threshold"></a> [bandwidth\_critical\_threshold](#input\_bandwidth\_critical\_threshold) | Bandwidth utilization percentage threshold for critical alerts. | `number` | `95` | no |
 | <a name="input_bandwidth_warning_threshold"></a> [bandwidth\_warning\_threshold](#input\_bandwidth\_warning\_threshold) | Bandwidth utilization percentage threshold for warning alerts. | `number` | `80` | no |
@@ -418,7 +416,7 @@ No modules.
 | <a name="input_central_keyvault_dns_zone_id"></a> [central\_keyvault\_dns\_zone\_id](#input\_central\_keyvault\_dns\_zone\_id) | The resource ID of the central Private DNS Zone for Key Vault (privatelink.vaultcore.azure.net). | `string` | `null` | no |
 | <a name="input_cloud_team_email"></a> [cloud\_team\_email](#input\_cloud\_team\_email) | The email address for the Cloud Team (fallback for alerts). | `string` | n/a | yes |
 | <a name="input_cloud_team_group_name"></a> [cloud\_team\_group\_name](#input\_cloud\_team\_group\_name) | The display name of the Entra ID group for the Cloud Team (e.g., 'PIM\_DO\_PuC\_Ops\_Infra\_O'). Used to look up the group and grant Grafana Admin, Key Vault Secrets Officer, and Contributor access. | `string` | n/a | yes |
-| <a name="input_create_grafana_service_account"></a> [create\_grafana\_service\_account](#input\_create\_grafana\_service\_account) | Whether to create a Grafana service account for Terraform automation. Set to true on first deployment, then false after token is stored. | `bool` | `false` | no |
+| <a name="input_create_grafana_service_account"></a> [create\_grafana\_service\_account](#input\_create\_grafana\_service\_account) | Whether to also create a Grafana service account through the Grafana API. The API needs an existing token, so the first bootstrap must be done manually in the Grafana UI; keep false once the token is provided. | `bool` | `false` | no |
 | <a name="input_create_private_dns_zone_groups"></a> [create\_private\_dns\_zone\_groups](#input\_create\_private\_dns\_zone\_groups) | Whether to create private DNS zone groups for private endpoints. Set to false if using DINE policies. | `bool` | `false` | no |
 | <a name="input_deploy_jumpbox"></a> [deploy\_jumpbox](#input\_deploy\_jumpbox) | Whether to deploy a Windows jump box for accessing private resources. | `bool` | `false` | no |
 | <a name="input_diagnostics_retention_days"></a> [diagnostics\_retention\_days](#input\_diagnostics\_retention\_days) | Number of days to retain diagnostic logs. Set to 0 for unlimited retention. | `number` | `90` | no |

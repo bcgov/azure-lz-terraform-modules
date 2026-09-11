@@ -100,13 +100,4 @@ locals {
   # First circuit's resource group as default (for dashboard variable default)
   default_expressroute_resource_group = length(local.expressroute_resource_groups) > 0 ? local.expressroute_resource_groups[0] : ""
 
-  # Dashboard template variables
-  dashboard_config = {
-    subscription_id                      = local.subscription_id_connectivity
-    default_resource_group               = local.default_expressroute_resource_group
-    expressroute_resource_groups         = local.expressroute_resource_groups
-    expressroute_circuit_names           = local.expressroute_circuit_names
-    expressroute_circuits                = var.expressroute_circuits
-    grafana_azure_monitor_datasource_uid = "azure-monitor-oob" # Built-in Azure Monitor data source UID
-  }
 }

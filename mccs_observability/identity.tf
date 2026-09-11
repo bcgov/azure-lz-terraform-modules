@@ -1,15 +1,4 @@
 #------------------------------------------------------------------------------
-# User Assigned Managed Identity for Container Instances
-#------------------------------------------------------------------------------
-
-resource "azurerm_user_assigned_identity" "aci" {
-  name                = "id-${local.resource_prefix}-aci"
-  resource_group_name = azurerm_resource_group.this.name
-  location            = var.location
-  tags                = local.tags
-}
-
-#------------------------------------------------------------------------------
 # RBAC Assignments for Grafana Managed Identity
 #------------------------------------------------------------------------------
 
