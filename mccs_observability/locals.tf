@@ -37,8 +37,10 @@ locals {
   # Subnet CIDR computation:
   # - IPAM allocates /24 (256 addresses)
   # - cidrsubnet(base, 2, index) splits /24 into four /26 subnets (64 addresses each)
-  # - We use index 0 for the private endpoints subnet
-  private_endpoint_subnet_cidr = cidrsubnet(local.vnet_address_space, 2, 0)
+  # - Index 2 is kept for the private endpoints subnet: existing deployments placed it
+  #   there when container/postgresql subnets still existed; moving it would change
+  #   the live subnet's address range underneath jump box NICs and private endpoints.
+  private_endpoint_subnet_cidr = cidrsubnet(local.vnet_address_space, 2, 2)
 
   # Tags with defaults
   default_tags = {

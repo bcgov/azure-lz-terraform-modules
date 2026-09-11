@@ -20,8 +20,8 @@ resource "azurerm_dashboard_grafana" "this" {
   location            = var.location
   sku                 = var.grafana_sku
 
-  # Grafana version (11 is the latest supported for Standard SKU)
-  grafana_major_version = 11
+  # Grafana major version (12 is the current supported major)
+  grafana_major_version = 12
 
   # Security settings
   public_network_access_enabled     = var.grafana_public_network_access
