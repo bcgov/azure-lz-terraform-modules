@@ -2,22 +2,46 @@
 # Grafana Provider Configuration
 # Uses the Azure Managed Grafana endpoint with service account token authentication
 #
-# IMPORTANT: Dashboard provisioning requires a two-phase deployment:
-# 1. First deploy with enable_grafana_dashboards = false (or no token)
-# 2. Create a service account token in Grafana UI
-# 3. Re-deploy with enable_grafana_dashboards = true and the token
+# The token comes from (in order of precedence):
+# 1. var.grafana_service_account_token (e.g. TF_VAR or CI secret)
+# 2. the grafana-service-account-token secret in the module's Key Vault
+#
+# Bootstrap for a brand new environment: the Grafana API itself needs an
+# existing token, so the first token must be created manually in the Grafana UI
+# (Administration > Users and access > Service accounts) and stored as the
+# grafana-service-account-token secret in the Key Vault - or passed via var.
+# Until a token is available, deploy with enable_grafana_dashboards = false:
+# all other infrastructure deploys and Grafana resources are skipped.
 #------------------------------------------------------------------------------
 
-# Local to determine if we can actually provision dashboards
-# Requires both the flag to be true AND a valid token to be provided
 locals {
-  can_provision_dashboards = var.enable_grafana_dashboards && var.grafana_service_account_token != ""
+  grafana_token_from_var = var.grafana_service_account_token != ""
+  # Only attempt the Key Vault lookup when dashboards are wanted and no token
+  # was passed. In a brand-new environment the secret does not exist yet, so
+  # keep enable_grafana_dashboards = false for the first apply.
+  grafana_token_from_keyvault = !local.grafana_token_from_var && var.enable_grafana_dashboards
+
+  can_provision_dashboards = var.enable_grafana_dashboards && (local.grafana_token_from_var || local.grafana_token_from_keyvault)
+
+  grafana_auth = local.grafana_token_from_var ? var.grafana_service_account_token : (
+    local.grafana_token_from_keyvault ? data.azurerm_key_vault_secret.grafana_token[0].value : "placeholder"
+  )
+}
+
+# Read the stored service account token when none was passed in
+# (requires the identity running terraform to have Key Vault Secrets User)
+data "azurerm_key_vault_secret" "grafana_token" {
+  count = local.grafana_token_from_keyvault ? 1 : 0
+
+  name         = "grafana-service-account-token"
+  key_vault_id = azurerm_key_vault.this.id
 }
 
 provider "grafana" {
-  # Only configure if we have a token - otherwise provider will fail
+  # Static placeholder URL/auth keeps the provider happy when there is nothing
+  # to manage; no Grafana resources are created in that case.
   url  = local.can_provision_dashboards ? azurerm_dashboard_grafana.this.endpoint : "https://placeholder.grafana.azure.com"
-  auth = local.can_provision_dashboards ? var.grafana_service_account_token : "placeholder"
+  auth = local.can_provision_dashboards ? local.grafana_auth : "placeholder"
 }
 
 #------------------------------------------------------------------------------

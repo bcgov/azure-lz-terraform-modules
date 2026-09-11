@@ -102,7 +102,7 @@ variable "enable_grafana_dashboards" {
 
 variable "grafana_service_account_token" {
   type        = string
-  description = "Service account token for Grafana API authentication. Required when enable_grafana_dashboards is true."
+  description = "Grafana service account token for dashboard provisioning. Optional: when omitted, the module reads the grafana-service-account-token secret from the module's Key Vault instead."
   default     = ""
   sensitive   = true
 }

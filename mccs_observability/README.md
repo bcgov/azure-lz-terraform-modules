@@ -228,29 +228,33 @@ All dashboards support the following template variables:
 
 ### Two-Phase Dashboard Deployment
 
-Dashboard provisioning requires a Grafana service account token for API authentication. Since the token can only be created after Grafana is deployed, a two-phase deployment is required:
+Dashboard provisioning requires a Grafana service account token for API authentication. The token can only be created after Grafana is deployed, and the Grafana API itself needs an existing token to create service accounts — so the very first token must be created manually in the Grafana UI:
 
 **Phase 1: Deploy infrastructure (without dashboards)**
 ```hcl
 module "mccs_observability" {
   # ... other config ...
-  enable_grafana_dashboards     = true   # Enable dashboard resources
-  grafana_service_account_token = ""     # No token yet - dashboards won't be created
+  enable_grafana_dashboards     = false  # No token exists yet
 }
 ```
 
-**Phase 2: Create token and deploy dashboards**
+**Bootstrap: create the first token (manual, once)**
 1. Access Grafana UI via the endpoint
-2. Navigate to Administration → Service Accounts
-3. Create a service account with "Admin" role
-4. Generate a token and copy it
-5. Re-deploy with the token:
+2. Navigate to Administration → Users and access → Service accounts
+3. Create a service account with "Admin" role, then add a token and copy it
+4. Store it as the `grafana-service-account-token` secret in the module's Key Vault
+   (or pass it via `grafana_service_account_token` / `TF_VAR_grafana_service_account_token`)
+
+**Phase 2: Re-deploy to provision dashboards**
+
+Set `enable_grafana_dashboards = true` and re-apply. When no token variable is passed,
+the module reads the token from the Key Vault automatically, so CI only needs read
+access to the vault — no token secret required in CI variables.
 
 ```hcl
 module "mccs_observability" {
   # ... other config ...
-  enable_grafana_dashboards     = true
-  grafana_service_account_token = var.grafana_token  # Provide the token
+  enable_grafana_dashboards     = true   # Token now found in Key Vault or var
 }
 ```
 
@@ -397,6 +401,7 @@ No modules.
 | [azuread_group.cloud_team](https://registry.terraform.io/providers/hashicorp/azuread/latest/docs/data-sources/group) | data source |
 | [azurerm_client_config.current](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/data-sources/client_config) | data source |
 | [azurerm_express_route_circuit.circuits](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/data-sources/express_route_circuit) | data source |
+| [azurerm_key_vault_secret.grafana_token](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/data-sources/key_vault_secret) | data source |
 | [azurerm_virtual_network_gateway.gateways](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/data-sources/virtual_network_gateway) | data source |
 | [azurerm_vpn_gateway.vpn_gateways](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/data-sources/vpn_gateway) | data source |
 
@@ -432,7 +437,7 @@ No modules.
 | <a name="input_grafana_deterministic_outbound_ip"></a> [grafana\_deterministic\_outbound\_ip](#input\_grafana\_deterministic\_outbound\_ip) | Whether to enable deterministic outbound IP for Grafana. | `bool` | `true` | no |
 | <a name="input_grafana_name"></a> [grafana\_name](#input\_grafana\_name) | Override for the Azure Managed Grafana name. If not provided, a name will be generated. | `string` | `null` | no |
 | <a name="input_grafana_public_network_access"></a> [grafana\_public\_network\_access](#input\_grafana\_public\_network\_access) | Whether to enable public network access to Grafana. | `bool` | `false` | no |
-| <a name="input_grafana_service_account_token"></a> [grafana\_service\_account\_token](#input\_grafana\_service\_account\_token) | Service account token for Grafana API authentication. Required when enable\_grafana\_dashboards is true. | `string` | `""` | no |
+| <a name="input_grafana_service_account_token"></a> [grafana\_service\_account\_token](#input\_grafana\_service\_account\_token) | Grafana service account token for dashboard provisioning. Optional: when omitted, the module reads the grafana-service-account-token secret from the module's Key Vault instead. | `string` | `""` | no |
 | <a name="input_grafana_sku"></a> [grafana\_sku](#input\_grafana\_sku) | The SKU for Azure Managed Grafana. | `string` | `"Standard"` | no |
 | <a name="input_grafana_zone_redundancy"></a> [grafana\_zone\_redundancy](#input\_grafana\_zone\_redundancy) | Whether to enable zone redundancy for Grafana. | `bool` | `true` | no |
 | <a name="input_internet_security_enabled"></a> [internet\_security\_enabled](#input\_internet\_security\_enabled) | Whether to enable internet security (route internet traffic through the hub firewall). | `bool` | `true` | no |
