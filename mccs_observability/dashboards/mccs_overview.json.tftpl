@@ -15,7 +15,7 @@
       }
     ]
   },
-  "description": "Multi-Cloud Connectivity Service (MCCS) - Consolidated view of all ExpressRoute and Direct Connect circuits",
+  "description": "MCCS connectivity across Azure ExpressRoute and AWS Direct Connect / Site-to-Site VPN",
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 1,
@@ -46,7 +46,7 @@
       },
       "id": 1,
       "panels": [],
-      "title": "Circuit Health Summary",
+      "title": "At a glance",
       "type": "row"
     },
     {
@@ -54,133 +54,31 @@
         "type": "grafana-azure-monitor-datasource",
         "uid": "$${datasource}"
       },
-      "description": "Average dropped inbound traffic (bits/sec) - non-zero indicates QoS drops or congestion",
+      "description": "Azure ExpressRoute BGP availability for the selected circuit.",
       "fieldConfig": {
         "defaults": {
-          "color": {
-            "mode": "thresholds"
-          },
+          "color": { "mode": "thresholds" },
           "mappings": [],
           "thresholds": {
             "mode": "absolute",
             "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "yellow",
-                "value": 1
-              },
-              {
-                "color": "red",
-                "value": 1000
-              }
-            ]
-          },
-          "unit": "bps"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 4,
-        "w": 4,
-        "x": 0,
-        "y": 1
-      },
-      "id": 2,
-      "options": {
-        "colorMode": "value",
-        "graphMode": "none",
-        "justifyMode": "auto",
-        "orientation": "auto",
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
-          "fields": "",
-          "values": false
-        },
-        "textMode": "auto"
-      },
-      "pluginVersion": "11.0.0",
-      "targets": [
-        {
-          "azureMonitor": {
-            "aggregation": "Average",
-            "dimensionFilters": [],
-            "metricName": "DroppedInBitsPerSecond",
-            "metricNamespace": "microsoft.network/expressroutecircuits",
-            "resourceGroup": "$${resource_group}",
-            "resources": [
-              {
-                "subscription": "$${subscription}",
-                "resourceGroup": "$${resource_group}",
-                "resourceName": "$${circuit}"
-              }
-            ],
-            "timeGrain": "auto"
-          },
-          "datasource": {
-            "type": "grafana-azure-monitor-datasource",
-            "uid": "$${datasource}"
-          },
-          "queryType": "Azure Monitor",
-          "refId": "A",
-          "subscription": "$${subscription}"
-        }
-      ],
-      "title": "Dropped Inbound Traffic",
-      "type": "stat"
-    },
-    {
-      "datasource": {
-        "type": "grafana-azure-monitor-datasource",
-        "uid": "$${datasource}"
-      },
-      "description": "Number of circuits with BGP availability at 100%",
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "thresholds"
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "red",
-                "value": null
-              },
-              {
-                "color": "green",
-                "value": 100
-              }
+              { "color": "red", "value": null },
+              { "color": "yellow", "value": 50 },
+              { "color": "green", "value": 100 }
             ]
           },
           "unit": "percent"
         },
         "overrides": []
       },
-      "gridPos": {
-        "h": 4,
-        "w": 5,
-        "x": 4,
-        "y": 1
-      },
+      "gridPos": { "h": 4, "w": %{ if enable_aws_cloudwatch ~}3%{ else ~}6%{ endif ~}, "x": 0, "y": 1 },
       "id": 3,
       "options": {
         "colorMode": "value",
-        "graphMode": "area",
+        "graphMode": "none",
         "justifyMode": "auto",
         "orientation": "auto",
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
-          "fields": "",
-          "values": false
-        },
+        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
         "textMode": "auto"
       },
       "pluginVersion": "11.0.0",
@@ -210,7 +108,7 @@
           "subscription": "$${subscription}"
         }
       ],
-      "title": "BGP Availability",
+      "title": "Azure BGP",
       "type": "stat"
     },
     {
@@ -218,49 +116,31 @@
         "type": "grafana-azure-monitor-datasource",
         "uid": "$${datasource}"
       },
-      "description": "Number of circuits with ARP availability at 100%",
+      "description": "Azure ExpressRoute ARP availability for the selected circuit.",
       "fieldConfig": {
         "defaults": {
-          "color": {
-            "mode": "thresholds"
-          },
+          "color": { "mode": "thresholds" },
           "mappings": [],
           "thresholds": {
             "mode": "absolute",
             "steps": [
-              {
-                "color": "red",
-                "value": null
-              },
-              {
-                "color": "green",
-                "value": 100
-              }
+              { "color": "red", "value": null },
+              { "color": "yellow", "value": 50 },
+              { "color": "green", "value": 100 }
             ]
           },
           "unit": "percent"
         },
         "overrides": []
       },
-      "gridPos": {
-        "h": 4,
-        "w": 5,
-        "x": 9,
-        "y": 1
-      },
+      "gridPos": { "h": 4, "w": %{ if enable_aws_cloudwatch ~}3%{ else ~}6%{ endif ~}, "x": %{ if enable_aws_cloudwatch ~}3%{ else ~}6%{ endif ~}, "y": 1 },
       "id": 4,
       "options": {
         "colorMode": "value",
-        "graphMode": "area",
+        "graphMode": "none",
         "justifyMode": "auto",
         "orientation": "auto",
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
-          "fields": "",
-          "values": false
-        },
+        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
         "textMode": "auto"
       },
       "pluginVersion": "11.0.0",
@@ -290,7 +170,7 @@
           "subscription": "$${subscription}"
         }
       ],
-      "title": "ARP Availability",
+      "title": "Azure ARP",
       "type": "stat"
     },
     {
@@ -298,47 +178,23 @@
         "type": "grafana-azure-monitor-datasource",
         "uid": "$${datasource}"
       },
-      "description": "Average inbound traffic across selected circuits (bits/sec)",
+      "description": "Azure ExpressRoute inbound bits/sec.",
       "fieldConfig": {
         "defaults": {
-          "color": {
-            "mode": "thresholds"
-          },
-          "mappings": [],
-          "max": 100,
-          "min": 0,
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              }
-            ]
-          },
+          "color": { "mode": "thresholds" },
+          "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }] },
           "unit": "bps"
         },
         "overrides": []
       },
-      "gridPos": {
-        "h": 4,
-        "w": 5,
-        "x": 14,
-        "y": 1
-      },
+      "gridPos": { "h": 4, "w": %{ if enable_aws_cloudwatch ~}3%{ else ~}6%{ endif ~}, "x": %{ if enable_aws_cloudwatch ~}6%{ else ~}12%{ endif ~}, "y": 1 },
       "id": 5,
       "options": {
         "colorMode": "value",
-        "graphMode": "area",
+        "graphMode": "none",
         "justifyMode": "auto",
         "orientation": "auto",
-        "reduceOptions": {
-          "calcs": [
-            "max"
-          ],
-          "fields": "",
-          "values": false
-        },
+        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
         "textMode": "auto"
       },
       "pluginVersion": "11.0.0",
@@ -368,8 +224,7 @@
           "subscription": "$${subscription}"
         }
       ],
-      "title": "Inbound Bandwidth (avg)",
-      "transformations": [],
+      "title": "Azure Bits In",
       "type": "stat"
     },
     {
@@ -377,64 +232,32 @@
         "type": "grafana-azure-monitor-datasource",
         "uid": "$${datasource}"
       },
-      "description": "Average dropped outbound traffic (bits/sec) - non-zero indicates QoS drops or congestion",
+      "description": "Azure ExpressRoute outbound bits/sec.",
       "fieldConfig": {
         "defaults": {
-          "color": {
-            "mode": "thresholds"
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "yellow",
-                "value": 1
-              },
-              {
-                "color": "red",
-                "value": 1000
-              }
-            ]
-          },
+          "color": { "mode": "thresholds" },
+          "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }] },
           "unit": "bps"
         },
         "overrides": []
       },
-      "gridPos": {
-        "h": 4,
-        "w": 5,
-        "x": 19,
-        "y": 1
-      },
-      "id": 6,
+      "gridPos": { "h": 4, "w": %{ if enable_aws_cloudwatch ~}3%{ else ~}6%{ endif ~}, "x": %{ if enable_aws_cloudwatch ~}9%{ else ~}18%{ endif ~}, "y": 1 },
+      "id": 2,
       "options": {
         "colorMode": "value",
         "graphMode": "none",
         "justifyMode": "auto",
         "orientation": "auto",
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
-          "fields": "",
-          "values": false
-        },
+        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
         "textMode": "auto"
       },
       "pluginVersion": "11.0.0",
-      "title": "Dropped Outbound Traffic",
-      "type": "stat",
       "targets": [
         {
           "azureMonitor": {
             "aggregation": "Average",
             "dimensionFilters": [],
-            "metricName": "DroppedOutBitsPerSecond",
+            "metricName": "BitsOutPerSecond",
             "metricNamespace": "microsoft.network/expressroutecircuits",
             "resourceGroup": "$${resource_group}",
             "resources": [
@@ -444,7 +267,7 @@
                 "resourceName": "$${circuit}"
               }
             ],
-            "timeGrain": "PT5M"
+            "timeGrain": "auto"
           },
           "datasource": {
             "type": "grafana-azure-monitor-datasource",
@@ -454,8 +277,198 @@
           "refId": "A",
           "subscription": "$${subscription}"
         }
-      ]
+      ],
+      "title": "Azure Bits Out",
+      "type": "stat"
     },
+%{ if enable_aws_cloudwatch ~}
+    {
+      "datasource": { "type": "cloudwatch", "uid": "$${cloudwatch}" },
+      "description": "AWS Direct Connect connection state. 1 = up.",
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "thresholds" },
+          "mappings": [
+            { "options": { "0": { "color": "red", "index": 0, "text": "Down" }, "1": { "color": "green", "index": 1, "text": "Up" } }, "type": "value" }
+          ],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "red", "value": null },
+              { "color": "green", "value": 1 }
+            ]
+          },
+          "unit": "none"
+        },
+        "overrides": []
+      },
+      "gridPos": { "h": 4, "w": 3, "x": 12, "y": 1 },
+      "id": 60,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
+        "textMode": "auto"
+      },
+      "pluginVersion": "11.0.0",
+      "targets": [
+        {
+          "datasource": { "type": "cloudwatch", "uid": "$${cloudwatch}" },
+          "dimensions": { "ConnectionId": "$${dx_connection}" },
+          "label": "DX",
+          "matchExact": true,
+          "metricEditorMode": 0,
+          "metricName": "ConnectionState",
+          "metricQueryType": 0,
+          "namespace": "AWS/DX",
+          "period": "300",
+          "queryMode": "Metrics",
+          "refId": "A",
+          "region": "default",
+          "statistic": "Maximum"
+        }
+      ],
+      "title": "AWS DX",
+      "type": "stat"
+    },
+    {
+      "datasource": { "type": "cloudwatch", "uid": "$${cloudwatch}" },
+      "description": "AWS Direct Connect virtual interface inbound bits/sec.",
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "thresholds" },
+          "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }] },
+          "unit": "bps"
+        },
+        "overrides": []
+      },
+      "gridPos": { "h": 4, "w": 3, "x": 15, "y": 1 },
+      "id": 61,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
+        "textMode": "auto"
+      },
+      "pluginVersion": "11.0.0",
+      "targets": [
+        {
+          "datasource": { "type": "cloudwatch", "uid": "$${cloudwatch}" },
+          "dimensions": { "VirtualInterfaceId": "$${dx_vif}" },
+          "label": "VIF In",
+          "matchExact": false,
+          "metricEditorMode": 0,
+          "metricName": "VirtualInterfaceBpsIngress",
+          "metricQueryType": 0,
+          "namespace": "AWS/DX",
+          "period": "300",
+          "queryMode": "Metrics",
+          "refId": "A",
+          "region": "default",
+          "statistic": "Average"
+        }
+      ],
+      "title": "AWS VIF In",
+      "type": "stat"
+    },
+    {
+      "datasource": { "type": "cloudwatch", "uid": "$${cloudwatch}" },
+      "description": "AWS Direct Connect virtual interface outbound bits/sec.",
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "thresholds" },
+          "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }] },
+          "unit": "bps"
+        },
+        "overrides": []
+      },
+      "gridPos": { "h": 4, "w": 3, "x": 18, "y": 1 },
+      "id": 62,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
+        "textMode": "auto"
+      },
+      "pluginVersion": "11.0.0",
+      "targets": [
+        {
+          "datasource": { "type": "cloudwatch", "uid": "$${cloudwatch}" },
+          "dimensions": { "VirtualInterfaceId": "$${dx_vif}" },
+          "label": "VIF Out",
+          "matchExact": false,
+          "metricEditorMode": 0,
+          "metricName": "VirtualInterfaceBpsEgress",
+          "metricQueryType": 0,
+          "namespace": "AWS/DX",
+          "period": "300",
+          "queryMode": "Metrics",
+          "refId": "A",
+          "region": "default",
+          "statistic": "Average"
+        }
+      ],
+      "title": "AWS VIF Out",
+      "type": "stat"
+    },
+    {
+      "datasource": { "type": "cloudwatch", "uid": "$${cloudwatch}" },
+      "description": "AWS Site-to-Site VPN tunnel state. 1 = at least one tunnel up.",
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "thresholds" },
+          "mappings": [
+            { "options": { "0": { "color": "red", "index": 0, "text": "Down" }, "1": { "color": "green", "index": 1, "text": "Up" } }, "type": "value" }
+          ],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "red", "value": null },
+              { "color": "green", "value": 1 }
+            ]
+          },
+          "unit": "none"
+        },
+        "overrides": []
+      },
+      "gridPos": { "h": 4, "w": 3, "x": 21, "y": 1 },
+      "id": 63,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
+        "textMode": "auto"
+      },
+      "pluginVersion": "11.0.0",
+      "targets": [
+        {
+          "datasource": { "type": "cloudwatch", "uid": "$${cloudwatch}" },
+          "dimensions": { "VpnId": "$${vpn_id}" },
+          "label": "VPN",
+          "matchExact": false,
+          "metricEditorMode": 0,
+          "metricName": "TunnelState",
+          "metricQueryType": 0,
+          "namespace": "AWS/VPN",
+          "period": "300",
+          "queryMode": "Metrics",
+          "refId": "A",
+          "region": "default",
+          "statistic": "Maximum"
+        }
+      ],
+      "title": "AWS VPN",
+      "type": "stat"
+    },
+%{ endif ~}
     {
       "collapsed": false,
       "gridPos": {
@@ -466,7 +479,7 @@
       },
       "id": 7,
       "panels": [],
-      "title": "Azure ExpressRoute Circuits",
+      "title": "Azure ExpressRoute — Traffic",
       "type": "row"
     },
     {
@@ -927,7 +940,7 @@
       },
       "id": 16,
       "panels": [],
-      "title": "Packet Drops",
+      "title": "Azure ExpressRoute — Packet Drops",
       "type": "row"
     },
     {
@@ -1149,56 +1162,16 @@
       "type": "timeseries"
     },
     {
-      "collapsed": true,
+      "collapsed": false,
       "gridPos": {
         "h": 1,
         "w": 24,
         "x": 0,
         "y": 31
       },
-      "id": 12,
-      "panels": [
-        {
-          "datasource": {
-            "type": "grafana-azure-monitor-datasource",
-            "uid": "$${datasource}"
-          },
-          "description": "AWS Direct Connect connections (Phase 2 - Future)",
-          "gridPos": {
-            "h": 8,
-            "w": 24,
-            "x": 0,
-            "y": 23
-          },
-          "id": 13,
-          "options": {
-            "code": {
-              "language": "plaintext",
-              "showLineNumbers": false,
-              "showMiniMap": false
-            },
-            "content": "## AWS Direct Connect Monitoring\n\n**Status:** Phase 2 - Planned\n\nThis section will display AWS Direct Connect metrics once cross-cloud integration is implemented.\n\n### Planned Metrics:\n- Connection State\n- Connection Bits In/Out\n- Virtual Interface State\n- BGP Peer Status",
-            "mode": "markdown"
-          },
-          "pluginVersion": "11.0.0",
-          "title": "AWS Direct Connect (Phase 2)",
-          "type": "text"
-        }
-      ],
-      "title": "AWS Direct Connect (Phase 2 - Future)",
-      "type": "row"
-    },
-    {
-      "collapsed": false,
-      "gridPos": {
-        "h": 1,
-        "w": 24,
-        "x": 0,
-        "y": 32
-      },
       "id": 14,
       "panels": [],
-      "title": "Circuit Status Table",
+      "title": "Azure ExpressRoute — Status",
       "type": "row"
     },
     {
@@ -1206,7 +1179,7 @@
         "type": "grafana-azure-monitor-datasource",
         "uid": "$${datasource}"
       },
-      "description": "Current status of all MCCS circuits",
+      "description": "Current status of Azure ExpressRoute circuits",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -1312,7 +1285,7 @@
         "h": 8,
         "w": 24,
         "x": 0,
-        "y": 33
+        "y": 32
       },
       "id": 15,
       "options": {
@@ -1430,7 +1403,7 @@
           "subscription": "$${subscription}"
         }
       ],
-      "title": "Circuit Status Summary",
+      "title": "Azure ExpressRoute Status",
       "transformations": [
         {
           "id": "merge",
@@ -1452,12 +1425,469 @@
         }
       ],
       "type": "table"
+    },
+    {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 40
+      },
+      "id": 12,
+      "panels": [],
+      "title": "AWS — Direct Connect",
+      "type": "row"
+    },
+%{ if enable_aws_cloudwatch ~}
+    {
+      "datasource": { "type": "cloudwatch", "uid": "$${cloudwatch}" },
+      "description": "1 = up, 0 = down. Use Maximum, not Average.",
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "thresholds" },
+          "mappings": [
+            { "options": { "0": { "color": "red", "index": 0, "text": "Down" }, "1": { "color": "green", "index": 1, "text": "Up" } }, "type": "value" }
+          ],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "red", "value": null },
+              { "color": "green", "value": 1 }
+            ]
+          },
+          "unit": "none"
+        },
+        "overrides": []
+      },
+      "gridPos": { "h": 4, "w": 6, "x": 0, "y": 41 },
+      "id": 40,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
+        "textMode": "auto"
+      },
+      "pluginVersion": "11.0.0",
+      "targets": [
+        {
+          "datasource": { "type": "cloudwatch", "uid": "$${cloudwatch}" },
+          "dimensions": { "ConnectionId": "$${dx_connection}" },
+          "label": "State",
+          "matchExact": true,
+          "metricEditorMode": 0,
+          "metricName": "ConnectionState",
+          "metricQueryType": 0,
+          "namespace": "AWS/DX",
+          "period": "300",
+          "queryMode": "Metrics",
+          "refId": "A",
+          "region": "default",
+          "statistic": "Maximum"
+        }
+      ],
+      "title": "Connection State",
+      "type": "stat"
+    },
+    {
+      "datasource": { "type": "cloudwatch", "uid": "$${cloudwatch}" },
+      "description": "Inbound bits/sec on the virtual interface. Hosted DX connections do not publish ConnectionBps*.",
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "thresholds" },
+          "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }] },
+          "unit": "bps"
+        },
+        "overrides": []
+      },
+      "gridPos": { "h": 4, "w": 6, "x": 6, "y": 41 },
+      "id": 41,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
+        "textMode": "auto"
+      },
+      "pluginVersion": "11.0.0",
+      "targets": [
+        {
+          "datasource": { "type": "cloudwatch", "uid": "$${cloudwatch}" },
+          "dimensions": { "VirtualInterfaceId": "$${dx_vif}" },
+          "label": "VIF Bits In",
+          "matchExact": false,
+          "metricEditorMode": 0,
+          "metricName": "VirtualInterfaceBpsIngress",
+          "metricQueryType": 0,
+          "namespace": "AWS/DX",
+          "period": "300",
+          "queryMode": "Metrics",
+          "refId": "A",
+          "region": "default",
+          "statistic": "Average"
+        }
+      ],
+      "title": "VIF Bits In",
+      "type": "stat"
+    },
+    {
+      "datasource": { "type": "cloudwatch", "uid": "$${cloudwatch}" },
+      "description": "Outbound bits/sec on the virtual interface.",
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "thresholds" },
+          "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }] },
+          "unit": "bps"
+        },
+        "overrides": []
+      },
+      "gridPos": { "h": 4, "w": 6, "x": 12, "y": 41 },
+      "id": 42,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
+        "textMode": "auto"
+      },
+      "pluginVersion": "11.0.0",
+      "targets": [
+        {
+          "datasource": { "type": "cloudwatch", "uid": "$${cloudwatch}" },
+          "dimensions": { "VirtualInterfaceId": "$${dx_vif}" },
+          "label": "VIF Bits Out",
+          "matchExact": false,
+          "metricEditorMode": 0,
+          "metricName": "VirtualInterfaceBpsEgress",
+          "metricQueryType": 0,
+          "namespace": "AWS/DX",
+          "period": "300",
+          "queryMode": "Metrics",
+          "refId": "A",
+          "region": "default",
+          "statistic": "Average"
+        }
+      ],
+      "title": "VIF Bits Out",
+      "type": "stat"
+    },
+    {
+      "datasource": { "type": "cloudwatch", "uid": "$${cloudwatch}" },
+      "description": "Sum of connection-level errors in the period. Empty until AWS publishes ConnectionErrorCount.",
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "thresholds" },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "yellow", "value": 1 },
+              { "color": "red", "value": 10 }
+            ]
+          },
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "gridPos": { "h": 4, "w": 6, "x": 18, "y": 41 },
+      "id": 50,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
+        "textMode": "auto"
+      },
+      "pluginVersion": "11.0.0",
+      "targets": [
+        {
+          "datasource": { "type": "cloudwatch", "uid": "$${cloudwatch}" },
+          "dimensions": { "ConnectionId": "$${dx_connection}" },
+          "label": "Errors",
+          "matchExact": false,
+          "metricEditorMode": 0,
+          "metricName": "ConnectionErrorCount",
+          "metricQueryType": 0,
+          "namespace": "AWS/DX",
+          "period": "300",
+          "queryMode": "Metrics",
+          "refId": "A",
+          "region": "default",
+          "statistic": "Sum"
+        }
+      ],
+      "title": "Connection Errors",
+      "type": "stat"
+    },
+    {
+      "datasource": { "type": "cloudwatch", "uid": "$${cloudwatch}" },
+      "description": "Virtual interface throughput (5-minute CloudWatch period).",
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "palette-classic" },
+          "custom": { "drawStyle": "line", "fillOpacity": 10, "lineWidth": 1, "showPoints": "never" },
+          "unit": "bps"
+        },
+        "overrides": []
+      },
+      "gridPos": { "h": 8, "w": 24, "x": 0, "y": 45 },
+      "id": 43,
+      "options": { "legend": { "displayMode": "list", "placement": "bottom" }, "tooltip": { "mode": "single" } },
+      "pluginVersion": "11.0.0",
+      "targets": [
+        {
+          "datasource": { "type": "cloudwatch", "uid": "$${cloudwatch}" },
+          "dimensions": { "VirtualInterfaceId": "$${dx_vif}" },
+          "label": "VIF Bits In",
+          "matchExact": false,
+          "metricEditorMode": 0,
+          "metricName": "VirtualInterfaceBpsIngress",
+          "metricQueryType": 0,
+          "namespace": "AWS/DX",
+          "period": "300",
+          "queryMode": "Metrics",
+          "refId": "In",
+          "region": "default",
+          "statistic": "Average"
+        },
+        {
+          "datasource": { "type": "cloudwatch", "uid": "$${cloudwatch}" },
+          "dimensions": { "VirtualInterfaceId": "$${dx_vif}" },
+          "label": "VIF Bits Out",
+          "matchExact": false,
+          "metricEditorMode": 0,
+          "metricName": "VirtualInterfaceBpsEgress",
+          "metricQueryType": 0,
+          "namespace": "AWS/DX",
+          "period": "300",
+          "queryMode": "Metrics",
+          "refId": "Out",
+          "region": "default",
+          "statistic": "Average"
+        }
+      ],
+      "title": "VIF Bits In / Out",
+      "type": "timeseries"
+    },
+    {
+      "collapsed": false,
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 53 },
+      "id": 51,
+      "panels": [],
+      "title": "AWS — Site-to-Site VPN",
+      "type": "row"
+    },
+    {
+      "datasource": { "type": "cloudwatch", "uid": "$${cloudwatch}" },
+      "description": "1 = at least one tunnel up. Maximum across tunnels on the selected VPN.",
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "thresholds" },
+          "mappings": [
+            { "options": { "0": { "color": "red", "index": 0, "text": "Down" }, "1": { "color": "green", "index": 1, "text": "Up" } }, "type": "value" }
+          ],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "red", "value": null },
+              { "color": "green", "value": 1 }
+            ]
+          },
+          "unit": "none"
+        },
+        "overrides": []
+      },
+      "gridPos": { "h": 4, "w": 8, "x": 0, "y": 54 },
+      "id": 52,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
+        "textMode": "auto"
+      },
+      "pluginVersion": "11.0.0",
+      "targets": [
+        {
+          "datasource": { "type": "cloudwatch", "uid": "$${cloudwatch}" },
+          "dimensions": { "VpnId": "$${vpn_id}" },
+          "label": "Tunnel State",
+          "matchExact": false,
+          "metricEditorMode": 0,
+          "metricName": "TunnelState",
+          "metricQueryType": 0,
+          "namespace": "AWS/VPN",
+          "period": "300",
+          "queryMode": "Metrics",
+          "refId": "A",
+          "region": "default",
+          "statistic": "Maximum"
+        }
+      ],
+      "title": "Tunnel State",
+      "type": "stat"
+    },
+    {
+      "datasource": { "type": "cloudwatch", "uid": "$${cloudwatch}" },
+      "description": "Bytes received on the AWS side in the last period (CloudWatch TunnelDataIn is a byte count, not bps).",
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "thresholds" },
+          "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }] },
+          "unit": "decbytes"
+        },
+        "overrides": []
+      },
+      "gridPos": { "h": 4, "w": 8, "x": 8, "y": 54 },
+      "id": 53,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
+        "textMode": "auto"
+      },
+      "pluginVersion": "11.0.0",
+      "targets": [
+        {
+          "datasource": { "type": "cloudwatch", "uid": "$${cloudwatch}" },
+          "dimensions": { "VpnId": "$${vpn_id}" },
+          "label": "Data In",
+          "matchExact": false,
+          "metricEditorMode": 0,
+          "metricName": "TunnelDataIn",
+          "metricQueryType": 0,
+          "namespace": "AWS/VPN",
+          "period": "300",
+          "queryMode": "Metrics",
+          "refId": "A",
+          "region": "default",
+          "statistic": "Sum"
+        }
+      ],
+      "title": "Tunnel Data In",
+      "type": "stat"
+    },
+    {
+      "datasource": { "type": "cloudwatch", "uid": "$${cloudwatch}" },
+      "description": "Bytes sent from the AWS side in the last period (CloudWatch TunnelDataOut is a byte count, not bps).",
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "thresholds" },
+          "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }] },
+          "unit": "decbytes"
+        },
+        "overrides": []
+      },
+      "gridPos": { "h": 4, "w": 8, "x": 16, "y": 54 },
+      "id": 54,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
+        "textMode": "auto"
+      },
+      "pluginVersion": "11.0.0",
+      "targets": [
+        {
+          "datasource": { "type": "cloudwatch", "uid": "$${cloudwatch}" },
+          "dimensions": { "VpnId": "$${vpn_id}" },
+          "label": "Data Out",
+          "matchExact": false,
+          "metricEditorMode": 0,
+          "metricName": "TunnelDataOut",
+          "metricQueryType": 0,
+          "namespace": "AWS/VPN",
+          "period": "300",
+          "queryMode": "Metrics",
+          "refId": "A",
+          "region": "default",
+          "statistic": "Sum"
+        }
+      ],
+      "title": "Tunnel Data Out",
+      "type": "stat"
+    },
+    {
+      "datasource": { "type": "cloudwatch", "uid": "$${cloudwatch}" },
+      "description": "Site-to-Site VPN bytes in / out (5-minute CloudWatch period).",
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "palette-classic" },
+          "custom": { "drawStyle": "line", "fillOpacity": 10, "lineWidth": 1, "showPoints": "never" },
+          "unit": "decbytes"
+        },
+        "overrides": []
+      },
+      "gridPos": { "h": 8, "w": 24, "x": 0, "y": 58 },
+      "id": 55,
+      "options": { "legend": { "displayMode": "list", "placement": "bottom" }, "tooltip": { "mode": "single" } },
+      "pluginVersion": "11.0.0",
+      "targets": [
+        {
+          "datasource": { "type": "cloudwatch", "uid": "$${cloudwatch}" },
+          "dimensions": { "VpnId": "$${vpn_id}" },
+          "label": "Data In",
+          "matchExact": false,
+          "metricEditorMode": 0,
+          "metricName": "TunnelDataIn",
+          "metricQueryType": 0,
+          "namespace": "AWS/VPN",
+          "period": "300",
+          "queryMode": "Metrics",
+          "refId": "In",
+          "region": "default",
+          "statistic": "Sum"
+        },
+        {
+          "datasource": { "type": "cloudwatch", "uid": "$${cloudwatch}" },
+          "dimensions": { "VpnId": "$${vpn_id}" },
+          "label": "Data Out",
+          "matchExact": false,
+          "metricEditorMode": 0,
+          "metricName": "TunnelDataOut",
+          "metricQueryType": 0,
+          "namespace": "AWS/VPN",
+          "period": "300",
+          "queryMode": "Metrics",
+          "refId": "Out",
+          "region": "default",
+          "statistic": "Sum"
+        }
+      ],
+      "title": "Tunnel Data In / Out",
+      "type": "timeseries"
     }
+%{ else ~}
+    {
+      "datasource": { "type": "datasource", "uid": "grafana" },
+      "gridPos": { "h": 4, "w": 24, "x": 0, "y": 41 },
+      "id": 13,
+      "options": {
+        "content": "CloudWatch is not enabled for this environment. Set `enable_aws_cloudwatch` and store AWS keys in Key Vault.",
+        "mode": "markdown"
+      },
+      "pluginVersion": "11.0.0",
+      "title": "AWS — Direct Connect and VPN",
+      "type": "text"
+    }
+%{ endif ~}
   ],
   "schemaVersion": 39,
   "tags": [
     "mccs",
     "expressroute",
+    "directconnect",
+    "vpn",
     "connectivity",
     "overview"
   ],
@@ -1566,7 +1996,82 @@
         "skipUrlSync": false,
         "sort": 0,
         "type": "query"
-      }
+      }%{ if enable_aws_cloudwatch ~},
+      {
+        "current": {
+          "selected": true,
+          "text": "CloudWatch - MCCS",
+          "value": "${cloudwatch_uid}"
+        },
+        "hide": 2,
+        "includeAll": false,
+        "label": "CloudWatch",
+        "multi": false,
+        "name": "cloudwatch",
+        "options": [],
+        "query": "cloudwatch",
+        "refresh": 1,
+        "regex": "/^CloudWatch - MCCS$/",
+        "skipUrlSync": false,
+        "type": "datasource"
+      },
+      {
+        "current": {},
+        "datasource": {
+          "type": "cloudwatch",
+          "uid": "$${cloudwatch}"
+        },
+        "definition": "dimension_values(default, AWS/DX, ConnectionState, ConnectionId)",
+        "hide": 0,
+        "includeAll": false,
+        "label": "AWS DX",
+        "multi": false,
+        "name": "dx_connection",
+        "query": "dimension_values(default, AWS/DX, ConnectionState, ConnectionId)",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 1,
+        "type": "query"
+      },
+      {
+        "current": {},
+        "datasource": {
+          "type": "cloudwatch",
+          "uid": "$${cloudwatch}"
+        },
+        "definition": "dimension_values(default, AWS/DX, VirtualInterfaceBpsIngress, VirtualInterfaceId, {\"ConnectionId\": \"$${dx_connection}\"})",
+        "hide": 0,
+        "includeAll": false,
+        "label": "AWS VIF",
+        "multi": false,
+        "name": "dx_vif",
+        "query": "dimension_values(default, AWS/DX, VirtualInterfaceBpsIngress, VirtualInterfaceId, {\"ConnectionId\": \"$${dx_connection}\"})",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 1,
+        "type": "query"
+      },
+      {
+        "current": {},
+        "datasource": {
+          "type": "cloudwatch",
+          "uid": "$${cloudwatch}"
+        },
+        "definition": "dimension_values(default, AWS/VPN, TunnelState, VpnId)",
+        "hide": 0,
+        "includeAll": false,
+        "label": "AWS VPN",
+        "multi": false,
+        "name": "vpn_id",
+        "query": "dimension_values(default, AWS/VPN, TunnelState, VpnId)",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 1,
+        "type": "query"
+      }%{ endif ~}
     ]
   },
   "time": {

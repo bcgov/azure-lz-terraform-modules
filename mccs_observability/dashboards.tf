@@ -32,6 +32,7 @@ locals {
   # shape and break Log Analytics unless they also set azureCredentials.
   azure_monitor_uid          = "azure-monitor-oob"
   log_analytics_workspace_id = azurerm_log_analytics_workspace.this.id
+  cloudwatch_uid             = "cloudwatch-mccs"
 }
 
 # Read the stored service account token when none was passed in
@@ -51,14 +52,26 @@ provider "grafana" {
 }
 
 #------------------------------------------------------------------------------
-# Grafana Folder for MCCS Dashboards
+# Grafana Folders
+#
+# Landing Zone holds Home plus Connectivity / Platform / Security.
+# MCCS Overview sits in its own top-level folder.
 #------------------------------------------------------------------------------
 
-resource "grafana_folder" "home" {
+resource "grafana_folder" "root" {
   count = local.can_provision_dashboards ? 1 : 0
 
-  title = "Landing Zone Home"
-  uid   = "lz-home"
+  title = "Landing Zone"
+  uid   = "lz"
+
+  depends_on = [azurerm_dashboard_grafana.this]
+}
+
+resource "grafana_folder" "mccs_overview" {
+  count = local.can_provision_dashboards ? 1 : 0
+
+  title = "MCCS"
+  uid   = "mccs"
 
   depends_on = [azurerm_dashboard_grafana.this]
 }
@@ -66,28 +79,31 @@ resource "grafana_folder" "home" {
 resource "grafana_folder" "mccs" {
   count = local.can_provision_dashboards ? 1 : 0
 
-  title = "Connectivity"
-  uid   = "mccs-observability"
+  title             = "Connectivity"
+  uid               = "mccs-observability"
+  parent_folder_uid = grafana_folder.root[0].uid
 
-  depends_on = [azurerm_dashboard_grafana.this]
+  depends_on = [grafana_folder.root]
 }
 
 resource "grafana_folder" "lz_operations" {
   count = local.can_provision_dashboards ? 1 : 0
 
-  title = "Platform"
-  uid   = "lz-operations"
+  title             = "Platform"
+  uid               = "lz-operations"
+  parent_folder_uid = grafana_folder.root[0].uid
 
-  depends_on = [azurerm_dashboard_grafana.this]
+  depends_on = [grafana_folder.root]
 }
 
 resource "grafana_folder" "security" {
   count = local.can_provision_dashboards ? 1 : 0
 
-  title = "Security"
-  uid   = "lz-security"
+  title             = "Security"
+  uid               = "lz-security"
+  parent_folder_uid = grafana_folder.root[0].uid
 
-  depends_on = [azurerm_dashboard_grafana.this]
+  depends_on = [grafana_folder.root]
 }
 
 #------------------------------------------------------------------------------
@@ -97,7 +113,7 @@ resource "grafana_folder" "security" {
 resource "grafana_dashboard" "landing_zone_home" {
   count = local.can_provision_dashboards ? 1 : 0
 
-  folder    = grafana_folder.home[0].id
+  folder    = grafana_folder.root[0].id
   overwrite = true
 
   config_json = templatefile("${path.module}/dashboards/landing_zone_home.json.tftpl", {
@@ -115,7 +131,7 @@ resource "grafana_dashboard" "landing_zone_home" {
     fw_name                   = length(local.azure_firewall_names) > 0 ? local.azure_firewall_names[0] : ""
   })
 
-  depends_on = [grafana_folder.home]
+  depends_on = [grafana_folder.root]
 }
 
 #------------------------------------------------------------------------------
@@ -126,7 +142,7 @@ resource "grafana_dashboard" "landing_zone_home" {
 resource "grafana_dashboard" "mccs_overview" {
   count = local.can_provision_dashboards ? 1 : 0
 
-  folder    = grafana_folder.mccs[0].id
+  folder    = grafana_folder.mccs_overview[0].id
   overwrite = true
 
   # Use templatefile() to inject known circuit configuration
@@ -138,9 +154,14 @@ resource "grafana_dashboard" "mccs_overview" {
     circuits                   = var.expressroute_circuits
     azure_monitor_uid          = local.azure_monitor_uid
     log_analytics_workspace_id = local.log_analytics_workspace_id
+    enable_aws_cloudwatch      = var.enable_aws_cloudwatch
+    cloudwatch_uid             = local.cloudwatch_uid
   })
 
-  depends_on = [grafana_folder.mccs]
+  depends_on = [
+    grafana_folder.mccs_overview,
+    grafana_data_source.cloudwatch
+  ]
 }
 
 #------------------------------------------------------------------------------
@@ -197,6 +218,26 @@ resource "grafana_data_source" "azure_monitor" {
 
   # Don't set as default - the built-in Azure Monitor data source is the default
   is_default = false
+
+  depends_on = [azurerm_dashboard_grafana.this]
+}
+
+resource "grafana_data_source" "cloudwatch" {
+  count = local.can_provision_dashboards && var.enable_aws_cloudwatch ? 1 : 0
+
+  name = "CloudWatch - MCCS"
+  type = "cloudwatch"
+  uid  = local.cloudwatch_uid
+
+  json_data_encoded = jsonencode({
+    authType      = "keys"
+    defaultRegion = var.aws_cloudwatch_default_region
+  })
+
+  secure_json_data_encoded = jsonencode({
+    accessKey = data.azurerm_key_vault_secret.aws_access_key_id[0].value
+    secretKey = data.azurerm_key_vault_secret.aws_secret_access_key[0].value
+  })
 
   depends_on = [azurerm_dashboard_grafana.this]
 }

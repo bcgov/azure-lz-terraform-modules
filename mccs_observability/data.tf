@@ -1,5 +1,19 @@
 data "azurerm_client_config" "current" {}
 
+data "azurerm_key_vault_secret" "aws_access_key_id" {
+  count = var.enable_aws_cloudwatch ? 1 : 0
+
+  name         = var.aws_access_key_secret_name
+  key_vault_id = azurerm_key_vault.this.id
+}
+
+data "azurerm_key_vault_secret" "aws_secret_access_key" {
+  count = var.enable_aws_cloudwatch ? 1 : 0
+
+  name         = var.aws_secret_key_secret_name
+  key_vault_id = azurerm_key_vault.this.id
+}
+
 data "azurerm_management_group" "grafana_scope" {
   count = var.grafana_monitoring_management_group_id != null ? 1 : 0
   name  = var.grafana_monitoring_management_group_id

@@ -119,6 +119,30 @@ variable "create_grafana_service_account" {
   default     = false
 }
 
+variable "enable_aws_cloudwatch" {
+  type        = bool
+  description = "Provision a CloudWatch data source from Key Vault AWS keys and enable Direct Connect and AWS VPN panels on MCCS Overview."
+  default     = false
+}
+
+variable "aws_cloudwatch_default_region" {
+  type        = string
+  description = "Default AWS region for the CloudWatch data source (Direct Connect metrics live here)."
+  default     = "ca-central-1"
+}
+
+variable "aws_access_key_secret_name" {
+  type        = string
+  description = "Key Vault secret name for the AWS access key ID used by CloudWatch."
+  default     = "grafana-aws-access-key-id"
+}
+
+variable "aws_secret_key_secret_name" {
+  type        = string
+  description = "Key Vault secret name for the AWS secret access key used by CloudWatch."
+  default     = "grafana-aws-secret-access-key"
+}
+
 #------------------------------------------------------------------------------
 # Jump Box
 #------------------------------------------------------------------------------

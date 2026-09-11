@@ -396,10 +396,12 @@ No modules.
 | [grafana_dashboard.vpn_gateway_health](https://registry.terraform.io/providers/grafana/grafana/latest/docs/resources/dashboard) | resource |
 | [grafana_dashboard.vwan_hub_health](https://registry.terraform.io/providers/grafana/grafana/latest/docs/resources/dashboard) | resource |
 | [grafana_data_source.azure_monitor](https://registry.terraform.io/providers/grafana/grafana/latest/docs/resources/data_source) | resource |
+| [grafana_data_source.cloudwatch](https://registry.terraform.io/providers/grafana/grafana/latest/docs/resources/data_source) | resource |
 | [grafana_data_source.log_analytics](https://registry.terraform.io/providers/grafana/grafana/latest/docs/resources/data_source) | resource |
-| [grafana_folder.home](https://registry.terraform.io/providers/grafana/grafana/latest/docs/resources/folder) | resource |
 | [grafana_folder.lz_operations](https://registry.terraform.io/providers/grafana/grafana/latest/docs/resources/folder) | resource |
 | [grafana_folder.mccs](https://registry.terraform.io/providers/grafana/grafana/latest/docs/resources/folder) | resource |
+| [grafana_folder.mccs_overview](https://registry.terraform.io/providers/grafana/grafana/latest/docs/resources/folder) | resource |
+| [grafana_folder.root](https://registry.terraform.io/providers/grafana/grafana/latest/docs/resources/folder) | resource |
 | [grafana_folder.security](https://registry.terraform.io/providers/grafana/grafana/latest/docs/resources/folder) | resource |
 | [grafana_service_account.terraform](https://registry.terraform.io/providers/grafana/grafana/latest/docs/resources/service_account) | resource |
 | [grafana_service_account_token.terraform](https://registry.terraform.io/providers/grafana/grafana/latest/docs/resources/service_account_token) | resource |
@@ -409,6 +411,8 @@ No modules.
 | [azurerm_client_config.current](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/data-sources/client_config) | data source |
 | [azurerm_express_route_circuit.circuits](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/data-sources/express_route_circuit) | data source |
 | [azurerm_firewall.azure_firewalls](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/data-sources/firewall) | data source |
+| [azurerm_key_vault_secret.aws_access_key_id](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/data-sources/key_vault_secret) | data source |
+| [azurerm_key_vault_secret.aws_secret_access_key](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/data-sources/key_vault_secret) | data source |
 | [azurerm_key_vault_secret.grafana_token](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/data-sources/key_vault_secret) | data source |
 | [azurerm_management_group.grafana_scope](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/data-sources/management_group) | data source |
 | [azurerm_virtual_network_gateway.gateways](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/data-sources/virtual_network_gateway) | data source |
@@ -424,6 +428,9 @@ No modules.
 | <a name="input_alert_window_size"></a> [alert\_window\_size](#input\_alert\_window\_size) | The time window for alert evaluation. | `string` | `"PT5M"` | no |
 | <a name="input_allowed_ip_addresses"></a> [allowed\_ip\_addresses](#input\_allowed\_ip\_addresses) | List of IP addresses or CIDR ranges allowed to reach the Key Vault public endpoint and the jump box NSG. Used for Terraform runners or admin access. | `list(string)` | `[]` | no |
 | <a name="input_arp_availability_threshold"></a> [arp\_availability\_threshold](#input\_arp\_availability\_threshold) | ARP availability percentage threshold for critical alerts. | `number` | `100` | no |
+| <a name="input_aws_access_key_secret_name"></a> [aws\_access\_key\_secret\_name](#input\_aws\_access\_key\_secret\_name) | Key Vault secret name for the AWS access key ID used by CloudWatch. | `string` | `"grafana-aws-access-key-id"` | no |
+| <a name="input_aws_cloudwatch_default_region"></a> [aws\_cloudwatch\_default\_region](#input\_aws\_cloudwatch\_default\_region) | Default AWS region for the CloudWatch data source (Direct Connect metrics live here). | `string` | `"ca-central-1"` | no |
+| <a name="input_aws_secret_key_secret_name"></a> [aws\_secret\_key\_secret\_name](#input\_aws\_secret\_key\_secret\_name) | Key Vault secret name for the AWS secret access key used by CloudWatch. | `string` | `"grafana-aws-secret-access-key"` | no |
 | <a name="input_azure_firewalls"></a> [azure\_firewalls](#input\_azure\_firewalls) | Map of Azure Firewalls to monitor (typically the vWAN hub firewall). | <pre>map(object({<br/>    firewall_name       = string<br/>    resource_group_name = string<br/>  }))</pre> | `{}` | no |
 | <a name="input_bandwidth_critical_threshold"></a> [bandwidth\_critical\_threshold](#input\_bandwidth\_critical\_threshold) | Bandwidth utilization percentage threshold for critical alerts. | `number` | `95` | no |
 | <a name="input_bandwidth_warning_threshold"></a> [bandwidth\_warning\_threshold](#input\_bandwidth\_warning\_threshold) | Bandwidth utilization percentage threshold for warning alerts. | `number` | `80` | no |
@@ -439,6 +446,7 @@ No modules.
 | <a name="input_dns_servers"></a> [dns\_servers](#input\_dns\_servers) | List of DNS server IP addresses for the VNet. Typically the Azure Firewall private IP for centralized DNS resolution. | `list(string)` | `[]` | no |
 | <a name="input_enable_activity_log_diagnostics"></a> [enable\_activity\_log\_diagnostics](#input\_enable\_activity\_log\_diagnostics) | Whether to route subscription activity logs (administrative changes, service/resource health, policy) to the Log Analytics workspace. | `bool` | `true` | no |
 | <a name="input_enable_alerting"></a> [enable\_alerting](#input\_enable\_alerting) | Whether to enable alerting infrastructure (Action Groups, Alert Rules, Logic App). | `bool` | `true` | no |
+| <a name="input_enable_aws_cloudwatch"></a> [enable\_aws\_cloudwatch](#input\_enable\_aws\_cloudwatch) | Provision a CloudWatch data source from Key Vault AWS keys and enable Direct Connect and AWS VPN panels on MCCS Overview. | `bool` | `false` | no |
 | <a name="input_enable_expressroute_diagnostics"></a> [enable\_expressroute\_diagnostics](#input\_enable\_expressroute\_diagnostics) | Whether to enable diagnostic settings on ExpressRoute circuits and gateways. | `bool` | `true` | no |
 | <a name="input_enable_grafana_dashboards"></a> [enable\_grafana\_dashboards](#input\_enable\_grafana\_dashboards) | Whether to provision Grafana dashboards via Terraform. | `bool` | `true` | no |
 | <a name="input_environment"></a> [environment](#input\_environment) | The environment name (e.g., prod, dev, staging). | `string` | n/a | yes |
@@ -493,7 +501,7 @@ No modules.
 | <a name="output_azure_monitor_workspace_id"></a> [azure\_monitor\_workspace\_id](#output\_azure\_monitor\_workspace\_id) | The ID of the Azure Monitor Workspace. |
 | <a name="output_azure_monitor_workspace_name"></a> [azure\_monitor\_workspace\_name](#output\_azure\_monitor\_workspace\_name) | The name of the Azure Monitor Workspace. |
 | <a name="output_grafana_dashboard_expressroute_health_url"></a> [grafana\_dashboard\_expressroute\_health\_url](#output\_grafana\_dashboard\_expressroute\_health\_url) | The URL for the ExpressRoute Health dashboard. |
-| <a name="output_grafana_dashboard_folder_uid"></a> [grafana\_dashboard\_folder\_uid](#output\_grafana\_dashboard\_folder\_uid) | The UID of the MCCS Grafana dashboard folder (null if dashboards not provisioned). |
+| <a name="output_grafana_dashboard_folder_uid"></a> [grafana\_dashboard\_folder\_uid](#output\_grafana\_dashboard\_folder\_uid) | The UID of the Connectivity Grafana dashboard folder (null if dashboards not provisioned). |
 | <a name="output_grafana_dashboard_mccs_overview_url"></a> [grafana\_dashboard\_mccs\_overview\_url](#output\_grafana\_dashboard\_mccs\_overview\_url) | The URL for the MCCS Overview dashboard. |
 | <a name="output_grafana_dashboards"></a> [grafana\_dashboards](#output\_grafana\_dashboards) | Map of all provisioned Grafana dashboard URLs (null if dashboards not provisioned). |
 | <a name="output_grafana_endpoint"></a> [grafana\_endpoint](#output\_grafana\_endpoint) | The endpoint URL of the Azure Managed Grafana instance. |
@@ -501,6 +509,7 @@ No modules.
 | <a name="output_grafana_identity_principal_id"></a> [grafana\_identity\_principal\_id](#output\_grafana\_identity\_principal\_id) | The principal ID of the Grafana managed identity. |
 | <a name="output_grafana_managed_identity_id"></a> [grafana\_managed\_identity\_id](#output\_grafana\_managed\_identity\_id) | The ID of the Grafana managed identity. |
 | <a name="output_grafana_name"></a> [grafana\_name](#output\_grafana\_name) | The name of the Azure Managed Grafana instance. |
+| <a name="output_grafana_root_folder_uid"></a> [grafana\_root\_folder\_uid](#output\_grafana\_root\_folder\_uid) | The UID of the top-level Landing Zone Grafana folder (null if dashboards not provisioned). |
 | <a name="output_ipam_allocated_cidr"></a> [ipam\_allocated\_cidr](#output\_ipam\_allocated\_cidr) | The CIDR block allocated from IPAM (null if not using IPAM). |
 | <a name="output_ipam_allocation_id"></a> [ipam\_allocation\_id](#output\_ipam\_allocation\_id) | The ID of the IPAM allocation (null if not using IPAM). |
 | <a name="output_jumpbox_admin_username"></a> [jumpbox\_admin\_username](#output\_jumpbox\_admin\_username) | The admin username for the jump box. |

@@ -157,8 +157,13 @@ output "grafana_identity_principal_id" {
 #------------------------------------------------------------------------------
 
 output "grafana_dashboard_folder_uid" {
-  description = "The UID of the MCCS Grafana dashboard folder (null if dashboards not provisioned)."
+  description = "The UID of the Connectivity Grafana dashboard folder (null if dashboards not provisioned)."
   value       = length(grafana_folder.mccs) > 0 ? grafana_folder.mccs[0].uid : null
+}
+
+output "grafana_root_folder_uid" {
+  description = "The UID of the top-level Landing Zone Grafana folder (null if dashboards not provisioned)."
+  value       = length(grafana_folder.root) > 0 ? grafana_folder.root[0].uid : null
 }
 
 output "grafana_dashboard_mccs_overview_url" {
