@@ -15,7 +15,10 @@ provider "alz" {
       ref  = "2026.06.2" # Check the latest library version https://github.com/Azure/Azure-Landing-Zones-Library/tags
     },
     {
-      custom_url = "${path.root}/lib"
+      custom_url = "${path.module}/lib" # policy assignments/definitions, role definitions, archetype overrides
+    },
+    {
+      custom_url = "${path.root}/lib" # calling module's custom architecture definition
     }
   ]
   suppress_warning_policy_role_assignments = true
