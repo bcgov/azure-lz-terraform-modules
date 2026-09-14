@@ -350,7 +350,7 @@ This will enable:
 | <a name="requirement_azurerm"></a> [azurerm](#requirement\_azurerm) | ~> 4.81 |
 | <a name="requirement_grafana"></a> [grafana](#requirement\_grafana) | ~> 3.0 |
 | <a name="requirement_local"></a> [local](#requirement\_local) | ~> 2.0 |
-| <a name="requirement_random"></a> [random](#requirement\_random) | ~> 3.0 |
+| <a name="requirement_random"></a> [random](#requirement\_random) | ~> 3.9 |
 | <a name="requirement_time"></a> [time](#requirement\_time) | ~> 0.11 |
 
 ## Providers
@@ -362,7 +362,7 @@ This will enable:
 | <a name="provider_azurerm.management"></a> [azurerm.management](#provider\_azurerm.management) | ~> 4.81 |
 | <a name="provider_grafana"></a> [grafana](#provider\_grafana) | ~> 3.0 |
 | <a name="provider_local"></a> [local](#provider\_local) | ~> 2.0 |
-| <a name="provider_random"></a> [random](#provider\_random) | ~> 3.0 |
+| <a name="provider_random"></a> [random](#provider\_random) | ~> 3.9 |
 | <a name="provider_time"></a> [time](#provider\_time) | ~> 0.11 |
 
 ## Modules
