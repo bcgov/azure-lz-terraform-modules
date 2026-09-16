@@ -15,26 +15,18 @@ locals {
   key_vault_name               = coalesce(var.key_vault_name, "kv-${local.resource_prefix}-${local.resource_suffix}")
   log_analytics_workspace_name = coalesce(var.log_analytics_workspace_name, "log-${local.resource_prefix}-${local.resource_suffix}")
   # Grafana name max 23 chars, so use short prefix (grf-mccs-prod-cc-xxxx = 20 chars)
-  grafana_name           = coalesce(var.grafana_name, "grf-${local.resource_prefix}-${local.resource_suffix}")
-  postgresql_server_name = coalesce(var.postgresql_server_name, "psql-${local.resource_prefix}-${local.resource_suffix}")
-  storage_account_name   = coalesce(var.storage_account_name, "st${replace(local.resource_prefix, "-", "")}${local.resource_suffix}")
-  action_group_name      = coalesce(var.action_group_name, "ag-${local.resource_prefix}-alerts")
-  logic_app_name         = coalesce(var.logic_app_name, "logic-${local.resource_prefix}-alert-router")
-
-  # Container instance names
-  netbox_aci_name     = "aci-${local.resource_prefix}-netbox"
-  prometheus_aci_name = "aci-${local.resource_prefix}-prometheus"
+  grafana_name      = coalesce(var.grafana_name, "grf-${local.resource_prefix}-${local.resource_suffix}")
+  action_group_name = coalesce(var.action_group_name, "ag-${local.resource_prefix}-alerts")
+  logic_app_name    = coalesce(var.logic_app_name, "logic-${local.resource_prefix}-alert-router")
 
   # VNet name
   vnet_name = coalesce(var.vnet_name, "vnet-${local.resource_prefix}-${local.resource_suffix}")
 
   # Subnet names
-  subnet_containers        = "snet-${local.resource_prefix}-containers"
-  subnet_postgresql        = "snet-${local.resource_prefix}-postgresql"
   subnet_private_endpoints = "snet-${local.resource_prefix}-privateendpoints"
 
   # IPAM - Compute VNet address space and subnet CIDRs
-  # When using IPAM, we allocate a /24 and split it into three /26 subnets
+  # When using IPAM, we allocate a /24 and split it into /26 subnets
   # When not using IPAM, we use the static CIDR variable
   # Note: address_prefixes is always available after IPAM resource creation (depends_on ensures ordering)
   ipam_base_cidr = var.use_ipam ? azurerm_network_manager_ipam_pool_static_cidr.mccs_observability[0].address_prefixes[0] : null
@@ -45,9 +37,9 @@ locals {
   # Subnet CIDR computation:
   # - IPAM allocates /24 (256 addresses)
   # - cidrsubnet(base, 2, index) splits /24 into four /26 subnets (64 addresses each)
-  # - We use indices 0, 1, 2 for our three subnets
-  container_subnet_cidr        = cidrsubnet(local.vnet_address_space, 2, 0)
-  postgresql_subnet_cidr       = cidrsubnet(local.vnet_address_space, 2, 1)
+  # - Index 2 is kept for the private endpoints subnet: existing deployments placed it
+  #   there when container/postgresql subnets still existed; moving it would change
+  #   the live subnet's address range underneath jump box NICs and private endpoints.
   private_endpoint_subnet_cidr = cidrsubnet(local.vnet_address_space, 2, 2)
 
   # Tags with defaults
@@ -57,9 +49,6 @@ locals {
     ManagedBy   = "Terraform"
   }
   tags = merge(local.default_tags, var.tags)
-
-  # PostgreSQL configuration
-  postgresql_database_name = "netbox"
 
   # Grafana data sources configuration
   grafana_azure_monitor_data_source = {
@@ -85,6 +74,50 @@ locals {
     for k, v in data.azurerm_virtual_network_gateway.gateways : k => v.id
   }
 
+  # Virtual WAN hub the observability VNet connects to (parsed from its resource ID)
+  # /subscriptions/<sub>/resourceGroups/<rg>/providers/Microsoft.Network/virtualHubs/<name>
+  virtual_hub_name           = element(split("/", var.virtual_hub_id), length(split("/", var.virtual_hub_id)) - 1)
+  virtual_hub_resource_group = element(split("/", var.virtual_hub_id), 4)
+
+  # VPN gateway IDs for easier reference
+  vpn_gateway_ids = {
+    for k, v in data.azurerm_vpn_gateway.vpn_gateways : k => v.id
+  }
+
+  vpn_gateway_names = [
+    for k, v in var.vpn_gateways : v.gateway_name
+  ]
+
+  default_vpn_gateway_resource_group = length(local.vpn_gateway_names) > 0 ? [for k, v in var.vpn_gateways : v.resource_group_name][0] : ""
+
+  azure_firewall_ids = {
+    for k, v in data.azurerm_firewall.azure_firewalls : k => v.id
+  }
+
+  azure_firewall_names = [
+    for k, v in var.azure_firewalls : v.firewall_name
+  ]
+
+  default_firewall_resource_group = length(local.azure_firewall_names) > 0 ? [for k, v in var.azure_firewalls : v.resource_group_name][0] : ""
+
+  virtual_hub_express_route_gateway_names = [
+    for k, v in var.virtual_hub_express_route_gateways : v.gateway_name
+  ]
+
+  default_virtual_hub_express_route_gateway_resource_group = length(var.virtual_hub_express_route_gateways) > 0 ? [for k, v in var.virtual_hub_express_route_gateways : v.resource_group_name][0] : local.virtual_hub_resource_group
+
+  # vWAN hub ER gateways are Microsoft.Network/expressRouteGateways, not
+  # classic virtualNetworkGateways. The ExpressRoute Health gateway picker
+  # and metric namespace follow whichever map is populated.
+  express_route_gateway_metric_namespace = length(var.virtual_hub_express_route_gateways) > 0 ? "microsoft.network/expressroutegateways" : "microsoft.network/virtualnetworkgateways"
+
+  activity_log_workspace_id = coalesce(var.activity_log_workspace_id, azurerm_log_analytics_workspace.this.id)
+
+  # Concrete subscription GUIDs for Azure Resource Graph. The plugin does
+  # not treat subscriptions: ["$__all"] as "every readable subscription" —
+  # ARG gets a literal $__all and returns no data.
+  grafana_arg_subscription_ids = var.grafana_monitoring_management_group_id != null ? sort(tolist(data.azurerm_management_group.grafana_scope[0].all_subscription_ids)) : [local.subscription_id_connectivity]
+
   # Dashboard configuration - extract unique resource groups and circuit names
   expressroute_resource_groups = distinct([
     for k, v in var.expressroute_circuits : v.resource_group_name
@@ -97,14 +130,8 @@ locals {
   # First circuit's resource group as default (for dashboard variable default)
   default_expressroute_resource_group = length(local.expressroute_resource_groups) > 0 ? local.expressroute_resource_groups[0] : ""
 
-  # Dashboard template variables
-  dashboard_config = {
-    subscription_id                      = local.subscription_id_connectivity
-    default_resource_group               = local.default_expressroute_resource_group
-    expressroute_resource_groups         = local.expressroute_resource_groups
-    expressroute_circuit_names           = local.expressroute_circuit_names
-    expressroute_circuits                = var.expressroute_circuits
-    netbox_url                           = "http://${azurerm_container_group.netbox.ip_address}:8080"
-    grafana_azure_monitor_datasource_uid = "azure-monitor-oob" # Built-in Azure Monitor data source UID
-  }
+  # Grafana Azure Monitor / Resource Graph scope. MG-level access lets the
+  # managed identity list every subscription under the landing zone.
+  grafana_monitoring_scope = var.grafana_monitoring_management_group_id != null ? "/providers/Microsoft.Management/managementGroups/${var.grafana_monitoring_management_group_id}" : "/subscriptions/${local.subscription_id_connectivity}"
+
 }

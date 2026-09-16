@@ -57,11 +57,6 @@ variable "internet_security_enabled" {
   default     = true
 }
 
-variable "central_postgresql_dns_zone_id" {
-  type        = string
-  description = "Resource ID of the central PostgreSQL private DNS zone."
-}
-
 variable "central_keyvault_dns_zone_id" {
   type        = string
   description = "Resource ID of the central Key Vault private DNS zone."
@@ -165,11 +160,6 @@ variable "jira_api_token" {
 variable "jira_project_key" {
   type        = string
   description = "Jira project key."
-}
-
-variable "netbox_admin_email" {
-  type        = string
-  description = "Netbox admin email."
 }
 
 #------------------------------------------------------------------------------
