@@ -308,7 +308,7 @@ To customize dashboards:
 | <a name="requirement_azuread"></a> [azuread](#requirement\_azuread) | ~> 3.9 |
 | <a name="requirement_azurerm"></a> [azurerm](#requirement\_azurerm) | ~> 4.81 |
 | <a name="requirement_grafana"></a> [grafana](#requirement\_grafana) | ~> 3.0 |
-| <a name="requirement_random"></a> [random](#requirement\_random) | ~> 3.0 |
+| <a name="requirement_random"></a> [random](#requirement\_random) | ~> 3.9 |
 
 ## Providers
 
