@@ -303,7 +303,7 @@ To customize dashboards:
 ## Requirements
 
 | Name | Version |
-| ---- | ------- |
+|------|---------|
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >=1.9.0, < 2.0.0 |
 | <a name="requirement_azuread"></a> [azuread](#requirement\_azuread) | ~> 3.9 |
 | <a name="requirement_azurerm"></a> [azurerm](#requirement\_azurerm) | ~> 4.81 |
@@ -313,12 +313,12 @@ To customize dashboards:
 ## Providers
 
 | Name | Version |
-| ---- | ------- |
-| <a name="provider_azuread"></a> [azuread](#provider\_azuread) | 3.9.0 |
-| <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) | 4.81.0 |
-| <a name="provider_azurerm.management"></a> [azurerm.management](#provider\_azurerm.management) | 4.81.0 |
-| <a name="provider_grafana"></a> [grafana](#provider\_grafana) | 3.25.9 |
-| <a name="provider_random"></a> [random](#provider\_random) | 3.9.0 |
+|------|---------|
+| <a name="provider_azuread"></a> [azuread](#provider\_azuread) | ~> 3.9 |
+| <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) | ~> 4.81 |
+| <a name="provider_azurerm.management"></a> [azurerm.management](#provider\_azurerm.management) | ~> 4.81 |
+| <a name="provider_grafana"></a> [grafana](#provider\_grafana) | ~> 3.0 |
+| <a name="provider_random"></a> [random](#provider\_random) | ~> 3.9 |
 
 ## Modules
 
@@ -327,7 +327,7 @@ No modules.
 ## Resources
 
 | Name | Type |
-| ---- | ---- |
+|------|------|
 | [azurerm_dashboard_grafana.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/dashboard_grafana) | resource |
 | [azurerm_key_vault.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/key_vault) | resource |
 | [azurerm_key_vault_secret.grafana_service_account_token](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/key_vault_secret) | resource |
@@ -421,7 +421,7 @@ No modules.
 ## Inputs
 
 | Name | Description | Type | Default | Required |
-| ---- | ----------- | ---- | ------- | :------: |
+|------|-------------|------|---------|:--------:|
 | <a name="input_action_group_name"></a> [action\_group\_name](#input\_action\_group\_name) | Override for the Action Group name. If not provided, a name will be generated. | `string` | `null` | no |
 | <a name="input_activity_log_workspace_id"></a> [activity\_log\_workspace\_id](#input\_activity\_log\_workspace\_id) | Log Analytics workspace resource ID used by the Platform Changes dashboard. Defaults to this module's workspace. Point this at the CAF/platform workspace when activity logs are already shipped there. | `string` | `null` | no |
 | <a name="input_alert_evaluation_frequency"></a> [alert\_evaluation\_frequency](#input\_alert\_evaluation\_frequency) | How often alert rules are evaluated. | `string` | `"PT5M"` | no |
@@ -496,7 +496,7 @@ No modules.
 ## Outputs
 
 | Name | Description |
-| ---- | ----------- |
+|------|-------------|
 | <a name="output_action_group_id"></a> [action\_group\_id](#output\_action\_group\_id) | The ID of the alert action group. |
 | <a name="output_azure_monitor_workspace_id"></a> [azure\_monitor\_workspace\_id](#output\_azure\_monitor\_workspace\_id) | The ID of the Azure Monitor Workspace. |
 | <a name="output_azure_monitor_workspace_name"></a> [azure\_monitor\_workspace\_name](#output\_azure\_monitor\_workspace\_name) | The name of the Azure Monitor Workspace. |
