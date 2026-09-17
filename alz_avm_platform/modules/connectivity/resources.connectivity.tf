@@ -19,13 +19,6 @@ resource "azurerm_resource_group" "private_dns_resolver" {
   provider = azurerm.connectivity
 }
 
-resource "azurerm_resource_group" "firewall_policy" {
-  name     = local.firewall_policy_resource_group_name
-  location = var.location
-
-  provider = azurerm.connectivity
-}
-
 # One NSG per DNS resolver endpoint subnet (inbound_endpoint/outbound_endpoint); outbound_endpoint keeps only Azure defaults.
 resource "azurerm_network_security_group" "dns_resolver_endpoint" {
   for_each = local.dns_resolver_endpoint_subnets
@@ -94,7 +87,6 @@ module "avm-ptn-alz-connectivity-virtual-wan" {
     azurerm_resource_group.vwan,
     azurerm_resource_group.dns_zones,
     azurerm_resource_group.private_dns_resolver,
-    azurerm_resource_group.firewall_policy,
     azurerm_network_security_group.dns_resolver_endpoint
   ]
 

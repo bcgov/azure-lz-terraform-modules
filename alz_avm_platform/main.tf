@@ -47,6 +47,14 @@ module "amba" { # TODO: Move to some sub-module
 module "connectivity" {
   source = "./modules/connectivity"
 
+  depends_on = [azurerm_firewall_policy.base_firewall_policy]
+
+  providers = {
+    azapi.connectivity   = azapi.connectivity
+    azurerm.connectivity = azurerm.connectivity
+    azurerm.management   = azurerm.management
+  }
+
   subscription_id_connectivity = var.subscription_id_connectivity
   subscription_id_management   = var.subscription_id_management
 

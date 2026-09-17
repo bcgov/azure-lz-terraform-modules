@@ -75,20 +75,30 @@
 
 ## Providers
 
-No providers.
+| Name | Version |
+|------|---------|
+| <a name="provider_azurerm.connectivity"></a> [azurerm.connectivity](#provider\_azurerm.connectivity) | 4.81.0 |
 
 ## Modules
 
 | Name | Source | Version |
 |------|--------|---------|
 | <a name="module_amba"></a> [amba](#module\_amba) | ./modules/amba | n/a |
+| <a name="module_base_firewall_policy_key_vault"></a> [base\_firewall\_policy\_key\_vault](#module\_base\_firewall\_policy\_key\_vault) | ../azure_key_vault/key_vault | n/a |
+| <a name="module_base_firewall_policy_key_vault_access_policy"></a> [base\_firewall\_policy\_key\_vault\_access\_policy](#module\_base\_firewall\_policy\_key\_vault\_access\_policy) | ../azure_key_vault/key_vault_access_policy | n/a |
+| <a name="module_base_firewall_policy_key_vault_certificate"></a> [base\_firewall\_policy\_key\_vault\_certificate](#module\_base\_firewall\_policy\_key\_vault\_certificate) | ../azure_key_vault/key_vault_certificate | n/a |
+| <a name="module_base_firewall_policy_managed_identity"></a> [base\_firewall\_policy\_managed\_identity](#module\_base\_firewall\_policy\_managed\_identity) | ../azure_identity/user_assigned_identity | n/a |
 | <a name="module_connectivity"></a> [connectivity](#module\_connectivity) | ./modules/connectivity | n/a |
 | <a name="module_lz_firewall_ipgroups"></a> [lz\_firewall\_ipgroups](#module\_lz\_firewall\_ipgroups) | ../azure_ip_group | n/a |
+| <a name="module_lz_firewall_policy_rules"></a> [lz\_firewall\_policy\_rules](#module\_lz\_firewall\_policy\_rules) | ../azure_firewall/firewall_policy_rcg | n/a |
 | <a name="module_management"></a> [management](#module\_management) | ./modules/management | n/a |
 
 ## Resources
 
-No resources.
+| Name | Type |
+|------|------|
+| [azurerm_firewall_policy.base_firewall_policy](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/firewall_policy) | resource |
+| [azurerm_resource_group.base_firewall_policy](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/resource_group) | resource |
 
 ## Inputs
 
@@ -107,6 +117,8 @@ No resources.
 | <a name="input_data_collection_rules"></a> [data\_collection\_rules](#input\_data\_collection\_rules) | Enables customisation of the data collection rules for Azure Monitor.<br/>This is an object with attributes pertaining to the three DCRs that are created by this module.<br/><br/>Each object has the following attributes:<br/><br/>- enabled (Optional) - Whether or not to create the data collection rule. Defaults to `true`.<br/>- name (Required) - The name of the data collection rule. For the default values, see the default variable value.<br/>- location (Optional) - The Azure region of the data collection rule. Defaults to the value of the location variable.<br/>- tags (Optional) - A map of tags to apply to the data collection rule. Defaults to `null`.<br/><br/>The defender\_sql object has an additional attribute:<br/><br/>- enable\_collection\_of\_sql\_queries\_for\_security\_research (Optional) - Whether or not to enable collection of SQL queries for security research. Defaults to `false`. | <pre>object({<br/>    change_tracking = object({<br/>      enabled  = optional(bool, true)<br/>      name     = string<br/>      location = optional(string, null)<br/>      tags     = optional(map(string), null)<br/>    })<br/>    vm_insights = object({<br/>      enabled  = optional(bool, true)<br/>      name     = string<br/>      location = optional(string, null)<br/>      tags     = optional(map(string), null)<br/>    })<br/>    defender_sql = object({<br/>      enabled                                                = optional(bool, true)<br/>      name                                                   = string<br/>      location                                               = optional(string, null)<br/>      tags                                                   = optional(map(string), null)<br/>      enable_collection_of_sql_queries_for_security_research = optional(bool, false)<br/>    })<br/>  })</pre> | <pre>{<br/>  "change_tracking": {<br/>    "name": "dcr-change-tracking"<br/>  },<br/>  "defender_sql": {<br/>    "name": "dcr-defender-sql"<br/>  },<br/>  "vm_insights": {<br/>    "name": "dcr-vm-insights"<br/>  }<br/>}</pre> | no |
 | <a name="input_description"></a> [description](#input\_description) | (Optional) A description of the Network Manager. | `string` | `null` | no |
 | <a name="input_email_security_contact"></a> [email\_security\_contact](#input\_email\_security\_contact) | Email address for security contact. This is used in the Deploy-MDFC-Config-H224 policy assignment. | `string` | `""` | no |
+| <a name="input_fw_base_config"></a> [fw\_base\_config](#input\_fw\_base\_config) | Configuration for the base firewall policy and its TLS inspection resources. | <pre>object({<br/>    resource_group_name                          = string<br/>    tls_inspection_key_vault_name                = string<br/>    tls_inspection_sku_name                      = string<br/>    tls_inspection_enable_rbac_authorization     = bool<br/>    tls_inspection_public_network_access_enabled = bool<br/>    tls_inspection_user_assigned_identity_name   = string<br/>    tls_inspection_certificate_name              = string<br/>    tls_inspection_certificate = object({<br/>      contents = string<br/>      password = optional(string)<br/>    })<br/>    tls_inspection_secret_permissions = list(string)<br/>    intrusion_detection = optional(object({<br/>      mode = string<br/>      traffic_bypass = optional(list(object({<br/>        name                  = string<br/>        protocol              = string<br/>        description           = optional(string)<br/>        destination_addresses = optional(list(string), [])<br/>        destination_ip_groups = optional(list(string), [])<br/>        destination_ports     = optional(list(string), [])<br/>        source_addresses      = optional(list(string), [])<br/>        source_ip_groups      = optional(list(string), [])<br/>      })), [])<br/>    }))<br/>    policy_name = string<br/>    sku         = string<br/>  })</pre> | n/a | yes |
+| <a name="input_fw_lz_config"></a> [fw\_lz\_config](#input\_fw\_lz\_config) | Configuration for the AVM-managed child firewall policy and its rule collection groups. | <pre>object({<br/>    policy_name                  = string<br/>    dns                          = optional(any)<br/>    threat_intelligence_mode     = optional(string)<br/>    private_ip_ranges            = optional(list(string), [])<br/>    policy_rule_collection_group = any<br/>  })</pre> | n/a | yes |
 | <a name="input_ip_group"></a> [ip\_group](#input\_ip\_group) | Configuration for creating IP Groups | <pre>list(object({<br/>    name         = string<br/>    ip_addresses = set(string)<br/>    tags         = optional(map(string), {})<br/>  }))</pre> | `[]` | no |
 | <a name="input_ip_group_resource_group_name"></a> [ip\_group\_resource\_group\_name](#input\_ip\_group\_resource\_group\_name) | The resource group where the resources will be deployed. | `string` | n/a | yes |
 | <a name="input_ipam_pool_address_prefixes"></a> [ipam\_pool\_address\_prefixes](#input\_ipam\_pool\_address\_prefixes) | (Required) Specifies a list of IPv4 or IPv6 IP address prefixes. Changing this forces a new Network Manager IPAM Pool to be created. | `list(string)` | n/a | yes |
@@ -157,6 +169,12 @@ No resources.
 | Name | Description |
 |------|-------------|
 | <a name="output_amba"></a> [amba](#output\_amba) | n/a |
+| <a name="output_base_firewall_policy"></a> [base\_firewall\_policy](#output\_base\_firewall\_policy) | The base Azure Firewall Policy object. |
 | <a name="output_connectivity"></a> [connectivity](#output\_connectivity) | n/a |
+| <a name="output_firewall_policy_id"></a> [firewall\_policy\_id](#output\_firewall\_policy\_id) | The Azure Firewall Policy ID. |
+| <a name="output_identity_id"></a> [identity\_id](#output\_identity\_id) | The ID of the User Assigned Identity. |
+| <a name="output_key_vault_id"></a> [key\_vault\_id](#output\_key\_vault\_id) | The ID of the Key Vault. |
+| <a name="output_key_vault_uri"></a> [key\_vault\_uri](#output\_key\_vault\_uri) | The URI of the Key Vault. |
+| <a name="output_lz_firewall_policy"></a> [lz\_firewall\_policy](#output\_lz\_firewall\_policy) | The child Azure Firewall Policy resource IDs managed by the AVM connectivity module. |
 | <a name="output_management"></a> [management](#output\_management) | n/a |
 <!-- END_TF_DOCS -->

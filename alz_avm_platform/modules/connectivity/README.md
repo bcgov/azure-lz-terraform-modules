@@ -32,7 +32,6 @@
 | [azurerm_network_manager_ipam_pool.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/network_manager_ipam_pool) | resource |
 | [azurerm_network_security_group.dns_resolver_endpoint](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/network_security_group) | resource |
 | [azurerm_resource_group.dns_zones](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/resource_group) | resource |
-| [azurerm_resource_group.firewall_policy](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/resource_group) | resource |
 | [azurerm_resource_group.private_dns_resolver](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/resource_group) | resource |
 | [azurerm_resource_group.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/resource_group) | resource |
 | [azurerm_resource_group.vwan](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/resource_group) | resource |
@@ -67,6 +66,7 @@
 | Name | Description |
 |------|-------------|
 | <a name="output_avm-ptn-alz-connectivity-virtual-wan"></a> [avm-ptn-alz-connectivity-virtual-wan](#output\_avm-ptn-alz-connectivity-virtual-wan) | n/a |
+| <a name="output_firewall_policy_resource_ids"></a> [firewall\_policy\_resource\_ids](#output\_firewall\_policy\_resource\_ids) | The resource IDs of the firewall policies managed by the AVM connectivity module. |
 | <a name="output_network_manager_ipam_pool_address_prefixes"></a> [network\_manager\_ipam\_pool\_address\_prefixes](#output\_network\_manager\_ipam\_pool\_address\_prefixes) | The address prefixes of the Network Manager IPAM Pool. |
 | <a name="output_network_manager_ipam_pool_id"></a> [network\_manager\_ipam\_pool\_id](#output\_network\_manager\_ipam\_pool\_id) | The ID of the Network Manager IPAM Pool. |
 | <a name="output_network_manager_ipam_pool_name"></a> [network\_manager\_ipam\_pool\_name](#output\_network\_manager\_ipam\_pool\_name) | The name of the Network Manager IPAM Pool. |
