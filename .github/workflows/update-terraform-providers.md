@@ -49,7 +49,7 @@ safe-outputs:
 pre-agent-steps:
   - uses: hashicorp/setup-terraform@v4
     with:
-      terraform_version: "1.13.4"
+      terraform_version: "1.16.1"
       terraform_wrapper: false
 ---
 
