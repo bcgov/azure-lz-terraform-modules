@@ -1,5 +1,5 @@
-module "management_groups" {
-  source = "./modules/management_groups"
+module "management" {
+  source = "./modules/management"
 
   subscription_id_management = var.subscription_id_management
 

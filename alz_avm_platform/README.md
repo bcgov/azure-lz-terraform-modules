@@ -69,6 +69,7 @@
 |------|---------|
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | ~> 1.12, < 2.0 |
 | <a name="requirement_alz"></a> [alz](#requirement\_alz) | ~> 0.21 |
+| <a name="requirement_assert"></a> [assert](#requirement\_assert) | ~> 0.16.0 |
 | <a name="requirement_azapi"></a> [azapi](#requirement\_azapi) | ~> 2.4 |
 | <a name="requirement_azurerm"></a> [azurerm](#requirement\_azurerm) | ~> 4.0 |
 
@@ -82,7 +83,8 @@ No providers.
 |------|--------|---------|
 | <a name="module_amba"></a> [amba](#module\_amba) | ./modules/amba | n/a |
 | <a name="module_connectivity"></a> [connectivity](#module\_connectivity) | ./modules/connectivity | n/a |
-| <a name="module_management_groups"></a> [management\_groups](#module\_management\_groups) | ./modules/management_groups | n/a |
+| <a name="module_lz_firewall_ipgroups"></a> [lz\_firewall\_ipgroups](#module\_lz\_firewall\_ipgroups) | ../azure_ip_group | n/a |
+| <a name="module_management"></a> [management](#module\_management) | ./modules/management | n/a |
 
 ## Resources
 
@@ -105,6 +107,8 @@ No resources.
 | <a name="input_data_collection_rules"></a> [data\_collection\_rules](#input\_data\_collection\_rules) | Enables customisation of the data collection rules for Azure Monitor.<br/>This is an object with attributes pertaining to the three DCRs that are created by this module.<br/><br/>Each object has the following attributes:<br/><br/>- enabled (Optional) - Whether or not to create the data collection rule. Defaults to `true`.<br/>- name (Required) - The name of the data collection rule. For the default values, see the default variable value.<br/>- location (Optional) - The Azure region of the data collection rule. Defaults to the value of the location variable.<br/>- tags (Optional) - A map of tags to apply to the data collection rule. Defaults to `null`.<br/><br/>The defender\_sql object has an additional attribute:<br/><br/>- enable\_collection\_of\_sql\_queries\_for\_security\_research (Optional) - Whether or not to enable collection of SQL queries for security research. Defaults to `false`. | <pre>object({<br/>    change_tracking = object({<br/>      enabled  = optional(bool, true)<br/>      name     = string<br/>      location = optional(string, null)<br/>      tags     = optional(map(string), null)<br/>    })<br/>    vm_insights = object({<br/>      enabled  = optional(bool, true)<br/>      name     = string<br/>      location = optional(string, null)<br/>      tags     = optional(map(string), null)<br/>    })<br/>    defender_sql = object({<br/>      enabled                                                = optional(bool, true)<br/>      name                                                   = string<br/>      location                                               = optional(string, null)<br/>      tags                                                   = optional(map(string), null)<br/>      enable_collection_of_sql_queries_for_security_research = optional(bool, false)<br/>    })<br/>  })</pre> | <pre>{<br/>  "change_tracking": {<br/>    "name": "dcr-change-tracking"<br/>  },<br/>  "defender_sql": {<br/>    "name": "dcr-defender-sql"<br/>  },<br/>  "vm_insights": {<br/>    "name": "dcr-vm-insights"<br/>  }<br/>}</pre> | no |
 | <a name="input_description"></a> [description](#input\_description) | (Optional) A description of the Network Manager. | `string` | `null` | no |
 | <a name="input_email_security_contact"></a> [email\_security\_contact](#input\_email\_security\_contact) | Email address for security contact. This is used in the Deploy-MDFC-Config-H224 policy assignment. | `string` | `""` | no |
+| <a name="input_ip_group"></a> [ip\_group](#input\_ip\_group) | Configuration for creating IP Groups | <pre>list(object({<br/>    name         = string<br/>    ip_addresses = set(string)<br/>    tags         = optional(map(string), {})<br/>  }))</pre> | `[]` | no |
+| <a name="input_ip_group_resource_group_name"></a> [ip\_group\_resource\_group\_name](#input\_ip\_group\_resource\_group\_name) | The resource group where the resources will be deployed. | `string` | n/a | yes |
 | <a name="input_ipam_pool_address_prefixes"></a> [ipam\_pool\_address\_prefixes](#input\_ipam\_pool\_address\_prefixes) | (Required) Specifies a list of IPv4 or IPv6 IP address prefixes. Changing this forces a new Network Manager IPAM Pool to be created. | `list(string)` | n/a | yes |
 | <a name="input_ipam_pool_description"></a> [ipam\_pool\_description](#input\_ipam\_pool\_description) | (Optional) The description of the Network Manager IPAM Pool. | `string` | `null` | no |
 | <a name="input_ipam_pool_display_name"></a> [ipam\_pool\_display\_name](#input\_ipam\_pool\_display\_name) | (Optional) The display name for the Network Manager IPAM Pool. | `string` | `null` | no |
@@ -154,5 +158,5 @@ No resources.
 |------|-------------|
 | <a name="output_amba"></a> [amba](#output\_amba) | n/a |
 | <a name="output_connectivity"></a> [connectivity](#output\_connectivity) | n/a |
-| <a name="output_management_groups"></a> [management\_groups](#output\_management\_groups) | n/a |
+| <a name="output_management"></a> [management](#output\_management) | n/a |
 <!-- END_TF_DOCS -->

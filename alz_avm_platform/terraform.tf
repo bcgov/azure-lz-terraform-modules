@@ -16,5 +16,9 @@ terraform {
       version               = "~> 2.4"
       configuration_aliases = [azapi.connectivity, azapi.management]
     }
+    assert = {
+      source  = "hashicorp/assert"
+      version = "~> 0.16.0"
+    }
   }
 }

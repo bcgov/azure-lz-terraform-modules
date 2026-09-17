@@ -37,7 +37,7 @@ terraform.rc
 .terraform.lock.hcl
 
 # Used for development
-providers.tf
+# providers.tf
 
 # ALZ Terraform Module
 .alzlib
