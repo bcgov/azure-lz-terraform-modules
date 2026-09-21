@@ -70,7 +70,10 @@ resource "azurerm_role_assignment" "grafana_log_analytics_reader" {
 # When Platform Changes reads the CAF/platform workspace instead of this
 # module's workspace, grant the same reader there.
 resource "azurerm_role_assignment" "grafana_activity_log_workspace_reader" {
-  count = var.activity_log_workspace_id != null && var.activity_log_workspace_id != azurerm_log_analytics_workspace.this.id ? 1 : 0
+  # Compare against the known null check only. The module workspace ID is
+  # unknown on first plan, so using it in count would fail before apply.
+  # Passing this module's own workspace ID is a no-op: leave the variable null.
+  count = var.activity_log_workspace_id != null ? 1 : 0
 
   scope                = var.activity_log_workspace_id
   role_definition_name = "Log Analytics Reader"

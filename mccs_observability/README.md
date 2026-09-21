@@ -180,7 +180,7 @@ module "mccs_observability" {
 
 ## Grafana Dashboards
 
-The module provisions the following dashboards automatically when `enable_grafana_dashboards = true`:
+The module provisions the following dashboards when `enable_grafana_dashboards = true` (the flag defaults to `false` so a first apply can create Grafana before a service-account token exists):
 
 **Folder: MCCS Observability** (multi-cloud connectivity)
 
@@ -195,7 +195,7 @@ The module provisions the following dashboards automatically when `enable_grafan
 |-----------|-----|-------------|
 | **Virtual WAN Hub Health** | `vwan-hub-health` | Hub router capacity (Routing Infrastructure Units), spoke VM utilization, data processed, and hub BGP/route health — targets the vWAN hub in `virtual_hub_id` |
 | **VPN Gateway Health** | `vpn-gateway-health` | S2S VPN tunnel bandwidth, ingress/egress packet drops, BGP peers/routes, and tunnel/route diagnostic events (only provisioned when `vpn_gateways` is provided) |
-| **Platform Changes (Activity Log)** | `platform-changes` | Subscription control-plane change feed: administrative operations, RBAC changes, failed operations, and service health events from activity logs routed to the workspace (only provisioned when `enable_activity_log_diagnostics` is true) |
+| **Platform Changes (Activity Log)** | `platform-changes` | Subscription control-plane change feed: administrative operations, RBAC changes, failed operations, and service health events from activity logs routed to the workspace (provisioned when `enable_activity_log_diagnostics` is true or `activity_log_workspace_id` points at an existing workspace) |
 | **Resource Inventory & Policy** | `resource-inventory-policy` | Resource counts by type/location, recently created resources, and policy compliance summary via Azure Resource Graph |
 | **Security Posture (Defender)** | `security-posture` | Defender for Cloud secure score and unhealthy security assessments via Azure Resource Graph (requires Defender for Cloud, free CSPM tier, on the subscription) |
 | **Key Vault Access** | `key-vault-access` | Key Vault audit events: secret access, denied attempts (403), distinct callers, hourly operation trends, and recent access feed |
@@ -231,10 +231,13 @@ All dashboards support the following template variables:
 Dashboard provisioning requires a Grafana service account token for API authentication. The token can only be created after Grafana is deployed, and the Grafana API itself needs an existing token to create service accounts — so the very first token must be created manually in the Grafana UI:
 
 **Phase 1: Deploy infrastructure (without dashboards)**
+
+`enable_grafana_dashboards` defaults to `false`, so a first apply skips dashboard resources and does not look up the Grafana token secret.
+
 ```hcl
 module "mccs_observability" {
   # ... other config ...
-  enable_grafana_dashboards     = false  # No token exists yet
+  # enable_grafana_dashboards defaults to false until a token exists
 }
 ```
 
@@ -303,7 +306,7 @@ To customize dashboards:
 ## Requirements
 
 | Name | Version |
-|------|---------|
+| ---- | ------- |
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >=1.9.0, < 2.0.0 |
 | <a name="requirement_azuread"></a> [azuread](#requirement\_azuread) | ~> 3.9 |
 | <a name="requirement_azurerm"></a> [azurerm](#requirement\_azurerm) | ~> 4.81 |
@@ -313,12 +316,12 @@ To customize dashboards:
 ## Providers
 
 | Name | Version |
-|------|---------|
-| <a name="provider_azuread"></a> [azuread](#provider\_azuread) | ~> 3.9 |
-| <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) | ~> 4.81 |
-| <a name="provider_azurerm.management"></a> [azurerm.management](#provider\_azurerm.management) | ~> 4.81 |
-| <a name="provider_grafana"></a> [grafana](#provider\_grafana) | ~> 3.0 |
-| <a name="provider_random"></a> [random](#provider\_random) | ~> 3.9 |
+| ---- | ------- |
+| <a name="provider_azuread"></a> [azuread](#provider\_azuread) | 3.9.0 |
+| <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) | 4.81.0 |
+| <a name="provider_azurerm.management"></a> [azurerm.management](#provider\_azurerm.management) | 4.81.0 |
+| <a name="provider_grafana"></a> [grafana](#provider\_grafana) | 3.25.9 |
+| <a name="provider_random"></a> [random](#provider\_random) | 3.9.1 |
 
 ## Modules
 
@@ -327,7 +330,7 @@ No modules.
 ## Resources
 
 | Name | Type |
-|------|------|
+| ---- | ---- |
 | [azurerm_dashboard_grafana.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/dashboard_grafana) | resource |
 | [azurerm_key_vault.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/key_vault) | resource |
 | [azurerm_key_vault_secret.grafana_service_account_token](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/key_vault_secret) | resource |
@@ -421,7 +424,7 @@ No modules.
 ## Inputs
 
 | Name | Description | Type | Default | Required |
-|------|-------------|------|---------|:--------:|
+| ---- | ----------- | ---- | ------- | :------: |
 | <a name="input_action_group_name"></a> [action\_group\_name](#input\_action\_group\_name) | Override for the Action Group name. If not provided, a name will be generated. | `string` | `null` | no |
 | <a name="input_activity_log_workspace_id"></a> [activity\_log\_workspace\_id](#input\_activity\_log\_workspace\_id) | Log Analytics workspace resource ID used by the Platform Changes dashboard. Defaults to this module's workspace. Point this at the CAF/platform workspace when activity logs are already shipped there. | `string` | `null` | no |
 | <a name="input_alert_evaluation_frequency"></a> [alert\_evaluation\_frequency](#input\_alert\_evaluation\_frequency) | How often alert rules are evaluated. | `string` | `"PT5M"` | no |
@@ -448,7 +451,7 @@ No modules.
 | <a name="input_enable_alerting"></a> [enable\_alerting](#input\_enable\_alerting) | Whether to enable alerting infrastructure (Action Groups, Alert Rules, Logic App). | `bool` | `true` | no |
 | <a name="input_enable_aws_cloudwatch"></a> [enable\_aws\_cloudwatch](#input\_enable\_aws\_cloudwatch) | Provision a CloudWatch data source from Key Vault AWS keys and enable Direct Connect and AWS VPN panels on MCCS Overview. | `bool` | `false` | no |
 | <a name="input_enable_expressroute_diagnostics"></a> [enable\_expressroute\_diagnostics](#input\_enable\_expressroute\_diagnostics) | Whether to enable diagnostic settings on ExpressRoute circuits and gateways. | `bool` | `true` | no |
-| <a name="input_enable_grafana_dashboards"></a> [enable\_grafana\_dashboards](#input\_enable\_grafana\_dashboards) | Whether to provision Grafana dashboards via Terraform. | `bool` | `true` | no |
+| <a name="input_enable_grafana_dashboards"></a> [enable\_grafana\_dashboards](#input\_enable\_grafana\_dashboards) | Whether to provision Grafana dashboards via Terraform. Keep false on first apply: the Grafana API token does not exist until after Grafana is deployed and the token is stored in Key Vault or passed via grafana\_service\_account\_token. | `bool` | `false` | no |
 | <a name="input_environment"></a> [environment](#input\_environment) | The environment name (e.g., prod, dev, staging). | `string` | n/a | yes |
 | <a name="input_expressroute_circuits"></a> [expressroute\_circuits](#input\_expressroute\_circuits) | Map of ExpressRoute circuits to monitor. | <pre>map(object({<br/>    circuit_name        = string<br/>    resource_group_name = string<br/>    bandwidth_mbps      = number<br/>    location            = string<br/>    provider_name       = optional(string, "Unknown")<br/>  }))</pre> | n/a | yes |
 | <a name="input_expressroute_gateways"></a> [expressroute\_gateways](#input\_expressroute\_gateways) | Map of classic Virtual Network ExpressRoute gateways (Microsoft.Network/virtualNetworkGateways) to monitor. | <pre>map(object({<br/>    gateway_name        = string<br/>    resource_group_name = string<br/>  }))</pre> | `{}` | no |
@@ -457,7 +460,7 @@ No modules.
 | <a name="input_grafana_monitoring_management_group_id"></a> [grafana\_monitoring\_management\_group\_id](#input\_grafana\_monitoring\_management\_group\_id) | Management group ID that the Grafana managed identity can read (Monitoring Reader and Reader). When set, dashboards can query every subscription under that group. When null, access is limited to the connectivity subscription. | `string` | `null` | no |
 | <a name="input_grafana_name"></a> [grafana\_name](#input\_grafana\_name) | Override for the Azure Managed Grafana name. If not provided, a name will be generated. | `string` | `null` | no |
 | <a name="input_grafana_public_network_access"></a> [grafana\_public\_network\_access](#input\_grafana\_public\_network\_access) | Whether to enable public network access to Grafana. | `bool` | `false` | no |
-| <a name="input_grafana_service_account_token"></a> [grafana\_service\_account\_token](#input\_grafana\_service\_account\_token) | Grafana service account token for dashboard provisioning. Optional: when omitted, the module reads the grafana-service-account-token secret from the module's Key Vault instead. | `string` | `""` | no |
+| <a name="input_grafana_service_account_token"></a> [grafana\_service\_account\_token](#input\_grafana\_service\_account\_token) | Grafana service account token for dashboard provisioning. Optional: when omitted and enable\_grafana\_dashboards is true, the module reads the grafana-service-account-token secret from the module's Key Vault instead. | `string` | `""` | no |
 | <a name="input_grafana_sku"></a> [grafana\_sku](#input\_grafana\_sku) | The SKU for Azure Managed Grafana. | `string` | `"Standard"` | no |
 | <a name="input_grafana_zone_redundancy"></a> [grafana\_zone\_redundancy](#input\_grafana\_zone\_redundancy) | Whether to enable zone redundancy for Grafana. | `bool` | `true` | no |
 | <a name="input_internet_security_enabled"></a> [internet\_security\_enabled](#input\_internet\_security\_enabled) | Whether to enable internet security (route internet traffic through the hub firewall). | `bool` | `true` | no |
@@ -496,7 +499,7 @@ No modules.
 ## Outputs
 
 | Name | Description |
-|------|-------------|
+| ---- | ----------- |
 | <a name="output_action_group_id"></a> [action\_group\_id](#output\_action\_group\_id) | The ID of the alert action group. |
 | <a name="output_azure_monitor_workspace_id"></a> [azure\_monitor\_workspace\_id](#output\_azure\_monitor\_workspace\_id) | The ID of the Azure Monitor Workspace. |
 | <a name="output_azure_monitor_workspace_name"></a> [azure\_monitor\_workspace\_name](#output\_azure\_monitor\_workspace\_name) | The name of the Azure Monitor Workspace. |

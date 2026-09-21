@@ -102,13 +102,13 @@ variable "grafana_deterministic_outbound_ip" {
 
 variable "enable_grafana_dashboards" {
   type        = bool
-  description = "Whether to provision Grafana dashboards via Terraform."
-  default     = true
+  description = "Whether to provision Grafana dashboards via Terraform. Keep false on first apply: the Grafana API token does not exist until after Grafana is deployed and the token is stored in Key Vault or passed via grafana_service_account_token."
+  default     = false
 }
 
 variable "grafana_service_account_token" {
   type        = string
-  description = "Grafana service account token for dashboard provisioning. Optional: when omitted, the module reads the grafana-service-account-token secret from the module's Key Vault instead."
+  description = "Grafana service account token for dashboard provisioning. Optional: when omitted and enable_grafana_dashboards is true, the module reads the grafana-service-account-token secret from the module's Key Vault instead."
   default     = ""
   sensitive   = true
 }

@@ -104,7 +104,20 @@ locals {
     for k, v in var.virtual_hub_express_route_gateways : v.gateway_name
   ]
 
-  default_virtual_hub_express_route_gateway_resource_group = length(var.virtual_hub_express_route_gateways) > 0 ? [for k, v in var.virtual_hub_express_route_gateways : v.resource_group_name][0] : local.virtual_hub_resource_group
+  expressroute_gateway_names = [
+    for k, v in var.expressroute_gateways : v.gateway_name
+  ]
+
+  default_express_route_gateway_name = (
+    length(local.virtual_hub_express_route_gateway_names) > 0 ? local.virtual_hub_express_route_gateway_names[0] :
+    length(local.expressroute_gateway_names) > 0 ? local.expressroute_gateway_names[0] : ""
+  )
+
+  default_express_route_gateway_resource_group = (
+    length(var.virtual_hub_express_route_gateways) > 0 ? [for k, v in var.virtual_hub_express_route_gateways : v.resource_group_name][0] :
+    length(var.expressroute_gateways) > 0 ? [for k, v in var.expressroute_gateways : v.resource_group_name][0] :
+    local.virtual_hub_resource_group
+  )
 
   # vWAN hub ER gateways are Microsoft.Network/expressRouteGateways, not
   # classic virtualNetworkGateways. The ExpressRoute Health gateway picker

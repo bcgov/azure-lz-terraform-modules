@@ -10,15 +10,16 @@
 # existing token, so the first token must be created manually in the Grafana UI
 # (Administration > Users and access > Service accounts) and stored as the
 # grafana-service-account-token secret in the Key Vault - or passed via var.
-# Until a token is available, deploy with enable_grafana_dashboards = false:
-# all other infrastructure deploys and Grafana resources are skipped.
+# enable_grafana_dashboards defaults to false so a first apply does not look
+# up grafana-service-account-token before that secret exists. After the token
+# is stored (or passed via var), set the flag true to provision dashboards.
 #------------------------------------------------------------------------------
 
 locals {
   grafana_token_from_var = var.grafana_service_account_token != ""
   # Only attempt the Key Vault lookup when dashboards are wanted and no token
-  # was passed. In a brand-new environment the secret does not exist yet, so
-  # keep enable_grafana_dashboards = false for the first apply.
+  # was passed. The flag defaults to false so a brand-new environment can
+  # apply without a secret that does not exist yet.
   grafana_token_from_keyvault = !local.grafana_token_from_var && var.enable_grafana_dashboards
 
   can_provision_dashboards = var.enable_grafana_dashboards && (local.grafana_token_from_var || local.grafana_token_from_keyvault)
@@ -178,9 +179,9 @@ resource "grafana_dashboard" "expressroute_health" {
   config_json = templatefile("${path.module}/dashboards/expressroute_health.json.tftpl", {
     subscription_id                = local.subscription_id_connectivity
     default_resource_group         = local.default_expressroute_resource_group
-    default_gateway_resource_group = local.default_virtual_hub_express_route_gateway_resource_group
+    default_gateway_resource_group = local.default_express_route_gateway_resource_group
     gateway_metric_namespace       = local.express_route_gateway_metric_namespace
-    default_gateway_name           = length(local.virtual_hub_express_route_gateway_names) > 0 ? local.virtual_hub_express_route_gateway_names[0] : ""
+    default_gateway_name           = local.default_express_route_gateway_name
     circuit_names                  = local.expressroute_circuit_names
     circuits                       = var.expressroute_circuits
     azure_monitor_uid              = local.azure_monitor_uid
@@ -386,12 +387,12 @@ resource "grafana_dashboard" "azure_firewall_health" {
 #------------------------------------------------------------------------------
 # Landing Zone Operations: Dashboard - Platform Changes (Activity Log)
 #
-# Subscription control-plane change feed from activity logs routed to
-# the workspace by the activity log diagnostic setting.
+# Subscription control-plane change feed from activity logs in the
+# workspace (module-created diagnostics or an externally supplied workspace).
 #------------------------------------------------------------------------------
 
 resource "grafana_dashboard" "platform_changes" {
-  count = local.can_provision_dashboards && var.enable_activity_log_diagnostics ? 1 : 0
+  count = local.can_provision_dashboards && (var.enable_activity_log_diagnostics || var.activity_log_workspace_id != null) ? 1 : 0
 
   folder    = grafana_folder.lz_operations[0].id
   overwrite = true
