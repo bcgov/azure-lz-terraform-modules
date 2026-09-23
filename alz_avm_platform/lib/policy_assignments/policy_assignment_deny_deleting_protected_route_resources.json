@@ -1,0 +1,27 @@
+{
+  "name": "Deny-Delete-Routes",
+  "type": "Microsoft.Authorization/policyAssignments",
+  "apiVersion": "2019-09-01",
+  "properties": {
+    "displayName": "Deny Deleting Protected Route Resources",
+    "description": "This Policy prevents deletion of route tables and route table routes in the Landing Zones.",
+    "notScopes": [],
+    "parameters": {
+      "effect": {
+        "value": "denyAction"
+      }
+    },
+    "policyDefinitionId": "${root_scope_resource_id}/providers/Microsoft.Authorization/policyDefinitions/Deny-Deleting-Protected-Route-Resources",
+    "nonComplianceMessages": [
+      {
+        "message": "Deletion of route tables and routes in the Landing Zones is not allowed."
+      }
+    ],
+    "scope": "${current_scope_resource_id}",
+    "enforcementMode": "Default"
+  },
+  "location": "${default_location}",
+  "identity": {
+    "type": "SystemAssigned"
+  }
+}

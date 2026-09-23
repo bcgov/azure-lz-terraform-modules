@@ -1,0 +1,27 @@
+{
+  "name": "Inherit-BillingGroup-Tag",
+  "type": "Microsoft.Authorization/policyAssignments",
+  "apiVersion": "2019-09-01",
+  "properties": {
+    "displayName": "Inherit Billing Group Tags from the Subscription",
+    "description": "Adds or replaces the specified tag and value from the containing subscription when any resource is created or updated. Existing resources can be remediated by triggering a remediation task.",
+    "notScopes": [],
+    "parameters": {
+      "InheritTag-Billing-Group": {
+        "value": "billing_group"
+      }
+    },
+    "policyDefinitionId": "${root_scope_resource_id}/providers/Microsoft.Authorization/policyDefinitions/Inherit-Billing-Group-Tag",
+    "nonComplianceMessages": [
+      {
+        "message": "Inherited tags {enforcementMode} be applied to Resources and Resource Groups."
+      }
+    ],
+    "scope": "${current_scope_resource_id}",
+    "enforcementMode": null
+  },
+  "location": "${default_location}",
+  "identity": {
+    "type": "SystemAssigned"
+  }
+}

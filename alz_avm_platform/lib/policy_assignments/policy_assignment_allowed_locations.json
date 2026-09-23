@@ -1,0 +1,37 @@
+{
+  "name": "Resource-Locations",
+  "type": "Microsoft.Authorization/policyAssignments",
+  "apiVersion": "2025-03-01",
+  "properties": {
+    "displayName": "Allowed Resource locations",
+    "description": "This policy enables you to restrict the locations your organization can specify when deploying resources. Use to enforce your geo-compliance requirements. Excludes resource groups, Microsoft.AzureActiveDirectory/b2cDirectories, and resources that use the 'global' region  or regions specified as extras.",
+    "policyDefinitionId": "${root_scope_resource_id}/providers/Microsoft.Authorization/policyDefinitions/Resource-Locations",
+    "metadata": {},
+    "scope": "${current_scope_resource_id}",
+    "notScopes": [],
+    "parameters": {
+      "listOfAllowedLocations": {
+        "value": [
+          "canadacentral",
+          "canadaeast"
+        ]
+      },
+      "extraAllowedLocations": {
+        "value": [
+          "canada"
+        ]
+      }
+    },
+    "enforcementMode": "Default",
+    "overrides": [],
+    "nonComplianceMessages": [
+      {
+        "message": "Resources can only be deployed in allowed locations."
+      }
+    ]
+  },
+  "location": "${default_location}",
+  "identity": {
+    "type": "SystemAssigned"
+  }
+}

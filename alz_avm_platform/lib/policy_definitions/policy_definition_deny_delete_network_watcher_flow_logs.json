@@ -1,0 +1,58 @@
+{
+  "name": "Deny-Delete-NetworkWatcher",
+  "type": "Microsoft.Authorization/policyDefinitions",
+  "apiVersion": "2024-05-01",
+  "scope": null,
+  "properties": {
+    "displayName": "Deny Deleting Network Watcher Flow Logs",
+    "description": "This Policy will prevent users from deleting the Network Watcher Flow Logs.",
+    "policyType": "Custom",
+    "mode": "All",
+    "metadata": {
+      "version": "1.0.0",
+      "category": "Monitoring"
+    },
+    "parameters": {
+      "Network-Watcher-storageId": {
+        "type": "String",
+        "metadata": {
+          "displayName": "Centralized Storage Account ID",
+          "description": "The Resource ID of the centralized Storage Account used for Network Watcher Flow Logs."
+        }
+      },
+      "Network-Watcher-workspaceResourceId": {
+        "type": "String",
+        "metadata": {
+          "displayName": "Centralized Log Analytics Workspace ID",
+          "description": "The Resource ID of the centralized Log Analytics Workspace used for Network Watcher Flow Logs."
+        }
+      }
+    },
+    "policyRule": {
+      "if": {
+        "allOf": [
+          {
+            "field": "type",
+            "equals": "Microsoft.Network/networkWatchers/flowLogs"
+          },
+          {
+            "field": "Microsoft.Network/networkWatchers/flowLogs/storageId",
+            "equals": "[parameters('Network-Watcher-storageId')]"
+          },
+          {
+            "field": "Microsoft.Network/networkWatchers/flowLogs/flowAnalyticsConfiguration.networkWatcherFlowAnalyticsConfiguration.workspaceResourceId",
+            "equals": "[parameters('Network-Watcher-workspaceResourceId')]"
+          }
+        ]
+      },
+      "then": {
+        "details": {
+          "actionNames": [
+            "delete"
+          ]
+        },
+        "effect": "denyAction"
+      }
+    }
+  }
+}
