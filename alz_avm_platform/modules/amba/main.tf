@@ -13,6 +13,7 @@ module "amba" {
 
   # Optional parameters
   resource_group_name = var.amba_resource_group_name
+  enable_telemetry    = var.enable_telemetry
   # tags                                = var.tags # IMPORTANT: Do not include tags in the AMBA module, as it will overwrite the tags on the resource group and all resources created by the module, which are used for remediation, etc.
   user_assigned_managed_identity_name = var.amba_user_assigned_managed_identity_name
 }

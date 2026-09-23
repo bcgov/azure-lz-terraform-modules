@@ -3,7 +3,8 @@ module "lz_vending" {
   version = "0.3.1" # Reference: https://github.com/Azure/terraform-azure-avm-ptn-alz-sub-vending
 
   # Set the default location for resources
-  location = var.location
+  location         = var.location
+  enable_telemetry = var.enable_telemetry
 
   for_each = var.platform_subscriptions
 

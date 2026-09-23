@@ -16,6 +16,7 @@ module "alz" {
 
   policy_default_values        = var.policy_default_values
   policy_assignments_to_modify = var.policy_assignments_to_modify
+  enable_telemetry             = var.enable_telemetry
 }
 
 module "platform_subscriptions" { # TODO: Move to management sub-module
@@ -24,4 +25,5 @@ module "platform_subscriptions" { # TODO: Move to management sub-module
   # Required Configuration
   location               = var.location
   platform_subscriptions = var.platform_subscriptions
+  enable_telemetry       = var.enable_telemetry
 }

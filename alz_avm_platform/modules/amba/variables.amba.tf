@@ -68,6 +68,13 @@ variable "amba_role_definition_id" {
   description = "The role definition ID to assign to the User Assigned Managed Identity. Defaults to Monitoring Reader."
 }
 
+variable "enable_telemetry" {
+  type        = bool
+  default     = true
+  description = "Controls telemetry collection for the AMBA module. Set to false to omit User-Agent headers."
+  nullable    = false
+}
+
 variable "tags" {
   type        = map(string)
   default     = null

@@ -104,16 +104,12 @@ The defender_sql object has an additional attribute:
 DESCRIPTION
 }
 
-# variable "enable_telemetry" {
-#   type        = bool
-#   default     = true
-#   description = <<DESCRIPTION
-# This variable controls whether or not telemetry is enabled for the module.
-# For more information see <https://aka.ms/avm/telemetryinfo>.
-# If it is set to false, then no telemetry will be collected.
-# DESCRIPTION
-#   nullable    = false
-# }
+variable "enable_telemetry" {
+  type        = bool
+  default     = true
+  description = "Controls telemetry collection for the AVM modules. Set to false to omit User-Agent headers."
+  nullable    = false
+}
 
 variable "linked_automation_account_creation_enabled" {
   type        = bool
@@ -272,11 +268,11 @@ This is an object with the following attributes:
 DESCRIPTION
 }
 
-# variable "tags" {
-#   type        = map(string)
-#   default     = null
-#   description = "A map of tags to apply to the resources created."
-# }
+variable "tags" {
+  type        = map(string)
+  default     = null
+  description = "A map of tags to apply to the resources created."
+}
 
 # variable "timeouts" {
 #   type = object({

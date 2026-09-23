@@ -28,6 +28,9 @@ module "management" {
   log_analytics_workspace_sku               = var.log_analytics_workspace_sku
   # sentinel_onboarding                                        = var.sentinel_onboarding
   user_assigned_managed_identities = var.user_assigned_managed_identities
+
+  tags             = var.tags
+  enable_telemetry = var.enable_telemetry
 }
 
 module "amba" { # TODO: Move to some sub-module
@@ -42,6 +45,7 @@ module "amba" { # TODO: Move to some sub-module
   amba_resource_group_name                 = var.amba_resource_group_name
   amba_user_assigned_managed_identity_name = var.amba_user_assigned_managed_identity_name
   tags                                     = var.tags
+  enable_telemetry                         = var.enable_telemetry
 }
 
 module "connectivity" {
@@ -65,7 +69,8 @@ module "connectivity" {
   # default_naming_convention = var.default_naming_convention # TODO: Look into how using this affects resource naming
   # default_naming_convention_sequence = var.default_naming_convention_sequence
   # route_maps = var.route_maps
-  # tags = var.tags
+  tags                 = var.tags
+  enable_telemetry     = var.enable_telemetry
   virtual_hubs         = var.virtual_hubs
   virtual_wan_settings = var.virtual_wan_settings
 

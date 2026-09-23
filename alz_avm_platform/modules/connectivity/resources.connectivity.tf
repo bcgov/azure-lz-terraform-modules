@@ -1,6 +1,7 @@
 resource "azurerm_resource_group" "vwan" {
   name     = var.vwan_resource_group_name
   location = var.location
+  tags     = var.tags
 
   provider = azurerm.connectivity
 }
@@ -8,6 +9,7 @@ resource "azurerm_resource_group" "vwan" {
 resource "azurerm_resource_group" "dns_zones" {
   name     = local.private_dns_zones_resource_group_name
   location = var.location
+  tags     = var.tags
 
   provider = azurerm.connectivity
 }
@@ -99,6 +101,7 @@ module "avm-ptn-alz-connectivity-virtual-wan" {
   default_naming_convention_sequence = var.default_naming_convention_sequence
   route_maps                         = var.route_maps
   tags                               = var.tags
+  enable_telemetry                   = var.enable_telemetry
   virtual_hubs                       = local.virtual_hubs_with_dns_resolver_nsgs
   virtual_wan_settings               = var.virtual_wan_settings
 }

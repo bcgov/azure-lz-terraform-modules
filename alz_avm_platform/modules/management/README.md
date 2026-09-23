@@ -4,7 +4,7 @@
 ## Requirements
 
 | Name | Version |
-|------|---------|
+| ---- | ------- |
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | ~> 1.12, < 2.0 |
 | <a name="requirement_alz"></a> [alz](#requirement\_alz) | ~> 0.21 |
 | <a name="requirement_azapi"></a> [azapi](#requirement\_azapi) | ~> 2.4 |
@@ -19,7 +19,7 @@ No providers.
 ## Modules
 
 | Name | Source | Version |
-|------|--------|---------|
+| ---- | ------ | ------- |
 | <a name="module_alz"></a> [alz](#module\_alz) | Azure/avm-ptn-alz/azurerm | ~> 0.21.0 |
 | <a name="module_avm-ptn-alz-management"></a> [avm-ptn-alz-management](#module\_avm-ptn-alz-management) | Azure/avm-ptn-alz-management/azurerm | 0.9.0 |
 | <a name="module_platform_subscriptions"></a> [platform\_subscriptions](#module\_platform\_subscriptions) | ../platform_subscriptions | n/a |
@@ -31,7 +31,7 @@ No resources.
 ## Inputs
 
 | Name | Description | Type | Default | Required |
-|------|-------------|------|---------|:--------:|
+| ---- | ----------- | ---- | ------- | :------: |
 | <a name="input_architecture_name"></a> [architecture\_name](#input\_architecture\_name) | ALZ architecture definition name in ./lib. | `string` | `"var_alz_custom"` | no |
 | <a name="input_automation_account_encryption"></a> [automation\_account\_encryption](#input\_automation\_account\_encryption) | The encryption configuration for the Azure Automation Account. | <pre>object({<br/>    key_vault_key_id          = string<br/>    user_assigned_identity_id = optional(string, null)<br/>  })</pre> | `null` | no |
 | <a name="input_automation_account_identity"></a> [automation\_account\_identity](#input\_automation\_account\_identity) | The identity to assign to the Azure Automation Account. | <pre>object({<br/>    type         = string<br/>    identity_ids = optional(set(string), null)<br/>  })</pre> | `null` | no |
@@ -41,6 +41,7 @@ No resources.
 | <a name="input_automation_account_public_network_access_enabled"></a> [automation\_account\_public\_network\_access\_enabled](#input\_automation\_account\_public\_network\_access\_enabled) | Whether or not public network access is enabled for the Azure Automation Account. | `bool` | `true` | no |
 | <a name="input_automation_account_sku_name"></a> [automation\_account\_sku\_name](#input\_automation\_account\_sku\_name) | The name of the SKU for the Azure Automation Account to create. | `string` | `"Basic"` | no |
 | <a name="input_data_collection_rules"></a> [data\_collection\_rules](#input\_data\_collection\_rules) | Enables customisation of the data collection rules for Azure Monitor.<br/>This is an object with attributes pertaining to the three DCRs that are created by this module.<br/><br/>Each object has the following attributes:<br/><br/>- enabled (Optional) - Whether or not to create the data collection rule. Defaults to `true`.<br/>- name (Required) - The name of the data collection rule. For the default values, see the default variable value.<br/>- location (Optional) - The Azure region of the data collection rule. Defaults to the value of the location variable.<br/>- tags (Optional) - A map of tags to apply to the data collection rule. Defaults to `null`.<br/><br/>The defender\_sql object has an additional attribute:<br/><br/>- enable\_collection\_of\_sql\_queries\_for\_security\_research (Optional) - Whether or not to enable collection of SQL queries for security research. Defaults to `false`. | <pre>object({<br/>    change_tracking = object({<br/>      enabled  = optional(bool, true)<br/>      name     = string<br/>      location = optional(string, null)<br/>      tags     = optional(map(string), null)<br/>    })<br/>    vm_insights = object({<br/>      enabled  = optional(bool, true)<br/>      name     = string<br/>      location = optional(string, null)<br/>      tags     = optional(map(string), null)<br/>    })<br/>    defender_sql = object({<br/>      enabled                                                = optional(bool, true)<br/>      name                                                   = string<br/>      location                                               = optional(string, null)<br/>      tags                                                   = optional(map(string), null)<br/>      enable_collection_of_sql_queries_for_security_research = optional(bool, false)<br/>    })<br/>  })</pre> | <pre>{<br/>  "change_tracking": {<br/>    "name": "dcr-change-tracking"<br/>  },<br/>  "defender_sql": {<br/>    "name": "dcr-defender-sql"<br/>  },<br/>  "vm_insights": {<br/>    "name": "dcr-vm-insights"<br/>  }<br/>}</pre> | no |
+| <a name="input_enable_telemetry"></a> [enable\_telemetry](#input\_enable\_telemetry) | Controls telemetry collection for the AVM modules. Set to false to omit User-Agent headers. | `bool` | `true` | no |
 | <a name="input_linked_automation_account_creation_enabled"></a> [linked\_automation\_account\_creation\_enabled](#input\_linked\_automation\_account\_creation\_enabled) | A boolean flag to determine whether to deploy the Azure Automation Account linked to the Log Analytics Workspace or not. | `bool` | `false` | no |
 | <a name="input_location"></a> [location](#input\_location) | The default location for resources in this management group. Used for policy managed identities. | `string` | n/a | yes |
 | <a name="input_log_analytics_solution_plans"></a> [log\_analytics\_solution\_plans](#input\_log\_analytics\_solution\_plans) | The Log Analytics Solution Plans to create.<br/>Do not add the SecurityInsights solution plan here, this deployment method is deprecated. Instead refer to `sentinel_onboarding` variable.<br/><br/>The value of this variable is a list of objects with the following attributes:<br/><br/>- product (Required) - The product name of the solution plan, e.g. `OMSGallery/ContainerInsights`.<br/>- publisher (Optional) - The publisher name of the solution plan, e.g. `Microsoft`. Defaults to `Microsoft`. | <pre>list(object({<br/>    product   = string<br/>    publisher = optional(string, "Microsoft")<br/>  }))</pre> | <pre>[<br/>  {<br/>    "product": "OMSGallery/ContainerInsights",<br/>    "publisher": "Microsoft"<br/>  },<br/>  {<br/>    "product": "OMSGallery/VMInsights",<br/>    "publisher": "Microsoft"<br/>  }<br/>]</pre> | no |
@@ -65,12 +66,13 @@ No resources.
 | <a name="input_sentinel_onboarding"></a> [sentinel\_onboarding](#input\_sentinel\_onboarding) | Enables and customizes the Sentinel onboarding. Default is `null`, which disables Sentinel onboarding.<br/><br/>Set to empty object `{}` to enable with default values.<br/><br/>This is an object with the following attributes:<br/><br/>- name (Optional) - The name of the Sentinel onboarding object. Defaults to `default`.<br/>- customer\_managed\_key\_enabled (Optional) - Whether or not to enable customer-managed keys for the Sentinel onboarding. Defaults to `false`. | <pre>object({<br/>    name                         = optional(string, "default")<br/>    customer_managed_key_enabled = optional(bool, false)<br/>  })</pre> | `null` | no |
 | <a name="input_subscription_id_management"></a> [subscription\_id\_management](#input\_subscription\_id\_management) | Subscription ID to use for "management" resources. | `string` | `""` | no |
 | <a name="input_subscription_placement_destroy_behavior"></a> [subscription\_placement\_destroy\_behavior](#input\_subscription\_placement\_destroy\_behavior) | The destroy behavior for subscription placements. Valid values are 'default', 'parent', 'intermediate\_root' or 'custom'. | `string` | `"parent"` | no |
+| <a name="input_tags"></a> [tags](#input\_tags) | A map of tags to apply to the resources created. | `map(string)` | `null` | no |
 | <a name="input_user_assigned_managed_identities"></a> [user\_assigned\_managed\_identities](#input\_user\_assigned\_managed\_identities) | Enables customisation of the user assigned managed identities.<br/><br/>The value of this variable is an object with the following attributes:<br/><br/>- ama (Required) - The user assigned managed identity for the Azure Monitor Agent.<br/>  - enabled (Optional) - Whether or not to create the user assigned managed identity. Defaults to `true`.<br/>  - name (Required) - The name of the user assigned managed identity, the variable default value is `uami-ama`.<br/>  - location (Optional) - The Azure region of the user assigned managed identity. Defaults to the value of the location variable.<br/>  - tags (Optional) - A map of tags to apply to the user assigned managed identity. Defaults to `null`. | <pre>object({<br/>    ama = object({<br/>      enabled  = optional(bool, true)<br/>      name     = string<br/>      location = optional(string, null)<br/>      tags     = optional(map(string), null)<br/>    })<br/>  })</pre> | <pre>{<br/>  "ama": {<br/>    "name": "uami-ama"<br/>  }<br/>}</pre> | no |
 
 ## Outputs
 
 | Name | Description |
-|------|-------------|
+| ---- | ----------- |
 | <a name="output_management_group_resource_ids"></a> [management\_group\_resource\_ids](#output\_management\_group\_resource\_ids) | A map of management group names to their resource ids. |
 | <a name="output_platform_subscriptions"></a> [platform\_subscriptions](#output\_platform\_subscriptions) | n/a |
 <!-- END_TF_DOCS -->
