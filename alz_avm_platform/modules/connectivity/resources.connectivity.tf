@@ -7,7 +7,7 @@ resource "azurerm_resource_group" "vwan" {
 }
 
 resource "azurerm_resource_group" "dns_zones" {
-  name     = local.private_dns_zones_resource_group_name
+  name     = local.private_dns_zone_resource_group_name
   location = var.location
   tags     = var.tags
 
@@ -15,7 +15,9 @@ resource "azurerm_resource_group" "dns_zones" {
 }
 
 resource "azurerm_resource_group" "private_dns_resolver" {
-  name     = local.private_dns_resolver_resource_group_name
+  count = local.private_dns_resolver_enabled ? 1 : 0
+
+  name     = coalesce(local.private_dns_resolver_resource_group_name, "unused")
   location = var.location
 
   provider = azurerm.connectivity
@@ -27,7 +29,7 @@ resource "azurerm_network_security_group" "dns_resolver_endpoint" {
 
   name                = "nsg-${each.value.subnet_name}-${each.value.hub_key}"
   location            = each.value.location
-  resource_group_name = local.private_dns_resolver_resource_group_name
+  resource_group_name = coalesce(local.private_dns_resolver_resource_group_name, "unused")
 
   provider = azurerm.connectivity
 
@@ -79,6 +81,34 @@ resource "azurerm_network_security_group" "dns_resolver_endpoint" {
   }
 
   depends_on = [azurerm_resource_group.private_dns_resolver]
+}
+
+resource "azurerm_private_dns_zone" "private_dns_zone" {
+  for_each = var.private_dns_zones
+
+  name                = each.value.private_dns_zone_name
+  resource_group_name = each.value.resource_group_name
+  tags                = var.tags
+
+  provider = azurerm.connectivity
+
+  depends_on = [azurerm_resource_group.dns_zones]
+}
+
+resource "azurerm_private_dns_zone_virtual_network_link" "private_dns_zone" {
+  for_each = var.private_dns_zone_virtual_network_links
+
+  name                  = each.value.private_dns_zone_vnet_link_name
+  private_dns_zone_name = each.value.private_dns_zone_name
+  resource_group_name   = each.value.resource_group_name
+  virtual_network_id    = each.value.virtual_network_id
+  registration_enabled  = each.value.registration_enabled
+  resolution_policy     = each.value.resolution_policy
+  tags                  = var.tags
+
+  provider = azurerm.connectivity
+
+  depends_on = [azurerm_private_dns_zone.private_dns_zone]
 }
 
 module "avm-ptn-alz-connectivity-virtual-wan" {

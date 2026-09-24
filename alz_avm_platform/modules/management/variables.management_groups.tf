@@ -35,6 +35,16 @@ variable "policy_default_values" {
   description = "Policy default values to apply while resolving the Azure Landing Zones library. Each value must be JSON containing a value property."
 }
 
+variable "policy_assignment_non_compliance_message_settings" {
+  type = object({
+    default_message = optional(string, "This resource {enforcementMode} be compliant with the assigned policy")
+    merge_mode      = optional(string, "replace")
+  })
+  default     = {}
+  description = "Default non-compliance message settings passed to the ALZ provider. Use merge_mode prefer_existing to keep per-assignment messages."
+  nullable    = false
+}
+
 variable "policy_assignments_to_modify" {
   type = map(object({
     policy_assignments = map(object({

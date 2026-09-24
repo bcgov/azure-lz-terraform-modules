@@ -1,0 +1,32 @@
+{
+  "name": "Deny-VNet-DNS-Changes",
+  "type": "Microsoft.Authorization/policyAssignments",
+  "apiVersion": "2019-09-01",
+  "properties": {
+    "displayName": "Deny changing VNet DNS settings from pre-defined value",
+    "description": "This Policy will prevent users from changing DNS settings on a VNet.",
+    "notScopes": [],
+    "parameters": {
+      "VNet-DNS-Settings": {
+        "value": [
+          "10.41.253.4"
+        ]
+      },
+      "effect": {
+        "value": "Deny"
+      }
+    },
+    "policyDefinitionId": "/providers/Microsoft.Management/managementGroups/placeholder/providers/Microsoft.Authorization/policyDefinitions/Deny-VNet-DNS-Changes",
+    "nonComplianceMessages": [
+      {
+        "message": "Changing the VNet DNS configuration is not allowed in the Landing Zones."
+      }
+    ],
+    "scope": "/providers/Microsoft.Management/managementGroups/placeholder",
+    "enforcementMode": "Default"
+  },
+  "location": "${default_location}",
+  "identity": {
+    "type": "SystemAssigned"
+  }
+}

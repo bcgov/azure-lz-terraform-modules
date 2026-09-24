@@ -1,0 +1,25 @@
+{
+  "name": "1d7b288e-15b1-5261-9443-d308bcdaaf44",
+  "type": "Microsoft.Authorization/roleDefinitions",
+  "apiVersion": "2022-05-01-preview",
+  "properties": {
+    "roleName": "[BCGOV-MANAGED-LZ-FORGE] IP-Address-Lookup-Reader",
+    "description": "Can read network interfaces, public IP addresses, and subscription information to perform IP address lookups, but cannot make any changes to these resources.",
+    "type": "CustomRole",
+    "permissions": [
+      {
+        "actions": [
+          "Microsoft.Network/networkInterfaces/read",
+          "Microsoft.Network/publicIPAddresses/read",
+          "Microsoft.Resources/subscriptions/read"
+        ],
+        "notActions": [],
+        "dataActions": [],
+        "notDataActions": []
+      }
+    ],
+    "assignableScopes": [
+      "${current_scope_resource_id}"
+    ]
+  }
+}
