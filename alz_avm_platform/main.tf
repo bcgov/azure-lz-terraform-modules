@@ -43,6 +43,7 @@ module "amba" { # TODO: Move to some sub-module
   location = var.location
 
   # Optional Configuration
+  deploy_amba                              = var.deploy_amba
   amba_resource_group_name                 = var.amba_resource_group_name
   amba_user_assigned_managed_identity_name = var.amba_user_assigned_managed_identity_name
   tags                                     = var.tags

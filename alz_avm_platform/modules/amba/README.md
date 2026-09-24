@@ -30,6 +30,7 @@ No resources.
 | <a name="input_amba_resource_group_name"></a> [amba\_resource\_group\_name](#input\_amba\_resource\_group\_name) | The resource group where the resources will be deployed. | `string` | `"rg-amba-monitoring-001"` | no |
 | <a name="input_amba_role_definition_id"></a> [amba\_role\_definition\_id](#input\_amba\_role\_definition\_id) | The role definition ID to assign to the User Assigned Managed Identity. Defaults to Monitoring Reader. | `string` | `"43d0d8ad-25c7-4714-9337-8ba259a9fe05"` | no |
 | <a name="input_amba_user_assigned_managed_identity_name"></a> [amba\_user\_assigned\_managed\_identity\_name](#input\_amba\_user\_assigned\_managed\_identity\_name) | The name of the user-assigned managed identity. | `string` | `"id-amba-prod-001"` | no |
+| <a name="input_deploy_amba"></a> [deploy\_amba](#input\_deploy\_amba) | Deploy the AMBA monitoring resource group and managed identity. | `bool` | `false` | no |
 | <a name="input_description"></a> [description](#input\_description) | The description used for the role assignment to identify the resource as deployed by AMBA. | `string` | `"_deployed_by_amba"` | no |
 | <a name="input_enable_telemetry"></a> [enable\_telemetry](#input\_enable\_telemetry) | Controls telemetry collection for the AMBA module. Set to false to omit User-Agent headers. | `bool` | `true` | no |
 | <a name="input_location"></a> [location](#input\_location) | Azure region where the resource should be deployed. | `string` | n/a | yes |

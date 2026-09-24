@@ -1,3 +1,9 @@
+variable "deploy_amba" {
+  type        = bool
+  default     = false
+  description = "Deploy the AMBA monitoring resource group and managed identity."
+}
+
 variable "location" {
   type        = string
   description = "Azure region where the resource should be deployed."

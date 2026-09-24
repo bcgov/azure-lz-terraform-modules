@@ -1,6 +1,7 @@
 module "amba" {
   source  = "Azure/avm-ptn-monitoring-amba-alz/azurerm"
   version = "0.4.0"
+  count   = var.deploy_amba ? 1 : 0
 
   providers = {
     azurerm = azurerm.management
