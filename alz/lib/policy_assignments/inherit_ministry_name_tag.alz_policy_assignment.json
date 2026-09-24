@@ -1,0 +1,27 @@
+{
+  "name": "Inherit-MinistryName-Tag",
+  "type": "Microsoft.Authorization/policyAssignments",
+  "apiVersion": "2019-09-01",
+  "properties": {
+    "displayName": "Inherit Ministry Name Tags from the Subscription",
+    "description": "Adds or replaces the specified tag and value from the containing subscription when any resource is created or updated. Existing resources can be remediated by triggering a remediation task.",
+    "notScopes": [],
+    "parameters": {
+      "InheritTag-Ministry-Name": {
+        "value": "ministry_name"
+      }
+    },
+    "policyDefinitionId": "/providers/Microsoft.Authorization/policyDefinitions/Inherit-Ministry-Name-Tag",
+    "nonComplianceMessages": [
+      {
+        "message": "Inherited tags {enforcementMode} be applied to Resources and Resource Groups."
+      }
+    ],
+    "scope": "/providers/Microsoft.Management/managementGroups/bcgov-managed-lz-forge",
+    "enforcementMode": null
+  },
+  "location": "canadacentral",
+  "identity": {
+    "type": "SystemAssigned"
+  }
+}

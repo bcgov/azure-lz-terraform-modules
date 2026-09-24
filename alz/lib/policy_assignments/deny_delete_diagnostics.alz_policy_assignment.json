@@ -1,0 +1,23 @@
+{
+  "name": "Deny-Delete-Diagnostics",
+  "type": "Microsoft.Authorization/policyAssignments",
+  "apiVersion": "2019-09-01",
+  "properties": {
+    "displayName": "Deny Deleting Diagnostics Settings",
+    "description": "This Policy will prevent users from deleting the specific Diagnostics Settings.",
+    "notScopes": [],
+    "parameters": {},
+    "policyDefinitionId": "/providers/Microsoft.Authorization/policyDefinitions/Deny-Delete-Diagnostics",
+    "nonComplianceMessages": [
+      {
+        "message": "Deletion of the 'setbypolicy' Diagnostics Settings in the Landing Zones is not allowed."
+      }
+    ],
+    "scope": "/providers/Microsoft.Management/managementGroups/bcgov-managed-lz-forge",
+    "enforcementMode": "Default"
+  },
+  "location": "canadacentral",
+  "identity": {
+    "type": "SystemAssigned"
+  }
+}

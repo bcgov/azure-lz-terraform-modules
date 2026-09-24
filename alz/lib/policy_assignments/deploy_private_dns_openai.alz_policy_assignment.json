@@ -1,0 +1,29 @@
+{
+  "name": "Deploy-Private-DNS-OAI",
+  "type": "Microsoft.Authorization/policyAssignments",
+  "apiVersion": "2022-06-01",
+  "properties": {
+    "displayName": "Deploy Private DNS Zone for Azure OpenAI Private Endpoints",
+    "description": "This policy automatically creates and links private DNS zones for Azure OpenAI private endpoints.",
+    "metadata": {
+      "version": "1.0.0",
+      "category": "Cognitive Services (OpenAI)"
+    },
+    "policyDefinitionId": "/providers/Microsoft.Authorization/policyDefinitions/Deploy-Private-DNS-OAI",
+    "parameters": {
+      "defaultPrivateDnsZoneId": {
+        "value": "/subscriptions/[[subscriptionId]]/resourceGroups/[[resourceGroupName]]/providers/Microsoft.Network/privateDnsZones/privatelink.cognitiveservices.azure.com"
+      },
+      "openaiPrivateDnsZoneId": {
+        "value": "/subscriptions/[[subscriptionId]]/resourceGroups/[[resourceGroupName]]/providers/Microsoft.Network/privateDnsZones/privatelink.openai.azure.com"
+      },
+      "effect": {
+        "value": "DeployIfNotExists"
+      }
+    }
+  },
+  "location": "canadacentral",
+  "identity": {
+    "type": "SystemAssigned"
+  }
+}

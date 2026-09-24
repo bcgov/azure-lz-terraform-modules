@@ -1,0 +1,26 @@
+{
+  "name": "Deploy-Private-DNS-ACA",
+  "type": "Microsoft.Authorization/policyAssignments",
+  "apiVersion": "2022-06-01",
+  "properties": {
+    "displayName": "Deploy Private DNS Zone for Azure Container Apps Private Endpoints",
+    "description": "This policy automatically creates and links private DNS zones for Azure Container Apps private endpoints.",
+    "metadata": {
+      "version": "1.0.0",
+      "category": "Container Apps"
+    },
+    "policyDefinitionId": "/providers/Microsoft.Authorization/policyDefinitions/Deploy-Private-DNS-ACA",
+    "parameters": {
+      "defaultPrivateDnsZoneId": {
+        "value": "/subscriptions/[[subscriptionId]]/resourceGroups/[[resourceGroupName]]/providers/Microsoft.Network/privateDnsZones/privatelink.[[location]].azurecontainerapps.io"
+      },
+      "effect": {
+        "value": "DeployIfNotExists"
+      }
+    }
+  },
+  "location": "canadacentral",
+  "identity": {
+    "type": "SystemAssigned"
+  }
+}
