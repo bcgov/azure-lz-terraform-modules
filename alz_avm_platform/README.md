@@ -66,7 +66,7 @@
 ## Requirements
 
 | Name | Version |
-| ---- | ------- |
+|------|---------|
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | ~> 1.12, < 2.0 |
 | <a name="requirement_alz"></a> [alz](#requirement\_alz) | ~> 0.21 |
 | <a name="requirement_assert"></a> [assert](#requirement\_assert) | ~> 0.16.0 |
@@ -76,13 +76,13 @@
 ## Providers
 
 | Name | Version |
-| ---- | ------- |
+|------|---------|
 | <a name="provider_azurerm.connectivity"></a> [azurerm.connectivity](#provider\_azurerm.connectivity) | ~> 4.0 |
 
 ## Modules
 
 | Name | Source | Version |
-| ---- | ------ | ------- |
+|------|--------|---------|
 | <a name="module_amba"></a> [amba](#module\_amba) | ./modules/amba | n/a |
 | <a name="module_base_firewall_policy_key_vault"></a> [base\_firewall\_policy\_key\_vault](#module\_base\_firewall\_policy\_key\_vault) | ../azure_key_vault/key_vault | n/a |
 | <a name="module_base_firewall_policy_key_vault_access_policy"></a> [base\_firewall\_policy\_key\_vault\_access\_policy](#module\_base\_firewall\_policy\_key\_vault\_access\_policy) | ../azure_key_vault/key_vault_access_policy | n/a |
@@ -96,14 +96,14 @@
 ## Resources
 
 | Name | Type |
-| ---- | ---- |
+|------|------|
 | [azurerm_firewall_policy.base_firewall_policy](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/firewall_policy) | resource |
 | [azurerm_resource_group.base_firewall_policy](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/resource_group) | resource |
 
 ## Inputs
 
 | Name | Description | Type | Default | Required |
-| ---- | ----------- | ---- | ------- | :------: |
+|------|-------------|------|---------|:--------:|
 | <a name="input_amba_resource_group_name"></a> [amba\_resource\_group\_name](#input\_amba\_resource\_group\_name) | The resource group where the resources will be deployed. | `string` | `"rg-amba-monitoring-001"` | no |
 | <a name="input_amba_user_assigned_managed_identity_name"></a> [amba\_user\_assigned\_managed\_identity\_name](#input\_amba\_user\_assigned\_managed\_identity\_name) | The name of the user-assigned managed identity. | `string` | `"id-amba-prod-001"` | no |
 | <a name="input_architecture_name"></a> [architecture\_name](#input\_architecture\_name) | ALZ architecture definition name in ./lib. | `string` | `"var_alz_custom"` | no |
@@ -172,7 +172,7 @@
 ## Outputs
 
 | Name | Description |
-| ---- | ----------- |
+|------|-------------|
 | <a name="output_amba"></a> [amba](#output\_amba) | n/a |
 | <a name="output_base_firewall_policy"></a> [base\_firewall\_policy](#output\_base\_firewall\_policy) | The base Azure Firewall Policy object. |
 | <a name="output_connectivity"></a> [connectivity](#output\_connectivity) | n/a |
