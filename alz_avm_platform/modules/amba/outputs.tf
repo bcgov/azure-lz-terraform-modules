@@ -1,4 +1,4 @@
 output "amba" {
-  value       = module.amba
+  value       = one(module.amba)
   description = "The outputs from the AMBA module."
 }

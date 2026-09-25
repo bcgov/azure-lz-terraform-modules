@@ -1,0 +1,27 @@
+{
+  "name": "Deny-Power-Platform",
+  "type": "Microsoft.Authorization/policyAssignments",
+  "apiVersion": "2026-06-01",
+  "properties": {
+    "displayName": "Deny Creating Power Platform Accounts",
+    "description": "This policy prevents users from creating Power Platform accounts.",
+    "notScopes": [],
+    "parameters": {
+      "effect": {
+        "value": "Audit"
+      }
+    },
+    "policyDefinitionId": "/providers/Microsoft.Management/managementGroups/placeholder/providers/Microsoft.Authorization/policyDefinitions/Deny-Power-Platform",
+    "nonComplianceMessages": [
+      {
+        "message": "Provisioning a Power Platform account is restricted to authorized subscriptions in the Landing Zone. Please see TechDocs for more information on how to request a new Power Platform account: https://developer.gov.bc.ca/docs/default/component/public-cloud-techdocs/azure/azure-services/external-power-platform/"
+      }
+    ],
+    "scope": "/providers/Microsoft.Management/managementGroups/placeholder",
+    "enforcementMode": "Default"
+  },
+  "location": "${default_location}",
+  "identity": {
+    "type": "SystemAssigned"
+  }
+}

@@ -1,3 +1,9 @@
+variable "deploy_amba" {
+  type        = bool
+  default     = false
+  description = "Deploy the AMBA monitoring resource group and managed identity."
+}
+
 variable "location" {
   type        = string
   description = "Azure region where the resource should be deployed."
@@ -66,6 +72,13 @@ variable "amba_role_definition_id" {
   type        = string
   default     = "43d0d8ad-25c7-4714-9337-8ba259a9fe05"
   description = "The role definition ID to assign to the User Assigned Managed Identity. Defaults to Monitoring Reader."
+}
+
+variable "enable_telemetry" {
+  type        = bool
+  default     = true
+  description = "Controls telemetry collection for the AMBA module. Set to false to omit User-Agent headers."
+  nullable    = false
 }
 
 variable "tags" {

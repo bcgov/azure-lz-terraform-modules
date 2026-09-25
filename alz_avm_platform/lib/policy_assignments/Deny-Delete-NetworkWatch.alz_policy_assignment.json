@@ -1,0 +1,30 @@
+{
+  "name": "Deny-Delete-NetworkWatch",
+  "type": "Microsoft.Authorization/policyAssignments",
+  "apiVersion": "2019-09-01",
+  "properties": {
+    "displayName": "Deny Deleting Network Watcher Flow Logs",
+    "description": "This Policy will prevent users from deleting the Network Watcher Flow Logs.",
+    "notScopes": [],
+    "parameters": {
+      "Network-Watcher-storageId": {
+        "value": "${network_watcher_storage_id}"
+      },
+      "Network-Watcher-workspaceResourceId": {
+        "value": "${log_analytics_workspace_id}"
+      }
+    },
+    "policyDefinitionId": "/providers/Microsoft.Management/managementGroups/placeholder/providers/Microsoft.Authorization/policyDefinitions/Deny-Delete-NetworkWatcher",
+    "nonComplianceMessages": [
+      {
+        "message": "Deletion of the Network Watcher VNet Flow Logs in the Landing Zones is not allowed. If you require access to the VNet Flow Logs, please create your own Storage Account, Log Analytics Workspace, and Network Watcher resources."
+      }
+    ],
+    "scope": "/providers/Microsoft.Management/managementGroups/placeholder",
+    "enforcementMode": "Default"
+  },
+  "location": "${default_location}",
+  "identity": {
+    "type": "SystemAssigned"
+  }
+}

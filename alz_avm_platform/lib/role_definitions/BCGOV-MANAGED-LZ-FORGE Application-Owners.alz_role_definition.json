@@ -1,0 +1,28 @@
+{
+  "name": "14d60bd1-0929-5ae1-adb9-9c1c8cabf951",
+  "type": "Microsoft.Authorization/roleDefinitions",
+  "apiVersion": "2022-05-01-preview",
+  "properties": {
+    "roleName": "[BCGOV-MANAGED-LZ-FORGE] Application-Owners",
+    "description": "Contributor role granted for application/operations team at resource group level",
+    "type": "CustomRole",
+    "permissions": [
+      {
+        "actions": [
+          "*"
+        ],
+        "notActions": [
+          "Microsoft.Authorization/*/write",
+          "Microsoft.Network/publicIPAddresses/write",
+          "Microsoft.Network/virtualNetworks/write",
+          "Microsoft.KeyVault/locations/deletedVaults/purge/action"
+        ],
+        "dataActions": [],
+        "notDataActions": []
+      }
+    ],
+    "assignableScopes": [
+      "${current_scope_resource_id}"
+    ]
+  }
+}

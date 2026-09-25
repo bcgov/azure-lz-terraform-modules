@@ -408,7 +408,7 @@ variable "virtual_hubs" {
         })))
       }))
       private_ip_ranges        = optional(list(string))
-      sql_redirect_allowed     = optional(bool, false)
+      sql_redirect_allowed     = optional(bool)
       threat_intelligence_mode = optional(string, "Alert")
       threat_intelligence_allowlist = optional(object({
         fqdns        = optional(set(string))
@@ -874,7 +874,7 @@ The following top level attributes are supported:
       - `source_addresses` - (Optional) A set of source addresses.
       - `source_ip_groups` - (Optional) A set of source IP group IDs.
   - `private_ip_ranges` - (Optional) A list of private IP ranges to use for the firewall policy.
-  - `sql_redirect_allowed` - (Optional) Should SQL redirect be allowed? Default `false`.
+  - `sql_redirect_allowed` - (Optional) Should SQL redirect be allowed? Leave unset to match a policy that does not set the property.
   - `threat_intelligence_mode` - (Optional) The threat intelligence mode for the firewall policy. Possible values include `Alert`, `Deny`, `Off`. Default `Alert`.
   - `threat_intelligence_allowlist` - (Optional) An object with the following fields:
     - `fqdns` - (Optional) A set of FQDNs to allowlist for threat intelligence.
