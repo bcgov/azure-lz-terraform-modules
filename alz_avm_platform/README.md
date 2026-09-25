@@ -49,6 +49,12 @@
     - azure_managed_redis → `privatelink.redis.azure.net`
     - azure_fabric → `privatelink.fabric.microsoft.com`
 
+11. Creating those zones does not register private endpoints in them. `platform/alz` `2026.08.0` has two private-DNS deploy policies, and neither replaces the custom ones for these services.
+    - `Deploy-Private-DNS-Zones` builds zone IDs from the subscription, resource group, and region. It includes Cognitive Services (`privatelink.cognitiveservices.azure.com`) and classic Redis (`privatelink.redis.cache.windows.net`). It does not include Fabric, Container Apps, API Management, OpenAI, `privatelink.services.ai.azure.com`, PostgreSQL, SQL Database (`privatelink.database.windows.net`), managed Redis, or Redis Enterprise.
+    - `Deploy-Private-DNS-Generic` deploys one zone group for one resource type, one group id, and private endpoints in one location. SQL, API Management, and PostgreSQL already use this definition. The assignment is still custom because the library does not ship one that knows the zone ID, resource type, and group id.
+    - Custom definitions stay for the rest: `Deploy-Private-DNS-Fbrc` (Fabric), `Deploy-Private-DNS-ACA` (Container Apps), `Deploy-Private-DNS-CgSrv` (Cognitive Services, OpenAI, and AI services in one policy), and `Deploy-Private-DNS-Redis` (managed Redis and Redis Enterprise).
+    - Microsoft has a built-in for Redis Enterprise, "Configure Azure Cache for Redis Enterprise to use private DNS zones." This library does not assign it, and it does not cover managed Redis, so it does not replace `Deploy-Private-DNS-Redis`. The Cognitive Services built-in is already inside `Deploy-Private-DNS-Zones` and only deploys `privatelink.cognitiveservices.azure.com`, so it does not replace `Deploy-Private-DNS-CgSrv`.
+
 ## TO DO
 
 ### Management Subscription
