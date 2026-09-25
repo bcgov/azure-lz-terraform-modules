@@ -10,6 +10,8 @@ policy_assignments_to_add: [
   "Deny-Privileged-AKS",
   "Deny-Storage-http",
   "Deny-Subnet-Without-Nsg",
+  "Deny-Private-DNS-Zones",
+  "Deny-RSG-Locations",
   "Deploy-AzSqlDb-Auditing",
   "Deploy-GuestAttest",
   "Deploy-MDFC-DefSQL-AMA",

@@ -27,8 +27,8 @@ module "management" {
   # log_analytics_workspace_reservation_capacity_in_gb_per_day = var.log_analytics_workspace_reservation_capacity_in_gb_per_day
   log_analytics_workspace_retention_in_days = var.log_analytics_workspace_retention_in_days
   log_analytics_workspace_sku               = var.log_analytics_workspace_sku
-  # sentinel_onboarding                                        = var.sentinel_onboarding
-  user_assigned_managed_identities = var.user_assigned_managed_identities
+  sentinel_onboarding                       = var.sentinel_onboarding
+  user_assigned_managed_identities          = var.user_assigned_managed_identities
 
   tags             = var.tags
   enable_telemetry = var.enable_telemetry
