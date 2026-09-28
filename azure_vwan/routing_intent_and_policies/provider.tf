@@ -9,7 +9,7 @@ terraform {
 
     azapi = {
       source  = "azure/azapi"
-      version = "~> 2.12" # NOTE: Cannot use v2.x if calling this module from the CAF deployment
+      version = "~> 2.13" # NOTE: Cannot use v2.x if calling this module from the CAF deployment
     }
   }
 }
