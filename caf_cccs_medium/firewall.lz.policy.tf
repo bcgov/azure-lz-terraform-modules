@@ -40,4 +40,8 @@ module "lz_firewall_policy_rules" {
 
   firewall_policy_id                    = module.lz_firewall_policy.firewall_policy_id
   firewall_policy_rule_collection_group = var.lz_firewall_policy_rule_collection_group
+
+  # NOTE: Rules reference IP groups by resource ID string, which does not create a graph edge.
+  # Wait for the groups so a same-apply rule update cannot race groups that do not exist yet.
+  depends_on = [module.lz_firewall_ipgroups]
 }
