@@ -7,8 +7,6 @@
 #
 # Components:
 # - Azure Managed Grafana for visualization
-# - PostgreSQL Flexible Server for Netbox database
-# - Azure Container Instances for Netbox and Prometheus
 # - Log Analytics Workspace for diagnostic data
 # - Key Vault for secrets management
 # - Logic App for alert routing

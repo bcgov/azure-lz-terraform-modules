@@ -23,6 +23,18 @@ variable "log_analytics_retention_days" {
   }
 }
 
+variable "enable_activity_log_diagnostics" {
+  type        = bool
+  description = "Whether to route subscription activity logs (administrative changes, service/resource health, policy) to the Log Analytics workspace."
+  default     = true
+}
+
+variable "activity_log_workspace_id" {
+  type        = string
+  description = "Log Analytics workspace resource ID used by the Platform Changes dashboard. Defaults to this module's workspace. Point this at the CAF/platform workspace when activity logs are already shipped there."
+  default     = null
+}
+
 #------------------------------------------------------------------------------
 # Key Vault
 #------------------------------------------------------------------------------
@@ -47,62 +59,6 @@ variable "key_vault_soft_delete_retention_days" {
     condition     = var.key_vault_soft_delete_retention_days >= 7 && var.key_vault_soft_delete_retention_days <= 90
     error_message = "Key Vault soft delete retention must be between 7 and 90 days."
   }
-}
-
-#------------------------------------------------------------------------------
-# PostgreSQL
-#------------------------------------------------------------------------------
-
-variable "postgresql_version" {
-  type        = string
-  description = "The version of PostgreSQL to deploy."
-  default     = "15"
-
-  validation {
-    condition     = contains(["14", "15", "16"], var.postgresql_version)
-    error_message = "PostgreSQL version must be 14, 15, or 16."
-  }
-}
-
-variable "postgresql_sku_name" {
-  type        = string
-  description = "The SKU name for PostgreSQL Flexible Server."
-  default     = "GP_Standard_D2s_v3"
-}
-
-variable "postgresql_storage_mb" {
-  type        = number
-  description = "The storage size in MB for PostgreSQL."
-  default     = 32768 # 32 GB
-}
-
-variable "postgresql_backup_retention_days" {
-  type        = number
-  description = "The number of days to retain PostgreSQL backups."
-  default     = 35
-
-  validation {
-    condition     = var.postgresql_backup_retention_days >= 7 && var.postgresql_backup_retention_days <= 35
-    error_message = "PostgreSQL backup retention must be between 7 and 35 days."
-  }
-}
-
-variable "postgresql_geo_redundant_backup" {
-  type        = bool
-  description = "Whether to enable geo-redundant backups for PostgreSQL."
-  default     = true
-}
-
-variable "postgresql_high_availability" {
-  type        = bool
-  description = "Whether to enable zone-redundant high availability for PostgreSQL."
-  default     = true
-}
-
-variable "postgresql_admin_username" {
-  type        = string
-  description = "The administrator username for PostgreSQL."
-  default     = "pgadmin"
 }
 
 #------------------------------------------------------------------------------
@@ -146,78 +102,45 @@ variable "grafana_deterministic_outbound_ip" {
 
 variable "enable_grafana_dashboards" {
   type        = bool
-  description = "Whether to provision Grafana dashboards via Terraform."
-  default     = true
+  description = "Whether to provision Grafana dashboards via Terraform. Keep false on first apply: the Grafana API token does not exist until after Grafana is deployed and the token is stored in Key Vault or passed via grafana_service_account_token."
+  default     = false
 }
 
 variable "grafana_service_account_token" {
   type        = string
-  description = "Service account token for Grafana API authentication. Required when enable_grafana_dashboards is true."
+  description = "Grafana service account token for dashboard provisioning. Optional: when omitted and enable_grafana_dashboards is true, the module reads the grafana-service-account-token secret from the module's Key Vault instead."
   default     = ""
   sensitive   = true
 }
 
 variable "create_grafana_service_account" {
   type        = bool
-  description = "Whether to create a Grafana service account for Terraform automation. Set to true on first deployment, then false after token is stored."
+  description = "Whether to also create a Grafana service account through the Grafana API. The API needs an existing token, so the first bootstrap must be done manually in the Grafana UI; keep false once the token is provided."
   default     = false
 }
 
-#------------------------------------------------------------------------------
-# Container Instances (Netbox/Prometheus)
-#------------------------------------------------------------------------------
+variable "enable_aws_cloudwatch" {
+  type        = bool
+  description = "Provision a CloudWatch data source from Key Vault AWS keys and enable Direct Connect and AWS VPN panels on MCCS Overview."
+  default     = false
+}
 
-variable "netbox_image" {
+variable "aws_cloudwatch_default_region" {
   type        = string
-  description = "The Docker image for Netbox."
-  default     = "netboxcommunity/netbox:v3.7"
+  description = "Default AWS region for the CloudWatch data source (Direct Connect metrics live here)."
+  default     = "ca-central-1"
 }
 
-variable "netbox_cpu" {
-  type        = number
-  description = "The number of CPU cores for Netbox container."
-  default     = 1
-}
-
-variable "netbox_memory" {
-  type        = number
-  description = "The memory in GB for Netbox container."
-  default     = 2
-}
-
-variable "prometheus_image" {
+variable "aws_access_key_secret_name" {
   type        = string
-  description = "The Docker image for Prometheus."
-  default     = "prom/prometheus:v2.48.0"
+  description = "Key Vault secret name for the AWS access key ID used by CloudWatch."
+  default     = "grafana-aws-access-key-id"
 }
 
-variable "prometheus_cpu" {
-  type        = number
-  description = "The number of CPU cores for Prometheus container."
-  default     = 1
-}
-
-variable "prometheus_memory" {
-  type        = number
-  description = "The memory in GB for Prometheus container."
-  default     = 2
-}
-
-variable "prometheus_retention_days" {
-  type        = number
-  description = "The number of days to retain Prometheus metrics."
-  default     = 15
-}
-
-variable "redis_image" {
+variable "aws_secret_key_secret_name" {
   type        = string
-  description = "The Docker image for Redis (Netbox cache)."
-  default     = "redis:7-alpine"
-}
-
-variable "netbox_admin_email" {
-  type        = string
-  description = "The email address for the Netbox admin user."
+  description = "Key Vault secret name for the AWS secret access key used by CloudWatch."
+  default     = "grafana-aws-secret-access-key"
 }
 
 #------------------------------------------------------------------------------

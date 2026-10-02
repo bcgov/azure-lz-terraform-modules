@@ -1,0 +1,638 @@
+{
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": {
+          "type": "grafana",
+          "uid": "-- Grafana --"
+        },
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "type": "dashboard"
+      }
+    ]
+  },
+  "description": "Landing zone home: connectivity, security, change, and inventory. Click a tile to open the deep dashboard.",
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 1,
+  "links": [
+    {
+      "asDropdown": false,
+      "icon": "dashboard",
+      "includeVars": false,
+      "keepTime": true,
+      "tags": [],
+      "targetBlank": false,
+      "title": "ExpressRoute",
+      "type": "link",
+      "url": "/d/expressroute-health"
+    },
+    {
+      "asDropdown": false,
+      "icon": "dashboard",
+      "includeVars": false,
+      "keepTime": true,
+      "tags": [],
+      "targetBlank": false,
+      "title": "Hub",
+      "type": "link",
+      "url": "/d/vwan-hub-health"
+    },
+    {
+      "asDropdown": false,
+      "icon": "dashboard",
+      "includeVars": false,
+      "keepTime": true,
+      "tags": [],
+      "targetBlank": false,
+      "title": "VPN",
+      "type": "link",
+      "url": "/d/vpn-gateway-health"
+    },
+    {
+      "asDropdown": false,
+      "icon": "dashboard",
+      "includeVars": false,
+      "keepTime": true,
+      "tags": [],
+      "targetBlank": false,
+      "title": "Firewall",
+      "type": "link",
+      "url": "/d/azure-firewall-health"
+    },
+    {
+      "asDropdown": false,
+      "icon": "dashboard",
+      "includeVars": false,
+      "keepTime": true,
+      "tags": [],
+      "targetBlank": false,
+      "title": "Security",
+      "type": "link",
+      "url": "/d/security-posture"
+    },
+    {
+      "asDropdown": false,
+      "icon": "dashboard",
+      "includeVars": false,
+      "keepTime": true,
+      "tags": [],
+      "targetBlank": false,
+      "title": "Changes",
+      "type": "link",
+      "url": "/d/platform-changes"
+    },
+    {
+      "asDropdown": false,
+      "icon": "dashboard",
+      "includeVars": false,
+      "keepTime": true,
+      "tags": [],
+      "targetBlank": false,
+      "title": "Inventory",
+      "type": "link",
+      "url": "/d/resource-inventory-policy"
+    }
+  ],
+  "panels": [
+    {
+      "collapsed": false,
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 0 },
+      "id": 1,
+      "panels": [],
+      "title": "Connectivity",
+      "type": "row"
+    },
+    {
+      "datasource": { "type": "grafana-azure-monitor-datasource", "uid": "${azure_monitor_uid}" },
+      "description": "ExpressRoute BGP availability. Open ExpressRoute Health for paths and gateway metrics.",
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "thresholds" },
+          "links": [{ "title": "ExpressRoute Health", "url": "/d/expressroute-health" }],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "red", "value": null },
+              { "color": "yellow", "value": 50 },
+              { "color": "green", "value": 99 }
+            ]
+          },
+          "unit": "percent"
+        },
+        "overrides": []
+      },
+      "gridPos": { "h": 4, "w": 6, "x": 0, "y": 1 },
+      "id": 2,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
+        "textMode": "auto"
+      },
+      "pluginVersion": "11.0.0",
+      "targets": [
+        {
+          "azureMonitor": {
+            "aggregation": "Average",
+            "dimensionFilters": [],
+            "metricName": "BgpAvailability",
+            "metricNamespace": "microsoft.network/expressroutecircuits",
+            "resources": [
+              {
+                "subscription": "${subscription_id}",
+                "resourceGroup": "${er_resource_group}",
+                "resourceName": "${er_circuit_name}"
+              }
+            ],
+            "timeGrain": "PT5M"
+          },
+          "datasource": { "type": "grafana-azure-monitor-datasource", "uid": "${azure_monitor_uid}" },
+          "queryType": "Azure Monitor",
+          "refId": "A",
+          "subscription": "${subscription_id}"
+        }
+      ],
+      "title": "ExpressRoute BGP",
+      "type": "stat"
+    },
+    {
+      "datasource": { "type": "grafana-azure-monitor-datasource", "uid": "${azure_monitor_uid}" },
+      "description": "Virtual hub routing infrastructure units.",
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "thresholds" },
+          "links": [{ "title": "Hub Health", "url": "/d/vwan-hub-health" }],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "yellow", "value": 4 },
+              { "color": "red", "value": 8 }
+            ]
+          },
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "gridPos": { "h": 4, "w": 6, "x": 6, "y": 1 },
+      "id": 3,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
+        "textMode": "auto"
+      },
+      "pluginVersion": "11.0.0",
+      "targets": [
+        {
+          "azureMonitor": {
+            "aggregation": "Maximum",
+            "dimensionFilters": [],
+            "metricName": "RoutingInfrastructureUnits",
+            "metricNamespace": "microsoft.network/virtualhubs",
+            "resources": [
+              {
+                "subscription": "${subscription_id}",
+                "resourceGroup": "${hub_resource_group}",
+                "resourceName": "${hub_name}"
+              }
+            ],
+            "timeGrain": "PT5M"
+          },
+          "datasource": { "type": "grafana-azure-monitor-datasource", "uid": "${azure_monitor_uid}" },
+          "queryType": "Azure Monitor",
+          "refId": "A",
+          "subscription": "${subscription_id}"
+        }
+      ],
+      "title": "Hub Routing Units",
+      "type": "stat"
+    },
+    {
+      "datasource": { "type": "grafana-azure-monitor-datasource", "uid": "${azure_monitor_uid}" },
+      "description": "vWAN hub VPN BGP peer status (1 = up).",
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "thresholds" },
+          "links": [{ "title": "VPN Health", "url": "/d/vpn-gateway-health" }],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "red", "value": null },
+              { "color": "yellow", "value": 0.5 },
+              { "color": "green", "value": 1 }
+            ]
+          },
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "gridPos": { "h": 4, "w": 6, "x": 12, "y": 1 },
+      "id": 4,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
+        "textMode": "auto"
+      },
+      "pluginVersion": "11.0.0",
+      "targets": [
+        {
+          "azureMonitor": {
+            "aggregation": "Average",
+            "dimensionFilters": [],
+            "metricName": "BgpPeerStatus",
+            "metricNamespace": "microsoft.network/vpngateways",
+            "resources": [
+              {
+                "subscription": "${subscription_id}",
+                "resourceGroup": "${vpn_resource_group}",
+                "resourceName": "${vpn_gateway_name}"
+              }
+            ],
+            "timeGrain": "PT5M"
+          },
+          "datasource": { "type": "grafana-azure-monitor-datasource", "uid": "${azure_monitor_uid}" },
+          "queryType": "Azure Monitor",
+          "refId": "A",
+          "subscription": "${subscription_id}"
+        }
+      ],
+      "title": "VPN BGP",
+      "type": "stat"
+    },
+    {
+      "datasource": { "type": "grafana-azure-monitor-datasource", "uid": "${azure_monitor_uid}" },
+      "description": "Hub Azure Firewall health (100 = healthy).",
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "thresholds" },
+          "links": [{ "title": "Firewall", "url": "/d/azure-firewall-health" }],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "red", "value": null },
+              { "color": "yellow", "value": 90 },
+              { "color": "green", "value": 99 }
+            ]
+          },
+          "unit": "percent"
+        },
+        "overrides": []
+      },
+      "gridPos": { "h": 4, "w": 6, "x": 18, "y": 1 },
+      "id": 5,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
+        "textMode": "auto"
+      },
+      "pluginVersion": "11.0.0",
+      "targets": [
+        {
+          "azureMonitor": {
+            "aggregation": "Average",
+            "dimensionFilters": [],
+            "metricName": "FirewallHealth",
+            "metricNamespace": "microsoft.network/azurefirewalls",
+            "resources": [
+              {
+                "subscription": "${subscription_id}",
+                "resourceGroup": "${fw_resource_group}",
+                "resourceName": "${fw_name}"
+              }
+            ],
+            "timeGrain": "PT5M"
+          },
+          "datasource": { "type": "grafana-azure-monitor-datasource", "uid": "${azure_monitor_uid}" },
+          "queryType": "Azure Monitor",
+          "refId": "A",
+          "subscription": "${subscription_id}"
+        }
+      ],
+      "title": "Firewall Health",
+      "type": "stat"
+    },
+    {
+      "collapsed": false,
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 5 },
+      "id": 6,
+      "panels": [],
+      "title": "Security",
+      "type": "row"
+    },
+    {
+      "datasource": { "type": "grafana-azure-monitor-datasource", "uid": "${azure_monitor_uid}" },
+      "description": "Defender weighted Azure secure score for the landing zone.",
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "thresholds" },
+          "links": [{ "title": "Security Posture", "url": "/d/security-posture" }],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "red", "value": null },
+              { "color": "yellow", "value": 0.5 },
+              { "color": "green", "value": 0.8 }
+            ]
+          },
+          "unit": "percentunit"
+        },
+        "overrides": []
+      },
+      "gridPos": { "h": 4, "w": 8, "x": 0, "y": 6 },
+      "id": 7,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
+        "textMode": "auto"
+      },
+      "pluginVersion": "11.0.0",
+      "targets": [
+        {
+          "azureResourceGraph": {
+            "query": "securityresources | where type == 'microsoft.security/securescores' | where name == 'ascScore' | where tostring(properties.environment) == 'Azure' | where isempty(resourceGroup) | extend wCurrent = todouble(properties.score.current) * todouble(properties.weight) | extend wMax = todouble(properties.score.max) * todouble(properties.weight) | summarize current = sum(wCurrent), max = sum(wMax) | project Pct = current / max",
+            "resultFormat": "table"
+          },
+          "datasource": { "type": "grafana-azure-monitor-datasource", "uid": "${azure_monitor_uid}" },
+          "queryType": "Azure Resource Graph",
+          "refId": "A",
+          "subscriptions": ${arg_subscriptions}
+        }
+      ],
+      "title": "Secure Score",
+      "type": "stat"
+    },
+    {
+      "datasource": { "type": "grafana-azure-monitor-datasource", "uid": "${azure_monitor_uid}" },
+      "description": "Unhealthy High or Critical Defender assessments (Azure resources only).",
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "thresholds" },
+          "links": [{ "title": "Security Posture", "url": "/d/security-posture" }],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "yellow", "value": 5 },
+              { "color": "red", "value": 20 }
+            ]
+          },
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "gridPos": { "h": 4, "w": 8, "x": 8, "y": 6 },
+      "id": 8,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
+        "textMode": "auto"
+      },
+      "pluginVersion": "11.0.0",
+      "targets": [
+        {
+          "azureResourceGraph": {
+            "query": "securityresources | where type == 'microsoft.security/assessments' | where tostring(properties.resourceDetails.Source) == 'Azure' | where tostring(properties.status.code) == 'Unhealthy' | where tostring(properties.metadata.severity) in ('High', 'Critical') | summarize Findings = count()",
+            "resultFormat": "table"
+          },
+          "datasource": { "type": "grafana-azure-monitor-datasource", "uid": "${azure_monitor_uid}" },
+          "queryType": "Azure Resource Graph",
+          "refId": "A",
+          "subscriptions": ${arg_subscriptions}
+        }
+      ],
+      "title": "High/Critical Findings",
+      "type": "stat"
+    },
+    {
+      "datasource": { "type": "grafana-azure-monitor-datasource", "uid": "${azure_monitor_uid}" },
+      "description": "Resources failing at least one Azure policy.",
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "thresholds" },
+          "links": [{ "title": "Inventory & Policy", "url": "/d/resource-inventory-policy" }],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "yellow", "value": 10 },
+              { "color": "red", "value": 50 }
+            ]
+          },
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "gridPos": { "h": 4, "w": 8, "x": 16, "y": 6 },
+      "id": 9,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
+        "textMode": "auto"
+      },
+      "pluginVersion": "11.0.0",
+      "targets": [
+        {
+          "azureResourceGraph": {
+            "query": "policyresources | where type == 'microsoft.policyinsights/policystates' | where tostring(properties.complianceState) == 'NonCompliant' | summarize NonCompliant = dcount(tostring(properties.resourceId))",
+            "resultFormat": "table"
+          },
+          "datasource": { "type": "grafana-azure-monitor-datasource", "uid": "${azure_monitor_uid}" },
+          "queryType": "Azure Resource Graph",
+          "refId": "A",
+          "subscriptions": ${arg_subscriptions}
+        }
+      ],
+      "title": "Non-Compliant Resources",
+      "type": "stat"
+    },
+    {
+      "collapsed": false,
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 10 },
+      "id": 10,
+      "panels": [],
+      "title": "Change",
+      "type": "row"
+    },
+    {
+      "datasource": { "type": "grafana-azure-monitor-datasource", "uid": "${azure_monitor_uid}" },
+      "description": "Failed control-plane operations in the last 24 hours (CAF activity log).",
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "thresholds" },
+          "links": [{ "title": "Platform Changes", "url": "/d/platform-changes" }],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "yellow", "value": 1 },
+              { "color": "red", "value": 10 }
+            ]
+          },
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "gridPos": { "h": 4, "w": 8, "x": 0, "y": 11 },
+      "id": 11,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
+        "textMode": "auto"
+      },
+      "pluginVersion": "11.0.0",
+      "targets": [
+        {
+          "azureLogAnalytics": {
+            "query": "AzureActivity | where CategoryValue == 'Administrative' and ActivityStatusValue == 'Failed' and TimeGenerated > ago(24h) | summarize Failed = count()",
+            "resultFormat": "table",
+            "resources": ["${activity_log_workspace_id}"]
+          },
+          "datasource": { "type": "grafana-azure-monitor-datasource", "uid": "${azure_monitor_uid}" },
+          "queryType": "Azure Log Analytics",
+          "refId": "A"
+        }
+      ],
+      "title": "Failed Operations (24h)",
+      "type": "stat"
+    },
+    {
+      "datasource": { "type": "grafana-azure-monitor-datasource", "uid": "${azure_monitor_uid}" },
+      "description": "Role assignment changes in the last 7 days.",
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "thresholds" },
+          "links": [{ "title": "Platform Changes", "url": "/d/platform-changes" }],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null }
+            ]
+          },
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "gridPos": { "h": 4, "w": 8, "x": 8, "y": 11 },
+      "id": 12,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
+        "textMode": "auto"
+      },
+      "pluginVersion": "11.0.0",
+      "targets": [
+        {
+          "azureLogAnalytics": {
+            "query": "AzureActivity | where OperationNameValue contains 'ROLEASSIGNMENTS' and TimeGenerated > ago(7d) | summarize Changes = count()",
+            "resultFormat": "table",
+            "resources": ["${activity_log_workspace_id}"]
+          },
+          "datasource": { "type": "grafana-azure-monitor-datasource", "uid": "${azure_monitor_uid}" },
+          "queryType": "Azure Log Analytics",
+          "refId": "A"
+        }
+      ],
+      "title": "RBAC Changes (7d)",
+      "type": "stat"
+    },
+    {
+      "datasource": { "type": "grafana-azure-monitor-datasource", "uid": "${azure_monitor_uid}" },
+      "description": "All Azure resources under the landing zone management group.",
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "thresholds" },
+          "links": [{ "title": "Inventory & Policy", "url": "/d/resource-inventory-policy" }],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null }
+            ]
+          },
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "gridPos": { "h": 4, "w": 8, "x": 16, "y": 11 },
+      "id": 13,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
+        "textMode": "auto"
+      },
+      "pluginVersion": "11.0.0",
+      "targets": [
+        {
+          "azureResourceGraph": {
+            "query": "resources | summarize Resources = count()",
+            "resultFormat": "table"
+          },
+          "datasource": { "type": "grafana-azure-monitor-datasource", "uid": "${azure_monitor_uid}" },
+          "queryType": "Azure Resource Graph",
+          "refId": "A",
+          "subscriptions": ${arg_subscriptions}
+        }
+      ],
+      "title": "Total Resources",
+      "type": "stat"
+    },
+    {
+      "datasource": { "type": "datasource", "uid": "grafana" },
+      "gridPos": { "h": 5, "w": 24, "x": 0, "y": 15 },
+      "id": 14,
+      "options": {
+        "content": "**How to use this page**\n\nEach tile is pinned to the hub landing zone (no subscription/gateway pickers). Click a value to open the deep dashboard.\n\n- **Connectivity** — ExpressRoute, vWAN hub, hub VPN, Azure Firewall\n- **Security** — Defender secure score and High/Critical findings (Azure only)\n- **Change / Inventory** — CAF activity log and Resource Graph across the landing zone MG\n\nIf a connectivity tile is red: start there, then use the matching dashboard in the **Connectivity** folder.",
+        "mode": "markdown"
+      },
+      "pluginVersion": "11.0.0",
+      "title": "Where to go next",
+      "type": "text"
+    }
+  ],
+  "refresh": "1m",
+  "schemaVersion": 39,
+  "tags": ["landing-zone", "home"],
+  "templating": { "list": [] },
+  "time": { "from": "now-6h", "to": "now" },
+  "timepicker": {
+    "refresh_intervals": ["1m", "5m", "15m", "30m", "1h"]
+  },
+  "timezone": "browser",
+  "title": "Landing Zone Home",
+  "uid": "landing-zone-home",
+  "version": 1,
+  "weekStart": ""
+}

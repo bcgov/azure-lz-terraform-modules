@@ -27,21 +27,6 @@ output "grafana_endpoint" {
   value       = module.mccs_observability.grafana_endpoint
 }
 
-output "netbox_private_ip" {
-  description = "The private IP of the Netbox container."
-  value       = module.mccs_observability.netbox_private_ip
-}
-
-output "prometheus_private_ip" {
-  description = "The private IP of the Prometheus container."
-  value       = module.mccs_observability.prometheus_private_ip
-}
-
-output "postgresql_fqdn" {
-  description = "The PostgreSQL server FQDN."
-  value       = module.mccs_observability.postgresql_fqdn
-}
-
 output "key_vault_uri" {
   description = "The Key Vault URI."
   value       = module.mccs_observability.key_vault_uri

@@ -1,0 +1,453 @@
+{
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": {
+          "type": "grafana",
+          "uid": "-- Grafana --"
+        },
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "type": "dashboard"
+      }
+    ]
+  },
+  "description": "vWAN hub Azure Firewall: health, throughput, SNAT, and denied flows",
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 1,
+  "links": [
+    {
+      "asDropdown": false,
+      "icon": "dashboard",
+      "keepTime": true,
+      "targetBlank": false,
+      "title": "Landing Zone Home",
+      "type": "link",
+      "url": "/d/landing-zone-home"
+    }
+  ],
+  "panels": [
+    {
+      "collapsed": false,
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 0 },
+      "id": 1,
+      "panels": [],
+      "title": "Firewall Status",
+      "type": "row"
+    },
+    {
+      "datasource": { "type": "grafana-azure-monitor-datasource", "uid": "$${datasource}" },
+      "description": "100 = healthy",
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "thresholds" },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "red", "value": null },
+              { "color": "yellow", "value": 90 },
+              { "color": "green", "value": 99 }
+            ]
+          },
+          "unit": "percent"
+        },
+        "overrides": []
+      },
+      "gridPos": { "h": 4, "w": 6, "x": 0, "y": 1 },
+      "id": 2,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
+        "textMode": "auto"
+      },
+      "pluginVersion": "11.0.0",
+      "targets": [
+        {
+          "azureMonitor": {
+            "aggregation": "Average",
+            "dimensionFilters": [],
+            "metricName": "FirewallHealth",
+            "metricNamespace": "microsoft.network/azurefirewalls",
+            "resources": [
+              {
+                "subscription": "$${subscription}",
+                "resourceGroup": "$${resource_group}",
+                "resourceName": "$${firewall}"
+              }
+            ],
+            "timeGrain": "PT5M"
+          },
+          "datasource": { "type": "grafana-azure-monitor-datasource", "uid": "$${datasource}" },
+          "queryType": "Azure Monitor",
+          "refId": "A",
+          "subscription": "$${subscription}"
+        }
+      ],
+      "title": "Firewall Health",
+      "type": "stat"
+    },
+    {
+      "datasource": { "type": "grafana-azure-monitor-datasource", "uid": "$${datasource}" },
+      "description": "Processed throughput",
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "thresholds" },
+          "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }] },
+          "unit": "bps"
+        },
+        "overrides": []
+      },
+      "gridPos": { "h": 4, "w": 6, "x": 6, "y": 1 },
+      "id": 3,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
+        "textMode": "auto"
+      },
+      "pluginVersion": "11.0.0",
+      "targets": [
+        {
+          "azureMonitor": {
+            "aggregation": "Average",
+            "dimensionFilters": [],
+            "metricName": "Throughput",
+            "metricNamespace": "microsoft.network/azurefirewalls",
+            "resources": [
+              {
+                "subscription": "$${subscription}",
+                "resourceGroup": "$${resource_group}",
+                "resourceName": "$${firewall}"
+              }
+            ],
+            "timeGrain": "PT5M"
+          },
+          "datasource": { "type": "grafana-azure-monitor-datasource", "uid": "$${datasource}" },
+          "queryType": "Azure Monitor",
+          "refId": "A",
+          "subscription": "$${subscription}"
+        }
+      ],
+      "title": "Throughput",
+      "type": "stat"
+    },
+    {
+      "datasource": { "type": "grafana-azure-monitor-datasource", "uid": "$${datasource}" },
+      "description": "SNAT port utilization. Investigate above 80%.",
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "thresholds" },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "yellow", "value": 60 },
+              { "color": "red", "value": 80 }
+            ]
+          },
+          "unit": "percent"
+        },
+        "overrides": []
+      },
+      "gridPos": { "h": 4, "w": 6, "x": 12, "y": 1 },
+      "id": 4,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
+        "textMode": "auto"
+      },
+      "pluginVersion": "11.0.0",
+      "targets": [
+        {
+          "azureMonitor": {
+            "aggregation": "Average",
+            "dimensionFilters": [],
+            "metricName": "SNATPortUtilization",
+            "metricNamespace": "microsoft.network/azurefirewalls",
+            "resources": [
+              {
+                "subscription": "$${subscription}",
+                "resourceGroup": "$${resource_group}",
+                "resourceName": "$${firewall}"
+              }
+            ],
+            "timeGrain": "PT5M"
+          },
+          "datasource": { "type": "grafana-azure-monitor-datasource", "uid": "$${datasource}" },
+          "queryType": "Azure Monitor",
+          "refId": "A",
+          "subscription": "$${subscription}"
+        }
+      ],
+      "title": "SNAT Port Utilization",
+      "type": "stat"
+    },
+    {
+      "datasource": { "type": "grafana-azure-monitor-datasource", "uid": "$${datasource}" },
+      "description": "Data processed by the firewall",
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "thresholds" },
+          "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }] },
+          "unit": "decbytes"
+        },
+        "overrides": []
+      },
+      "gridPos": { "h": 4, "w": 6, "x": 18, "y": 1 },
+      "id": 5,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
+        "textMode": "auto"
+      },
+      "pluginVersion": "11.0.0",
+      "targets": [
+        {
+          "azureMonitor": {
+            "aggregation": "Average",
+            "dimensionFilters": [],
+            "metricName": "DataProcessed",
+            "metricNamespace": "microsoft.network/azurefirewalls",
+            "resources": [
+              {
+                "subscription": "$${subscription}",
+                "resourceGroup": "$${resource_group}",
+                "resourceName": "$${firewall}"
+              }
+            ],
+            "timeGrain": "PT5M"
+          },
+          "datasource": { "type": "grafana-azure-monitor-datasource", "uid": "$${datasource}" },
+          "queryType": "Azure Monitor",
+          "refId": "A",
+          "subscription": "$${subscription}"
+        }
+      ],
+      "title": "Data Processed",
+      "type": "stat"
+    },
+    {
+      "collapsed": false,
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 5 },
+      "id": 6,
+      "panels": [],
+      "title": "Capacity",
+      "type": "row"
+    },
+    {
+      "datasource": { "type": "grafana-azure-monitor-datasource", "uid": "$${datasource}" },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "palette-classic" },
+          "custom": { "fillOpacity": 10, "lineWidth": 2, "showPoints": "never" },
+          "unit": "bps"
+        },
+        "overrides": []
+      },
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 6 },
+      "id": 7,
+      "options": { "legend": { "displayMode": "list", "placement": "bottom" }, "tooltip": { "mode": "single" } },
+      "pluginVersion": "11.0.0",
+      "targets": [
+        {
+          "azureMonitor": {
+            "aggregation": "Average",
+            "dimensionFilters": [],
+            "metricName": "Throughput",
+            "metricNamespace": "microsoft.network/azurefirewalls",
+            "resources": [
+              {
+                "subscription": "$${subscription}",
+                "resourceGroup": "$${resource_group}",
+                "resourceName": "$${firewall}"
+              }
+            ],
+            "timeGrain": "PT5M"
+          },
+          "datasource": { "type": "grafana-azure-monitor-datasource", "uid": "$${datasource}" },
+          "queryType": "Azure Monitor",
+          "refId": "A",
+          "subscription": "$${subscription}"
+        }
+      ],
+      "title": "Throughput",
+      "type": "timeseries"
+    },
+    {
+      "datasource": { "type": "grafana-azure-monitor-datasource", "uid": "$${datasource}" },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "palette-classic" },
+          "custom": { "fillOpacity": 10, "lineWidth": 2, "showPoints": "never" },
+          "max": 100,
+          "unit": "percent"
+        },
+        "overrides": []
+      },
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 6 },
+      "id": 8,
+      "options": { "legend": { "displayMode": "list", "placement": "bottom" }, "tooltip": { "mode": "single" } },
+      "pluginVersion": "11.0.0",
+      "targets": [
+        {
+          "azureMonitor": {
+            "aggregation": "Average",
+            "dimensionFilters": [],
+            "metricName": "SNATPortUtilization",
+            "metricNamespace": "microsoft.network/azurefirewalls",
+            "resources": [
+              {
+                "subscription": "$${subscription}",
+                "resourceGroup": "$${resource_group}",
+                "resourceName": "$${firewall}"
+              }
+            ],
+            "timeGrain": "PT5M"
+          },
+          "datasource": { "type": "grafana-azure-monitor-datasource", "uid": "$${datasource}" },
+          "queryType": "Azure Monitor",
+          "refId": "A",
+          "subscription": "$${subscription}"
+        }
+      ],
+      "title": "SNAT Port Utilization",
+      "type": "timeseries"
+    },
+    {
+      "collapsed": false,
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 14 },
+      "id": 9,
+      "panels": [],
+      "title": "Denied Flows (Log Analytics)",
+      "type": "row"
+    },
+    {
+      "datasource": { "type": "grafana-azure-monitor-datasource", "uid": "${log_analytics_uid}" },
+      "description": "Top denied network-rule flows from the CAF workspace (policy-routed firewall logs).",
+      "fieldConfig": {
+        "defaults": {
+          "custom": { "align": "auto", "filterable": true, "inspect": true }
+        },
+        "overrides": []
+      },
+      "gridPos": { "h": 10, "w": 24, "x": 0, "y": 15 },
+      "id": 10,
+      "options": { "cellHeight": "sm", "showHeader": true },
+      "pluginVersion": "11.0.0",
+      "targets": [
+        {
+          "azureLogAnalytics": {
+            "query": "AZFWNetworkRule\n| where TimeGenerated > ago(6h)\n| where Action == \"Deny\"\n| summarize Hits = count() by SourceIp, DestinationIp, DestinationPort, Protocol, Rule\n| order by Hits desc\n| take 50",
+            "resultFormat": "table",
+            "resources": ["${log_analytics_workspace_id}"]
+          },
+          "datasource": { "type": "grafana-azure-monitor-datasource", "uid": "${log_analytics_uid}" },
+          "queryType": "Azure Log Analytics",
+          "refId": "A"
+        }
+      ],
+      "title": "Top Denied Network Rules (6h)",
+      "type": "table"
+    },
+    {
+      "datasource": { "type": "datasource", "uid": "grafana" },
+      "gridPos": { "h": 4, "w": 24, "x": 0, "y": 25 },
+      "id": 11,
+      "options": {
+        "content": "Pinned to the vWAN hub Azure Firewall. Metrics come from Azure Monitor. Denied flows come from `AZFWNetworkRule` in the CAF Log Analytics workspace (diagnostic setting `setbypolicy`). SNAT above 80% usually means more SNAT ports or fewer concurrent outbound connections are needed.",
+        "mode": "markdown"
+      },
+      "pluginVersion": "11.0.0",
+      "title": "About",
+      "type": "text"
+    }
+  ],
+  "refresh": "1m",
+  "schemaVersion": 39,
+  "tags": ["landing-zone", "connectivity", "firewall"],
+  "templating": {
+    "list": [
+      {
+        "current": { "selected": true, "text": "Azure Monitor", "value": "azure-monitor-oob" },
+        "hide": 2,
+        "includeAll": false,
+        "label": "Data Source",
+        "multi": false,
+        "name": "datasource",
+        "options": [],
+        "query": "grafana-azure-monitor-datasource",
+        "queryValue": "",
+        "refresh": 1,
+        "regex": "/^Azure Monitor$/",
+        "skipUrlSync": false,
+        "type": "datasource"
+      },
+      {
+        "current": { "selected": true, "text": "${subscription_id}", "value": "${subscription_id}" },
+        "datasource": { "type": "grafana-azure-monitor-datasource", "uid": "$${datasource}" },
+        "hide": 2,
+        "includeAll": false,
+        "label": "Subscription",
+        "multi": false,
+        "name": "subscription",
+        "options": [],
+        "query": { "queryType": "Azure Subscriptions", "refId": "A" },
+        "refresh": 1,
+        "type": "query"
+      },
+      {
+        "current": { "selected": true, "text": "${default_resource_group}", "value": "${default_resource_group}" },
+        "datasource": { "type": "grafana-azure-monitor-datasource", "uid": "$${datasource}" },
+        "hide": 2,
+        "includeAll": false,
+        "label": "Resource Group",
+        "multi": false,
+        "name": "resource_group",
+        "options": [],
+        "query": { "queryType": "Azure Resource Groups", "refId": "A", "subscription": "$${subscription}" },
+        "refresh": 1,
+        "type": "query"
+      },
+      {
+        "current": { "selected": true, "text": "${default_firewall_name}", "value": "${default_firewall_name}" },
+        "datasource": { "type": "grafana-azure-monitor-datasource", "uid": "$${datasource}" },
+        "hide": 2,
+        "includeAll": false,
+        "label": "Firewall",
+        "multi": false,
+        "name": "firewall",
+        "options": [],
+        "query": {
+          "queryType": "Azure Resource Names",
+          "metricNamespace": "microsoft.network/azurefirewalls",
+          "refId": "A",
+          "resourceGroup": "$${resource_group}",
+          "subscription": "$${subscription}"
+        },
+        "refresh": 1,
+        "type": "query"
+      }
+    ]
+  },
+  "time": { "from": "now-6h", "to": "now" },
+  "timezone": "browser",
+  "title": "Azure Firewall",
+  "uid": "azure-firewall-health",
+  "version": 1,
+  "weekStart": ""
+}
