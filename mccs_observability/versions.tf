@@ -13,7 +13,7 @@ terraform {
     }
     azuread = {
       source  = "hashicorp/azuread"
-      version = "~> 3.9"
+      version = "~> 3.10"
     }
     grafana = {
       source  = "grafana/grafana"
