@@ -19,7 +19,7 @@ terraform {
 
     fabric = {
       source  = "microsoft/fabric"
-      version = "~> 1.13"
+      version = "~> 1.14"
     }
   }
 }
