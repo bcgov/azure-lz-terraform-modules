@@ -15,6 +15,39 @@ It is be possible to move some management activity outside the policy scope by m
 
 Policies are applied in the "Default" mode. It should be possible to provide [overrides](https://learn.microsoft.com/en-us/azure/templates/microsoft.authorization/2024-04-01/policyassignments?pivots=deployment-language-terraform) when needed.
 
+### Enterprise Scale initiative compatibility
+
+The custom library in `modules/core/lib/policy_set_definitions` overrides six
+Enterprise Scale 6.3.1 initiative definitions to match the current Microsoft
+built-in policy parameter schemas:
+
+| Initiative | Parameter | Allowed effects | Default |
+|-----------|-----------|-----------------|---------|
+| `Deny-PublicPaaSEndpoints` | `AKSPublicIpDenyEffect` | Audit, Disabled | Audit |
+| `Enforce-Encryption-CMK_20250218` | `AksCmkEffect` | Audit, Disabled | Audit |
+| `Enforce-EncryptTransit`, `Enforce-EncryptTransit_20240509`, `Enforce-EncryptTransit_20241211` | `AKSIngressHttpsOnlyEffect` | Audit, Deny, Disabled | Deny |
+| `Enforce-Guardrails-Kubernetes` | `aksShareHostProcessAndNamespace` | Audit, Deny, Disabled | Deny |
+| `Enforce-Guardrails-Kubernetes` | `aksPrivateCluster` | Audit, Disabled | Audit |
+| `Enforce-Guardrails-Kubernetes` | `aksPrivEscalation` | Audit, Deny, Disabled | Deny |
+| `Enforce-Guardrails-Kubernetes` | `aksLocalAuth`, `aksTempDisk` | Audit, Disabled | Audit |
+
+These are complete initiative replacements, selected by their existing names;
+all unrelated parameters and policy references are preserved. They retain
+Microsoft built-in policy IDs rather than deploying copies of the built-ins.
+AKS private-cluster, customer-managed-key, local-authentication and encryption-at-host
+policies no longer support Deny, so these controls report noncompliance rather
+than blocking deployment when Audit is selected. Explicit assignment values take
+precedence over defaults; the existing `AKSPublicIpDenyEffect = Disabled`
+assignment remains unchanged.
+
+The Enterprise Scale resource implementation does not pass `definitionVersion`
+through to policy references. New initiatives resolve against current built-ins;
+existing initiatives can retain older major-version references. These overrides
+do not force existing deployments onto the latest major versions or guarantee
+automatic adoption of future major versions. Review plans for every consumer
+before rollout, and check deployed reference versions after applying.
+See [Microsoft's policy reference version documentation](https://learn.microsoft.com/en-us/azure/governance/policy/concepts/initiative-definition-structure#policy-definition-properties).
+
 <!-- BEGIN_TF_DOCS -->
 ## Requirements
 
