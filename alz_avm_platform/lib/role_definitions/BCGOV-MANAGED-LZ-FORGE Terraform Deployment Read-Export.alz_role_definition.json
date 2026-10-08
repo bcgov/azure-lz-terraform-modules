@@ -1,0 +1,24 @@
+{
+  "name": "4d51ddc5-7a91-52e9-adcb-010ed7e20eff",
+  "type": "Microsoft.Authorization/roleDefinitions",
+  "apiVersion": "2022-05-01-preview",
+  "properties": {
+    "roleName": "[BCGOV-MANAGED-LZ-FORGE] Terraform Deployment Read/Export",
+    "description": "Required for read-only Terraform plan telemetry because Reader does not include deployment export template and deployment read actions.",
+    "type": "CustomRole",
+    "permissions": [
+      {
+        "actions": [
+          "Microsoft.Resources/deployments/exportTemplate/action",
+          "Microsoft.Resources/deployments/read"
+        ],
+        "notActions": [],
+        "dataActions": [],
+        "notDataActions": []
+      }
+    ],
+    "assignableScopes": [
+      "${current_scope_resource_id}"
+    ]
+  }
+}

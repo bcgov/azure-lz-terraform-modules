@@ -37,4 +37,6 @@ module "avm-ptn-alz-management" {
   resource_group_creation_enabled                            = var.resource_group_creation_enabled
   sentinel_onboarding                                        = var.sentinel_onboarding
   user_assigned_managed_identities                           = var.user_assigned_managed_identities
+  tags                                                       = var.tags
+  enable_telemetry                                           = var.enable_telemetry
 }

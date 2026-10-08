@@ -15,6 +15,56 @@ It is be possible to move some management activity outside the policy scope by m
 
 Policies are applied in the "Default" mode. It should be possible to provide [overrides](https://learn.microsoft.com/en-us/azure/templates/microsoft.authorization/2024-04-01/policyassignments?pivots=deployment-language-terraform) when needed.
 
+### Enterprise Scale initiative compatibility
+
+The custom library in `modules/core/lib/policy_set_definitions` overrides six
+Enterprise Scale 6.3.1 initiative definitions to match the current Microsoft
+built-in policy parameter schemas:
+
+| Initiative | Parameter | Allowed effects | Default |
+|-----------|-----------|-----------------|---------|
+| `Deny-PublicPaaSEndpoints` | `AKSPublicIpDenyEffect` | Audit, Disabled | Audit |
+| `Enforce-Encryption-CMK_20250218` | `AksCmkEffect` | Audit, Disabled | Audit |
+| `Enforce-EncryptTransit`, `Enforce-EncryptTransit_20240509`, `Enforce-EncryptTransit_20241211` | `AKSIngressHttpsOnlyEffect` | Audit, Deny, Disabled | Deny |
+| `Enforce-Guardrails-Kubernetes` | `aksShareHostProcessAndNamespace` | Audit, Deny, Disabled | Deny |
+| `Enforce-Guardrails-Kubernetes` | `aksPrivateCluster` | Audit, Disabled | Audit |
+| `Enforce-Guardrails-Kubernetes` | `aksPrivEscalation` | Audit, Deny, Disabled | Deny |
+| `Enforce-Guardrails-Kubernetes` | `aksLocalAuth`, `aksTempDisk` | Audit, Disabled | Audit |
+
+These are complete initiative replacements, selected by their existing names;
+all unrelated parameters and policy references are preserved. They retain
+Microsoft built-in policy IDs rather than deploying copies of the built-ins.
+AKS private-cluster, customer-managed-key, local-authentication and encryption-at-host
+policies no longer support Deny, so these controls report noncompliance rather
+than blocking deployment when Audit is selected. Explicit assignment values take
+precedence over defaults; the existing `AKSPublicIpDenyEffect = Disabled`
+assignment remains unchanged.
+
+The Enterprise Scale resource implementation does not pass `definitionVersion`
+through to policy references. New initiatives resolve against current built-ins;
+existing initiatives can retain older major-version references. These overrides
+do not force existing deployments onto the latest major versions or guarantee
+automatic adoption of future major versions. Review plans for every consumer
+before rollout, and check deployed reference versions after applying.
+See [Microsoft's policy reference version documentation](https://learn.microsoft.com/en-us/azure/governance/policy/concepts/initiative-definition-structure#policy-definition-properties).
+
+### AKS assignment compatibility
+
+The custom library in `modules/core/lib/policy_assignments` also replaces the
+Enterprise Scale `Deny-Priv-Esc-AKS` and `Enforce-AKS-HTTPS` assignments by their
+existing names. Only their effect values change from `deny` to `Deny`, matching
+the case-sensitive allowed values in the current built-ins. All other assignment
+properties are preserved. As with initiative references, the Enterprise Scale
+assignment resource does not pass the template's `definitionVersion` through.
+
+Consumers must set `aks_security_best_prac_parameters.enforce_disable_local_auth`
+and `enforce_aks_private_cluster_parameters.effect` to `Audit` or `Disabled`.
+Explicit `Deny` inputs override library defaults and remain invalid. Terraform
+validation rejects unsupported values, and the custom AKS security initiative
+restricts its local-authentication parameter to the same allowed values. `Audit`
+reports noncompliance without blocking deployment for these two controls; other
+AKS controls that support `Deny` remain unchanged.
+
 <!-- BEGIN_TF_DOCS -->
 ## Requirements
 

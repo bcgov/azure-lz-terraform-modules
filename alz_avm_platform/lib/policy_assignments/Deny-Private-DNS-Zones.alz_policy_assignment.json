@@ -1,0 +1,20 @@
+{
+  "name": "Deny-Private-DNS-Zones",
+  "type": "Microsoft.Authorization/policyAssignments",
+  "apiVersion": "2024-04-01",
+  "location": "${default_location}",
+  "properties": {
+    "description": "This policy denies the creation of a private DNS in the current scope, used in combination with policies that create centralized private DNS in connectivity subscription.",
+    "displayName": "Deny the creation of private DNS",
+    "policyDefinitionId": "/providers/Microsoft.Management/managementGroups/placeholder/providers/Microsoft.Authorization/policyDefinitions/Deny-Private-DNS-Zones",
+    "enforcementMode": "Default",
+    "nonComplianceMessages": [
+      {
+        "message": "Private DNS must be created centrally in the connectivity subscription."
+      }
+    ],
+    "parameters": {},
+    "scope": "/providers/Microsoft.Management/managementGroups/placeholder",
+    "notScopes": []
+  }
+}

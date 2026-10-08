@@ -48,8 +48,9 @@
         "type": "String",
         "metadata": {
           "displayName": "Require Local Authentication Methods to Be Disabled",
-          "description": "Controls whether Azure Kubernetes Services (AKS) clusters must have local authentication methods disabled. When set to Deny, create or update operations are blocked if local authentication is enabled."
+          "description": "Controls whether Azure Kubernetes Service (AKS) clusters are audited for enabled local authentication methods. The referenced built-in policy supports Audit and Disabled, not Deny."
         },
+        "allowedValues": ["Audit", "Disabled"],
         "defaultValue": "Audit"
       },
       "enforce_workload_identity": {

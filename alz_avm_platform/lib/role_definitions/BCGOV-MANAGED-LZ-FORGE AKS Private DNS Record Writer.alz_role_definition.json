@@ -1,0 +1,25 @@
+{
+  "name": "c0972dd8-c9a3-5880-a119-61c84c6756a4",
+  "type": "Microsoft.Authorization/roleDefinitions",
+  "apiVersion": "2022-05-01-preview",
+  "properties": {
+    "roleName": "[BCGOV-MANAGED-LZ-FORGE] AKS Private DNS Record Writer",
+    "description": "Allows AKS to create A records in a Private DNS Zone for private cluster API server.",
+    "type": "CustomRole",
+    "permissions": [
+      {
+        "actions": [
+          "Microsoft.Network/privateDnsZones/read",
+          "Microsoft.Network/privateDnsZones/A/read",
+          "Microsoft.Network/privateDnsZones/A/write"
+        ],
+        "notActions": [],
+        "dataActions": [],
+        "notDataActions": []
+      }
+    ],
+    "assignableScopes": [
+      "${current_scope_resource_id}"
+    ]
+  }
+}

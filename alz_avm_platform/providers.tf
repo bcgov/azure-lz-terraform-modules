@@ -22,4 +22,7 @@ provider "alz" {
     }
   ]
   suppress_warning_policy_role_assignments = true
+  # Keep the GUID and roleName from the library JSON. The default rewrites both,
+  # which would create a second role beside the Forge role the assignments already use.
+  role_definitions_use_supplied_names_enabled = true
 }

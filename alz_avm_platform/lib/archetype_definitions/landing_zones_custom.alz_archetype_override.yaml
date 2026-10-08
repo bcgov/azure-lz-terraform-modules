@@ -10,6 +10,8 @@ policy_assignments_to_add: [
   "Deny-Privileged-AKS",
   "Deny-Storage-http",
   "Deny-Subnet-Without-Nsg",
+  "Deny-Private-DNS-Zones",
+  "Deny-RSG-Locations",
   "Deploy-AzSqlDb-Auditing",
   "Deploy-GuestAttest",
   "Deploy-MDFC-DefSQL-AMA",
@@ -54,14 +56,55 @@ policy_assignments_to_add: [
   "Enforce-GR-Synapse0",
   "Enforce-GR-VirtualDesk0",
   "Enforce-Subnet-Private",
-  "Enforce-TLS-SSL-Q225"
+  "Enforce-TLS-SSL-Q225",
+  "Deny-PublicPaaSEndpoints",
+  "Resource-Locations",
+  "FedRAMPModerate",
+  "Deny-VNet-DNS-Changes",
+  "Deny-Protected-Network",
+  "Deny-Delete-Routes",
+  "Deny-VNet-Creation",
+  "Enforce-AKS-CIDRs",
+  "AKS-Security-BestPrac",
+  "AKS-Private-Cluster",
+  "Deny-New-VNet-Peerings",
+  "Deny-Delete-Diagnostics",
+  "Deny-AMPLS-Creation",
+  "Deny-Delete-NetworkWatch",
+  "Deny-Azure-SRE-Agent",
+  "Deny-Fabric-Capacity",
+  "Deny-Power-Platform",
+  "Deny-Azure-AI-Services"
 ]
 policy_assignments_to_remove: [
   "Enable-DDoS-VNET", # This turns off the DDoS protection plan
 ]
-policy_definitions_to_add: []
+policy_definitions_to_add: [
+  "Deny-VNet-Address-Changes",
+  "Deny-Azure-SRE-Agent",
+  "Deny-Fabric-Capacity",
+  "Deny-Power-Platform",
+  "Deny-AI-Foundry",
+  "Deny-AI-Hubs",
+  "Deny-Azure-OpenAI",
+  "Deny-AI-Search",
+  "Deny-Bot-Services",
+  "Deny-Computer-Vision",
+  "Deny-Custom-Vision",
+  "Deny-Content-Safety",
+  "Deny-Document-Intelligence",
+  "Deny-Face-API",
+  "Deny-Health-Insights",
+  "Deny-Machine-Learning",
+  "Deny-Immersive-Reader",
+  "Deny-Language-Service",
+  "Deny-Speech-Service",
+  "Deny-Translator"
+]
 policy_definitions_to_remove: []
-policy_set_definitions_to_add: []
+policy_set_definitions_to_add: [
+  "Deny-Azure-AI-Services-Initiative"
+]
 policy_set_definitions_to_remove: []
 role_definitions_to_add: []
 role_definitions_to_remove: []

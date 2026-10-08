@@ -8,8 +8,9 @@ module "management" {
   location           = var.location
   parent_resource_id = var.parent_resource_id
 
-  policy_default_values        = var.policy_default_values
-  policy_assignments_to_modify = var.policy_assignments_to_modify
+  policy_default_values                             = var.policy_default_values
+  policy_assignments_to_modify                      = var.policy_assignments_to_modify
+  policy_assignment_non_compliance_message_settings = var.policy_assignment_non_compliance_message_settings
 
   platform_subscriptions = var.platform_subscriptions
 
@@ -26,8 +27,11 @@ module "management" {
   # log_analytics_workspace_reservation_capacity_in_gb_per_day = var.log_analytics_workspace_reservation_capacity_in_gb_per_day
   log_analytics_workspace_retention_in_days = var.log_analytics_workspace_retention_in_days
   log_analytics_workspace_sku               = var.log_analytics_workspace_sku
-  # sentinel_onboarding                                        = var.sentinel_onboarding
-  user_assigned_managed_identities = var.user_assigned_managed_identities
+  sentinel_onboarding                       = var.sentinel_onboarding
+  user_assigned_managed_identities          = var.user_assigned_managed_identities
+
+  tags             = var.tags
+  enable_telemetry = var.enable_telemetry
 }
 
 module "amba" { # TODO: Move to some sub-module
@@ -39,9 +43,11 @@ module "amba" { # TODO: Move to some sub-module
   location = var.location
 
   # Optional Configuration
+  deploy_amba                              = var.deploy_amba
   amba_resource_group_name                 = var.amba_resource_group_name
   amba_user_assigned_managed_identity_name = var.amba_user_assigned_managed_identity_name
   tags                                     = var.tags
+  enable_telemetry                         = var.enable_telemetry
 }
 
 module "connectivity" {
@@ -65,9 +71,14 @@ module "connectivity" {
   # default_naming_convention = var.default_naming_convention # TODO: Look into how using this affects resource naming
   # default_naming_convention_sequence = var.default_naming_convention_sequence
   # route_maps = var.route_maps
-  # tags = var.tags
+  tags                 = var.tags
+  enable_telemetry     = var.enable_telemetry
   virtual_hubs         = var.virtual_hubs
   virtual_wan_settings = var.virtual_wan_settings
+
+  private_dns_zone_resource_group_name   = var.private_dns_zone_resource_group_name
+  private_dns_zones                      = var.private_dns_zones
+  private_dns_zone_virtual_network_links = var.private_dns_zone_virtual_network_links
 
   # IPAM Variables
   ipam_pool_resource_group_name = var.ipam_pool_resource_group_name

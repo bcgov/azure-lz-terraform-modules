@@ -1,0 +1,29 @@
+{
+  "name": "Deploy-Private-DNS-Fbrc",
+  "type": "Microsoft.Authorization/policyAssignments",
+  "apiVersion": "2024-04-01",
+  "properties": {
+    "displayName": "Configure private DNS zones for Microsoft Fabric private endpoints",
+    "description": "Deploys the private DNS zone group for a private endpoint connected to a Microsoft Fabric workspace.",
+    "policyDefinitionId": "/providers/Microsoft.Management/managementGroups/placeholder/providers/Microsoft.Authorization/policyDefinitions/Deploy-Private-DNS-Fbrc",
+    "metadata": {
+      "version": "1.0.0",
+      "category": "Fabric"
+    },
+    "parameters": {
+      "fabricPrivateDnsZoneId": {
+        "value": "/subscriptions/${private_dns_zone_subscription_id}/resourceGroups/${private_dns_zone_resource_group_name}/providers/Microsoft.Network/privateDnsZones/privatelink.fabric.microsoft.com"
+      },
+      "effect": {
+        "value": "DeployIfNotExists"
+      }
+    },
+    "scope": "/providers/Microsoft.Management/managementGroups/placeholder",
+    "notScopes": [],
+    "enforcementMode": "Default"
+  },
+  "location": "${default_location}",
+  "identity": {
+    "type": "SystemAssigned"
+  }
+}

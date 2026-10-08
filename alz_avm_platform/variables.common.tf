@@ -32,3 +32,10 @@ variable "tags" {
   default     = null
   description = "A map of tags to apply to the resources created."
 }
+
+variable "enable_telemetry" {
+  type        = bool
+  default     = true
+  description = "Controls telemetry collection for the AVM modules. Set to false to omit User-Agent headers."
+  nullable    = false
+}

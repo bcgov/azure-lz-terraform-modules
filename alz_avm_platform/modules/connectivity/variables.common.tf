@@ -20,3 +20,10 @@ variable "tags" {
   type        = map(string)
   default     = null
 }
+
+variable "enable_telemetry" {
+  type        = bool
+  default     = true
+  description = "Controls telemetry collection for the AVM modules. Set to false to omit User-Agent headers."
+  nullable    = false
+}

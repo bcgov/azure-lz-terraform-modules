@@ -14,8 +14,10 @@ module "alz" {
 
   subscription_placement_destroy_behavior = var.subscription_placement_destroy_behavior
 
-  policy_default_values        = var.policy_default_values
-  policy_assignments_to_modify = var.policy_assignments_to_modify
+  policy_default_values                             = var.policy_default_values
+  policy_assignments_to_modify                      = var.policy_assignments_to_modify
+  policy_assignment_non_compliance_message_settings = var.policy_assignment_non_compliance_message_settings
+  enable_telemetry                                  = var.enable_telemetry
 }
 
 module "platform_subscriptions" { # TODO: Move to management sub-module
@@ -24,4 +26,5 @@ module "platform_subscriptions" { # TODO: Move to management sub-module
   # Required Configuration
   location               = var.location
   platform_subscriptions = var.platform_subscriptions
+  enable_telemetry       = var.enable_telemetry
 }

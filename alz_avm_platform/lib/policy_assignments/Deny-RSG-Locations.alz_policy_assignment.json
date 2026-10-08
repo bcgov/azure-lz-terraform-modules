@@ -1,0 +1,27 @@
+{
+  "name": "Deny-RSG-Locations",
+  "type": "Microsoft.Authorization/policyAssignments",
+  "apiVersion": "2024-04-01",
+  "location": "${default_location}",
+  "properties": {
+    "description": "Specifies the allowed locations (regions) where Resource Groups can be deployed.",
+    "displayName": "Limit allowed locations for Resource Groups",
+    "policyDefinitionId": "/providers/Microsoft.Authorization/policyDefinitions/e765b5de-1225-4ba3-bd56-1ac6695af988",
+    "enforcementMode": "Default",
+    "nonComplianceMessages": [
+      {
+        "message": "Resource groups must only be deployed to the allowed locations."
+      }
+    ],
+    "parameters": {
+      "listOfAllowedLocations": {
+        "value": [
+          "CanadaCentral",
+          "CanadaEast"
+        ]
+      }
+    },
+    "scope": "/providers/Microsoft.Management/managementGroups/placeholder",
+    "notScopes": []
+  }
+}

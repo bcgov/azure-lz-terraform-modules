@@ -1,3 +1,9 @@
+variable "deploy_amba" {
+  type        = bool
+  default     = false
+  description = "Deploy the AMBA monitoring resource group and managed identity. Policy placement is controlled by the architecture archetypes."
+}
+
 variable "amba_resource_group_name" {
   type        = string
   default     = "rg-amba-monitoring-001"
