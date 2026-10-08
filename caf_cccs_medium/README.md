@@ -48,6 +48,23 @@ automatic adoption of future major versions. Review plans for every consumer
 before rollout, and check deployed reference versions after applying.
 See [Microsoft's policy reference version documentation](https://learn.microsoft.com/en-us/azure/governance/policy/concepts/initiative-definition-structure#policy-definition-properties).
 
+### AKS assignment compatibility
+
+The custom library in `modules/core/lib/policy_assignments` also replaces the
+Enterprise Scale `Deny-Priv-Esc-AKS` and `Enforce-AKS-HTTPS` assignments by their
+existing names. Only their effect values change from `deny` to `Deny`, matching
+the case-sensitive allowed values in the current built-ins. All other assignment
+properties are preserved. As with initiative references, the Enterprise Scale
+assignment resource does not pass the template's `definitionVersion` through.
+
+Consumers must set `aks_security_best_prac_parameters.enforce_disable_local_auth`
+and `enforce_aks_private_cluster_parameters.effect` to `Audit` or `Disabled`.
+Explicit `Deny` inputs override library defaults and remain invalid. Terraform
+validation rejects unsupported values, and the custom AKS security initiative
+restricts its local-authentication parameter to the same allowed values. `Audit`
+reports noncompliance without blocking deployment for these two controls; other
+AKS controls that support `Deny` remain unchanged.
+
 <!-- BEGIN_TF_DOCS -->
 ## Requirements
 

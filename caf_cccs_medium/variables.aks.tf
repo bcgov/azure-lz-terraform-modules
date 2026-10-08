@@ -27,6 +27,10 @@ variable "aks_security_best_prac_parameters" {
     audit_image_cleaner          = string
   })
   description = "Parameter values for the AKS-Security-BestPrac initiative assignment."
+  validation {
+    condition     = contains(["Audit", "Disabled"], var.aks_security_best_prac_parameters.enforce_disable_local_auth)
+    error_message = "enforce_disable_local_auth must be Audit or Disabled; the referenced built-in policy does not support Deny."
+  }
 }
 
 variable "enforce_aks_private_cluster_parameters" {
@@ -34,4 +38,8 @@ variable "enforce_aks_private_cluster_parameters" {
     effect = string
   })
   description = "Parameter values for the Enforce-AKS-Private-Cluster policy assignment."
+  validation {
+    condition     = contains(["Audit", "Disabled"], var.enforce_aks_private_cluster_parameters.effect)
+    error_message = "The AKS private-cluster effect must be Audit or Disabled; the referenced built-in policy does not support Deny."
+  }
 }
