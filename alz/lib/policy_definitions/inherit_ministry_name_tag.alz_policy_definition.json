@@ -1,0 +1,56 @@
+{
+  "name": "Inherit-Ministry-Name-Tag",
+  "type": "Microsoft.Authorization/policyDefinitions",
+  "apiVersion": "2021-06-01",
+  "scope": null,
+  "properties": {
+    "displayName": "Inherit the Ministry Name tag from the subscription",
+    "description": "Adds or replaces the specified tag and value from the containing subscription when any resource is created or updated. Existing resources can be remediated by triggering a remediation task.",
+    "policyType": "Custom",
+    "mode": "Indexed",
+    "metadata": {
+      "version": "1.0.0",
+      "category": "Tags"
+    },
+    "policyRule": {
+      "if": {
+        "allOf": [
+          {
+            "field": "[concat('tags[', parameters('InheritTag-Ministry-Name'), ']')]",
+            "notEquals": "[subscription().tags[parameters('InheritTag-Ministry-Name')]]"
+          },
+          {
+            "value": "[subscription().tags[parameters('InheritTag-Ministry-Name')]]",
+            "notEquals": ""
+          }
+        ]
+      },
+      "then": {
+        "effect": "modify",
+        "details": {
+          "roleDefinitionIds": [
+            "/providers/microsoft.authorization/roleDefinitions/b24988ac-6180-42a0-ab88-20f7382dd24c"
+          ],
+          "operations": [
+            {
+              "operation": "addOrReplace",
+              "field": "[concat('tags[', parameters('InheritTag-Ministry-Name'), ']')]",
+              "value": "[subscription().tags[parameters('InheritTag-Ministry-Name')]]"
+            }
+          ]
+        }
+      }
+    },
+    "parameters": {
+      "InheritTag-Ministry-Name": {
+        "type": "String",
+        "metadata": {
+          "displayName": "Ministry Name Tag Name",
+          "description": "Name of the Ministry Name tag"
+        }
+      }
+    },
+    "roleDefinitionIds": []
+  },
+  "roleDefinitionIds": []
+}

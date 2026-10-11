@@ -1,0 +1,129 @@
+{
+  "name": "Deploy-Private-DNS-ACA",
+  "type": "Microsoft.Authorization/policyDefinitions",
+  "apiVersion": "2024-05-01",
+  "properties": {
+    "displayName": "Configure private DNS zones for private endpoints connected to Azure Container Apps",
+    "policyType": "Custom",
+    "mode": "Indexed",
+    "description": "Use private DNS zones to override the DNS resolution for a private endpoint. This policy automatically selects the private DNS zone with the corresponding partition id used by Azure Container Apps.",
+    "metadata": {
+      "version": "1.0.0",
+      "category": "Container Apps"
+    },
+    "parameters": {
+      "effect": {
+        "type": "String",
+        "metadata": {
+          "displayName": "Effect",
+          "description": "The effect of the policy.",
+          "strongType": "Effect",
+          "defaultValue": "DeployIfNotExists"
+        }
+      },
+      "defaultPrivateDnsZoneId": {
+        "type": "String",
+        "metadata": {
+          "displayName": "Default Private DNS Zone ID",
+          "description": "The default Private DNS Zone ID for Container Apps resources.",
+          "strongType": "Microsoft.Network/privateDnsZones"
+        }
+      }
+    },
+    "policyRule": {
+      "if": {
+        "allOf": [
+          {
+            "equals": "Microsoft.Network/privateEndpoints",
+            "field": "type"
+          },
+          {
+            "count": {
+              "field": "Microsoft.Network/privateEndpoints/privateLinkServiceConnections[*]",
+              "where": {
+                "allOf": [
+                  {
+                    "field": "Microsoft.Network/privateEndpoints/privateLinkServiceConnections[*].privateLinkServiceId",
+                    "contains": "Microsoft.App/managedEnvironments"
+                  },
+                  {
+                    "field": "Microsoft.Network/privateEndpoints/privateLinkServiceConnections[*].groupIds[*]",
+                    "equals": "managedEnvironments"
+                  }
+                ]
+              }
+            },
+            "greaterOrEquals": 1
+          }
+        ]
+      },
+      "then": {
+        "effect": "[parameters('effect')]",
+        "details": {
+          "type": "Microsoft.Network/privateEndpoints/privateDnsZoneGroups",
+          "roleDefinitionIds": [
+            "/providers/Microsoft.Authorization/roleDefinitions/4d97b98b-1d4f-4787-a291-c67834d212e7",
+            "/providers/Microsoft.Authorization/roleDefinitions/acdd72a7-3385-48ef-bd42-f606fba81ae7"
+          ],
+          "deployment": {
+            "properties": {
+              "mode": "incremental",
+              "parameters": {
+                "defaultPrivateDnsZoneId": {
+                  "value": "[parameters('defaultPrivateDnsZoneId')]"
+                },
+                "privateEndpointName": {
+                  "value": "[field('name')]"
+                },
+                "location": {
+                  "value": "[field('location')]"
+                },
+                "privateLinkServiceId": {
+                  "value": "[field('Microsoft.Network/privateEndpoints/privateLinkServiceConnections[*].privateLinkServiceId')]"
+                }
+              },
+              "template": {
+                "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                "contentVersion": "1.0.0.0",
+                "parameters": {
+                  "defaultPrivateDnsZoneId": {
+                    "type": "string"
+                  },
+                  "privateEndpointName": {
+                    "type": "string"
+                  },
+                  "location": {
+                    "type": "string"
+                  },
+                  "privateLinkServiceId": {
+                    "type": "array"
+                  }
+                },
+                "resources": [
+                  {
+                    "apiVersion": "2022-07-01",
+                    "location": "[parameters('location')]",
+                    "name": "[concat(parameters('privateEndpointName'), '/deployedByPolicy')]",
+                    "properties": {
+                      "privateDnsZoneConfigs": [
+                        {
+                          "name": "account-private-dns-zone",
+                          "properties": {
+                            "privateDnsZoneId": "[parameters('defaultPrivateDnsZoneId')]"
+                          }
+                        }
+                      ]
+                    },
+                    "type": "Microsoft.Network/privateEndpoints/privateDnsZoneGroups"
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "roleDefinitionIds": []
+  },
+  "roleDefinitionIds": []
+}

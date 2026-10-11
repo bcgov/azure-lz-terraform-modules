@@ -1,0 +1,74 @@
+{
+  "name": "Inherit-Sub-Tags",
+  "type": "Microsoft.Authorization/policySetDefinitions",
+  "apiVersion": "2021-06-01",
+  "scope": null,
+  "properties": {
+    "policyType": "Custom",
+    "displayName": "Inherit Tags from the Subscription",
+    "description": "Adds or replaces the specified tag and value from the containing subscription when any resource is created or updated. Existing resources can be remediated by triggering a remediation task.",
+    "metadata": {
+      "version": "1.0.0",
+      "category": "Tags"
+    },
+    "parameters": {
+      "InheritTag-Account-Coding": {
+          "type": "String",
+          "metadata": {
+            "displayName": "Account Code Tag Name",
+            "description": "Name of the Account Coding tag",
+            "defaultValue": "account_coding"
+          }
+      },
+      "InheritTag-Billing-Group": {
+          "type": "String",
+          "metadata": {
+            "displayName": "Billing Group Tag Name",
+            "description": "Name of the Billing Group tag",
+            "defaultValue": "billing_group"
+          }
+      },
+      "InheritTag-Ministry-Name": {
+          "type": "String",
+          "metadata": {
+            "displayName": "Ministry Name Tag Name",
+            "description": "Name of the Ministry Name tag",
+            "defaultValue": "ministry_name"
+          }
+      }
+    },
+    "policyDefinitions": [
+      {
+        "policyDefinitionReferenceId": "Inherit the Account Code tag from the subscription",
+        "policyDefinitionId": "/providers/Microsoft.Authorization/policyDefinitions/Inherit-Account-Code-Tag",
+        "parameters": {
+          "InheritTag-Account-Coding": {
+              "value": "[parameters('InheritTag-Account-Coding')]"
+          }
+        },
+        "groupNames": []
+      },
+      {
+        "policyDefinitionReferenceId": "Inherit the Billing Group tag from the subscription",
+        "policyDefinitionId": "/providers/Microsoft.Authorization/policyDefinitions/Inherit-Billing-Group-Tag",
+        "parameters": {
+          "InheritTag-Billing-Group": {
+              "value": "[parameters('InheritTag-Billing-Group')]"
+          }
+        },
+        "groupNames": []
+      },
+      {
+        "policyDefinitionReferenceId": "Inherit the Ministry Name tag from the subscription",
+        "policyDefinitionId": "/providers/Microsoft.Authorization/policyDefinitions/Inherit-Ministry-Name-Tag",
+        "parameters": {
+          "InheritTag-Ministry-Name": {
+              "value": "[parameters('InheritTag-Ministry-Name')]"
+          }
+        },
+        "groupNames": []
+      }
+    ],
+    "policyDefinitionGroups": null
+  }
+}
