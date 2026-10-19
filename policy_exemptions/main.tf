@@ -37,7 +37,9 @@ resource "azurerm_subscription_policy_exemption" "this" {
   display_name                    = each.value.display_name
   description                     = each.value.description
   policy_definition_reference_ids = each.value.policy_definition_reference_ids
-  metadata                        = local.metadata[each.key]
+  # Azure rejects CreateOrUpdate once expiresOn is in the past, so an
+  # exemption that already has an end date is imported and left unchanged.
+  metadata = each.value.expires_on == null ? local.metadata[each.key] : null
 }
 
 resource "azurerm_resource_group_policy_exemption" "this" {
@@ -51,7 +53,7 @@ resource "azurerm_resource_group_policy_exemption" "this" {
   display_name                    = each.value.display_name
   description                     = each.value.description
   policy_definition_reference_ids = each.value.policy_definition_reference_ids
-  metadata                        = local.metadata[each.key]
+  metadata                        = each.value.expires_on == null ? local.metadata[each.key] : null
 }
 
 resource "azurerm_resource_policy_exemption" "this" {
@@ -65,7 +67,7 @@ resource "azurerm_resource_policy_exemption" "this" {
   display_name                    = each.value.display_name
   description                     = each.value.description
   policy_definition_reference_ids = each.value.policy_definition_reference_ids
-  metadata                        = local.metadata[each.key]
+  metadata                        = each.value.expires_on == null ? local.metadata[each.key] : null
 }
 
 import {

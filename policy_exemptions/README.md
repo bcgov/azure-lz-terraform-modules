@@ -4,6 +4,8 @@ Imports existing Azure Policy exemptions and manages them in place. Names, scope
 
 `expires_on` null means the waiver has no end date. An empty `policy_definition_reference_ids` list waives the whole assignment. `reviewBy` is written only for those exemptions. `reviewers` is a list of email addresses. `extra` is merged into the exemption metadata for keys that only one exemption has.
 
+An exemption that already has `expires_on` is imported and then left as Azure stored it. Azure returns `InvalidPolicyExemptionExpiration` for any later update, including a metadata-only change, once that date is in the past.
+
 <!-- BEGIN_TF_DOCS -->
 ## Requirements
 
