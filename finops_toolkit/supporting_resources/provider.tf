@@ -9,7 +9,7 @@ terraform {
 
     azapi = {
       source  = "azure/azapi"
-      version = "~> 2.12"
+      version = "~> 2.13"
     }
 
     azureipam = {
@@ -19,7 +19,7 @@ terraform {
 
     fabric = {
       source  = "microsoft/fabric"
-      version = "~> 1.13"
+      version = "~> 1.14"
     }
   }
 }
