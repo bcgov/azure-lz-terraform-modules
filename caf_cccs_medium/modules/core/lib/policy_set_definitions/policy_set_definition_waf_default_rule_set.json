@@ -1,0 +1,56 @@
+{
+  "name": "WAF-Default-RuleSet",
+  "type": "Microsoft.Authorization/policySetDefinitions",
+  "apiVersion": "2026-01-01-preview",
+  "scope": null,
+  "properties": {
+    "policyType": "Custom",
+    "displayName": "Enforce Microsoft Default Rule Set for WAF",
+    "description": "Ensures Application Gateway and Azure Front Door WAF policies include Microsoft_DefaultRuleSet in their managed rules.",
+    "metadata": {
+      "version": "1.0.0",
+      "category": "Network"
+    },
+    "parameters": {
+      "app_gateway_default_ruleset_effect": {
+        "type": "String",
+        "metadata": {
+          "displayName": "Application Gateway WAF Default Rule Set effect",
+          "description": "Controls whether Application Gateway WAF policies without Microsoft_DefaultRuleSet are audited, denied, or ignored."
+        },
+        "defaultValue": "Audit"
+      },
+      "front_door_default_ruleset_effect": {
+        "type": "String",
+        "metadata": {
+          "displayName": "Azure Front Door WAF Default Rule Set effect",
+          "description": "Controls whether Azure Front Door WAF policies without Microsoft_DefaultRuleSet are audited, denied, or ignored."
+        },
+        "defaultValue": "Audit"
+      }
+    },
+    "policyDefinitions": [
+      {
+        "policyDefinitionReferenceId": "Require-AppGw-Default-RuleSet",
+        "policyDefinitionId": "${current_scope_resource_id}/providers/Microsoft.Authorization/policyDefinitions/Enforce-AppGw-Default-RuleSet",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('app_gateway_default_ruleset_effect')]"
+          }
+        },
+        "groupNames": []
+      },
+      {
+        "policyDefinitionReferenceId": "Require-FrontDoor-Default-RuleSet",
+        "policyDefinitionId": "${current_scope_resource_id}/providers/Microsoft.Authorization/policyDefinitions/Enforce-FrontDoor-Default-RuleSet",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('front_door_default_ruleset_effect')]"
+          }
+        },
+        "groupNames": []
+      }
+    ],
+    "policyDefinitionGroups": null
+  }
+}

@@ -110,6 +110,7 @@ module "core" {
   enforce_aks_cidrs_parameters                 = var.enforce_aks_cidrs_parameters
   aks_security_best_prac_parameters            = var.aks_security_best_prac_parameters
   public_ingress_security_best_prac_parameters = var.public_ingress_security_best_prac_parameters
+  waf_default_ruleset_parameters               = var.waf_default_ruleset_parameters
   enforce_private_cluster                      = var.enforce_aks_private_cluster_parameters
 
   sqlmi_disable_public_endpoint_parameters = var.sqlmi_disable_public_endpoint_parameters

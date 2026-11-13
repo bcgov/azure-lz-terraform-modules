@@ -1,0 +1,54 @@
+{
+  "name": "Enforce-FrontDoor-Default-RuleSet",
+  "type": "Microsoft.Authorization/policyDefinitions",
+  "apiVersion": "2024-05-01",
+  "scope": null,
+  "properties": {
+    "displayName": "Azure Front Door WAF policy should use Microsoft Default Rule Set",
+    "description": "Audits or denies Azure Front Door WAF policies that do not include a managed ruleset with ruleSetType Microsoft_DefaultRuleSet.",
+    "policyType": "Custom",
+    "mode": "All",
+    "metadata": {
+      "version": "1.0.0",
+      "category": "Network"
+    },
+    "parameters": {
+      "effect": {
+        "type": "String",
+        "metadata": {
+          "displayName": "Effect",
+          "description": "Controls whether noncompliant Azure Front Door WAF policies are audited, denied, or ignored."
+        },
+        "allowedValues": [
+          "Deny",
+          "Audit",
+          "Disabled"
+        ],
+        "defaultValue": "Audit"
+      }
+    },
+    "policyRule": {
+      "if": {
+        "allOf": [
+          {
+            "field": "type",
+            "equals": "Microsoft.Network/frontdoorWebApplicationFirewallPolicies"
+          },
+          {
+            "count": {
+              "field": "Microsoft.Network/frontdoorWebApplicationFirewallPolicies/managedRules.managedRuleSets[*]",
+              "where": {
+                "field": "Microsoft.Network/frontdoorWebApplicationFirewallPolicies/managedRules.managedRuleSets[*].ruleSetType",
+                "equals": "Microsoft_DefaultRuleSet"
+              }
+            },
+            "equals": 0
+          }
+        ]
+      },
+      "then": {
+        "effect": "[parameters('effect')]"
+      }
+    }
+  }
+}

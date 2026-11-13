@@ -17,7 +17,8 @@
       "AKS-Best-Practices",
       "SQLMI-Entra-AuthN",
       "SQLMI-Disable-PublicData",
-      "Public-Ingress-SecPrac"
+      "Public-Ingress-SecPrac",
+      "WAF-Default-RuleSet"
     ],
     "policy_definitions": [
       "Inherit-Account-Code-Tag",
@@ -34,6 +35,8 @@
       "Deny-VNet-Creation",
       "Deny-New-VNet-Peerings",
       "Deny-Delete-Diagnostics",
+      "Enforce-AppGw-Default-RuleSet",
+      "Enforce-FrontDoor-Default-RuleSet",
       "Resource-Locations",
       "Deny-AMPLS-Creation",
       "Enforce-AKS-CIDRs",
@@ -53,7 +56,8 @@
       "Deploy-Private-DNS-Zones-Custom",
       "Inherit-Sub-Tags",
       "AKS-Security-Best-Practices",
-      "Public-Ingress-Security-Best-Practices"
+      "Public-Ingress-Security-Best-Practices",
+      "WAF-Default-RuleSet"
     ],
     "role_definitions": [
       "IP-Address-Lookup-Reader",
@@ -130,6 +134,10 @@
           "front_door_private_connectivity_effect": "SET using local.archetype_config_overrides",
           "front_door_waf_mode_effect": "SET using local.archetype_config_overrides",
           "front_door_waf_mode_requirement": "SET using local.archetype_config_overrides"
+        },
+        "WAF-Default-RuleSet": {
+          "app_gateway_default_ruleset_effect": "SET using local.archetype_config_overrides",
+          "front_door_default_ruleset_effect": "SET using local.archetype_config_overrides"
         }
       },
       "access_control": {}
