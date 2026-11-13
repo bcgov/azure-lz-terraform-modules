@@ -135,7 +135,7 @@ Policies are applied in the "Default" mode. It should be possible to provide [ov
 | <a name="input_tls_certificate"></a> [tls\_certificate](#input\_tls\_certificate) | (Optional) A tls\_certificate block as defined below. | <pre>object({<br/>    key_vault_secret_id = string<br/>    name                = string<br/>  })</pre> | `null` | no |
 | <a name="input_user_assigned_identity_name"></a> [user\_assigned\_identity\_name](#input\_user\_assigned\_identity\_name) | (Required) Specifies the name of this User Assigned Identity. | `string` | n/a | yes |
 | <a name="input_vwan_hub_address_prefix"></a> [vwan\_hub\_address\_prefix](#input\_vwan\_hub\_address\_prefix) | Sets the address prefix for the vWAN hub. | `string` | n/a | yes |
-| <a name="input_waf_default_ruleset_parameters"></a> [waf\_default\_ruleset\_parameters](#input\_waf\_default\_ruleset\_parameters) | Parameter values for the WAF-Default-RuleSet policy set assignment. | <pre>object({<br/>    app_gateway_default_ruleset_effect = optional(string, "Audit")<br/>    front_door_default_ruleset_effect  = optional(string, "Audit")<br/>  })</pre> | `{}` | no |
+| <a name="input_waf_default_ruleset_parameters"></a> [waf\_default\_ruleset\_parameters](#input\_waf\_default\_ruleset\_parameters) | Parameter values for the WAF-Default-RuleSet policy set assignment. | <pre>object({<br/>    app_gateway_default_ruleset_effect = optional(string, "Audit")<br/>    front_door_default_ruleset_effect  = optional(string, "Audit")<br/>    rule_set_version                   = optional(string, "2.2")<br/>  })</pre> | `{}` | no |
 
 ## Outputs
 

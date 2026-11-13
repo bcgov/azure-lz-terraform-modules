@@ -58,7 +58,7 @@
 | <a name="input_subscription_id_connectivity"></a> [subscription\_id\_connectivity](#input\_subscription\_id\_connectivity) | Subscription ID to use for "connectivity" resources. | `string` | n/a | yes |
 | <a name="input_subscription_id_identity"></a> [subscription\_id\_identity](#input\_subscription\_id\_identity) | Subscription ID to use for "identity" resources. | `string` | n/a | yes |
 | <a name="input_subscription_id_management"></a> [subscription\_id\_management](#input\_subscription\_id\_management) | Subscription ID to use for "management" resources. | `string` | n/a | yes |
-| <a name="input_waf_default_ruleset_parameters"></a> [waf\_default\_ruleset\_parameters](#input\_waf\_default\_ruleset\_parameters) | Parameter values for the WAF-Default-RuleSet policy set assignment. | <pre>object({<br/>    app_gateway_default_ruleset_effect = optional(string, "Audit")<br/>    front_door_default_ruleset_effect  = optional(string, "Audit")<br/>  })</pre> | `{}` | no |
+| <a name="input_waf_default_ruleset_parameters"></a> [waf\_default\_ruleset\_parameters](#input\_waf\_default\_ruleset\_parameters) | Parameter values for the WAF-Default-RuleSet policy set assignment. | <pre>object({<br/>    app_gateway_default_ruleset_effect = optional(string, "Audit")<br/>    front_door_default_ruleset_effect  = optional(string, "Audit")<br/>    rule_set_version                   = optional(string, "2.2")<br/>  })</pre> | `{}` | no |
 
 ## Outputs
 

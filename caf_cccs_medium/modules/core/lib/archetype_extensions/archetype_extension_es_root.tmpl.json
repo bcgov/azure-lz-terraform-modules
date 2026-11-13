@@ -137,7 +137,8 @@
         },
         "WAF-Default-RuleSet": {
           "app_gateway_default_ruleset_effect": "SET using local.archetype_config_overrides",
-          "front_door_default_ruleset_effect": "SET using local.archetype_config_overrides"
+          "front_door_default_ruleset_effect": "SET using local.archetype_config_overrides",
+          "rule_set_version": "SET using local.archetype_config_overrides"
         }
       },
       "access_control": {}
