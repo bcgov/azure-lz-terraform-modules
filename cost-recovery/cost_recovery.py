@@ -244,7 +244,7 @@ REGISTRY_FIELD_ALIASES = {
 
 def load_registry_csv(registry_csv_path):
     """
-    Load a Registry export CSV and normalize its headers to canonical field names. 
+    Load a Registry export CSV and normalize its headers to canonical field names.
     Returns an empty DataFrame if the file is missing so that the Monthly Spend Report
     can still be produced from Azure cost data alone.
     """

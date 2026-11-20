@@ -12,7 +12,7 @@ No providers.
 ## Modules
 
 | Name | Source | Version |
-| ---- | ------ | ------- |
+|------|--------|---------|
 | <a name="module_mccs_observability"></a> [mccs\_observability](#module\_mccs\_observability) | ../../ | n/a |
 
 ## Resources
@@ -22,7 +22,7 @@ No resources.
 ## Inputs
 
 | Name | Description | Type | Default | Required |
-| ---- | ----------- | ---- | ------- | :------: |
+|------|-------------|------|---------|:--------:|
 | <a name="input_central_grafana_dns_zone_id"></a> [central\_grafana\_dns\_zone\_id](#input\_central\_grafana\_dns\_zone\_id) | Resource ID of the central Grafana private DNS zone. | `string` | `null` | no |
 | <a name="input_central_keyvault_dns_zone_id"></a> [central\_keyvault\_dns\_zone\_id](#input\_central\_keyvault\_dns\_zone\_id) | Resource ID of the central Key Vault private DNS zone. | `string` | `null` | no |
 | <a name="input_cloud_team_email"></a> [cloud\_team\_email](#input\_cloud\_team\_email) | Cloud team email address. | `string` | n/a | yes |
@@ -52,7 +52,7 @@ No resources.
 ## Outputs
 
 | Name | Description |
-| ---- | ----------- |
+|------|-------------|
 | <a name="output_grafana_endpoint"></a> [grafana\_endpoint](#output\_grafana\_endpoint) | The Grafana endpoint URL. |
 | <a name="output_key_vault_uri"></a> [key\_vault\_uri](#output\_key\_vault\_uri) | The Key Vault URI. |
 | <a name="output_log_analytics_workspace_id"></a> [log\_analytics\_workspace\_id](#output\_log\_analytics\_workspace\_id) | The Log Analytics Workspace ID. |
