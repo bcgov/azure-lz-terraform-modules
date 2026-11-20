@@ -6,9 +6,9 @@
   "properties": {
     "policyType": "Custom",
     "displayName": "Enforce Microsoft Default Rule Set for WAF",
-    "description": "Ensures Application Gateway and Azure Front Door WAF policies include Microsoft_DefaultRuleSet in their managed rules. The required version defaults to 2.2 and can be set to an empty string for type-only enforcement.",
+    "description": "Ensures Application Gateway and Premium Azure Front Door WAF policies include Microsoft_DefaultRuleSet in their managed rules. The required version defaults to 2.2 and can be set to an empty string for type-only enforcement.",
     "metadata": {
-      "version": "1.0.0",
+      "version": "1.1.0",
       "category": "Network"
     },
     "parameters": {
@@ -23,8 +23,8 @@
       "front_door_default_ruleset_effect": {
         "type": "String",
         "metadata": {
-          "displayName": "Azure Front Door WAF Default Rule Set effect",
-          "description": "Controls whether Azure Front Door WAF policies without Microsoft_DefaultRuleSet are audited, denied, or ignored."
+          "displayName": "Premium Azure Front Door WAF Default Rule Set effect",
+          "description": "Controls whether Premium Azure Front Door WAF policies without Microsoft_DefaultRuleSet are audited, denied, or ignored."
         },
         "defaultValue": "Audit"
       },
