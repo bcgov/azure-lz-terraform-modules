@@ -19,7 +19,7 @@ Compare the version of the current FinOps hub instance with the latest stable ve
 
 If the FinOps hub version is the same as the development version, tell the user they are using the development version and they should monitor the repository to ensure it's updated with the latest changes, then skip to the next step.
 
-If the FinOps hub version is older than the development version and matches or is older than the latest stable version, tell the user they are using an older development version and should update to the latest stable release or development version. Mention their version number and the latest stable and development version numbers. Give them this link to deploy the latest stable version depending on their Azure cloud environment:
+If the current version is a stable release older than the latest stable version, tell the user they are using an older stable release and should update to the latest stable release. If it is a development version older than the latest development version, tell the user they are using an older development version and should update to the latest stable or development version. In either case, mention their version and the latest stable and development version numbers. Give them this link to deploy the latest stable version depending on their Azure cloud environment:
 
 - For the Azure public, commercial cloud, use https://aka.ms/finops/hubs/deploy
 - For the Azure Government cloud, use https://aka.ms/finops/hubs/deploy/gov
