@@ -55,7 +55,7 @@ If multiple FinOps hub instances were found and shared with the user, ask the us
 
 ## Step 4: Validate the FinOps hub instance
 
-If a FinOps hub instance was identified in a previous step, run the following query with the #azmcp-kusto-query command to validate the FinOps hub instance:
+If a FinOps hub instance was identified in a previous step, run the following query against the selected cluster URI and the `Hub` database with the #azmcp-kusto-query command to validate the FinOps hub instance:
 
 ```kusto
 let version = toscalar(database('Ingestion').HubSettings | project version);
