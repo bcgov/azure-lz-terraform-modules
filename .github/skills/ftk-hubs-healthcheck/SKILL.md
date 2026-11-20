@@ -13,6 +13,8 @@ Get the content from this file to determine the latest development version of Fi
 
 FinOps hubs use semantic versioning (SemVer) format for version numbers, which is `major.minor`, `major.minor.patch`, or `major.minor-prerelease`. If the version number has `-dev` at the end of it, that means it's a development version.
 
+If no FinOps hub has been selected and validated in this session, ask the user to run `/ftk-hubs-connect` first and pause until it succeeds. Use the `HubVersion` and `DataLastUpdated` returned by its validation query for the checks below. If those query results are not available in the session, ask the user to rerun `/ftk-hubs-connect` before continuing.
+
 Compare the version of the current FinOps hub instance with the latest stable version of FinOps hubs. If it's the same version as stable, tell the user they are using the latest released version and skip to the next step.
 
 If the FinOps hub version is the same as the development version, tell the user they are using the development version and they should monitor the repository to ensure it's updated with the latest changes, then skip to the next step.
