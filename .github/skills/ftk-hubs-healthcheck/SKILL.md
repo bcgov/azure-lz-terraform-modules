@@ -7,9 +7,9 @@ disable-model-invocation: true
 
 ## Step 1: Check the latest released FinOps hub version
 
-Get the content from this file to determine the latest stable version of FinOps hubs: `https://raw.githubusercontent.com/microsoft/finops-toolkit/refs/heads/main/src/templates/finops-hub/modules/ftkver.txt`.
+Get the content from this file to determine the latest stable version of FinOps hubs: `https://raw.githubusercontent.com/microsoft/finops-toolkit/refs/heads/main/src/templates/finops-hub/modules/fx/ftkver.txt`.
 
-Get the content from this file to determine the latest development version of FinOps hubs: `https://raw.githubusercontent.com/microsoft/finops-toolkit/refs/heads/dev/src/templates/finops-hub/modules/ftkver.txt`.
+Get the content from this file to determine the latest development version of FinOps hubs: `https://raw.githubusercontent.com/microsoft/finops-toolkit/refs/heads/dev/src/templates/finops-hub/modules/fx/ftkver.txt`.
 
 FinOps hubs use semantic versioning (SemVer) format for version numbers, which is `major.minor`, `major.minor.patch`, or `major.minor-prerelease`. If the version number has `-dev` at the end of it, that means it's a development version.
 
