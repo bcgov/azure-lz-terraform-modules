@@ -11,7 +11,7 @@ For each environment, the module will create a subscription, a network resource 
 
 | Name | Version |
 |------|---------|
-| <a name="requirement_azapi"></a> [azapi](#requirement\_azapi) | ~> 2.12 |
+| <a name="requirement_azapi"></a> [azapi](#requirement\_azapi) | ~> 2.13 |
 | <a name="requirement_azurerm"></a> [azurerm](#requirement\_azurerm) | ~> 4.81 |
 
 ## Providers
