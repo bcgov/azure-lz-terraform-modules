@@ -17,15 +17,15 @@ Set `isolated_expansion_forwarding_ruleset.enabled = false` to skip the second r
 ## Requirements
 
 | Name | Version |
-| ---- | ------- |
+|------|---------|
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >=1.9.0, < 2.0.0 |
-| <a name="requirement_azurerm"></a> [azurerm](#requirement\_azurerm) | ~> 4.76 |
+| <a name="requirement_azurerm"></a> [azurerm](#requirement\_azurerm) | ~> 4.81 |
 
 ## Providers
 
 | Name | Version |
-| ---- | ------- |
-| <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) | 4.81.0 |
+|------|---------|
+| <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) | ~> 4.81 |
 
 ## Modules
 
@@ -34,7 +34,7 @@ No modules.
 ## Resources
 
 | Name | Type |
-| ---- | ---- |
+|------|------|
 | [azurerm_private_dns_resolver.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/private_dns_resolver) | resource |
 | [azurerm_private_dns_resolver_dns_forwarding_ruleset.isolated_expansion](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/private_dns_resolver_dns_forwarding_ruleset) | resource |
 | [azurerm_private_dns_resolver_dns_forwarding_ruleset.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/private_dns_resolver_dns_forwarding_ruleset) | resource |
@@ -48,7 +48,7 @@ No modules.
 ## Inputs
 
 | Name | Description | Type | Default | Required |
-| ---- | ----------- | ---- | ------- | :------: |
+|------|-------------|------|---------|:--------:|
 | <a name="input_forwarding_rules"></a> [forwarding\_rules](#input\_forwarding\_rules) | (Optional) On-prem / conditional forwarding rules for the existing ruleset. Do not add a '.' catch-all here. Isolated expansion VNets use isolated\_expansion\_forwarding\_ruleset. | <pre>list(object({<br/>    name        = string<br/>    domain_name = string<br/>    enabled     = bool<br/>    target_dns_servers = list(object({<br/>      ip_address = string<br/>      port       = number<br/>    }))<br/>  }))</pre> | `[]` | no |
 | <a name="input_isolated_expansion_forwarding_ruleset"></a> [isolated\_expansion\_forwarding\_ruleset](#input\_isolated\_expansion\_forwarding\_ruleset) | Second forwarding ruleset on the existing outbound for *-isolated-expansion VNets. Rules: '.' → this inbound, plus explicit reserved Azure PaaS suffixes (wildcard rules skip those). This module does not create VNet links. Expansion modules pass the output ID as dns\_forwarding\_ruleset\_id. Do not link this ruleset to the resolver VNet or to *-vwan-spoke VNets. | <pre>object({<br/>    enabled            = optional(bool, true)<br/>    name               = optional(string)<br/>    additional_domains = optional(list(string), [])<br/>  })</pre> | <pre>{<br/>  "enabled": true<br/>}</pre> | no |
 | <a name="input_location"></a> [location](#input\_location) | (Required) Azure region to deploy to. Changing this forces a new resource to be created. | `string` | n/a | yes |
@@ -60,7 +60,7 @@ No modules.
 ## Outputs
 
 | Name | Description |
-| ---- | ----------- |
+|------|-------------|
 | <a name="output_isolated_expansion_dns_forwarding_rules"></a> [isolated\_expansion\_dns\_forwarding\_rules](#output\_isolated\_expansion\_dns\_forwarding\_rules) | Map of isolated-expansion forwarding rules, including the '.' catch-all and explicit reserved Azure PaaS suffixes. |
 | <a name="output_isolated_expansion_dns_forwarding_ruleset"></a> [isolated\_expansion\_dns\_forwarding\_ruleset](#output\_isolated\_expansion\_dns\_forwarding\_ruleset) | The isolated-expansion forwarding ruleset resource, or null when disabled. |
 | <a name="output_isolated_expansion_dns_forwarding_ruleset_id"></a> [isolated\_expansion\_dns\_forwarding\_ruleset\_id](#output\_isolated\_expansion\_dns\_forwarding\_ruleset\_id) | Resource ID of the isolated-expansion forwarding ruleset. Pass to isolated\_expansion\_vnet as dns\_forwarding\_ruleset\_id. Null when isolated\_expansion\_forwarding\_ruleset.enabled is false. Do not link this ruleset to the resolver VNet or to *-vwan-spoke VNets. |

@@ -12,7 +12,7 @@ Copy `terraform.tfvars.example` to `terraform.tfvars` and replace placeholders b
 ## Requirements
 
 | Name | Version |
-| ---- | ------- |
+|------|---------|
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >=1.9.0, < 2.0.0 |
 | <a name="requirement_azapi"></a> [azapi](#requirement\_azapi) | ~> 2.0 |
 | <a name="requirement_azurerm"></a> [azurerm](#requirement\_azurerm) | ~> 4.0 |
@@ -24,7 +24,7 @@ No providers.
 ## Modules
 
 | Name | Source | Version |
-| ---- | ------ | ------- |
+|------|--------|---------|
 | <a name="module_compute_expansion"></a> [compute\_expansion](#module\_compute\_expansion) | ../.. | n/a |
 
 ## Resources
@@ -34,7 +34,7 @@ No resources.
 ## Inputs
 
 | Name | Description | Type | Default | Required |
-| ---- | ----------- | ---- | ------- | :------: |
+|------|-------------|------|---------|:--------:|
 | <a name="input_dns_forwarding_ruleset_id"></a> [dns\_forwarding\_ruleset\_id](#input\_dns\_forwarding\_ruleset\_id) | Optional central isolated-expansion forwarding ruleset ID. The expansion VNet keeps Azure-provided DNS. | `string` | `null` | no |
 | <a name="input_firewall_management_subnet_address_prefix"></a> [firewall\_management\_subnet\_address\_prefix](#input\_firewall\_management\_subnet\_address\_prefix) | Unused /26 or larger prefix already in the routable spoke for AzureFirewallManagementSubnet. | `string` | n/a | yes |
 | <a name="input_firewall_subnet_address_prefix"></a> [firewall\_subnet\_address\_prefix](#input\_firewall\_subnet\_address\_prefix) | Unused /26 or larger prefix already in the routable spoke for AzureFirewallSubnet. | `string` | n/a | yes |
@@ -51,7 +51,7 @@ No resources.
 ## Outputs
 
 | Name | Description |
-| ---- | ----------- |
+|------|-------------|
 | <a name="output_firewall_id"></a> [firewall\_id](#output\_firewall\_id) | n/a |
 | <a name="output_firewall_private_ip"></a> [firewall\_private\_ip](#output\_firewall\_private\_ip) | n/a |
 | <a name="output_required_private_snat"></a> [required\_private\_snat](#output\_required\_private\_snat) | n/a |

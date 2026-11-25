@@ -1,0 +1,70 @@
+{
+  "name": "WAF-Default-RuleSet",
+  "type": "Microsoft.Authorization/policySetDefinitions",
+  "apiVersion": "2026-01-01-preview",
+  "scope": null,
+  "properties": {
+    "policyType": "Custom",
+    "displayName": "Enforce Microsoft Default Rule Set for WAF",
+    "description": "Ensures Application Gateway and Premium Azure Front Door WAF policies include Microsoft_DefaultRuleSet in their managed rules. The required version defaults to 2.2 and can be set to an empty string for type-only enforcement.",
+    "metadata": {
+      "version": "1.1.0",
+      "category": "Network"
+    },
+    "parameters": {
+      "app_gateway_default_ruleset_effect": {
+        "type": "String",
+        "metadata": {
+          "displayName": "Application Gateway WAF Default Rule Set effect",
+          "description": "Controls whether Application Gateway WAF policies without Microsoft_DefaultRuleSet are audited, denied, or ignored."
+        },
+        "defaultValue": "Audit"
+      },
+      "front_door_default_ruleset_effect": {
+        "type": "String",
+        "metadata": {
+          "displayName": "Premium Azure Front Door WAF Default Rule Set effect",
+          "description": "Controls whether Premium Azure Front Door WAF policies without Microsoft_DefaultRuleSet are audited, denied, or ignored."
+        },
+        "defaultValue": "Audit"
+      },
+      "rule_set_version": {
+        "type": "String",
+        "metadata": {
+          "displayName": "Microsoft Default Rule Set version",
+          "description": "Required Microsoft_DefaultRuleSet version. Defaults to 2.2; set to an empty string to enforce the rule set type without a version requirement."
+        },
+        "defaultValue": "2.2"
+      }
+    },
+    "policyDefinitions": [
+      {
+        "policyDefinitionReferenceId": "Require-AppGw-Default-RuleSet",
+        "policyDefinitionId": "${current_scope_resource_id}/providers/Microsoft.Authorization/policyDefinitions/Enforce-AppGw-Default-RuleSet",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('app_gateway_default_ruleset_effect')]"
+          },
+          "ruleSetVersion": {
+            "value": "[parameters('rule_set_version')]"
+          }
+        },
+        "groupNames": []
+      },
+      {
+        "policyDefinitionReferenceId": "Require-FrontDoor-Default-RuleSet",
+        "policyDefinitionId": "${current_scope_resource_id}/providers/Microsoft.Authorization/policyDefinitions/Enforce-FrontDoor-Default-RuleSet",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('front_door_default_ruleset_effect')]"
+          },
+          "ruleSetVersion": {
+            "value": "[parameters('rule_set_version')]"
+          }
+        },
+        "groupNames": []
+      }
+    ],
+    "policyDefinitionGroups": null
+  }
+}

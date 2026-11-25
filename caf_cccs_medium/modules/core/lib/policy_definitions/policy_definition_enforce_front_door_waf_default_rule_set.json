@@ -1,0 +1,82 @@
+{
+  "name": "Enforce-FrontDoor-Default-RuleSet",
+  "type": "Microsoft.Authorization/policyDefinitions",
+  "apiVersion": "2024-05-01",
+  "scope": null,
+  "properties": {
+    "displayName": "Premium Azure Front Door WAF policy should use Microsoft Default Rule Set",
+    "description": "Audits or denies Premium Azure Front Door WAF policies that do not include Microsoft_DefaultRuleSet at the configured version. Standard Azure Front Door WAF policies are not evaluated. The version requirement defaults to 2.2 and can be disabled by setting it to an empty string.",
+    "policyType": "Custom",
+    "mode": "All",
+    "metadata": {
+      "version": "1.1.0",
+      "category": "Network"
+    },
+    "parameters": {
+      "effect": {
+        "type": "String",
+        "metadata": {
+          "displayName": "Effect",
+          "description": "Controls whether noncompliant Premium Azure Front Door WAF policies are audited, denied, or ignored."
+        },
+        "allowedValues": [
+          "Deny",
+          "Audit",
+          "Disabled"
+        ],
+        "defaultValue": "Audit"
+      },
+      "ruleSetVersion": {
+        "type": "String",
+        "metadata": {
+          "displayName": "Microsoft Default Rule Set version",
+          "description": "Required Microsoft_DefaultRuleSet version. Defaults to 2.2; set to an empty string to enforce the rule set type without a version requirement."
+        },
+        "defaultValue": "2.2"
+      }
+    },
+    "policyRule": {
+      "if": {
+        "allOf": [
+          {
+            "field": "type",
+            "equals": "Microsoft.Network/frontdoorWebApplicationFirewallPolicies"
+          },
+          {
+            "field": "Microsoft.Network/frontdoorWebApplicationFirewallPolicies/sku.name",
+            "equals": "Premium_AzureFrontDoor"
+          },
+          {
+            "count": {
+              "field": "Microsoft.Network/frontdoorWebApplicationFirewallPolicies/managedRules.managedRuleSets[*]",
+              "where": {
+                "allOf": [
+                  {
+                    "field": "Microsoft.Network/frontdoorWebApplicationFirewallPolicies/managedRules.managedRuleSets[*].ruleSetType",
+                    "equals": "Microsoft_DefaultRuleSet"
+                  },
+                  {
+                    "anyOf": [
+                      {
+                        "value": "[parameters('ruleSetVersion')]",
+                        "equals": ""
+                      },
+                      {
+                        "field": "Microsoft.Network/frontdoorWebApplicationFirewallPolicies/managedRules.managedRuleSets[*].ruleSetVersion",
+                        "equals": "[parameters('ruleSetVersion')]"
+                      }
+                    ]
+                  }
+                ]
+              }
+            },
+            "equals": 0
+          }
+        ]
+      },
+      "then": {
+        "effect": "[parameters('effect')]"
+      }
+    }
+  }
+}

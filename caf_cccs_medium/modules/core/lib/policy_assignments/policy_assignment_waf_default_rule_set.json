@@ -1,0 +1,49 @@
+{
+  "name": "WAF-Default-RuleSet",
+  "type": "Microsoft.Authorization/policyAssignments",
+  "apiVersion": "2019-09-01",
+  "properties": {
+    "displayName": "Enforce Microsoft Default Rule Set for WAF",
+    "description": "Requires Application Gateway and Premium Azure Front Door WAF policies to include Microsoft_DefaultRuleSet. The initial Audit effects allow compliance testing before enforcement.",
+    "notScopes": [],
+    "parameters": {
+      "app_gateway_default_ruleset_effect": {
+        "value": "Audit",
+        "allowedValues": [
+          "Audit",
+          "Deny"
+        ]
+      },
+      "front_door_default_ruleset_effect": {
+        "value": "Audit",
+        "allowedValues": [
+          "Audit",
+          "Deny"
+        ]
+      },
+      "rule_set_version": {
+        "value": "2.2"
+      }
+    },
+    "policyDefinitionId": "${current_scope_resource_id}/providers/Microsoft.Authorization/policySetDefinitions/WAF-Default-RuleSet",
+    "nonComplianceMessages": [
+      {
+        "message": "Application Gateway and Premium Azure Front Door WAF policies must include Microsoft_DefaultRuleSet in managed rules."
+      },
+      {
+        "policyDefinitionReferenceId": "Require-AppGw-Default-RuleSet",
+        "message": "Application Gateway WAF policies must use the Microsoft_DefaultRuleSet as the default rule set."
+      },
+      {
+        "policyDefinitionReferenceId": "Require-FrontDoor-Default-RuleSet",
+        "message": "Premium Azure Front Door WAF policies must use the Microsoft_DefaultRuleSet as the default rule set."
+      }
+    ],
+    "scope": "${current_scope_resource_id}",
+    "enforcementMode": "Default"
+  },
+  "location": "${default_location}",
+  "identity": {
+    "type": "SystemAssigned"
+  }
+}

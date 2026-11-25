@@ -43,6 +43,7 @@ locals {
         Public-Ingress-SecPrac = merge(var.public_ingress_security_best_prac_parameters, {
           log_analytics_workspace_resource_id = "/subscriptions/${var.subscription_id_management}/resourceGroups/${var.root_id}-mgmt/providers/Microsoft.OperationalInsights/workspaces/${var.root_id}-la"
         }),
+        WAF-Default-RuleSet      = var.waf_default_ruleset_parameters,
         SQLMI-Disable-PublicData = var.sqlmi_disable_public_endpoint_parameters,
         SQLMI-Entra-AuthN        = var.sqlmi_entra_authentication_parameters,
       }
